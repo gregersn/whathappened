@@ -1,0 +1,28 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+  <h1>{% block title %}Character{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('character.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for character in characters %}
+    <article class="character">
+      <header>
+        <div>
+          <h1>{{ character['title'] }}</h1>
+          <div class="about">by {{ character['username'] }} on {{ character['created'].strftime('%Y-%m-%d') }}</div>
+        </div>
+        {% if g.user['id'] == character['author_id'] %}
+          <a class="action" href="{{ url_for('character.update', id=character['id']) }}">Edit</a>
+        {% endif %}
+      </header>
+      <p class="body">{{ character['body'] }}</p>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
