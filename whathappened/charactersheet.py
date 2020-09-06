@@ -102,6 +102,9 @@ def update(id):
 @bp.route('/<int:id>/', methods=('GET', 'POST'))
 def view(id):
     data = get_character(id)
+    investigator = json.loads(data['body'])['Investigator']
+    for skill in investigator['Skills']['Skill']:
+        print(skill)
     character = {
         'id': id,
         'data': json.loads(data['body'])['Investigator']

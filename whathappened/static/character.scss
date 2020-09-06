@@ -1,0 +1,14 @@
+.charactersheet {
+    .header {
+
+    }
+    .skills {
+        border: 1px solid gray;
+        columns: 360px;
+        column-gap: 2em;
+        .skill {
+            border-bottom: 1px dotted gray;
+        }
+
+    }
+}

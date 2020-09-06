@@ -1,0 +1,61 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+  <h1>{% block title %}{{ character['data']['PersonalDetails']['Name']}}{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('character.update', id=character['id']) }}">Edit</a>
+  {% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div class="charactersheet">
+    <div class="header">
+        <span>{{ character['data']['PersonalDetails']['Name']}}</span>
+        <span>({{ character['data']['PersonalDetails']['Age']}})</span>
+        <span>{{ character['data']['PersonalDetails']['Gender']}}</span><br />
+        <span>Occupation: {{ character['data']['PersonalDetails']['Occupation']}}</span> |
+        <span>Birthplace: {{ character['data']['PersonalDetails']['Birthplace']}}</span> |
+        <span>Residence: {{ character['data']['PersonalDetails']['Residence']}}</span>
+    </div>
+    <div class="characteristics">
+        <table>
+            <tr>
+                <td>STR: {{ character['data']['Characteristics']['STR'] }}</td>
+                <td>DEX: {{ character['data']['Characteristics']['DEX'] }}</td>
+                <td>POW: {{ character['data']['Characteristics']['POW'] }}</td>
+            </tr>
+            <tr>
+                <td>CON: {{ character['data']['Characteristics']['CON'] }}</td>
+                <td>APP: {{ character['data']['Characteristics']['APP'] }}</td>
+                <td>EDU: {{ character['data']['Characteristics']['EDU'] }}</td>
+            </tr>
+            <tr>
+                <td>SIZ: {{ character['data']['Characteristics']['SIZ'] }}</td>
+                <td>INT: {{ character['data']['Characteristics']['INT'] }}</td>
+                <td>Move: {{ character['data']['Characteristics']['Move'] }}</td>
+            </tr>
+        </table>
+        <div class="hitpoints">Hitpoints: {{ character['data']['Characteristics']['HitPts'] }} / {{ character['data']['Characteristics']['HitPtsMax'] }}</div>
+        <div class="sanity">Sanity: {{ character['data']['Characteristics']['Sanity'] }} / {{ character['data']['Characteristics']['SanityMax'] }}</div>
+        <div class="magicpoints">Magic points: {{ character['data']['Characteristics']['MagicPts'] }} / {{ character['data']['Characteristics']['MagicPtsMax'] }}</div>
+        <div class="luck">Luck: {{ character['data']['Characteristics']['Luck'] }} / {{ character['data']['Characteristics']['LuckMax'] }}</div>
+
+
+    </div>
+    <div class="skills">
+        {% for skill in character['data']['Skills']['Skill'] %}
+        {% if loop.previtem and loop.previtem['name'] == skill['name'] and loop.previtem['subskill'] == skill['subskill'] %}
+        {% else %}
+        <div class="skill">
+            <span><input type="checkbox" /></span>
+            
+            <span>{{ skill['name'] }}{% if skill['occupation'] %}*{% endif %}{%- if skill['subskill'] and skill['subskill'] != "None" %}: {{ skill['subskill']}} {% endif %}</span>
+            
+            <span>{{ skill['value'] }} / {{ skill['half'] }} / {{ skill['fifth'] }} </span>
+        </div>  
+        {% endif %}     
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
