@@ -2,6 +2,8 @@
 import os
 
 from flask import Flask
+from flask_assets import Environment, Bundle
+
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -9,7 +11,7 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'whathappened.sqlite')
     )
-
+    
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)
@@ -22,6 +24,12 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    assets = Environment(app)
+    assets.url = app.static_url_path
+    scss = Bundle('main.scss', 'character.scss', filters='pyscss', output='all.css')
+    assets.register('scss_all', scss)
+
 
     @app.route('/hello')
     def hello():

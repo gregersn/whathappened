@@ -12,14 +12,28 @@
     <article class="character">
       <header>
         <div>
+        <a class="action" href="{{ url_for('character.view', id=character['id']) }}">
           <h1>{{ character['title'] }}</h1>
+          </a>
           <div class="about">by {{ character['username'] }} on {{ character['created'].strftime('%Y-%m-%d') }}</div>
         </div>
         {% if g.user['id'] == character['author_id'] %}
           <a class="action" href="{{ url_for('character.update', id=character['id']) }}">Edit</a>
         {% endif %}
       </header>
-      <p class="body">{{ character['body'] }}</p>
+      <div class="character body summary">
+      <div style="display: inline-block; vertical-align: top;">
+        {{ character['data']['Investigator']['PersonalDetails']['Name'] }}<br />
+        {{ character['data']['Investigator']['PersonalDetails']['Occupation'] }}<br />
+        {{ character['data']['Investigator']['PersonalDetails']['Gender'] }}<br />
+        {{ character['data']['Investigator']['PersonalDetails']['Age'] }}<br />
+        {{ character['data']['Investigator']['PersonalDetails']['Birthplace'] }}<br />
+        {{ character['data']['Investigator']['PersonalDetails']['Residence'] }}<br />
+    </div>
+    <div style="display: inline-block; vertical-align: top;">
+        <img src="data:image/jpg;base64, {{ character['data']['Investigator']['PersonalDetails']['Portrait'] }}" />
+        </div>
+      </div>
     </article>
     {% if not loop.last %}
       <hr>

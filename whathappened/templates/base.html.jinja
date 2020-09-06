@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <title>{% block title%}{% endblock %} - What Happened?</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" >
+{% assets "scss_all" %}
+<link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+{% endassets %}
+
 <nav>
     <h1>What Happened?</h1>
     <ul>

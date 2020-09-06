@@ -1,3 +1,4 @@
+import json
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
@@ -11,11 +12,22 @@ bp = Blueprint('character', __name__)
 @bp.route('/')
 def index():
     db = get_db()
-    characters = db.execute(
+    rows = db.execute(
         'SELECT c.id, title, body, author_id, created, username'
         ' FROM character c JOIN user u ON c.author_id = u.id'
         ' ORDER BY CREATED DESC'
     ).fetchall()
+
+    characters =[]
+
+    for row in rows:
+        characters.append({
+            'id': row['id'],
+            'username': row['username'],
+            'title': row['title'],
+            'created': row['created'],
+            'data': json.loads(row['body'])
+            })
 
     return render_template('character/index.html.jinja', characters=characters)
 
@@ -86,6 +98,15 @@ def update(id):
             return redirect(url_for('character.index'))
     
     return render_template('character/update.html.jinja', character=character)
+
+@bp.route('/<int:id>/', methods=('GET', 'POST'))
+def view(id):
+    data = get_character(id)
+    character = {
+        'id': id,
+        'data': json.loads(data['body'])['Investigator']
+    }
+    return render_template('character/sheet.html.jinja', character=character)
 
 @bp.route('/<int:id>/delete', methods=('POST', ))
 @login_required
