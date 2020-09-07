@@ -1,32 +1,41 @@
 import json
+from datetime import datetime
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
+
+from flask_login import login_required, current_user
 from werkzeug.exceptions import abort
 
-from whathappened.auth import login_required
-from whathappened.db import get_db
+from app import db
+
+
+class Character(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(256))
+    body = db.Column(db.String)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<Post {}>'.format(self.body)
+
 
 bp = Blueprint('character', __name__)
 
 @bp.route('/')
 def index():
-    db = get_db()
-    rows = db.execute(
-        'SELECT c.id, title, body, author_id, created, username'
-        ' FROM character c JOIN user u ON c.author_id = u.id'
-        ' ORDER BY CREATED DESC'
-    ).fetchall()
+    rows = Character.query.all()
 
-    characters =[]
+    characters = []
 
     for row in rows:
         characters.append({
-            'id': row['id'],
-            'username': row['username'],
-            'title': row['title'],
-            'created': row['created'],
-            'data': json.loads(row['body'])
+            'id': row.id,
+            'username': row.user_id,
+            'title': row.title,
+            'created': row.timestamp,
+            'data': json.loads(row.body)
             })
 
     return render_template('character/index.html.jinja', characters=characters)
@@ -45,35 +54,26 @@ def create():
         if error is not None:
             flash(error)
         else:
-            db = get_db()
-            db.execute(
-                'INSERT INTO character (title, body, author_id)'
-                ' VALUES (?, ?, ?)',
-                (title, body, g.user['id'])
-            )
-            db.commit()
+            flash("Store character")
+            c = Character(title=title, body=body, user_id=current_user.id)
+            db.session.add(c)
+            db.session.commit()
             return redirect(url_for('character.index'))
     
     return render_template('character/create.html.jinja')
 
 def get_character(id, check_author=True):
-    character = get_db().execute(
-        'SELECT c.id, title, body, created, author_id, username'
-        ' FROM character c JOIN user u ON c.author_id = u.id'
-        ' WHERE c.id = ?',
-        (id,)
-    ).fetchone()
+    character = Character.query.get(id)
 
     if character is None:
         abort(404, "Character id {0} doesn't exist.".format(id))
 
-    if check_author and character['author_id'] != g.user['id']:
+    if check_author and character.user_id != current_user.id:
         abort(403)
 
     return character
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
-@login_required
 def update(id):
     character = get_character(id)
 
@@ -88,13 +88,7 @@ def update(id):
         if error is not None:
             flash(error)
         else:
-            db = get_db()
-            db.execute(
-                'UPDATE character SET title = ?, body = ?'
-                ' WHERE id = ?',
-                (title, body, id)
-            )
-            db.commit()
+            flash("Implement update character")
             return redirect(url_for('character.index'))
     
     return render_template('character/update.html.jinja', character=character)
@@ -102,20 +96,17 @@ def update(id):
 @bp.route('/<int:id>/', methods=('GET', 'POST'))
 def view(id):
     data = get_character(id)
-    investigator = json.loads(data['body'])['Investigator']
+    investigator = json.loads(data.body)['Investigator']
     for skill in investigator['Skills']['Skill']:
         print(skill)
     character = {
         'id': id,
-        'data': json.loads(data['body'])['Investigator']
+        'data': investigator
     }
     return render_template('character/sheet.html.jinja', character=character)
 
 @bp.route('/<int:id>/delete', methods=('POST', ))
-@login_required
 def delete(id):
     get_character(id)
-    db = get_db()
-    db.execute('DELETE FROM character WHERE id = ?', (id, ))
-    db.commit()
+    flash("Implement deletion of character")
     return redirect(url_for('character.index'))

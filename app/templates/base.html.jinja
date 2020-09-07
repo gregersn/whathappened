@@ -7,12 +7,11 @@
 <nav>
     <h1>What Happened?</h1>
     <ul>
-        {% if g.user %}
-            <li><span>{{ g.user['username'] }}</span></li>
-            <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
-        {% else %}
+        {% if current_user.is_anonymous %}
             <li><a href="{{ url_for('auth.register') }}">Register</a></li>
             <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
+        {% else %}
+            <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
         {% endif %}
     </ul>
 </nav>
