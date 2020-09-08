@@ -8,6 +8,11 @@
         column-gap: 2em;
         .skill {
             border-bottom: 1px dotted gray;
+            .value {
+                input {
+                    width: 3em;
+                }
+            }
         }
 
     }

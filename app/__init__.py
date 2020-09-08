@@ -3,21 +3,25 @@ import os
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.declarative import declarative_base
 from flask_assets import Environment, Bundle
 from flask_login import LoginManager
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+assets = None
 
+Base = declarative_base()
 
 def create_app(test_config=None):
+    global assets
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'whathappened.sqlite'),
         SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(app.instance_path, 'whathappened.sqlite'),
-        SQLALCHEMY_TRACK_MODIFICATIONS = False
+        SQLALCHEMY_TRACK_MODIFICATIONS = False,
     )
     
     if test_config is None:
@@ -35,6 +39,7 @@ def create_app(test_config=None):
 
     assets = Environment(app)
     assets.url = app.static_url_path
+    assets.config['TYPESCRIPT_CONFIG'] = '--target ES6'
     scss = Bundle('main.scss', 'character.scss', filters='pyscss', output='all.css')
     assets.register('scss_all', scss)
 

@@ -1,5 +1,11 @@
 {% extends 'base.html.jinja' %}
 
+{% block head %}
+    {% assets "ts_coc" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+{% endblock %}
+
 {% block header %}
   <h1>{% block title %}{{ character['data']['PersonalDetails']['Name']}}{% endblock %}</h1>
   {% if g.user %}
@@ -48,11 +54,11 @@
         {% if loop.previtem and loop.previtem['name'] == skill['name'] and loop.previtem['subskill'] == skill['subskill'] %}
         {% else %}
         <div class="skill">
-            <span><input type="checkbox" /></span>
+            <span><input type="checkbox" id="checkbox_skill_{{ skill['name'] }}_{{skill['subskill']}}" /></span>
             
             <span>{{ skill['name'] }}{% if skill['occupation'] %}*{% endif %}{%- if skill['subskill'] and skill['subskill'] != "None" %}: {{ skill['subskill']}} {% endif %}</span>
             
-            <span>{{ skill['value'] }} / {{ skill['half'] }} / {{ skill['fifth'] }} </span>
+            <span class="value"><input type="text" id="skill_{{ skill['name'] }}_{{skill['subskill']}}"" value="{{ skill['value'] }}" /> / {{ skill['half'] }} / {{ skill['fifth'] }} </span>
         </div>  
         {% endif %}     
         {% endfor %}

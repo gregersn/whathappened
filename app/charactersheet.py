@@ -5,10 +5,13 @@ from flask import (
 )
 
 from flask_login import login_required, current_user
+from flask_assets import Bundle
 from werkzeug.exceptions import abort
 
-from app import db
+from app import db, assets
 
+ts_coc = Bundle("coc.ts", filters='typescript', output='coc.js')
+assets.register('ts_coc', ts_coc)
 
 class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -97,8 +100,8 @@ def update(id):
 def view(id):
     data = get_character(id)
     investigator = json.loads(data.body)['Investigator']
-    for skill in investigator['Skills']['Skill']:
-        print(skill)
+    # for skill in investigator['Skills']['Skill']:
+    #     print(skill)
     character = {
         'id': id,
         'data': investigator

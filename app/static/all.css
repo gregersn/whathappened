@@ -115,3 +115,5 @@ html {
   column-gap: 2em; }
   .charactersheet .skills .skill {
     border-bottom: 1px dotted gray; }
+    .charactersheet .skills .skill .value input {
+      width: 3em; }

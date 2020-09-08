@@ -1,8 +1,11 @@
 <!DOCTYPE html>
+<head>
 <title>{% block title%}{% endblock %} - What Happened?</title>
 {% assets "scss_all" %}
 <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
 {% endassets %}
+{% block head %}{% endblock %}
+</head>
 
 <nav>
     <h1>What Happened?</h1>
