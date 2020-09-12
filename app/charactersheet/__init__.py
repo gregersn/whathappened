@@ -11,6 +11,7 @@ from flask_assets import Bundle
 from werkzeug.exceptions import abort
 
 from app import db, assets
+from flask import current_app
 
 ts_coc = Bundle("ts/coc.ts", filters='typescript', output='js/coc.js')
 assets.register('ts_coc', ts_coc)
@@ -36,6 +37,28 @@ class Character(db.Model):
 
 bp = Blueprint('character', __name__)
 api = Blueprint('characterapi', __name__)
+
+@bp.context_processor
+def character_functions():
+    def dict_path(data, path):       
+        return reduce(lambda x,y : x[y], path.split("."), data)
+    
+
+    def get_skill(data, skillpath, subskill=None):
+        path, skill = skillpath.split('#')
+        skills = dict_path(data, path)
+        for s in skills:
+            if s['name'] == skill:
+                if subskill is not None and subskill != s.get('subskill', 'None'):
+                    print("Wrong subskill", skill, repr(subskill))
+                    continue
+                return s
+    
+        print("Did not find", skill, subskill)
+        return 0
+    
+    return dict(dict_path=dict_path, get_skill=get_skill)
+
 
 def get_character(id, check_author=True):
     character = Character.query.get(id)
@@ -65,7 +88,7 @@ def index():
             'data': json.loads(row.body)
             })
 
-    return render_template('character/index.html.jinja', characters=characters)
+    return render_template('character/index.html.jinja')
 
 @bp.route('/create/<string:type>', methods=('GET', 'POST'))
 @bp.route('/create', methods=('GET', 'POST'))
@@ -118,15 +141,38 @@ def view(id):
 
     if not 'Investigator' in character_data:
         blank = render_template('character/blank_character.json.jinja')
-        # print(blank)
         character_data = JsonComment(json).loads(blank)
 
     if request.method == "POST":
         update = request.get_json()
-        for key, value in update.items():
-            print(key, value)
-            s = reduce(lambda x,y : x[y], key.split(".")[:-1], character_data['Investigator'])
-            s[key.split(".")[-1]] = value
+
+        for setting in update:
+            if setting.get('type', None) == 'skill':
+                path, skill = setting['field'].split('#')
+                subfield = setting.get('subfield', None)
+                value = setting.get('value')
+                skills = reduce(lambda x,y : x[y], path.split("."), character_data['Investigator'])
+                for s in skills:
+                    if s['name'] == skill:
+                        if subfield is not None and subfield != s.get('subskill', 'None'):
+                            continue
+                        s['value'] = value
+                continue
+        
+            elif setting.get('type', None) == 'skillcheck':
+                path, skill = setting['field'].split('#')
+                subfield = setting.get('subfield', None)
+                check = setting.get('value', False)
+                skills = reduce(lambda x,y : x[y], path.split("."), character_data['Investigator'])
+                for s in skills:
+                    if s['name'] == skill:
+                        if subfield is not None and subfield != s.get('subskill', 'None'):
+                            continue
+                        s['checked'] = check
+                continue
+            else:
+                s = reduce(lambda x,y : x[y], setting['field'].split(".")[:-1], character_data['Investigator'])
+                s[setting['field'].split(".")[-1]] = setting['value']
         
         data.body = json.dumps(character_data)
         db.session.commit()

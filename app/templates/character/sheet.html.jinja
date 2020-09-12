@@ -13,43 +13,56 @@
   {% endif %}
 {% endblock %}
 
+{% macro editable(field, default='') -%}
+    <span class="editable" data-field="{{field}}">{{ dict_path(character['data'], field) or default }}</span>    
+{%- endmacro %}
+
+{% macro editable_skill(field, subfield=None, default='') -%}
+    <span class="editable" data-field="{{field}}" data-subfield="{{subfield}}" data-type="skill">{{ get_skill(character['data'], field, subfield)['value'] or '0' }}</span>
+{%- endmacro %}
+
+{% macro skill_checkmark(field, subfield=None) -%}
+    <input type="checkbox" data-field="{{field}}" data-subfield="{{subfield}}" data-type="skillcheck" {%- if get_skill(character['data'], field, subfield)['checked'] %}checked{%- endif %} />
+{%- endmacro %}
 
 {% block content %}
 <div class="charactersheet">
     <div class="header">
         <span class="editable" data-field="PersonalDetails.Name">{{ character['data']['PersonalDetails']['Name']}}</span>
-        <span>({{ character['data']['PersonalDetails']['Age']}})</span>
-        <span>{{ character['data']['PersonalDetails']['Gender']}}</span><br />
-        <span>Occupation: {{ character['data']['PersonalDetails']['Occupation']}}</span> |
-        <span>Birthplace: {{ character['data']['PersonalDetails']['Birthplace']}}</span> |
-        <span>Residence: {{ character['data']['PersonalDetails']['Residence']}}</span>
+        <span>(<span class="editable" data-field="PersonalDetails.Age">{{ character['data']['PersonalDetails']['Age']}}</span>)</span><br />
+        <span>Gender: </span><span>{{ editable('PersonalDetails.Gender', 'Unknown')}}</span><br />
+        <span>Occupation: </span><span>{{ editable("PersonalDetails.Occupation", "Unknown") }}</span> |
+        <span>Birthplace: </span><span>{{ editable("PersonalDetails.Birthplace", "Unknown") }}</span> |
+        <span>Residence: </span><span>{{ editable("PersonalDetails.Residence", "Unknown") }}</span>
     </div>
     <div class="characteristics">
         <table>
             <tr>
-                <td>STR: {{ character['data']['Characteristics']['STR'] }}</td>
-                <td>DEX: {{ character['data']['Characteristics']['DEX'] }}</td>
-                <td>POW: {{ character['data']['Characteristics']['POW'] }}</td>
+                <td>STR: {{ editable('Characteristics.STR') }}</td>
+                <td>DEX: {{ editable('Characteristics.DEX') }}</td>
+                <td>POW: {{ editable('Characteristics.POW') }}</td>
             </tr>
             <tr>
-                <td>CON: {{ character['data']['Characteristics']['CON'] }}</td>
-                <td>APP: {{ character['data']['Characteristics']['APP'] }}</td>
-                <td>EDU: {{ character['data']['Characteristics']['EDU'] }}</td>
+                <td>CON: {{ editable('Characteristics.CON') }}</td>
+                <td>APP: {{ editable('Characteristics.APP') }}</td>
+                <td>EDU: {{ editable('Characteristics.EDU') }}</td>
             </tr>
             <tr>
-                <td>SIZ: {{ character['data']['Characteristics']['SIZ'] }}</td>
-                <td>INT: {{ character['data']['Characteristics']['INT'] }}</td>
-                <td>Move: {{ character['data']['Characteristics']['Move'] }}</td>
+                <td>SIZ: {{ editable('Characteristics.SIZ') }}</td>
+                <td>INT: {{ editable('Characteristics.INT') }}</td>
+                <td>Move: {{ editable('Characteristics.Move') }}</td>
             </tr>
         </table>
         <div class="hitpoints">
-            Hitpoints:
-                <span class="editable" id="Characteristics.HitPts">{{ character['data']['Characteristics']['HitPts'] }}</span> 
-                / <span class="editable" id="Characteristics.HitPtsMax">{{ character['data']['Characteristics']['HitPtsMax'] }}</span>
+            Hitpoints<br />
+            &nbsp;Current: {{ editable("Characteristics.HitPts") }} Max: {{ editable("Characteristics.HitPtsMax") }}
             </div>
-        <div class="sanity">Sanity: {{ character['data']['Characteristics']['Sanity'] }} / {{ character['data']['Characteristics']['SanityMax'] }}</div>
-        <div class="magicpoints">Magic points: {{ character['data']['Characteristics']['MagicPts'] }} / {{ character['data']['Characteristics']['MagicPtsMax'] }}</div>
-        <div class="luck">Luck: {{ character['data']['Characteristics']['Luck'] }} / {{ character['data']['Characteristics']['LuckMax'] }}</div>
+        <div class="sanity">Sanity<br />
+            &nbsp;Current {{ editable('Characteristics.Sanity', "0") }} Max: {{ editable('Characteristics.SanityMax', "0") }}</div>
+        <div class="magicpoints">Magic points <br />
+            &nbsp;Current: {{ editable('Characteristics.MagicPts', "0") }} Max: {{ editable('Characteristics.MagicPtsMax', "0") }}</div>
+        <div class="luck">Luck<br />
+            &nbsp;Current: {{ editable('Characteristics.Luck', "0") }} Max: {{ editable('Characteristics.LuckMax', "0") }}</div>
 
 
     </div>
@@ -58,11 +71,11 @@
         {% if loop.previtem and loop.previtem['name'] == skill['name'] and loop.previtem['subskill'] == skill['subskill'] %}
         {% else %}
         <div class="skill">
-            <span><input type="checkbox" id="checkbox_skill_{{ skill['name'] }}_{{skill['subskill']}}" /></span>
+            <span>{{skill_checkmark("Skills.Skill#" + skill['name'], skill['subskill'] or None ) }}</span>
             
             <span>{{ skill['name'] }}{% if skill['occupation'] %}*{% endif %}{%- if skill['subskill'] and skill['subskill'] != "None" %}: {{ skill['subskill']}} {% endif %}</span>
             
-            <span class="value"><span class="editable" id="skill_{{ skill['name'] }}_{{skill['subskill']}}">{{ skill['value'] }}</span> / {{ skill['half'] }} / {{ skill['fifth'] }} </span>
+            <span class="value">{{ editable_skill("Skills.Skill#" + skill['name'], skill['subskill'] or None, 0)}}</span>
         </div>  
         {% endif %}     
         {% endfor %}
