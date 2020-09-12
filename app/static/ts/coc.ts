@@ -1,4 +1,4 @@
-console.log("Hello, Coc!");
+console.log("Cthulhu fhtagn!");
 
 function init_skillchecks() {
     console.log("Init skillchecks");
@@ -29,6 +29,22 @@ const editable_handler = function(e: Event) {
     editElement(this);
 }
 
+function send_update(key: string, value: any) {
+    const xhr = new XMLHttpRequest()
+    const url = document.location.href;
+    xhr.open('POST', url);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = () => {
+        console.log("Post done");
+        console.log(url);
+        console.log(xhr.status);
+        console.log(xhr.statusText);
+    }
+    let data = {}
+    data[key] = value;
+    xhr.send(JSON.stringify(data));
+}
+
 function editElement(element: Element) {
     console.log("Edit element");
     const value = element.innerHTML;
@@ -54,8 +70,9 @@ function editElement(element: Element) {
 
 function saveElement(editfield: HTMLInputElement, element: Element) {
     const value = editfield.value;
-    const field = element.id;
+    const field = element.getAttribute('data-field');
     console.log(`Save changes to ${field}, new value ${value}`);
+    send_update(field, value);
     element.innerHTML = value;
     element.addEventListener("click", editable_handler);
 }

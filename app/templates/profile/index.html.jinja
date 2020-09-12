@@ -6,10 +6,12 @@ Welcome, adventurist!
 {% endblock %}
 
 {% block content %}
-    {% if characters %}
+    {% if profile.characters.all() %}
     Your characters:
-    {% for character in characters %}
-        {{ character }}
+    <ul>
+    {% for character in profile.characters.all() %}
+        <li><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }}</a></li>
     {% endfor %}
+    </ui>
     {% endif %}
 {% endblock %}

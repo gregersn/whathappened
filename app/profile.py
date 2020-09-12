@@ -10,7 +10,7 @@ bp = Blueprint('profile', __name__)
 class UserProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship("user", back_populates="profile")
+    user = db.relationship("User", back_populates="profile")
     
     characters = db.relationship('Character', backref='player', lazy='dynamic')
 
@@ -28,4 +28,5 @@ def index():
         db.session.commit()
 
     print(user_profile)
-    return render_template('profile/index.html.jinja')
+    print(user_profile.characters.all())
+    return render_template('profile/index.html.jinja', profile=user_profile)

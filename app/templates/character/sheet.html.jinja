@@ -17,7 +17,7 @@
 {% block content %}
 <div class="charactersheet">
     <div class="header">
-        <span>{{ character['data']['PersonalDetails']['Name']}}</span>
+        <span class="editable" data-field="PersonalDetails.Name">{{ character['data']['PersonalDetails']['Name']}}</span>
         <span>({{ character['data']['PersonalDetails']['Age']}})</span>
         <span>{{ character['data']['PersonalDetails']['Gender']}}</span><br />
         <span>Occupation: {{ character['data']['PersonalDetails']['Occupation']}}</span> |

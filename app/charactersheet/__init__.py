@@ -1,4 +1,6 @@
 import json
+from functools import reduce
+from jsoncomment import JsonComment
 from datetime import datetime
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
@@ -21,7 +23,7 @@ class Character(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'))
 
     def __repr__(self):
-        return '<Character {}>'.format(self.body)
+        return '<Character {}>'.format(self.title)
 
     def to_dict(self):
         return {
@@ -111,7 +113,27 @@ def update(id):
 @bp.route('/<int:id>/', methods=('GET', 'POST'))
 def view(id):
     data = get_character(id)
-    investigator = json.loads(data.body)['Investigator']
+
+    character_data = json.loads(data.body)
+
+    if not 'Investigator' in character_data:
+        blank = render_template('character/blank_character.json.jinja')
+        # print(blank)
+        character_data = JsonComment(json).loads(blank)
+
+    if request.method == "POST":
+        update = request.get_json()
+        for key, value in update.items():
+            print(key, value)
+            s = reduce(lambda x,y : x[y], key.split(".")[:-1], character_data['Investigator'])
+            s[key.split(".")[-1]] = value
+        
+        data.body = json.dumps(character_data)
+        db.session.commit()
+
+
+
+    investigator = character_data['Investigator']
     # for skill in investigator['Skills']['Skill']:
     #     print(skill)
     character = {
