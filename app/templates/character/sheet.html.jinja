@@ -42,7 +42,11 @@
                 <td>Move: {{ character['data']['Characteristics']['Move'] }}</td>
             </tr>
         </table>
-        <div class="hitpoints">Hitpoints: {{ character['data']['Characteristics']['HitPts'] }} / {{ character['data']['Characteristics']['HitPtsMax'] }}</div>
+        <div class="hitpoints">
+            Hitpoints:
+                <span class="editable" id="Characteristics.HitPts">{{ character['data']['Characteristics']['HitPts'] }}</span> 
+                / <span class="editable" id="Characteristics.HitPtsMax">{{ character['data']['Characteristics']['HitPtsMax'] }}</span>
+            </div>
         <div class="sanity">Sanity: {{ character['data']['Characteristics']['Sanity'] }} / {{ character['data']['Characteristics']['SanityMax'] }}</div>
         <div class="magicpoints">Magic points: {{ character['data']['Characteristics']['MagicPts'] }} / {{ character['data']['Characteristics']['MagicPtsMax'] }}</div>
         <div class="luck">Luck: {{ character['data']['Characteristics']['Luck'] }} / {{ character['data']['Characteristics']['LuckMax'] }}</div>

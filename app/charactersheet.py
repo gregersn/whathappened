@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
 )
 
 from flask_login import login_required, current_user
@@ -10,7 +10,7 @@ from werkzeug.exceptions import abort
 
 from app import db, assets
 
-ts_coc = Bundle("coc.ts", filters='typescript', output='coc.js')
+ts_coc = Bundle("ts/coc.ts", filters='typescript', output='js/coc.js')
 assets.register('ts_coc', ts_coc)
 
 class Character(db.Model):
@@ -23,8 +23,30 @@ class Character(db.Model):
     def __repr__(self):
         return '<Post {}>'.format(self.body)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'body': json.loads(self.body),
+            'timestamp': self.timestamp,
+            'user_id': self.user_id
+        }
 
 bp = Blueprint('character', __name__)
+api = Blueprint('characterapi', __name__)
+
+def get_character(id, check_author=True):
+    character = Character.query.get(id)
+
+    if character is None:
+        abort(404, "Character id {0} doesn't exist.".format(id))
+
+    if check_author and character.user_id != current_user.id:
+        abort(403)
+
+    return character
+
+
 
 @bp.route('/')
 def index():
@@ -65,17 +87,6 @@ def create():
     
     return render_template('character/create.html.jinja')
 
-def get_character(id, check_author=True):
-    character = Character.query.get(id)
-
-    if character is None:
-        abort(404, "Character id {0} doesn't exist.".format(id))
-
-    if check_author and character.user_id != current_user.id:
-        abort(403)
-
-    return character
-
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 def update(id):
     character = get_character(id)
@@ -108,7 +119,13 @@ def view(id):
     }
     return render_template('character/sheet.html.jinja', character=character)
 
+@api.route('/<int:id>/', methods=('GET', ))
+def get(id):
+    data = get_character(id)
+    return jsonify(data.to_dict())
+
 @bp.route('/<int:id>/delete', methods=('POST', ))
+@api.route('/<int:id>/delete', methods=('POST', ))
 def delete(id):
     get_character(id)
     flash("Implement deletion of character")

@@ -57,6 +57,7 @@ def create_app(test_config=None):
 
     from . import charactersheet
     app.register_blueprint(charactersheet.bp)
+    app.register_blueprint(charactersheet.api, url_prefix='/api/character')
     app.add_url_rule('/', endpoint='index')
     
     return app
