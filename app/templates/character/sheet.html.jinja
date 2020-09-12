@@ -62,7 +62,7 @@
             
             <span>{{ skill['name'] }}{% if skill['occupation'] %}*{% endif %}{%- if skill['subskill'] and skill['subskill'] != "None" %}: {{ skill['subskill']}} {% endif %}</span>
             
-            <span class="value"><input type="text" id="skill_{{ skill['name'] }}_{{skill['subskill']}}"" value="{{ skill['value'] }}" /> / {{ skill['half'] }} / {{ skill['fifth'] }} </span>
+            <span class="value"><span class="editable" id="skill_{{ skill['name'] }}_{{skill['subskill']}}">{{ skill['value'] }}</span> / {{ skill['half'] }} / {{ skill['fifth'] }} </span>
         </div>  
         {% endif %}     
         {% endfor %}

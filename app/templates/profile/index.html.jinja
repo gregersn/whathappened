@@ -1,0 +1,15 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+Welcome, adventurist!
+    <a class="action" href="{{ url_for('character.create', type='coc') }}">Create a new character</a>
+{% endblock %}
+
+{% block content %}
+    {% if characters %}
+    Your characters:
+    {% for character in characters %}
+        {{ character }}
+    {% endfor %}
+    {% endif %}
+{% endblock %}

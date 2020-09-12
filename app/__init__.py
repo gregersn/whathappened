@@ -55,9 +55,13 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
+    from . import profile
+    app.register_blueprint(profile.bp)
+
     from . import charactersheet
-    app.register_blueprint(charactersheet.bp)
+    app.register_blueprint(charactersheet.bp, url_prefix='/character')
     app.register_blueprint(charactersheet.api, url_prefix='/api/character')
+    
     app.add_url_rule('/', endpoint='index')
     
     return app

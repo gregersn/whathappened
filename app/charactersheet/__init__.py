@@ -18,10 +18,10 @@ class Character(db.Model):
     title = db.Column(db.String(256))
     body = db.Column(db.String)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'))
 
     def __repr__(self):
-        return '<Post {}>'.format(self.body)
+        return '<Character {}>'.format(self.body)
 
     def to_dict(self):
         return {
@@ -65,12 +65,13 @@ def index():
 
     return render_template('character/index.html.jinja', characters=characters)
 
+@bp.route('/create/<string:type>', methods=('GET', 'POST'))
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
-def create():
+def create(type=None):
     if request.method == 'POST':
         title = request.form['title']
-        body = request.form['body']
+        body = request.form.get('body', "{}")
         error = None
 
         if not title:
@@ -85,7 +86,7 @@ def create():
             db.session.commit()
             return redirect(url_for('character.index'))
     
-    return render_template('character/create.html.jinja')
+    return render_template('character/create.html.jinja', type=type)
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 def update(id):

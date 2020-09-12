@@ -1,0 +1,5 @@
+<form method="post">
+    <label for="title">Title (will be separate from name)</label>
+    <input name="title" id="title" value="{{ request.form['title'] }}" required>
+    <input type="submit" value="Save">
+</form>
