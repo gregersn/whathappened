@@ -1,8 +1,7 @@
 {% extends 'base.html.jinja' %}
 
 {% block header %}
-Welcome, adventurist!
-    <a class="action" href="{{ url_for('character.create', type='coc') }}">Create a new character</a>
+<h1>Actions and inventory</h1>
 {% endblock %}
 
 {% block content %}
@@ -14,4 +13,7 @@ Welcome, adventurist!
     {% endfor %}
     </ui>
     {% endif %}
+    <div>
+    <a class="action" href="{{ url_for('character.create', type='coc') }}">Create a new character</a>
+    </div>
 {% endblock %}

@@ -88,11 +88,10 @@ def create(type=None):
         if error is not None:
             flash(error)
         else:
-            flash("Store character")
             c = Character(title=title, body=body, user_id=current_user.id)
             db.session.add(c)
             db.session.commit()
-            return redirect(url_for('character.index'))
+            return redirect(url_for('character.view', id=c.id))
     
     return render_template('character/create.html.jinja', type=type)
 

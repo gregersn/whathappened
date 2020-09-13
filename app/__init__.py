@@ -43,14 +43,17 @@ def create_app(config_class=Config):
     from . import auth
     app.register_blueprint(auth.bp)
 
+    from . import main
+    app.register_blueprint(main.bp)
+
     from . import profile
-    app.register_blueprint(profile.bp)
+    app.register_blueprint(profile.bp, url_prefix='/profile')
 
     from . import charactersheet
     app.register_blueprint(charactersheet.bp, url_prefix='/character')
     app.register_blueprint(charactersheet.api, url_prefix='/api/character')
     
-    app.add_url_rule('/', endpoint='index')
+    app.add_url_rule('/', endpoint='profile.index')
 
     @app.route('/hello')
     def hello():
