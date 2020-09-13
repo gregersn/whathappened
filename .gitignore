@@ -16,3 +16,4 @@ build/
 .webassets-cache/
 
 app/static/js/
+*.sqlite

@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 import os
 
-from functools import reduce
 from flask import Flask
+from config import Config
+
 from flask_sqlalchemy import SQLAlchemy
+
+from functools import reduce
 from sqlalchemy.ext.declarative import declarative_base
 from flask_assets import Environment, Bundle
 from flask_login import LoginManager
+from flask_migrate import Migrate, upgrade
 
 db = SQLAlchemy()
+migrate = Migrate()
 login_manager = LoginManager()
 assets = None
 
@@ -17,13 +22,7 @@ Base = declarative_base()
 def create_app(test_config=None):
     global assets
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'whathappened.sqlite'),
-        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(app.instance_path, 'whathappened.sqlite'),
-        SQLALCHEMY_TRACK_MODIFICATIONS = False,
-    )
+    app.config.from_object(Config)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -45,11 +44,8 @@ def create_app(test_config=None):
     assets.register('scss_all', scss)
 
 
-    @app.route('/hello')
-    def hello():
-        return "Hello, World!"
-    
     db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
 
