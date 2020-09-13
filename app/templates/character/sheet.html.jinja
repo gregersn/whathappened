@@ -30,15 +30,16 @@
 
 {% block content %}
 <div class="charactersheet">
-    <div class="header">
-        {{ editable_field("PersonalDetails.Name", "Unknown") }}
-        <span>({{ editable_field("PersonalDetails.Age", "18") }})</span><br />
-        <span>Gender: </span><span>{{ editable_field('PersonalDetails.Gender', 'Unknown')}}</span><br />
-        <span>Occupation: </span><span>{{ editable_field("PersonalDetails.Occupation", "Unknown") }}</span> |
-        <span>Birthplace: </span><span>{{ editable_field("PersonalDetails.Birthplace", "Unknown") }}</span> |
-        <span>Residence: </span><span>{{ editable_field("PersonalDetails.Residence", "Unknown") }}</span>
+<div class="skills">
+    <div class="box personalia">
+        <span>Name: </span>{{ editable_field("PersonalDetails.Name", "Unknown") }}<br />
+        <span>Occupation: </span><span>{{ editable_field("PersonalDetails.Occupation", "Unknown") }}</span><br />
+        <span>Age: </span>{{ editable_field("PersonalDetails.Age", "18") }}
+        <span>Sex: </span><span>{{ editable_field('PersonalDetails.Gender', 'Unknown')}}</span><br />
+        <span>Residence: </span><span>{{ editable_field("PersonalDetails.Residence", "Unknown") }}</span><br />
+        <span>Birthplace: </span><span>{{ editable_field("PersonalDetails.Birthplace", "Unknown") }}</span><br />
     </div>
-    <div class="characteristics">
+    <div class="box characteristics">
         <table>
             <tr>
                 <td>STR: {{ editable_field('Characteristics.STR') }}</td>
@@ -56,18 +57,19 @@
                 <td>Move: {{ editable_field('Characteristics.Move') }}</td>
             </tr>
         </table>
+    </div>
+    <div class="box">
         <div class="hitpoints">
             Hitpoints<br />
             &nbsp;Current: {{ editable_field("Characteristics.HitPts") }} Max: {{ editable_field("Characteristics.HitPtsMax") }}
-            </div>
+        </div>
         <div class="sanity">Sanity<br />
             &nbsp;Current {{ editable_field('Characteristics.Sanity', "0") }} Max: {{ editable_field('Characteristics.SanityMax', "0") }}</div>
         <div class="magicpoints">Magic points <br />
             &nbsp;Current: {{ editable_field('Characteristics.MagicPts', "0") }} Max: {{ editable_field('Characteristics.MagicPtsMax', "0") }}</div>
         <div class="luck">Luck<br />
             &nbsp;Current: {{ editable_field('Characteristics.Luck', "0") }} Max: {{ editable_field('Characteristics.LuckMax', "0") }}</div>
-
-
+        </div>
     </div>
     <div class="skills">
         {% for skill in character['data']['Skills']['Skill'] %}

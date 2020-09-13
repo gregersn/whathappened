@@ -117,3 +117,5 @@ html {
     border-bottom: 1px dotted gray; }
     .charactersheet .skills .skill .value input {
       width: 3em; }
+.charactersheet .box {
+  border: 1px solid gray; }
