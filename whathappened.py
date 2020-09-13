@@ -8,7 +8,6 @@ from app.profile import UserProfile
 app = create_app()
 
 with app.app_context():
-    assets.init_app(app)
     assets.url = app.static_url_path
     assets.config['TYPESCRIPT_CONFIG'] = '--target ES6'
     scss = Bundle('main.scss', 'character.scss', filters='pyscss', output='all.css')

@@ -16,23 +16,16 @@ from flask_mail import Mail
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
 mail = Mail()
 assets = Environment()
 
 Base = declarative_base()
 
-def create_app(test_config=None):
-    global assets
+def create_app(config_class=Config):
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
-    
     # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
@@ -43,9 +36,9 @@ def create_app(test_config=None):
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
-    login_manager.login_view = 'auth.login'
 
     mail.init_app(app)
+    assets.init_app(app)
 
     from . import auth
     app.register_blueprint(auth.bp)
@@ -58,5 +51,10 @@ def create_app(test_config=None):
     app.register_blueprint(charactersheet.api, url_prefix='/api/character')
     
     app.add_url_rule('/', endpoint='index')
+
+    @app.route('/hello')
+    def hello():
+        return "Hello, World!"
+
     
     return app

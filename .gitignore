@@ -17,3 +17,6 @@ build/
 
 app/static/js/
 *.sqlite
+
+.noseids
+nosetests.xml
