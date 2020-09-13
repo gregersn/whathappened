@@ -1,4 +1,4 @@
-from .support import Conf as Config
+from .conftest import Conf as Config
 from app import create_app
 
 def test_config():

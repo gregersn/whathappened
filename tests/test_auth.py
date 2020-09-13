@@ -1,6 +1,5 @@
 import unittest
 from app import create_app, db
-from .support import Conf as Config
 import pytest
 from flask import g, session
 

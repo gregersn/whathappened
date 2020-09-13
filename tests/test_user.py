@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from app import create_app, db
 from app.auth.models import User
 
-from .support import Conf as Config
+from .conftest import Conf as Config
 
 class UserModelCase(unittest.TestCase):
     def setUp(self):        

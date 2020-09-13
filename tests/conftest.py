@@ -3,12 +3,15 @@ import tempfile
 
 import pytest
 from app import create_app, db as _db
+import flask_migrate
 
 from config import Config
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 class Conf(Config):
     TESTING = True
-    TESTDB = "./whathappened.sqlite"
+    TESTDB = os.path.join(basedir, 'testing.sqlite')
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + TESTDB
     WTF_CSRF_ENABLED = False
 
@@ -38,6 +41,7 @@ def db(app, request):
         _db.drop_all()
         if os.path.isfile(Conf.TESTDB):
             os.unlink(Conf.TESTDB)
+
 
     _db.app = app
     _db.create_all()
