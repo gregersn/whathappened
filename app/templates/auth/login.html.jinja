@@ -23,5 +23,7 @@
         </p>
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
         <p>{{ form.submit() }}</p>
+        <p>Forgot password? <a href="{{ url_for('auth.reset_password_request') }}">Click to reset</a></p>
+        
     </form>
 {% endblock %}

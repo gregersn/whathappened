@@ -11,11 +11,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from flask_assets import Environment, Bundle
 from flask_login import LoginManager
 from flask_migrate import Migrate, upgrade
+from flask_mail import Mail
 
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
-assets = None
+mail = Mail()
+assets = Environment()
 
 Base = declarative_base()
 
@@ -37,17 +39,13 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    assets = Environment(app)
-    assets.url = app.static_url_path
-    assets.config['TYPESCRIPT_CONFIG'] = '--target ES6'
-    scss = Bundle('main.scss', 'character.scss', filters='pyscss', output='all.css')
-    assets.register('scss_all', scss)
-
 
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
+
+    mail.init_app(app)
 
     from . import auth
     app.register_blueprint(auth.bp)
