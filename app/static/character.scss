@@ -16,7 +16,17 @@
         }
 
     }
+    .categories, .backstory {
+        columns: 360px;
+        column-gap: 1em;
+        div {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+    
+    }
     .box {
         border: 1px solid gray;
     }
+
 }

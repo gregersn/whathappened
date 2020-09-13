@@ -17,6 +17,17 @@
     <span {%- if editable %} class="editable" {% endif -%} data-field="{{field}}">{{ dict_path(character['data'], field) or default }}</span>    
 {%- endmacro %}
 
+{% macro editable_area(field, default='') -%}
+    <div {%- if editable %} class="editable" {% endif -%} data-field="{{field}}" data-type="area">{{ dict_path(character['data'], field) or default }}</div>
+{%- endmacro %}
+
+
+{% macro editable_binary(field, default=False) -%}
+    {%- if editable %}<input type="checkbox" data-field="{{field}}" data-type="binary" {%- if dict_path(character['data'], field) %}checked{%- endif %} />{%- else %}
+        {%- if dict_path(character['data'], field)%}*{%- else %}&nbsp;&nbsp;{%- endif %}
+    {%- endif %}
+{%- endmacro %}
+
 {% macro editable_skill(field, subfield=None, default='') -%}
     <span {%- if editable %} class="editable" {% endif -%} data-field="{{field}}" data-subfield="{{subfield}}" data-type="skill">{{ get_skill(character['data'], field, subfield)['value'] or '0' }}</span>
 {%- endmacro %}
@@ -25,52 +36,63 @@
     {%- if editable %}<input type="checkbox" data-field="{{field}}" data-subfield="{{subfield}}" data-type="skillcheck" {%- if get_skill(character['data'], field, subfield)['checked'] %}checked{%- endif %} />{%- else %}
         {%- if get_skill(character['data'], field, subfield)['checked'] %}*{%- else %}&nbsp;&nbsp;{%- endif %}
     {%- endif %}
-
 {%- endmacro %}
+
 
 {% block content %}
 <div class="charactersheet">
-<div class="skills">
-    <div class="box personalia">
-        <span>Name: </span>{{ editable_field("PersonalDetails.Name", "Unknown") }}<br />
-        <span>Occupation: </span><span>{{ editable_field("PersonalDetails.Occupation", "Unknown") }}</span><br />
-        <span>Age: </span>{{ editable_field("PersonalDetails.Age", "18") }}
-        <span>Sex: </span><span>{{ editable_field('PersonalDetails.Gender', 'Unknown')}}</span><br />
-        <span>Residence: </span><span>{{ editable_field("PersonalDetails.Residence", "Unknown") }}</span><br />
-        <span>Birthplace: </span><span>{{ editable_field("PersonalDetails.Birthplace", "Unknown") }}</span><br />
-    </div>
-    <div class="box characteristics">
-        <table>
-            <tr>
-                <td>STR: {{ editable_field('Characteristics.STR') }}</td>
-                <td>DEX: {{ editable_field('Characteristics.DEX') }}</td>
-                <td>POW: {{ editable_field('Characteristics.POW') }}</td>
-            </tr>
-            <tr>
-                <td>CON: {{ editable_field('Characteristics.CON') }}</td>
-                <td>APP: {{ editable_field('Characteristics.APP') }}</td>
-                <td>EDU: {{ editable_field('Characteristics.EDU') }}</td>
-            </tr>
-            <tr>
-                <td>SIZ: {{ editable_field('Characteristics.SIZ') }}</td>
-                <td>INT: {{ editable_field('Characteristics.INT') }}</td>
-                <td>Move: {{ editable_field('Characteristics.Move') }}</td>
-            </tr>
-        </table>
-    </div>
-    <div class="box">
-        <div class="hitpoints">
+    <div class="categories">
+        <div class="box personalia">
+            <span>Name: </span>{{ editable_field("PersonalDetails.Name", "Unknown") }}<br />
+            <span>Occupation: </span><span>{{ editable_field("PersonalDetails.Occupation", "Unknown") }}</span><br />
+            <span>Age: </span>{{ editable_field("PersonalDetails.Age", "18") }}
+            <span>Sex: </span><span>{{ editable_field('PersonalDetails.Gender', 'Unknown')}}</span><br />
+            <span>Residence: </span><span>{{ editable_field("PersonalDetails.Residence", "Unknown") }}</span><br />
+            <span>Birthplace: </span><span>{{ editable_field("PersonalDetails.Birthplace", "Unknown") }}</span><br />
+        </div>
+        <div class="box characteristics">
+            <table>
+                <tr>
+                    <td>STR: {{ editable_field('Characteristics.STR') }}</td>
+                    <td>DEX: {{ editable_field('Characteristics.DEX') }}</td>
+                    <td>POW: {{ editable_field('Characteristics.POW') }}</td>
+                </tr>
+                <tr>
+                    <td>CON: {{ editable_field('Characteristics.CON') }}</td>
+                    <td>APP: {{ editable_field('Characteristics.APP') }}</td>
+                    <td>EDU: {{ editable_field('Characteristics.EDU') }}</td>
+                </tr>
+                <tr>
+                    <td>SIZ: {{ editable_field('Characteristics.SIZ') }}</td>
+                    <td>INT: {{ editable_field('Characteristics.INT') }}</td>
+                    <td>Move: {{ editable_field('Characteristics.Move') }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="box hitpoints">
             Hitpoints<br />
-            &nbsp;Current: {{ editable_field("Characteristics.HitPts") }} Max: {{ editable_field("Characteristics.HitPtsMax") }}
+            &nbsp;Current: {{ editable_field("Characteristics.HitPts") }} <br />
+            &nbsp;Max: {{ editable_field("Characteristics.HitPtsMax") }}<br />
+            &nbsp;Major wound: {{ editable_binary("Characteristics.HitPtsMajorWound") }}
         </div>
-        <div class="sanity">Sanity<br />
-            &nbsp;Current {{ editable_field('Characteristics.Sanity', "0") }} Max: {{ editable_field('Characteristics.SanityMax', "0") }}</div>
-        <div class="magicpoints">Magic points <br />
-            &nbsp;Current: {{ editable_field('Characteristics.MagicPts', "0") }} Max: {{ editable_field('Characteristics.MagicPtsMax', "0") }}</div>
-        <div class="luck">Luck<br />
-            &nbsp;Current: {{ editable_field('Characteristics.Luck', "0") }} Max: {{ editable_field('Characteristics.LuckMax', "0") }}</div>
+        <div class="box sanity">
+            Sanity<br />
+            &nbsp;Current {{ editable_field('Characteristics.Sanity', "0") }}<br />
+            &nbsp;Start {{ editable_field('Characteristics.SanityStart', "0") }}<br />
+            &nbsp;Max: {{ editable_field('Characteristics.SanityMax', "99") }} <br />
+            &nbsp;Temp insane: {{ editable_binary("Characteristics.SanityTemp") }}
+            &nbsp;Indefinitely insane: {{ editable_binary("Characteristics.SanityIndef") }}
+        </div>
+        <div class="box magicpoints">
+            Magic points <br />
+            &nbsp;Current: {{ editable_field('Characteristics.MagicPts', "0") }} Max: {{ editable_field('Characteristics.MagicPtsMax', "0") }}
+        </div>
+        <div class="box luck">
+            Luck<br />
+            &nbsp;Current: {{ editable_field('Characteristics.Luck', "0") }} Max: {{ editable_field('Characteristics.LuckMax', "0") }}
         </div>
     </div>
+    <h3>Investigator skills</h3>
     <div class="skills">
         {% for skill in character['data']['Skills']['Skill'] %}
         {% if loop.previtem and loop.previtem['name'] == skill['name'] and loop.previtem['subskill'] == skill['subskill'] %}
@@ -85,5 +107,92 @@
         {% endif %}     
         {% endfor %}
     </div>
+    <div class="box">
+        <h3>Weapons</h3>
+        <div class="weapons">
+            <table>
+                <thead>
+                    <tr><th>Weapon</th><th>Regular</th><th>Hard</th><th>Extreme</th><th>Damage</th><th>Range</th><th>Attacks</th><th>Ammo</th><th>Malf</th></tr>
+                </thead>
+                {% for _, weapon in character['data']['Weapons'].items() %}
+                    <tr>
+                        <td>{{ weapon['name'] }}</td>
+                        <td>{{ weapon['regular'] }}</td>
+                        <td>{{ weapon['hard'] }}</td>
+                        <td>{{ weapon['extreme'] }}</td>
+                        <td>{{ weapon['damage'] }}</td>
+                        <td>{{ weapon['range'] }}</td>
+                        <td>{{ weapon['attacks'] }}</td>
+                        <td>{{ weapon['ammo'] }}</td>
+                        <td>{{ weapon['malf'] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class="box">
+        <h3>Combat</h3>
+        <div class="combat">
+            Damage bonus: {{ editable_field("Combat.DamageBonus") }}<br />
+            Build: {{ editable_field("Combat.Build") }}<br />
+            Dodge: {{ editable_field("Combat.Dodge.value") }}<br />
+        </div>
+    </div>
+    <div class="box">
+        <h3>Backstory</h3>
+        <div class="backstory">
+            <div>
+                <h4>Personal Description</h4>
+                {{ editable_area("Backstory.description", "None") }}
+            </div>
+            <div>
+                <h4>Ideology/Beliefs</h4>
+                {{ editable_area("Backstory.ideology", "None") }}
+            </div>
+            <div>
+                <h4>Significant people</h4>
+                {{ editable_area("Backstory.people", "None") }}
+            </div>
+            <div>
+                <h4>Meaningful locations</h4>
+                {{ editable_area("Backstory.locations", "None") }}
+            </div>
+            <div>
+                <h4>Treasured possessions</h4>
+                {{ editable_area("Backstory.possessions", "None") }}
+            </div>
+            <div>
+                <h4>Traits</h4>
+                {{ editable_area("Backstory.traits", "None") }}
+            </div>
+            <div>
+                <h4>Injuries & scars</h4>
+                {{ editable_area("Backstory.injurues", "None") }}
+            </div>
+            <div>
+                <h4>Phobias & manias</h4>
+                {{ editable_area("Backstory.phobias", "None") }}
+            </div>
+            <div>
+                <h4>Arcane tomes, spells & artifacts</h4>
+                {{ editable_area("Backstory.tomes", "None") }}
+            </div>
+            <div>
+                <h4>Encounters with strange entities</h4>
+                {{ editable_area("Backstory.encounters", "None") }}
+            </div>
+        </div>
+    </div>
+    <div class="gearpossessions box">
+        <h3>Gear &amp; Possessions</h3>
+        {{ editable_area("Possessions", "None") }}
+    </div>
+    <div class="cashassets box">
+    <h3>Cash &amp; Assets</h3>
+    Spending level: {{ editable_field("Cash.spending")}}<br />
+    Cash: {{ editable_field("Cash.cash")}}<br />
+    Assets: {{ editable_field("Cash.assets")}} {{ editable_area("Assets", "None") }}
+    </div>
+
 </div>
 {% endblock %}

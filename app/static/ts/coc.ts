@@ -4,7 +4,7 @@ function init_skillchecks() {
     console.log("Init skillchecks");
     const checkboxes: HTMLInputElement[] = Array.from(document.getElementsByTagName('input'));
     checkboxes.forEach(element => {
-        if(element.type == "checkbox") {
+        if(element.type === "checkbox" && element.getAttribute('data-type') === 'skillcheck') {
             element.onchange = () => {
                 console.log(element.getAttribute('data-field'), element.checked);
                 saveCheck(element);
@@ -27,7 +27,12 @@ function init_skillvalues() {
 
 const editable_handler = function(e: Event) {
     e.preventDefault();
-    editElement(this);
+    editElement(this, "input");
+}
+
+const editable_area_handler = function(e: Event) {
+    e.preventDefault();
+    editElement(this, "area");
 }
 
 function send_update(datamap: any, value: any) {
@@ -47,10 +52,18 @@ function send_update(datamap: any, value: any) {
     xhr.send(JSON.stringify([datamap, ]));
 }
 
-function editElement(element: HTMLElement) {
+function editElement(element: HTMLElement, type: "area" | "input") {
     console.log("Edit element");
     const value = element.innerHTML;
-    const editfield = document.createElement("input");
+    let editfield = null;
+
+    if(type === "input") {
+        editfield = document.createElement("input");
+    }
+    else if(type == "area") {
+        editfield = document.createElement('textarea');
+    }
+
     editfield.value = value;
 
     element.innerHTML = "";
@@ -90,18 +103,37 @@ function saveCheck(editfield: HTMLInputElement) {
     send_update(data, value);
 }
 
-
 function init_editable() {
     console.log("Init editable values");
     const editables: Element[] = Array.from(document.getElementsByClassName('editable'));
     editables.forEach(element => {
-        element.addEventListener("click", editable_handler);
+        if(element.getAttribute('data-type') == 'area') {
+           element.addEventListener("click", editable_area_handler); 
+        } else {
+            element.addEventListener("click", editable_handler);
+        }
     })
 }
+
+function init_editable_binaries() {
+    const checkboxes: HTMLInputElement[] = Array.from(document.getElementsByTagName('input'));
+    checkboxes.forEach(element => {
+        if(element.type === "checkbox" && element.getAttribute('data-type') === 'binary') {
+            element.onchange = () => {
+                console.log(element.getAttribute('data-field'), element.checked);
+                saveCheck(element);
+            }
+        }
+    });
+}
+
+
+
 
 document.addEventListener('DOMContentLoaded', function(event) {
     //the event occurred
     init_skillchecks();
-    init_skillvalues();
+    // init_skillvalues();
     init_editable();
+    init_editable_binaries();
   })

@@ -23,8 +23,9 @@ api = Blueprint('characterapi', __name__)
 
 @bp.context_processor
 def character_functions():
-    def dict_path(data, path):       
-        return reduce(lambda x,y : x[y], path.split("."), data)
+    def dict_path(data, path):
+        val = reduce(lambda x,y : x.get(y, None), path.split("."), data)
+        return val
     
 
     def get_skill(data, skillpath, subskill=None):

@@ -117,5 +117,11 @@ html {
     border-bottom: 1px dotted gray; }
     .charactersheet .skills .skill .value input {
       width: 3em; }
+.charactersheet .categories, .charactersheet .backstory {
+  columns: 360px;
+  column-gap: 1em; }
+  .charactersheet .categories div, .charactersheet .backstory div {
+    break-inside: avoid;
+    page-break-inside: avoid; }
 .charactersheet .box {
   border: 1px solid gray; }
