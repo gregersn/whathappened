@@ -13,56 +13,59 @@
   {% endif %}
 {% endblock %}
 
-{% macro editable(field, default='') -%}
-    <span class="editable" data-field="{{field}}">{{ dict_path(character['data'], field) or default }}</span>    
+{% macro editable_field(field, default='') -%}
+    <span {%- if editable %} class="editable" {% endif -%} data-field="{{field}}">{{ dict_path(character['data'], field) or default }}</span>    
 {%- endmacro %}
 
 {% macro editable_skill(field, subfield=None, default='') -%}
-    <span class="editable" data-field="{{field}}" data-subfield="{{subfield}}" data-type="skill">{{ get_skill(character['data'], field, subfield)['value'] or '0' }}</span>
+    <span {%- if editable %} class="editable" {% endif -%} data-field="{{field}}" data-subfield="{{subfield}}" data-type="skill">{{ get_skill(character['data'], field, subfield)['value'] or '0' }}</span>
 {%- endmacro %}
 
 {% macro skill_checkmark(field, subfield=None) -%}
-    <input type="checkbox" data-field="{{field}}" data-subfield="{{subfield}}" data-type="skillcheck" {%- if get_skill(character['data'], field, subfield)['checked'] %}checked{%- endif %} />
+    {%- if editable %}<input type="checkbox" data-field="{{field}}" data-subfield="{{subfield}}" data-type="skillcheck" {%- if get_skill(character['data'], field, subfield)['checked'] %}checked{%- endif %} />{%- else %}
+        {%- if get_skill(character['data'], field, subfield)['checked'] %}*{%- else %}&nbsp;&nbsp;{%- endif %}
+    {%- endif %}
+
 {%- endmacro %}
 
 {% block content %}
 <div class="charactersheet">
     <div class="header">
-        <span class="editable" data-field="PersonalDetails.Name">{{ character['data']['PersonalDetails']['Name']}}</span>
-        <span>(<span class="editable" data-field="PersonalDetails.Age">{{ character['data']['PersonalDetails']['Age']}}</span>)</span><br />
-        <span>Gender: </span><span>{{ editable('PersonalDetails.Gender', 'Unknown')}}</span><br />
-        <span>Occupation: </span><span>{{ editable("PersonalDetails.Occupation", "Unknown") }}</span> |
-        <span>Birthplace: </span><span>{{ editable("PersonalDetails.Birthplace", "Unknown") }}</span> |
-        <span>Residence: </span><span>{{ editable("PersonalDetails.Residence", "Unknown") }}</span>
+        {{ editable_field("PersonalDetails.Name", "Unknown") }}
+        <span>({{ editable_field("PersonalDetails.Age", "18") }})</span><br />
+        <span>Gender: </span><span>{{ editable_field('PersonalDetails.Gender', 'Unknown')}}</span><br />
+        <span>Occupation: </span><span>{{ editable_field("PersonalDetails.Occupation", "Unknown") }}</span> |
+        <span>Birthplace: </span><span>{{ editable_field("PersonalDetails.Birthplace", "Unknown") }}</span> |
+        <span>Residence: </span><span>{{ editable_field("PersonalDetails.Residence", "Unknown") }}</span>
     </div>
     <div class="characteristics">
         <table>
             <tr>
-                <td>STR: {{ editable('Characteristics.STR') }}</td>
-                <td>DEX: {{ editable('Characteristics.DEX') }}</td>
-                <td>POW: {{ editable('Characteristics.POW') }}</td>
+                <td>STR: {{ editable_field('Characteristics.STR') }}</td>
+                <td>DEX: {{ editable_field('Characteristics.DEX') }}</td>
+                <td>POW: {{ editable_field('Characteristics.POW') }}</td>
             </tr>
             <tr>
-                <td>CON: {{ editable('Characteristics.CON') }}</td>
-                <td>APP: {{ editable('Characteristics.APP') }}</td>
-                <td>EDU: {{ editable('Characteristics.EDU') }}</td>
+                <td>CON: {{ editable_field('Characteristics.CON') }}</td>
+                <td>APP: {{ editable_field('Characteristics.APP') }}</td>
+                <td>EDU: {{ editable_field('Characteristics.EDU') }}</td>
             </tr>
             <tr>
-                <td>SIZ: {{ editable('Characteristics.SIZ') }}</td>
-                <td>INT: {{ editable('Characteristics.INT') }}</td>
-                <td>Move: {{ editable('Characteristics.Move') }}</td>
+                <td>SIZ: {{ editable_field('Characteristics.SIZ') }}</td>
+                <td>INT: {{ editable_field('Characteristics.INT') }}</td>
+                <td>Move: {{ editable_field('Characteristics.Move') }}</td>
             </tr>
         </table>
         <div class="hitpoints">
             Hitpoints<br />
-            &nbsp;Current: {{ editable("Characteristics.HitPts") }} Max: {{ editable("Characteristics.HitPtsMax") }}
+            &nbsp;Current: {{ editable_field("Characteristics.HitPts") }} Max: {{ editable_field("Characteristics.HitPtsMax") }}
             </div>
         <div class="sanity">Sanity<br />
-            &nbsp;Current {{ editable('Characteristics.Sanity', "0") }} Max: {{ editable('Characteristics.SanityMax', "0") }}</div>
+            &nbsp;Current {{ editable_field('Characteristics.Sanity', "0") }} Max: {{ editable_field('Characteristics.SanityMax', "0") }}</div>
         <div class="magicpoints">Magic points <br />
-            &nbsp;Current: {{ editable('Characteristics.MagicPts', "0") }} Max: {{ editable('Characteristics.MagicPtsMax', "0") }}</div>
+            &nbsp;Current: {{ editable_field('Characteristics.MagicPts', "0") }} Max: {{ editable_field('Characteristics.MagicPtsMax', "0") }}</div>
         <div class="luck">Luck<br />
-            &nbsp;Current: {{ editable('Characteristics.Luck', "0") }} Max: {{ editable('Characteristics.LuckMax', "0") }}</div>
+            &nbsp;Current: {{ editable_field('Characteristics.Luck', "0") }} Max: {{ editable_field('Characteristics.LuckMax', "0") }}</div>
 
 
     </div>

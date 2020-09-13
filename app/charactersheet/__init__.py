@@ -117,7 +117,7 @@ def update(id):
 
 @bp.route('/<int:id>/', methods=('GET', 'POST'))
 def view(id):
-    data = get_character(id)
+    data = get_character(id, check_author=False)
 
     character_data = json.loads(data.body)
 
@@ -168,7 +168,10 @@ def view(id):
         'id': id,
         'data': investigator
     }
-    return render_template('character/sheet.html.jinja', character=character)
+    editable = False
+    if current_user.is_authenticated and current_user.id == data.user_id:
+        editable = True
+    return render_template('character/sheet.html.jinja', character=character, editable=editable)
 
 @api.route('/<int:id>/', methods=('GET', ))
 def get(id):
