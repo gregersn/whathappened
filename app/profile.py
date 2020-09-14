@@ -3,19 +3,21 @@ from flask import (
 )
 from flask_login import login_required, current_user
 
-from app import db, assets
+from app import db
 
 bp = Blueprint('profile', __name__)
+
 
 class UserProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship("User", back_populates="profile")
-    
+
     characters = db.relationship('Character', backref='player', lazy='dynamic')
 
     def __repr__(self):
         return f'<UserProfile {self.user_id}>'
+
 
 @bp.route('/')
 @login_required

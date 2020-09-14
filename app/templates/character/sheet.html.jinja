@@ -8,13 +8,12 @@
 
 {% block header %}
   <h1>{% block title %}{{ character['data']['PersonalDetails']['Name']}}{% endblock %}</h1>
-  {% if g.user %}
-    <a class="action" href="{{ url_for('character.update', id=character['id']) }}">Edit</a>
-  {% endif %}
 {% endblock %}
 
 {% block menu %}
-    <a href="{{ url_for('character.export', id=character['id']) }}">Export</a>
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('character.export', id=character['id']) }}">Export</a>
+    {% endif %}
 {% endblock %}
 
 {% macro editable_field(field, default='') -%}

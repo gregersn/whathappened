@@ -13,6 +13,7 @@ from werkzeug.exceptions import abort
 from . import bp, api
 
 from .models import Character
+from .forms import ImportForm
 from app import db
 
 
@@ -50,6 +51,8 @@ def index():
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create(type=None):
+    form = ImportForm()
+    """
     if request.method == 'POST':
         title = request.form['title']
         body = request.form.get('body', "{}")
@@ -65,8 +68,15 @@ def create(type=None):
             db.session.add(c)
             db.session.commit()
             return redirect(url_for('character.view', id=c.id))
-
-    return render_template('character/create.html.jinja', type=type)
+    """
+    if form.validate_on_submit():
+        c = Character(title=form.title.data,
+                      body=form.body.data,
+                      user_id=current_user.id)
+        db.session.add(c)
+        db.session.commit()
+        return redirect(url_for('character.view', id=c.id))
+    return render_template('character/create.html.jinja', form=form, type=type)
 
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
@@ -172,4 +182,3 @@ def delete(id):
 def export(id):
     data = get_character(id)
     return jsonify(data.get_sheet())
-
