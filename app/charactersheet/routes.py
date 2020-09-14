@@ -1,3 +1,4 @@
+import math
 import json
 from functools import reduce
 
@@ -126,6 +127,8 @@ def view(id):
                                 and subfield != s.get('subskill', 'None')):
                             continue
                         s['value'] = value
+                        s['half'] = str(math.floor(int(value, 10) / 2))
+                        s['fifth'] = str(math.floor(int(value, 10) / 5))
                 continue
 
             elif setting.get('type', None) == 'skillcheck':

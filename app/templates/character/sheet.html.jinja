@@ -32,7 +32,9 @@
 {%- endmacro %}
 
 {% macro editable_skill(field, subfield=None, default='') -%}
-    <span {%- if editable %} class="editable" {% endif -%} data-field="{{field}}" data-subfield="{{subfield}}" data-type="skill">{{ get_skill(character['data'], field, subfield)['value'] or '0' }}</span>
+    <span {%- if editable %} class="editable" {% endif -%} data-field="{{field}}" data-subfield="{{subfield}}" data-type="skill">
+        {{ get_skill(character['data'], field, subfield)['value'] or '0' }}
+    </span>
 {%- endmacro %}
 
 {% macro skill_checkmark(field, subfield=None) -%}
@@ -40,6 +42,17 @@
         {%- if get_skill(character['data'], field, subfield)['checked'] %}*{%- else %}&nbsp;&nbsp;{%- endif %}
     {%- endif %}
 {%- endmacro %}
+
+{% macro editable_weapon(key, weapon) -%}
+    {{ key }}
+{%- endmacro %}
+
+{% macro editable_lines(key, default) -%}
+    {% for item in dict_path(character['data'], key) %}
+        {{ item['description'] }}
+    {% endfor %}
+{%- endmacro %}
+
 
 
 {% block content %}
@@ -117,7 +130,8 @@
                 <thead>
                     <tr><th>Weapon</th><th>Regular</th><th>Hard</th><th>Extreme</th><th>Damage</th><th>Range</th><th>Attacks</th><th>Ammo</th><th>Malf</th></tr>
                 </thead>
-                {% for _, weapon in character['data']['Weapons'].items() %}
+                {% for key, weapon in character['data']['Weapons'].items() %}
+                    {{ editable_weapon(key, weapon) }}
                     <tr>
                         <td>{{ weapon['name'] }}</td>
                         <td>{{ weapon['regular'] }}</td>
@@ -188,7 +202,7 @@
     </div>
     <div class="gearpossessions box">
         <h3>Gear &amp; Possessions</h3>
-        {{ editable_area("Possessions", "None") }}
+        {{ editable_lines("Possessions.item", []) }}
     </div>
     <div class="cashassets box">
     <h3>Cash &amp; Assets</h3>
