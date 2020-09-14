@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block menu %}
-    <a href="">Export</a>
+    <a href="{{ url_for('character.export', id=character['id']) }}">Export</a>
 {% endblock %}
 
 {% macro editable_field(field, default='') -%}

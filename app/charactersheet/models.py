@@ -1,4 +1,5 @@
 import json
+from jsoncomment import JsonComment
 from datetime import datetime
 
 from app import db
@@ -22,3 +23,6 @@ class Character(db.Model):
             'timestamp': self.timestamp,
             'user_id': self.user_id
         }
+
+    def get_sheet(self):
+        return JsonComment(json).loads(self.body)

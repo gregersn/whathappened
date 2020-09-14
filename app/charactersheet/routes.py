@@ -3,13 +3,29 @@ from functools import reduce
 
 from jsoncomment import JsonComment
 
-from flask import render_template, request, flash, redirect, url_for, jsonify
+from flask import render_template, request, flash
+from flask import redirect, url_for, jsonify
 from flask_login import login_required, current_user
 
-from . import bp, api, get_character
+from werkzeug.exceptions import abort
+
+
+from . import bp, api
 
 from .models import Character
 from app import db
+
+
+def get_character(id, check_author=True):
+    character = Character.query.get(id)
+
+    if character is None:
+        abort(404, "Character id {0} doesn't exist.".format(id))
+
+    if check_author and character.user_id != current_user.id:
+        abort(403)
+
+    return character
 
 
 @bp.route('/')
@@ -150,3 +166,10 @@ def delete(id):
     get_character(id)
     flash("Implement deletion of character")
     return redirect(url_for('character.index'))
+
+
+@bp.route('/<int:id>/export', methods=('GET', ))
+def export(id):
+    data = get_character(id)
+    return jsonify(data.get_sheet())
+

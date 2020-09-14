@@ -1,12 +1,8 @@
 from functools import reduce
 from flask import Blueprint
 from flask_assets import Bundle
-from flask_login import current_user
-from werkzeug.exceptions import abort
 
 from app import assets
-
-from .models import Character
 
 ts_coc = Bundle("ts/coc.ts", filters='typescript', output='js/coc.js')
 assets.register('ts_coc', ts_coc)
@@ -38,13 +34,4 @@ def character_functions():
     return dict(dict_path=dict_path, get_skill=get_skill)
 
 
-def get_character(id, check_author=True):
-    character = Character.query.get(id)
-
-    if character is None:
-        abort(404, "Character id {0} doesn't exist.".format(id))
-
-    if check_author and character.user_id != current_user.id:
-        abort(403)
-
-    return character
+from . import routes  # noqa: F401 isort:skip
