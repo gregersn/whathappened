@@ -9,6 +9,7 @@
 
 <body>
 <nav>
+    <div class="navbar">
     <h1>What Happened?</h1>
     <ul>
         {% if current_user.is_anonymous %}
@@ -19,6 +20,14 @@
             <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
         {% endif %}
     </ul>
+    </div>
+    {% if self.menu() %}
+    <div class="navbar">
+    {% block menu %}
+    {% endblock menu %}
+    </div>
+    {% endif %}
+    </div>
 </nav>
 
 <section class="content">

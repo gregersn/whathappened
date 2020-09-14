@@ -13,6 +13,10 @@
   {% endif %}
 {% endblock %}
 
+{% block menu %}
+    <a href="">Export</a>
+{% endblock %}
+
 {% macro editable_field(field, default='') -%}
     <span {%- if editable %} class="editable" {% endif -%} data-field="{{field}}">{{ dict_path(character['data'], field) or default }}</span>    
 {%- endmacro %}

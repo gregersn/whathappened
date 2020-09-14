@@ -7,5 +7,7 @@
     "python.testing.pytestEnabled": true,
     "python.testing.nosetestArgs": [
         "test"
-    ]
+    ],
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true
 }
