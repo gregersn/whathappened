@@ -9,3 +9,6 @@ class Config(object):
     MAIL_SERVER="localhost"
     MAIL_PORT=8025
     ADMINS = ['your-email@example.com']
+    ASSETS_DEBUG = False
+    ASSETS_AUTO_BUILD = True
+

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <head>
-<title>{% block title%}{% endblock %} - What Happened?</title>
-{% assets "scss_all" %}
-<link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
-{% endassets %}
-{% block head %}{% endblock %}
+    <title>{% block title%}{% endblock %} - What Happened?</title>
+    {% assets "scss_all" %}
+    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+    {% endassets %}
+    {% block head %}{% endblock %}
 </head>
 
+<body>
 <nav>
     <h1>What Happened?</h1>
     <ul>
@@ -14,10 +15,12 @@
             <li><a href="{{ url_for('auth.register') }}">Register</a></li>
             <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
         {% else %}
+            <li><a href="{{ url_for('profile.index') }}">Home</a></li>
             <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
         {% endif %}
     </ul>
 </nav>
+
 <section class="content">
     <header>
         {% block header %}{% endblock %}
@@ -27,3 +30,4 @@
     {% endfor %}
     {% block content %}{% endblock %}
 </section>
+</body>

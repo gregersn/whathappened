@@ -16,6 +16,7 @@ build/
 .webassets-cache/
 
 app/static/js/
+app/static/css/
 *.sqlite
 
 .noseids
