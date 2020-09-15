@@ -1,5 +1,6 @@
 import math
 
+
 def convert_from_dholes(indata):
     investigator = indata['Investigator']
 
@@ -8,14 +9,18 @@ def convert_from_dholes(indata):
         outskills = []
 
         for skill in inskills:
+            skill.pop('fifth', None)
+            skill.pop('half', None)
             outskills.append(skill)
 
         return outskills
-    
+
     def convert_weapons(weapons):
         inweapons = weapons['weapon']
         outweapons = []
         for weapon in inweapons:
+            weapon.pop('hard', None)
+            weapon.pop('extreme', None)
             outweapons.append(weapon)
         return outweapons
 
@@ -27,13 +32,20 @@ def convert_from_dholes(indata):
 
         return outpossessions
 
+    def convert_combat(combat):
+        return {
+            'DamageBonus': combat['DamageBonus'],
+            'Build': combat['Build'],
+            'Dodge': combat['Dodge']['value']
+        }
+
     header = investigator['Header']
     personal_details = investigator['PersonalDetails']
     characteristics = investigator['Characteristics']
     skills = convert_skills(investigator['Skills'])
     talents = investigator['Talents']
     weapons = convert_weapons(investigator['Weapons'])
-    combat = investigator['Combat']
+    combat = convert_combat(investigator['Combat'])
     backstory = investigator['Backstory']
     possessions = convert_possessions(investigator['Possessions'])
     cash = investigator['Cash']
@@ -52,13 +64,18 @@ def convert_from_dholes(indata):
         'assets': assets
     }
 
+def half(value):
+    return str(math.floor(int(value, 10) / 2))
+
+def fifth(value):
+    return str(math.floor(int(value, 10) / 5))
 
 def convert_to_dholes(indata):
     def convert_skills(skills):
         outskills = []
         for skill in skills:
-            skill['half'] = str(math.floor(int(skill['value'], 10) / 2))
-            skill['fifth'] = str(math.floor(int(skill['value'], 10) / 5))
+            skill['half'] = half(skill['value'])
+            skill['fifth'] = fifth(skill['value'])
 
             outskills.append(
                 skill
@@ -71,6 +88,8 @@ def convert_to_dholes(indata):
     def convert_weapons(weapons):
         outweapons = []
         for weapon in weapons:
+            weapon['hard'] = half(weapon['regular'])
+            weapon['extreme'] = fifth(weapon['regular'])
             outweapons.append(weapon)
         return {'weapon': outweapons}
 
@@ -82,6 +101,17 @@ def convert_to_dholes(indata):
             )
         return {'item': outpossessions}
 
+    def convert_combat(combat):
+        return {
+            'DamageBonus': combat['DamageBonus'],
+            'Build': combat['Build'],
+            'Dodge': {
+                'value': combat['Dodge'],
+                'half': half(combat['Dodge']),
+                'fifth': fifth(combat['Dodge'])
+            }
+        }
+
     return {
         'Investigator': {
             'Header': indata['meta'],
@@ -90,7 +120,7 @@ def convert_to_dholes(indata):
             'Skills': convert_skills(indata['skills']),
             'Talents': None,
             'Weapons': convert_weapons(indata['weapons']),
-            'Combat': indata['combat'],
+            'Combat': convert_combat(indata['combat']),
             'Backstory': indata['backstory'],
             'Possessions': convert_possessions(indata['possessions']),
             'Cash': indata['cash'],

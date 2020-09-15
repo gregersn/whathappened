@@ -1,549 +1,402 @@
 {
-    "Investigator": {
-        "Header": {
-            "Title": "Investigator Export: Character Sheet",
-            "Creator": "The Dhole's House www.dholeshouse.org",
-            "CreateDate": "14/09/2020 21:46",
-            "GameName": "Call of Cthulhu TM",
-            "GameVersion": "7th Edition",
-            "GameType": "Classic (1920's)",
-            "Discalimer": "No Ghoul's were harmed producing this file, probably.",
-            "Version": "0.5.0"
+    "meta": {
+        "Title": "Investigator Export: Character Sheet",
+        "Creator": "The Dhole's House www.dholeshouse.org",
+        "CreateDate": "14/09/2020 21:46",
+        "GameName": "Call of Cthulhu TM",
+        "GameVersion": "7th Edition",
+        "GameType": "Classic (1920's)",
+        "Discalimer": "No Ghoul's were harmed producing this file, probably.",
+        "Version": "0.5.0"
+    },
+    "personalia": {
+        "Name": "Donald Walter O'Connell",
+        "Occupation": "Book Dealer",
+        "Archetype": null,
+        "Gender": "Male",
+        "Age": "27",
+        "Birthplace": "sdfsdf",
+        "Residence": "sdfsd",
+        "Portrait": "/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAYEBAQFBAYFBQYJBgUGCQsIBgYICwwKCgsKCgwQDAwMDAwMEAwODxAPDgwTExQUExMcGxsbHB8fHx8fHx8fHx//2wBDAQcHBw0MDRgQEBgaFREVGh8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx//wgARCABaAEYDAREAAhEBAxEB/8QAHQABAAICAwEBAAAAAAAAAAAAAAcIBQYBAwkCBP/aAAgBAQAAAACbR09w5Yqn2gSjbv8ASK312LVzcKiRCWAsyKlQ2WGsmIRqoXOksY7z3ZT0D+jrimoDJXL3vmAIK1oN+mCsIAAAB//EABUBAQEAAAAAAAAAAAAAAAAAAAAB/9oACAECEAAAAKACFCChAogUIUEKCFEAsAAAAP/EABUBAQEAAAAAAAAAAAAAAAAAAAAB/9oACAEDEAAAAIACkBSBRAogKQFICkFAlAAAAP/EADUQAAIBAwICBwYEBwAAAAAAAAECAwQFEQYSACEHCBMgMVKREBQiQVFhFUJxsSMkMkCBksL/2gAIAQEAAT8A2p5R6DjanlHoONqeUeg42p5R6Dj3qh27u1i2nwO5ccbU8o9BxtTyj0HG1PKPQcbU8o9B7dUaltmmrFVXq5vspKRCzkeJP5VGeWWPwj6nl48a66cNcaprXaOtltVuDHsaKkdoyFOR/EkXDvkYyM7eXhnnxHPNHMs8cjJOjB0lUkOHByGDDmCDzzx0cdP+rtN1kVNd6l7tZ3YCX3ljJNEGOGkWQ/G+3x2sfltBXi23GjuVBT19FIJqSqjWWCVeYZGGQQe71sNVydtatLwuVXaa6tTaRkZ2Q4YeKk78j6qD+vt6rGqnuGk6yxTuXms8waL4eS08+WTLfNt4cfYAd3rRys/ScFPhFb6dV/QtI37t3OqLNi86jg89NTv/AKSOP++71qKcp0jwTBTsmt0Px4wpdZJAQD8yF25/XudUWmPvupKllYDs6aONsHafikZwD4ZHw+vd602kpblpWiv9OGaazSMJlBGPd58ByFA3Fg6ofoF3HudXzSUunejqlNQGWsurmvqEJBC9ooEYAwGUiNV3KfBs93Ulpprxp+42upJFPW00sEpXx2yIVOPbpa2wXTU9otlQSIK6tpqaYryOyaVUbH+G4ijEcSRrzCKFGfoBj5dyeeGCMyTOEQAkk/YZ/Yca36xugrJHNS22U3ytxgJSEGHJUEZn5pg5xldxB/L7dNXSK06jtV1mRpIrfWU9VJGmNzLDKshC55ZIXjRfTZoLVjx09FW+618mP5GrxFLuYnCqCcSHC5PZlgvzPCsrKGUgqRkEcwQfZrPrV2yn7Sm0pQNWyjcFr6rMcPyKssfKRx4hg2z7HjVfSNrLVTt+M3OaanJ+GjVikCgMWUdmP6tu7kz5b797RvTdr7S8uIq43GkOA9NXFpeQAUbJCe0Xaowq5KDOdueKfrX2R7BVVMtqeK+Q7TT25nPYyhpVUqtQqtzWPLkui+UZ8f7z/8QAFBEBAAAAAAAAAAAAAAAAAAAAYP/aAAgBAgEBPwBZ/8QAFxEAAwEAAAAAAAAAAAAAAAAAATBAEf/aAAgBAwEBPwCQNKTdiMs//9k="
+    },
+    "characteristics": {
+        "STR": "45",
+        "DEX": "60",
+        "INT": "45",
+        "CON": "50",
+        "APP": "70",
+        "POW": "50",
+        "SIZ": "55",
+        "EDU": "50",
+        "Move": "8",
+        "Luck": "50",
+        "LuckMax": "50",
+        "Sanity": "50",
+        "SanityStart": "50",
+        "SanityMax": "99",
+        "MagicPts": "10",
+        "MagicPtsMax": "10",
+        "HitPts": "10",
+        "HitPtsMax": "10",
+        "DamageBonus": "None",
+        "Build": "0",
+        "OccupationSkillPoints": "200",
+        "PersonalInterestSkillPoints": "90"
+    },
+    "skills": [
+        {
+            "name": "Accounting",
+            "occupation": "true",
+            "value": "50"
         },
-        "PersonalDetails": {
-            "Name": "Donald Walter O'Connell",
-            "Occupation": "Book Dealer",
-            "Archetype": null,
-            "Gender": "Male",
-            "Age": "27",
-            "Birthplace": "sdfsdf",
-            "Residence": "sdfsd",
-            "Portrait": "/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAYEBAQFBAYFBQYJBgUGCQsIBgYICwwKCgsKCgwQDAwMDAwMEAwODxAPDgwTExQUExMcGxsbHB8fHx8fHx8fHx//2wBDAQcHBw0MDRgQEBgaFREVGh8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx//wgARCABaAEYDAREAAhEBAxEB/8QAHQABAAICAwEBAAAAAAAAAAAAAAcIBQYBAwkCBP/aAAgBAQAAAACbR09w5Yqn2gSjbv8ASK312LVzcKiRCWAsyKlQ2WGsmIRqoXOksY7z3ZT0D+jrimoDJXL3vmAIK1oN+mCsIAAAB//EABUBAQEAAAAAAAAAAAAAAAAAAAAB/9oACAECEAAAAKACFCChAogUIUEKCFEAsAAAAP/EABUBAQEAAAAAAAAAAAAAAAAAAAAB/9oACAEDEAAAAIACkBSBRAogKQFICkFAlAAAAP/EADUQAAIBAwICBwYEBwAAAAAAAAECAwQFEQYSACEHCBMgMVKREBQiQVFhFUJxsSMkMkCBksL/2gAIAQEAAT8A2p5R6DjanlHoONqeUeg42p5R6Dj3qh27u1i2nwO5ccbU8o9BxtTyj0HG1PKPQcbU8o9B7dUaltmmrFVXq5vspKRCzkeJP5VGeWWPwj6nl48a66cNcaprXaOtltVuDHsaKkdoyFOR/EkXDvkYyM7eXhnnxHPNHMs8cjJOjB0lUkOHByGDDmCDzzx0cdP+rtN1kVNd6l7tZ3YCX3ljJNEGOGkWQ/G+3x2sfltBXi23GjuVBT19FIJqSqjWWCVeYZGGQQe71sNVydtatLwuVXaa6tTaRkZ2Q4YeKk78j6qD+vt6rGqnuGk6yxTuXms8waL4eS08+WTLfNt4cfYAd3rRys/ScFPhFb6dV/QtI37t3OqLNi86jg89NTv/AKSOP++71qKcp0jwTBTsmt0Px4wpdZJAQD8yF25/XudUWmPvupKllYDs6aONsHafikZwD4ZHw+vd602kpblpWiv9OGaazSMJlBGPd58ByFA3Fg6ofoF3HudXzSUunejqlNQGWsurmvqEJBC9ooEYAwGUiNV3KfBs93Ulpprxp+42upJFPW00sEpXx2yIVOPbpa2wXTU9otlQSIK6tpqaYryOyaVUbH+G4ijEcSRrzCKFGfoBj5dyeeGCMyTOEQAkk/YZ/Yca36xugrJHNS22U3ytxgJSEGHJUEZn5pg5xldxB/L7dNXSK06jtV1mRpIrfWU9VJGmNzLDKshC55ZIXjRfTZoLVjx09FW+618mP5GrxFLuYnCqCcSHC5PZlgvzPCsrKGUgqRkEcwQfZrPrV2yn7Sm0pQNWyjcFr6rMcPyKssfKRx4hg2z7HjVfSNrLVTt+M3OaanJ+GjVikCgMWUdmP6tu7kz5b797RvTdr7S8uIq43GkOA9NXFpeQAUbJCe0Xaowq5KDOdueKfrX2R7BVVMtqeK+Q7TT25nPYyhpVUqtQqtzWPLkui+UZ8f7z/8QAFBEBAAAAAAAAAAAAAAAAAAAAYP/aAAgBAgEBPwBZ/8QAFxEAAwEAAAAAAAAAAAAAAAAAATBAEf/aAAgBAwEBPwCQNKTdiMs//9k="
+        {
+            "name": "Anthropology",
+            "value": "11"
         },
-        "Characteristics": {
-            "STR": "45",
-            "DEX": "60",
-            "INT": "45",
-            "CON": "50",
-            "APP": "70",
-            "POW": "50",
-            "SIZ": "55",
-            "EDU": "50",
-            "Move": "8",
-            "Luck": "50",
-            "LuckMax": "50",
-            "Sanity": "50",
-            "SanityStart": "50",
-            "SanityMax": "99",
-            "MagicPts": "10",
-            "MagicPtsMax": "10",
-            "HitPts": "10",
-            "HitPtsMax": "10",
-            "DamageBonus": "None",
-            "Build": "0",
-            "OccupationSkillPoints": "200",
-            "PersonalInterestSkillPoints": "90"
+        {
+            "name": "Appraise",
+            "occupation": "true",
+            "value": "18"
         },
-        "Skills": {
-            "Skill": [
-                {
-                    "name": "Accounting",
-                    "occupation": "true",
-                    "value": "50",
-                    "half": "25",
-                    "fifth": "10"
-                },
-                {
-                    "name": "Anthropology",
-                    "value": "11",
-                    "half": "5",
-                    "fifth": "2"
-                },
-                {
-                    "name": "Appraise",
-                    "occupation": "true",
-                    "value": "18",
-                    "half": "9",
-                    "fifth": "3"
-                },
-                {
-                    "name": "Archaeology",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Art/Craft",
-                    "subskill": "Photography",
-                    "value": "5",
-                    "half": "2",
-                    "fifth": "1"
-                },
-                {
-                    "name": "Art/Craft",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "5",
-                    "half": "2",
-                    "fifth": "1"
-                },
-                {
-                    "name": "Art/Craft",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "10",
-                    "half": "5",
-                    "fifth": "2"
-                },
-                {
-                    "name": "Charm",
-                    "value": "20",
-                    "half": "10",
-                    "fifth": "4"
-                },
-                {
-                    "name": "Climb",
-                    "value": "25",
-                    "half": "12",
-                    "fifth": "5"
-                },
-                {
-                    "name": "Credit Rating",
-                    "occupation": "true",
-                    "value": "40",
-                    "half": "20",
-                    "fifth": "8"
-                },
-                {
-                    "name": "Cthulhu Mythos",
-                    "value": "0",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Disguise",
-                    "value": "5",
-                    "half": "2",
-                    "fifth": "1"
-                },
-                {
-                    "name": "Dodge",
-                    "value": "30",
-                    "half": "15",
-                    "fifth": "6"
-                },
-                {
-                    "name": "Drive Auto",
-                    "occupation": "true",
-                    "value": "42",
-                    "half": "21",
-                    "fifth": "8"
-                },
-                {
-                    "name": "Electrical Repair",
-                    "value": "10",
-                    "half": "5",
-                    "fifth": "2"
-                },
-                {
-                    "name": "Fast Talk",
-                    "occupation": "true",
-                    "value": "15",
-                    "half": "7",
-                    "fifth": "3"
-                },
-                {
-                    "name": "Fighting",
-                    "subskill": "Brawl",
-                    "value": "25",
-                    "half": "12",
-                    "fifth": "5"
-                },
-                {
-                    "name": "Fighting",
-                    "subskill": "Knife",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Fighting",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Firearms",
-                    "subskill": "Handgun",
-                    "value": "20",
-                    "half": "10",
-                    "fifth": "4"
-                },
-                {
-                    "name": "Firearms",
-                    "subskill": "Rifle/Shotgun",
-                    "value": "25",
-                    "half": "12",
-                    "fifth": "5"
-                },
-                {
-                    "name": "Firearms",
-                    "subskill": "None",
-                    "None": "true",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "First Aid",
-                    "value": "30",
-                    "half": "15",
-                    "fifth": "6"
-                },
-                {
-                    "name": "History",
-                    "occupation": "true",
-                    "value": "21",
-                    "half": "10",
-                    "fifth": "4"
-                },
-                {
-                    "name": "Intimidate",
-                    "value": "15",
-                    "half": "7",
-                    "fifth": "3"
-                },
-                {
-                    "name": "Jump",
-                    "value": "20",
-                    "half": "10",
-                    "fifth": "4"
-                },
-                {
-                    "name": "Language (Other)",
-                    "subskill": "Norweigan",
-                    "value": "20",
-                    "half": "10",
-                    "fifth": "4"
-                },
-                {
-                    "name": "Language (Other)",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Language (Other)",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Language (Own)",
-                    "subskill": "Spanish",
-                    "occupation": "true",
-                    "value": "65",
-                    "half": "32",
-                    "fifth": "13"
-                },
-                {
-                    "name": "Law",
-                    "value": "5",
-                    "half": "2",
-                    "fifth": "1"
-                },
-                {
-                    "name": "Library Use",
-                    "occupation": "true",
-                    "value": "55",
-                    "half": "27",
-                    "fifth": "11"
-                },
-                {
-                    "name": "Listen",
-                    "value": "30",
-                    "half": "15",
-                    "fifth": "6"
-                },
-                {
-                    "name": "Locksmith",
-                    "value": "11",
-                    "half": "5",
-                    "fifth": "2"
-                },
-                {
-                    "name": "Mechanical Repair",
-                    "value": "10",
-                    "half": "5",
-                    "fifth": "2"
-                },
-                {
-                    "name": "Medicine",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Natural World",
-                    "value": "25",
-                    "half": "12",
-                    "fifth": "5"
-                },
-                {
-                    "name": "Navigate",
-                    "value": "15",
-                    "half": "7",
-                    "fifth": "3"
-                },
-                {
-                    "name": "Occult",
-                    "value": "10",
-                    "half": "5",
-                    "fifth": "2"
-                },
-                {
-                    "name": "Operate Heavy Machine",
-                    "value": "6",
-                    "half": "3",
-                    "fifth": "1"
-                },
-                {
-                    "name": "Persuade",
-                    "value": "10",
-                    "half": "5",
-                    "fifth": "2"
-                },
-                {
-                    "name": "Pilot",
-                    "subskill": "Zeppelin",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Psychology",
-                    "value": "10",
-                    "half": "5",
-                    "fifth": "2"
-                },
-                {
-                    "name": "Psychoanalysis",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Ride",
-                    "value": "5",
-                    "half": "2",
-                    "fifth": "1"
-                },
-                {
-                    "name": "Science",
-                    "subskill": "Biology",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Science",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Science",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Sleight of Hand",
-                    "value": "10",
-                    "half": "5",
-                    "fifth": "2"
-                },
-                {
-                    "name": "Spot Hidden",
-                    "value": "25",
-                    "half": "12",
-                    "fifth": "5"
-                },
-                {
-                    "name": "Stealth",
-                    "value": "20",
-                    "half": "10",
-                    "fifth": "4"
-                },
-                {
-                    "name": "Survival",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "10",
-                    "half": "5",
-                    "fifth": "2"
-                },
-                {
-                    "name": "Swim",
-                    "value": "20",
-                    "half": "10",
-                    "fifth": "4"
-                },
-                {
-                    "name": "Throw",
-                    "value": "20",
-                    "half": "10",
-                    "fifth": "4"
-                },
-                {
-                    "name": "Track",
-                    "value": "10",
-                    "half": "5",
-                    "fifth": "2"
-                },
-                {
-                    "name": "Misc",
-                    "subskill": "Jumping jacks",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Misc",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Misc",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Misc",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                },
-                {
-                    "name": "Misc",
-                    "subskill": "None",
-                    "occupation": "true",
-                    "value": "1",
-                    "half": "0",
-                    "fifth": "0"
-                }
-            ]
+        {
+            "name": "Archaeology",
+            "value": "1"
         },
-        "Talents": null,
-        "Weapons": {
-            "weapon": [
-                {
-                    "name": "Unarmed",
-                    "skillname": "Brawl",
-                    "regular": "25",
-                    "hard": "12",
-                    "extreme": "5",
-                    "damage": "1d4+db",
-                    "range": "-",
-                    "attacks": "1",
-                    "ammo": "-",
-                    "malf": "-"
-                },
-                {
-                    "name": "7.65mm Revolver",
-                    "skillname": "Handgun",
-                    "regular": "20",
-                    "hard": "10",
-                    "extreme": "04",
-                    "damage": "1D8",
-                    "range": "15 yards",
-                    "attacks": "1 (3)",
-                    "ammo": "6",
-                    "malf": "100"
-                },
-                {
-                    "name": "9mm Revolver",
-                    "skillname": "Handgun",
-                    "regular": "20",
-                    "hard": "10",
-                    "extreme": "04",
-                    "damage": "1D10",
-                    "range": "15 yards",
-                    "attacks": "1 (3)",
-                    "ammo": "6",
-                    "malf": "100"
-                },
-                {
-                    "name": ".38 semi-automatic",
-                    "skillname": "Handgun",
-                    "regular": "20",
-                    "hard": "10",
-                    "extreme": "04",
-                    "damage": "1D10",
-                    "range": "15 yards",
-                    "attacks": "1 (3)",
-                    "ammo": "8",
-                    "malf": "99"
-                }
-            ]
+        {
+            "name": "Art/Craft",
+            "subskill": "Photography",
+            "value": "5"
         },
-        "Combat": {
-            "DamageBonus": "None",
-            "Build": "0",
-            "Dodge": {
-                "value": "30",
-                "half": "15",
-                "fifth": "6"
-            }
+        {
+            "name": "Art/Craft",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "5"
         },
-        "Backstory": {
-            "description": null,
-            "traits": null,
-            "ideology": null,
-            "injurues": null,
-            "people": null,
-            "phobias": null,
-            "locations": null,
-            "tomes": null,
-            "possessions": null,
-            "encounters": null
+        {
+            "name": "Art/Craft",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "10"
         },
-        "Possessions": {
-            "item": [
-                {
-                    "description": "A car"
-                },
-                {
-                    "description": "A notebook"
-                },
-                {
-                    "description": "Camera"
-                }
-            ]
+        {
+            "name": "Charm",
+            "value": "20"
         },
-        "Cash": {
-            "spending": "$10.00",
-            "cash": "$80.00",
-            "assets": "$2000.00"
+        {
+            "name": "Climb",
+            "value": "25"
         },
-        "Assets": null
-    }
+        {
+            "name": "Credit Rating",
+            "occupation": "true",
+            "value": "40"
+        },
+        {
+            "name": "Cthulhu Mythos",
+            "value": "0"
+        },
+        {
+            "name": "Disguise",
+            "value": "5"
+        },
+        {
+            "name": "Dodge",
+            "value": "30"
+        },
+        {
+            "name": "Drive Auto",
+            "occupation": "true",
+            "value": "42"
+        },
+        {
+            "name": "Electrical Repair",
+            "value": "10"
+        },
+        {
+            "name": "Fast Talk",
+            "occupation": "true",
+            "value": "15"
+        },
+        {
+            "name": "Fighting",
+            "subskill": "Brawl",
+            "value": "25"
+        },
+        {
+            "name": "Fighting",
+            "subskill": "Knife",
+            "value": "1"
+        },
+        {
+            "name": "Fighting",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "1"
+        },
+        {
+            "name": "Firearms",
+            "subskill": "Handgun",
+            "value": "20"
+        },
+        {
+            "name": "Firearms",
+            "subskill": "Rifle/Shotgun",
+            "value": "25"
+        },
+        {
+            "name": "Firearms",
+            "subskill": "None",
+            "None": "true",
+            "value": "1"
+        },
+        {
+            "name": "First Aid",
+            "value": "30"
+        },
+        {
+            "name": "History",
+            "occupation": "true",
+            "value": "21"
+        },
+        {
+            "name": "Intimidate",
+            "value": "15"
+        },
+        {
+            "name": "Jump",
+            "value": "20"
+        },
+        {
+            "name": "Language (Other)",
+            "subskill": "Norweigan",
+            "value": "20"
+        },
+        {
+            "name": "Language (Other)",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "1"
+        },
+        {
+            "name": "Language (Other)",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "1"
+        },
+        {
+            "name": "Language (Own)",
+            "subskill": "Spanish",
+            "occupation": "true",
+            "value": "65"
+        },
+        {
+            "name": "Law",
+            "value": "5"
+        },
+        {
+            "name": "Library Use",
+            "occupation": "true",
+            "value": "55"
+        },
+        {
+            "name": "Listen",
+            "value": "30"
+        },
+        {
+            "name": "Locksmith",
+            "value": "11"
+        },
+        {
+            "name": "Mechanical Repair",
+            "value": "10"
+        },
+        {
+            "name": "Medicine",
+            "value": "1"
+        },
+        {
+            "name": "Natural World",
+            "value": "25"
+        },
+        {
+            "name": "Navigate",
+            "value": "15"
+        },
+        {
+            "name": "Occult",
+            "value": "10"
+        },
+        {
+            "name": "Operate Heavy Machine",
+            "value": "6"
+        },
+        {
+            "name": "Persuade",
+            "value": "10"
+        },
+        {
+            "name": "Pilot",
+            "subskill": "Zeppelin",
+            "value": "1"
+        },
+        {
+            "name": "Psychology",
+            "value": "10"
+        },
+        {
+            "name": "Psychoanalysis",
+            "value": "1"
+        },
+        {
+            "name": "Ride",
+            "value": "5"
+        },
+        {
+            "name": "Science",
+            "subskill": "Biology",
+            "value": "1"
+        },
+        {
+            "name": "Science",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "1"
+        },
+        {
+            "name": "Science",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "1"
+        },
+        {
+            "name": "Sleight of Hand",
+            "value": "10"
+        },
+        {
+            "name": "Spot Hidden",
+            "value": "25"
+        },
+        {
+            "name": "Stealth",
+            "value": "20"
+        },
+        {
+            "name": "Survival",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "10"
+        },
+        {
+            "name": "Swim",
+            "value": "20"
+        },
+        {
+            "name": "Throw",
+            "value": "20"
+        },
+        {
+            "name": "Track",
+            "value": "10"
+        },
+        {
+            "name": "Misc",
+            "subskill": "Jumping jacks",
+            "value": "1"
+        },
+        {
+            "name": "Misc",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "1"
+        },
+        {
+            "name": "Misc",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "1"
+        },
+        {
+            "name": "Misc",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "1"
+        },
+        {
+            "name": "Misc",
+            "subskill": "None",
+            "occupation": "true",
+            "value": "1"
+        }
+    ],
+    "weapons": [
+        {
+            "name": "Unarmed",
+            "skillname": "Brawl",
+            "regular": "25",
+            "damage": "1d4+db",
+            "range": "-",
+            "attacks": "1",
+            "ammo": "-",
+            "malf": "-"
+        },
+        {
+            "name": "7.65mm Revolver",
+            "skillname": "Handgun",
+            "regular": "20",
+            "damage": "1D8",
+            "range": "15 yards",
+            "attacks": "1 (3)",
+            "ammo": "6",
+            "malf": "100"
+        },
+        {
+            "name": "9mm Revolver",
+            "skillname": "Handgun",
+            "regular": "20",
+            "damage": "1D10",
+            "range": "15 yards",
+            "attacks": "1 (3)",
+            "ammo": "6",
+            "malf": "100"
+        },
+        {
+            "name": ".38 semi-automatic",
+            "skillname": "Handgun",
+            "regular": "20",
+            "damage": "1D10",
+            "range": "15 yards",
+            "attacks": "1 (3)",
+            "ammo": "8",
+            "malf": "99"
+        }
+    ],
+    "combat": {
+        "DamageBonus": "None",
+        "Build": "0",
+        "Dodge": "30"
+    },
+    "backstory": {
+        "description": null,
+        "traits": null,
+        "ideology": null,
+        "injurues": null,
+        "people": null,
+        "phobias": null,
+        "locations": null,
+        "tomes": null,
+        "possessions": null,
+        "encounters": null
+    },
+    "possessions": [
+        "A car",
+        "A notebook",
+        "Camera"
+    ],
+    "cash": {
+        "spending": "$10.00",
+        "cash": "$80.00",
+        "assets": "$2000.00"
+    },
+    "assets": null
 }

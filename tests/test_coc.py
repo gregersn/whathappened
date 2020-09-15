@@ -9,7 +9,17 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
 @pytest.fixture(name='dholes_sheet')
-def fixture_dholes_sheet():
+def fixture_dholes_sheet() -> dict:
+    """Load character sheet from JSON and convert to dict."""
+    sheet = None
+    with open(os.path.join(BASEDIR, 'testchar_dholes.json'), 'r') as input_file:
+        sheet = json.load(input_file)
+
+    return sheet
+
+
+@pytest.fixture(name='test_sheet')
+def fixture_test_sheet() -> dict:
     """Load character sheet from JSON and convert to dict."""
     sheet = None
     with open(os.path.join(BASEDIR, 'testchar.json'), 'r') as input_file:
@@ -18,7 +28,7 @@ def fixture_dholes_sheet():
     return sheet
 
 
-def test_convert_from_dholes(dholes_sheet):
+def test_convert_from_dholes(dholes_sheet: dict, test_sheet: dict):
     """Test conversion from a character sheet generated at dholes house."""
     assert dholes_sheet is not None
     converted = convert_from_dholes(dholes_sheet)
@@ -46,8 +56,10 @@ def test_convert_from_dholes(dholes_sheet):
     possessions = converted['possessions']
     assert isinstance(possessions, list)
 
+    assert converted == test_sheet
 
-def test_convert_from_to_dholes(dholes_sheet):
+
+def test_convert_from_to_dholes(dholes_sheet: dict):
     """Test conversion from dholes and back to dholes."""
     converted = convert_to_dholes(convert_from_dholes(dholes_sheet))
 
