@@ -1,12 +1,13 @@
 import unittest
 from datetime import datetime, timedelta
-from app import create_app, db
+from app import create_app, db, assets
 from app.auth.models import User
 
 from .conftest import Conf as Config
 
 class UserModelCase(unittest.TestCase):
-    def setUp(self):        
+    def setUp(self):
+        assets._named_bundles = {}
         self.app = create_app(Config)
         self.app_context = self.app.app_context()
         self.app_context.push()

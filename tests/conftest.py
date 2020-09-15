@@ -2,7 +2,7 @@ import os
 import tempfile
 
 import pytest
-from app import create_app, db as _db
+from app import create_app, db as _db, assets
 import flask_migrate
 
 from config import Config
@@ -18,6 +18,7 @@ class Conf(Config):
 
 @pytest.fixture(scope='session')
 def app(request):
+    assets._named_bundles = {}
     app = create_app(Conf)
 
     ctx = app.app_context()
@@ -68,6 +69,7 @@ def session(db, request):
 
     request.addfinalizer(teardown)
     return session
+
 
 @pytest.fixture(scope='function')
 def client(app, request):
