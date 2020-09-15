@@ -30,3 +30,34 @@ In its current state it can not be recommended to anyone, and instructions for s
 Come back later.
 
 *Cthulhu fhtagn.*
+
+
+## Development and testing
+
+I suggest doing development in a virtual environment. 
+To get started clone the project with git. 
+In the folder you create a new virtual environment
+
+```
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $ pip3 install -r requirements.txt
+```
+
+If you are using a different shell than bash, e.g. fish, the activation might not work like that, but you can then do
+
+`$ . venv/bin/activate.fish`
+
+Run flask with
+
+`$ FLASK_ENV=development flask run`
+
+### Troubleshooting
+
+### No stylesheet
+
+You probably need to install sass.
+
+### No javascript
+
+You need to have typescript installed.

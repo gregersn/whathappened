@@ -32,7 +32,6 @@ def create_app(config_class=Config):
     except OSError:
         pass
 
-
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
@@ -61,5 +60,11 @@ def create_app(config_class=Config):
 
     with app.app_context():
         db.create_all()
-    
+
+        print("Registering stuff")
+        assets.url = app.static_url_path
+        assets.config['TYPESCRIPT_CONFIG'] = '--target ES6'
+        scss = Bundle('scss/main.scss', 'scss/character.scss', filters='pyscss', output='css/all.css')
+        assets.register('scss_all', scss)
+
     return app
