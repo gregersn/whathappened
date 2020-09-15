@@ -1,22 +1,25 @@
+"""Test functions specific to Call of Cthulhu."""
 import os
 import json
 import pytest
 
 from app.charactersheet.coc import convert_from_dholes, convert_to_dholes
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
-@pytest.fixture
-def dholes_sheet():
+@pytest.fixture(name='dholes_sheet')
+def fixture_dholes_sheet():
+    """Load character sheet from JSON and convert to dict."""
     sheet = None
-    with open(os.path.join(basedir, 'testchar.json'), 'r') as f:
-        sheet = json.load(f)
+    with open(os.path.join(BASEDIR, 'testchar.json'), 'r') as input_file:
+        sheet = json.load(input_file)
 
     return sheet
 
 
 def test_convert_from_dholes(dholes_sheet):
+    """Test conversion from a character sheet generated at dholes house."""
     assert dholes_sheet is not None
     converted = convert_from_dholes(dholes_sheet)
 
@@ -28,24 +31,24 @@ def test_convert_from_dholes(dholes_sheet):
         assert section in converted
 
     skills = converted['skills']
-    assert type(skills) == list
+    assert isinstance(skills, list)
 
     skill_names = ['Accounting', 'Appraise', 'Cthulhu Mythos']
     for skill in skills:
         if skill['name'] in skill_names:
             skill_names.remove(skill['name'])
 
-    assert len(skill_names) == 0
+    assert not skill_names
 
     weapons = converted['weapons']
-    assert type(weapons) == list
+    assert isinstance(weapons, list)
 
     possessions = converted['possessions']
-    assert type(possessions) == list
+    assert isinstance(possessions, list)
 
 
-def test_convert_from_dholes_and_back(dholes_sheet):
+def test_convert_from_to_dholes(dholes_sheet):
+    """Test conversion from dholes and back to dholes."""
     converted = convert_to_dholes(convert_from_dholes(dholes_sheet))
 
     assert dholes_sheet == converted
-
