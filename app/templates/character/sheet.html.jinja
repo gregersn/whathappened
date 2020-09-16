@@ -1,6 +1,11 @@
 {% extends 'base.html.jinja' %}
 
 {% block head %}
+    <meta name="_token" content="{{ csrf_token() }}">
+    <script type="text/javascript">
+        var csrf_token = "{{ csrf_token() }}";
+    </script>
+
     {% assets "ts_coc" %}
     <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
@@ -32,7 +37,7 @@
 {%- endmacro %}
 
 {% macro editable_skill(field, subfield=None, default='') -%}
-    <span {%- if editable %} class="editable" {% endif -%} data-field="{{field}}" data-subfield="{{subfield}}" data-type="skill">{{ character.skill(field, subfield)['value'] }}</span>
+    <span {%- if editable %} class="skill editable" {% endif -%} data-field="{{field}}" data-subfield="{{subfield}}" data-type="skill">{{ character.skill(field, subfield)['value'] }}</span>
     <span class="half"> / {{ character.skill(field, subfield)['value']|half }}</span>
     <span class="fifth"> / {{ character.skill(field, subfield)['value']|fifth }}</span>
 {%- endmacro %}
@@ -48,8 +53,8 @@
 {%- endmacro %}
 
 {% macro editable_lines(key, default) -%}
-    {% for item in character.attribute(key) %}
-        {{ item['description'] }}
+    {% for item in character.attribute(key) or default %}
+        {{ item }}
     {% endfor %}
 {%- endmacro %}
 
@@ -122,10 +127,9 @@
         </div>  
         {% endif %}     
         {% endfor %}
-        <div class="skill">
-            <form>
-                {{ skillform.hidden_tag() }}
-                {{skillform.name}} {{ skillform.value }}
+        <div class="skill newskill">
+            <form method="POST" action="{{ url_for('character.view', id=character.id) }}">
+                {{ skillform.hidden_tag() }} {{ skillform.name(placeholder="New skill...")}}
             </form>
         </div>
     </div>
@@ -219,7 +223,7 @@
     </div>
     <div class="gearpossessions box">
         <h3>Gear &amp; Possessions</h3>
-        {{ editable_lines("Possessions.item", []) }}
+        {{ editable_lines("possessions", ['Nothing...']) }}
     </div>
     <div class="cashassets box">
     <h3>Cash &amp; Assets</h3>

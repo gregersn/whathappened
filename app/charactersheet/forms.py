@@ -32,4 +32,4 @@ class CreateForm(FlaskForm):
 
 class SkillForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
-    value = IntegerField('Value', validators=[DataRequired()])
+    # value = IntegerField('Value', validators=[DataRequired()])

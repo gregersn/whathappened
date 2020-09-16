@@ -12,6 +12,8 @@ from flask_assets import Environment, Bundle
 from flask_login import LoginManager
 from flask_migrate import Migrate, upgrade
 from flask_mail import Mail
+from flask_wtf.csrf import CSRFProtect
+
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -19,7 +21,7 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 mail = Mail()
 assets = Environment()
-
+csrf = CSRFProtect()
 Base = declarative_base()
 
 
@@ -37,7 +39,7 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
-
+    csrf.init_app(app)
     mail.init_app(app)
     assets.init_app(app)
 

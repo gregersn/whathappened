@@ -14,20 +14,6 @@ type Tabledata = any[];
 
 type SaveFunction = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => void
    
-/*
-
-function init_skillvalues() {
-    console.log("Init skill values");
-    const inputs: HTMLInputElement[] = Array.from(document.getElementsByTagName('input'));
-    inputs.forEach(element => {
-        if(element.type == "text") {
-            element.onchange = () => {
-                console.log(element.id, element.value);
-            }
-        }
-    })
-}
-*/
 
 function init_skillchecks() {
     console.log("Init skillchecks");
@@ -63,14 +49,22 @@ function init_editable_binaries() {
     });
 }
 
+function get_meta_tag(tagname: string): string|undefined {
+    const metas = document.getElementsByTagName('meta');
+    for(const meta of metas) {
+        if(meta.name === tagname)
+            return meta.content;
+    }
+    return undefined;
+}
+
 function send_update(datamap: Datamap|DOMStringMap, value: any) {
-    console.log("GOt something")
-    console.log(datamap);
-    console.log(value);
     const xhr = new XMLHttpRequest()
     const url = document.location.href + 'update';
     xhr.open('POST', url);
     xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader("X-CSRFToken", get_meta_tag('_token'));
+    xhr.setRequestHeader('x-csrf-token', get_meta_tag('_token'));
     xhr.onload = () => {
         console.log("Post done");
         console.log(url);
@@ -243,7 +237,11 @@ function init_editable_tables() {
     const tables: HTMLTableElement[] = <HTMLTableElement[]>Array.from(document.getElementsByClassName('editableTable'));
 
     tables.forEach(table => {
-        editable_table(table, (data: Tabledata) => {console.log("Saving table.\n"); console.log(data)} );
+        editable_table(table, (data: Tabledata) => {
+            const field = table.getAttribute('data-field');
+            console.log("Saving table.\n"); console.log(data)
+            send_update({field: field}, data)
+        } );
     });
 
 }

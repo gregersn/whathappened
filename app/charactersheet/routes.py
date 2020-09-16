@@ -114,6 +114,7 @@ def update(id):
     return render_template('character/update.html.jinja', character=character)
 """
 
+
 @bp.route('/<int:id>/update', methods=('POST',))
 @login_required
 def update(id):
@@ -125,64 +126,13 @@ def update(id):
         for setting in update:
             character.set_attribute(setting)
 
-            """
-            if setting.get('type', None) == 'skill':
-                path, skill = setting['field'].split('#')
-                subfield = setting.get('subfield', None)
-                value = setting.get('value')
-                skills = reduce(lambda x, y: x[y], path.split("."),
-                                character_data['Investigator'])
-                for s in skills:
-                    if s['name'] == skill:
-                        if (subfield is not None
-                                and subfield != s.get('subskill', 'None')):
-                            continue
-                        s['value'] = value
-                        s['half'] = str(math.floor(int(value, 10) / 2))
-                        s['fifth'] = str(math.floor(int(value, 10) / 5))
-                continue
-
-            elif setting.get('type', None) == 'skillcheck':
-                path, skill = setting['field'].split('#')
-                subfield = setting.get('subfield', None)
-                check = setting.get('value', False)
-                skills = reduce(lambda x, y: x[y], path.split("."),
-                                character_data['Investigator'])
-                for s in skills:
-                    if s['name'] == skill:
-                        if (subfield is not None
-                                and subfield != s.get('subskill', 'None')):
-                            continue
-                        s['checked'] = check
-                continue
-            else:
-                s = reduce(lambda x, y: x[y], setting['field'].split(".")[:-1],
-                           character_data['Investigator'])
-                s[setting['field'].split(".")[-1]] = setting['value']
-            """
-        # data.body = json.dumps(character_data)
         character.store_data()
         db.session.commit()
 
     return "OK"
 
-    investigator = character_data
-    # for skill in investigator['Skills']['Skill']:
-    #     print(skill)
-    character = {
-        'id': id,
-        'data': investigator
-    }
-    editable = False
-    if current_user.is_authenticated and current_user.id == data.user_id:
-        editable = True
-    return render_template('character/sheet.html.jinja',
-                           character=character,
-                           editable=editable)
 
-
-
-@bp.route('/<int:id>/', methods=('GET',))
+@bp.route('/<int:id>/', methods=('GET', 'POST'))
 def view(id):
     character = get_character(id, check_author=False)
 
@@ -191,10 +141,23 @@ def view(id):
     if current_user.is_authenticated and current_user.id == character.user_id:
         editable = True
 
+    skillform = SkillForm()
+    if editable and skillform.validate_on_submit():
+        skills = character.skills()
+        for skill in skills:
+            if skillform.name.data == skill['name']:
+                flash("Skill already exists")
+                return redirect(url_for('character.view', id=id))
+                
+        character.add_skill(skillform.name.data)
+        character.store_data()
+        db.session.commit()
+        return redirect(url_for('character.view', id=id))
+
     return render_template('character/sheet.html.jinja',
                            character=character,
                            editable=editable,
-                           skillform=SkillForm())
+                           skillform=skillform)
 
 
 @api.route('/<int:id>/', methods=('GET', ))
