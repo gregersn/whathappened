@@ -9,4 +9,9 @@ app = create_app()
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'User': User, 'UserProfile': UserProfile}
+    from app.charactersheet.models import Character
+    return {'db': db, 
+            'User': User,
+            'UserProfile': UserProfile, 
+            'Character': Character
+        }

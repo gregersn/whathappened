@@ -4,7 +4,7 @@ from functools import reduce
 
 from jsoncomment import JsonComment
 
-from flask import render_template, request, flash
+from flask import render_template, request, flash, current_app
 from flask import redirect, url_for, jsonify
 from flask_login import login_required, current_user
 
@@ -14,7 +14,7 @@ from werkzeug.exceptions import abort
 from . import bp, api
 
 from .models import Character
-from .forms import ImportForm
+from .forms import ImportForm, CreateForm, SkillForm
 from app import db
 
 
@@ -29,6 +29,21 @@ def get_character(id, check_author=True):
 
     return character
 
+@bp.app_template_filter('half')
+def half(value):
+    try:
+        o = int(value, 10) // 2
+        return o
+    except Exception:
+        return ''
+
+@bp.app_template_filter('fifth')
+def fifth(value):
+    try:
+        o = int(value, 10) // 5
+        return o
+    except Exception:
+        return ''
 
 @bp.route('/')
 def index():
@@ -48,31 +63,14 @@ def index():
     return render_template('character/index.html.jinja')
 
 
-@bp.route('/create/<string:type>', methods=('GET', 'POST'))
-@bp.route('/create', methods=('GET', 'POST'))
+@bp.route('/create/<string:chartype>', methods=('GET', 'POST'))
 @login_required
-def create(type=None):
-    form = ImportForm()
-    """
-    if request.method == 'POST':
-        title = request.form['title']
-        body = request.form.get('body', "{}")
-        error = None
-
-        if not title:
-            error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
-        else:
-            c = Character(title=title, body=body, user_id=current_user.id)
-            db.session.add(c)
-            db.session.commit()
-            return redirect(url_for('character.view', id=c.id))
-    """
+def create(chartype=None):
+    form = CreateForm()
     if form.validate_on_submit():
+        char_data = render_template('character/blank_character.json.jinja')
         c = Character(title=form.title.data,
-                      body=form.body.data,
+                      body=char_data,
                       user_id=current_user.id)
         db.session.add(c)
         db.session.commit()
@@ -80,6 +78,21 @@ def create(type=None):
     return render_template('character/create.html.jinja', form=form, type=type)
 
 
+@bp.route('/import/<string:type>', methods=('GET', 'POST'))
+@bp.route('/import', methods=('GET', 'POST'))
+@login_required
+def import_character(type=None):
+    form = ImportForm()
+    if form.validate_on_submit():
+        c = Character(title=form.title.data,
+                      body=form.body.data,
+                      user_id=current_user.id)
+        db.session.add(c)
+        db.session.commit()
+        return redirect(url_for('character.view', id=c.id))
+    return render_template('character/import.html.jinja', form=form, type=None)
+
+"""
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 def update(id):
     character = get_character(id)
@@ -99,22 +112,20 @@ def update(id):
             return redirect(url_for('character.index'))
 
     return render_template('character/update.html.jinja', character=character)
+"""
 
-
-@bp.route('/<int:id>/', methods=('GET', 'POST'))
-def view(id):
-    data = get_character(id, check_author=False)
-
-    character_data = json.loads(data.body)
-
-    if 'Investigator' not in character_data:
-        blank = render_template('character/blank_character.json.jinja')
-        character_data = JsonComment(json).loads(blank)
+@bp.route('/<int:id>/update', methods=('POST',))
+@login_required
+def update(id):
+    character = get_character(id, check_author=True)
 
     if request.method == "POST":
         update = request.get_json()
 
         for setting in update:
+            character.set_attribute(setting)
+
+            """
             if setting.get('type', None) == 'skill':
                 path, skill = setting['field'].split('#')
                 subfield = setting.get('subfield', None)
@@ -148,11 +159,14 @@ def view(id):
                 s = reduce(lambda x, y: x[y], setting['field'].split(".")[:-1],
                            character_data['Investigator'])
                 s[setting['field'].split(".")[-1]] = setting['value']
-
-        data.body = json.dumps(character_data)
+            """
+        # data.body = json.dumps(character_data)
+        character.store_data()
         db.session.commit()
 
-    investigator = character_data['Investigator']
+    return "OK"
+
+    investigator = character_data
     # for skill in investigator['Skills']['Skill']:
     #     print(skill)
     character = {
@@ -167,8 +181,25 @@ def view(id):
                            editable=editable)
 
 
+
+@bp.route('/<int:id>/', methods=('GET',))
+def view(id):
+    character = get_character(id, check_author=False)
+
+    editable = False
+
+    if current_user.is_authenticated and current_user.id == character.user_id:
+        editable = True
+
+    return render_template('character/sheet.html.jinja',
+                           character=character,
+                           editable=editable,
+                           skillform=SkillForm())
+
+
 @api.route('/<int:id>/', methods=('GET', ))
 def get(id):
+    """API call to get all character data."""
     data = get_character(id)
     return jsonify(data.to_dict())
 
@@ -176,6 +207,7 @@ def get(id):
 @bp.route('/<int:id>/delete', methods=('POST', ))
 @api.route('/<int:id>/delete', methods=('POST', ))
 def delete(id):
+    """Delete a character."""
     get_character(id)
     flash("Implement deletion of character")
     return redirect(url_for('character.index'))
@@ -183,5 +215,6 @@ def delete(id):
 
 @bp.route('/<int:id>/export', methods=('GET', ))
 def export(id):
+    """Exports charcter data to JSON."""
     data = get_character(id)
     return jsonify(data.get_sheet())

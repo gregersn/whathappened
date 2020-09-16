@@ -64,11 +64,14 @@ def convert_from_dholes(indata):
         'assets': assets
     }
 
+
 def half(value):
     return str(math.floor(int(value, 10) / 2))
 
+
 def fifth(value):
     return str(math.floor(int(value, 10) / 5))
+
 
 def convert_to_dholes(indata):
     def convert_skills(skills):

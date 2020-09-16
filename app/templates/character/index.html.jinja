@@ -2,8 +2,8 @@
 
 {% block header %}
   <h1>{% block title %}Character{% endblock %}</h1>
-  {% if not current_user.is_anonymou %}
-    <a class="action" href="{{ url_for('character.create') }}">New</a>
+  {% if not current_user.is_anonymous %}
+    <a class="action" href="{{ url_for('character.create', chartype='coc') }}">New</a>
   {% endif %}
 {% endblock %}
 

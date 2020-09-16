@@ -14,7 +14,7 @@
     </ui>
     {% endif %}
     <div>
-        <a class="action" href="{{ url_for('character.create', type='coc') }}">Create a new character</a><br />
-        <a class="action" href="{{ url_for('character.create') }}">Import a character</a><br />
+        <a class="action" href="{{ url_for('character.create', chartype='coc') }}">Create a new character</a><br />
+        <a class="action" href="{{ url_for('character.import_character') }}">Import a character</a><br />
     </div>
 {% endblock %}

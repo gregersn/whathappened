@@ -22,7 +22,9 @@ assets = Environment()
 
 Base = declarative_base()
 
+
 def create_app(config_class=Config):
+    assets._named_bundles = {}
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_class)
 

@@ -2,6 +2,5 @@
     {{ form.hidden_tag() }}
     <label for="title">Title (will be separate from name)</label>
     <input name="title" id="title" value="{{ request.form['title'] }}" required>
-    <input name="body" type="hidden" id="body" value="{}" />
     <input type="submit" value="Save">
 </form>

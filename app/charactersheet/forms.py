@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, ValidationError, SubmitField
+from wtforms import StringField, TextAreaField, IntegerField
+from wtforms import ValidationError, SubmitField
 from wtforms.validators import DataRequired
 import json
 from jsoncomment import JsonComment
@@ -22,3 +23,13 @@ class ImportForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     body = TextAreaField('Body', validators=[DataRequired(), JsonString()])
     submit = SubmitField('Import')
+
+
+class CreateForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    submit = SubmitField('Create')
+
+
+class SkillForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    value = IntegerField('Value', validators=[DataRequired()])
