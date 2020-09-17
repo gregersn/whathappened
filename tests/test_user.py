@@ -1,9 +1,9 @@
 import unittest
-from datetime import datetime, timedelta
 from app import create_app, db, assets
 from app.auth.models import User
 
 from .conftest import Conf as Config
+
 
 class UserModelCase(unittest.TestCase):
     def setUp(self):
@@ -23,7 +23,7 @@ class UserModelCase(unittest.TestCase):
         u.set_password('cat')
         self.assertFalse(u.check_password('dog'))
         self.assertTrue(u.check_password('cat'))
-    
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

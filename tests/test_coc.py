@@ -12,7 +12,8 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 def fixture_dholes_sheet() -> dict:
     """Load character sheet from JSON and convert to dict."""
     sheet = None
-    with open(os.path.join(BASEDIR, 'testchar_dholes.json'), 'r') as input_file:
+    filename = os.path.join(BASEDIR, 'testchar_dholes.json')
+    with open(filename, 'r') as input_file:
         sheet = json.load(input_file)
 
     return sheet

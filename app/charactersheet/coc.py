@@ -43,7 +43,7 @@ def convert_from_dholes(indata):
     personal_details = investigator['PersonalDetails']
     characteristics = investigator['Characteristics']
     skills = convert_skills(investigator['Skills'])
-    talents = investigator['Talents']
+    # talents = investigator['Talents']  # Not used
     weapons = convert_weapons(investigator['Weapons'])
     combat = convert_combat(investigator['Combat'])
     backstory = investigator['Backstory']
@@ -130,4 +130,3 @@ def convert_to_dholes(indata):
             'Assets': indata['assets']
         }
     }
-

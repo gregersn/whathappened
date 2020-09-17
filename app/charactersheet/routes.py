@@ -1,10 +1,7 @@
-import math
 import json
-from functools import reduce
+import time
 
-from jsoncomment import JsonComment
-
-from flask import render_template, request, flash, current_app
+from flask import render_template, request, flash
 from flask import redirect, url_for, jsonify
 from flask_login import login_required, current_user
 
@@ -29,6 +26,7 @@ def get_character(id, check_author=True):
 
     return character
 
+
 @bp.app_template_filter('half')
 def half(value):
     try:
@@ -37,6 +35,7 @@ def half(value):
     except Exception:
         return ''
 
+
 @bp.app_template_filter('fifth')
 def fifth(value):
     try:
@@ -44,6 +43,7 @@ def fifth(value):
         return o
     except Exception:
         return ''
+
 
 @bp.route('/')
 def index():
@@ -68,7 +68,9 @@ def index():
 def create(chartype=None):
     form = CreateForm()
     if form.validate_on_submit():
-        char_data = render_template('character/blank_character.json.jinja')
+        char_data = render_template('character/blank_character.json.jinja',
+                                    title=form.title.data,
+                                    timestamp=time.time())
         c = Character(title=form.title.data,
                       body=char_data,
                       user_id=current_user.id)
@@ -91,6 +93,7 @@ def import_character(type=None):
         db.session.commit()
         return redirect(url_for('character.view', id=c.id))
     return render_template('character/import.html.jinja', form=form, type=None)
+
 
 """
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
@@ -148,7 +151,7 @@ def view(id):
             if skillform.name.data == skill['name']:
                 flash("Skill already exists")
                 return redirect(url_for('character.view', id=id))
-                
+
         character.add_skill(skillform.name.data)
         character.store_data()
         db.session.commit()

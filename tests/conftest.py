@@ -1,13 +1,12 @@
 import os
-import tempfile
 
 import pytest
 from app import create_app, db as _db, assets
-import flask_migrate
 
 from config import Config
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+
 
 class Conf(Config):
     TESTING = True
@@ -26,7 +25,7 @@ def app(request):
 
     def teardown():
         ctx.pop()
-    
+
     request.addfinalizer(teardown)
 
     return app
@@ -42,7 +41,6 @@ def db(app, request):
         _db.drop_all()
         if os.path.isfile(Conf.TESTDB):
             os.unlink(Conf.TESTDB)
-
 
     _db.app = app
     _db.create_all()

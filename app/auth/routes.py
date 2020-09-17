@@ -1,15 +1,16 @@
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
-)
+from flask import flash, redirect, render_template, request, url_for
+
 from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
 
-from .forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
+from .forms import LoginForm, RegistrationForm
+from .forms import ResetPasswordRequestForm, ResetPasswordForm
 from .models import User
 
 from app import db
 
 from . import bp, send_password_reset_email
+
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -38,6 +39,7 @@ def logout():
     logout_user()
     return redirect(url_for('main.index'))
 
+
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -50,13 +52,15 @@ def register():
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('auth.login'))
-    return render_template('auth/register.html.jinja', title='Register', form=form)
+    return render_template('auth/register.html.jinja',
+                           title='Register', form=form)
+
 
 @bp.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
-    
+
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -64,14 +68,16 @@ def reset_password_request():
             send_password_reset_email(user)
         flash('Check your email for reset instructions.')
         return redirect(url_for('auth.login'))
-    
-    return render_template('/auth/reset_password_request.html.jinja', title='Reset password', form=form)
+
+    return render_template('/auth/reset_password_request.html.jinja',
+                           title='Reset password', form=form)
+
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
-    
+
     user = User.verify_reset_password_token(token)
     form = ResetPasswordForm()
     if form.validate_on_submit():

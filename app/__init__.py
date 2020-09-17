@@ -6,11 +6,10 @@ from config import Config
 
 from flask_sqlalchemy import SQLAlchemy
 
-from functools import reduce
 from sqlalchemy.ext.declarative import declarative_base
 from flask_assets import Environment, Bundle
 from flask_login import LoginManager
-from flask_migrate import Migrate, upgrade
+from flask_migrate import Migrate
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 
@@ -55,7 +54,7 @@ def create_app(config_class=Config):
     from . import charactersheet
     app.register_blueprint(charactersheet.bp, url_prefix='/character')
     app.register_blueprint(charactersheet.api, url_prefix='/api/character')
-    
+
     app.add_url_rule('/', endpoint='profile.index')
 
     @app.route('/hello')
@@ -68,7 +67,9 @@ def create_app(config_class=Config):
         print("Registering stuff")
         assets.url = app.static_url_path
         assets.config['TYPESCRIPT_CONFIG'] = '--target ES6'
-        scss = Bundle('scss/main.scss', 'scss/character.scss', filters='pyscss', output='css/all.css')
+        scss = Bundle('scss/main.scss', 'scss/character.scss',
+                      filters='pyscss',
+                      output='css/all.css')
         assets.register('scss_all', scss)
 
     return app

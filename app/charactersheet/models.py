@@ -112,8 +112,7 @@ class Character(db.Model):
         """Return a list of skills."""
         self.check_data()
         return self.data['skills']
-    
+
     def add_skill(self, skillname, value="1"):
         self.check_data()
         self.data['skills'].append({"name": skillname, "value": str(value)})
-
