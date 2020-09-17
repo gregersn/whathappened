@@ -10,6 +10,7 @@ type Elementdata = any;
 
 
 type Tabledata = any[];
+type Listdata = string[];
 
 
 type SaveFunction = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => void
@@ -144,7 +145,7 @@ function make_element_editable(element: HTMLElement, save: SaveFunction, type: "
 function table_to_obj(table: HTMLTableElement): Tabledata {
     let data_rows = [];
 
-    const tableName = table.getAttribute('data-field');
+    //const tableName = table.getAttribute('data-field');
     const fields = Array.from(table.tHead.rows[0].cells).map((element, index) => {
         return {'property': element.getAttribute('data-property'), 'index': index};
     }).filter((element, index) => {
@@ -165,6 +166,24 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
     return data_rows
 }
 
+function list_to_obj(list: HTMLUListElement): Listdata {
+    let data_rows  = []
+    const lines: HTMLLIElement[] = Array.from(list.getElementsByTagName('li'));
+    for(const line of lines) {
+        data_rows.push(line.innerHTML);
+    }
+    return data_rows;
+}
+
+const editable_list = (list: HTMLUListElement, save: (data: Listdata) => void) => {
+    console.log("Editable list...");
+    const lines: HTMLLIElement[] = Array.from(list.getElementsByTagName('li'));
+    for(const line of lines) {
+        make_element_editable(line, (data: any) => {
+            save(list_to_obj(list));
+        })
+    }
+}
 
 const editable_table = (table: HTMLTableElement, save: (data: Tabledata) => void) => {
     const make_cell_editable = (cell: HTMLTableCellElement) => {
@@ -207,11 +226,6 @@ const editable_table = (table: HTMLTableElement, save: (data: Tabledata) => void
     parent.appendChild(button);
 }
 
-const editable_area_handler = function(e: Event) {
-    e.preventDefault();
-    //editElement(this, "area", (d) => {});
-}
-
 function init_editable() {
     console.log("Init editable values");
     const editables: HTMLElement[] = <HTMLElement[]>Array.from(document.getElementsByClassName('editable'));
@@ -246,6 +260,19 @@ function init_editable_tables() {
 
 }
 
+function init_editable_lists() {
+    console.log("Init editable lists");
+    const lists = <HTMLUListElement[]>Array.from(document.getElementsByClassName("editable_list"))
+
+    lists.forEach(list => {
+        editable_list(list, (data: Listdata) => {
+            const field = list.getAttribute('data-field');
+            console.log("Saving list.\n"); console.log(data);
+            send_update({field: field}, data)
+        })
+    })
+}
+
 
 document.addEventListener('DOMContentLoaded', function(event) {
     //the event occurred
@@ -254,4 +281,5 @@ document.addEventListener('DOMContentLoaded', function(event) {
     init_editable();
     init_editable_binaries();
     init_editable_tables();
+    init_editable_lists();
   })

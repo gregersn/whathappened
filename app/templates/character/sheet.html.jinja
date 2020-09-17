@@ -223,7 +223,12 @@
     </div>
     <div class="gearpossessions box">
         <h3>Gear &amp; Possessions</h3>
-        {{ editable_lines("possessions", ['Nothing...']) }}
+        <ul class="editable_list" data-field="possessions">
+        {% for item in character.attribute('possessions') or [] %}
+            <li>{{ item }}</li>
+        {% endfor %}
+        <li>     </li>
+        </ul>
     </div>
     <div class="cashassets box">
     <h3>Cash &amp; Assets</h3>
