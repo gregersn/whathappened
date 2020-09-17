@@ -35,5 +35,4 @@ def character_functions():
 
     return dict(dict_path=dict_path, get_skill=get_skill)
 
-
 from . import routes  # noqa: F401 isort:skip

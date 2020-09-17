@@ -47,6 +47,8 @@ def fifth(value):
 
 @bp.route('/')
 def index():
+    return redirect("/")
+
     rows = Character.query.all()
 
     characters = []

@@ -228,14 +228,13 @@
         {% for item in character.attribute('possessions') or [] %}
             <li>{{ item }}</li>
         {% endfor %}
-        <li>     </li>
         </ul>
     </div>
     <div class="cashassets box">
     <h3>Cash &amp; Assets</h3>
     Spending level: {{ editable_field("cash.spending")}}<br />
     Cash: {{ editable_field("cash.cash")}}<br />
-    Assets: {{ editable_field("cash.assets")}} {{ editable_area("assets", "None") }}
+    Assets: {{ editable_field("cash.assets")}}<br />{{ editable_area("assets", "None") }}
     </div>
 
 </div>

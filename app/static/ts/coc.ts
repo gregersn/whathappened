@@ -183,6 +183,19 @@ const editable_list = (list: HTMLUListElement, save: (data: Listdata) => void) =
             save(list_to_obj(list));
         })
     }
+
+    const parent = list.parentElement;
+    const button = document.createElement('button');
+    button.innerHTML = "Add item";
+    button.onclick = () => {
+        const new_item = document.createElement('li');
+        new_item.innerHTML = 'New item...';
+        list.appendChild(new_item);
+        make_element_editable(new_item, (data: any) => {
+            save(list_to_obj(list));
+        })
+    }
+    parent.appendChild(button);
 }
 
 const editable_table = (table: HTMLTableElement, save: (data: Tabledata) => void) => {
