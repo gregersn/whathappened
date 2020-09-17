@@ -9,5 +9,6 @@
         "test"
     ],
     "python.linting.enabled": true,
-    "python.linting.flake8Enabled": true
+    "python.linting.flake8Enabled": true,
+    "python.pythonPath": "venv/bin/python"
 }

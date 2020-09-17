@@ -18,6 +18,7 @@
 {% block menu %}
     {% if current_user.is_authenticated %}
         <a href="{{ url_for('character.export', id=character['id']) }}">Export</a>
+        | <a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>
     {% endif %}
 {% endblock %}
 

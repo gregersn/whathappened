@@ -184,3 +184,20 @@ def export(id):
     """Exports charcter data to JSON."""
     data = get_character(id)
     return jsonify(data.get_sheet())
+
+
+@bp.route('/<int:id>/editjson', methods=('GET', 'POST'))
+def editjson(id):
+    """Lets the user edit the raw json of the character."""
+    c = get_character(id)
+    form = ImportForm()
+    if form.validate_on_submit():
+        c.title = form.title.data
+        c.body = form.body.data
+        db.session.commit()
+        return redirect(url_for('character.view', id=c.id))
+
+    form.body.data = c.body
+    form.title.data = c.title
+
+    return render_template('character/import.html.jinja', form=form, type=None)
