@@ -2,7 +2,10 @@ import math
 
 
 def convert_from_dholes(indata):
-    investigator = indata['Investigator']
+    investigator = indata
+
+    if 'Investigator' in indata:
+        investigator = indata['Investigator']
 
     def convert_skills(skills):
         inskills = skills['Skill']

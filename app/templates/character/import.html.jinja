@@ -21,6 +21,10 @@
           <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
       </p>        
-      <p>{{ form.submit() }}</p>
+      <p>{{ form.submit() }} {{ form.conversion() }} Try to convert.</p>
+      <p>
+        If you check the box, upon save, the system will try to convert the data from formats used by other generators.
+        Use with caution. Backup the data first.
+        </p>
   </form>
 {% endblock %}

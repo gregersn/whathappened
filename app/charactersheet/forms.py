@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField
+from wtforms import StringField, TextAreaField, BooleanField
 from wtforms import ValidationError, SubmitField
 from wtforms.validators import DataRequired
 import json
@@ -22,6 +22,7 @@ class JsonString(object):
 class ImportForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     body = TextAreaField('Body', validators=[DataRequired(), JsonString()])
+    conversion = BooleanField('Convert')
     submit = SubmitField('Import')
 
 

@@ -12,6 +12,7 @@ from . import bp, api
 
 from .models import Character
 from .forms import ImportForm, CreateForm, SkillForm
+from .coc import convert_from_dholes
 from app import db
 
 
@@ -196,6 +197,9 @@ def editjson(id):
     if form.validate_on_submit():
         c.title = form.title.data
         c.body = form.body.data
+        if form.conversion.data:
+            print("Conversion is checked")
+            c.body = convert_from_dholes(c.body)
         db.session.commit()
         return redirect(url_for('character.view', id=c.id))
 
