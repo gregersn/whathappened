@@ -201,5 +201,6 @@ def editjson(id):
 
     form.body.data = c.body
     form.title.data = c.title
+    form.submit.label.text = 'Save'
 
-    return render_template('character/import.html.jinja', form=form, type=None)
+    return render_template('character/import.html.jinja', title="Edit JSON", form=form, type=None)

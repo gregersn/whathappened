@@ -1,7 +1,7 @@
 {% extends 'base.html.jinja' %}
 
 {% block header %}
-  <h1>{% block title %}Import character{% endblock %}</h1>
+  <h1>{% block title %}{{ title or "Import character"}}{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -14,7 +14,7 @@
           <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
       </p>
-      <p>
+      <p class="editjson">
           {{ form.body.label }}<br>
           {{ form.body() }}<br>
           {% for error in form.body.errors %}
