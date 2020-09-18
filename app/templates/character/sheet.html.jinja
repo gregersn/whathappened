@@ -129,7 +129,7 @@
             <div class="skill">
                 <span>{{skill_checkmark("skills#" + skill['name'], skill['subskill'] or None ) }}</span>
                 
-                <span>{{ skill['name'] }}{% if skill['occupation'] %}*{% endif %}{%- if skill['subskill'] and skill['subskill'] != "None" %}: {{ skill['subskill']}} {% endif %}: </span>
+                <span class="skillname {% if skill['occupation'] %}occupation{% endif %}" data-field="skills#{{ skill['name'] }}">{{ skill['name'] }}{%- if skill['subskill'] and skill['subskill'] != "None" %}: {{ skill['subskill']}} {% endif %}: </span>
                 
                 <span class="value">{{ editable_skill("skills#" + skill['name'], skill['subskill'] or None, 0)}}</span>
             </div>  

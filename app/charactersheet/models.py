@@ -79,6 +79,19 @@ class Character(db.Model):
                             and subfield != s.get('subskill', 'None')):
                         continue
                     s['checked'] = check
+
+        elif attribute.get('type', None) == 'occupationcheck':
+            print("Mark occupation skill")
+            path, skill = attribute['field'].split('#')
+            subfield = attribute.get('subfield', None)
+            check = attribute.get('value', False)
+            skills = reduce(lambda x, y: x[y], path.split("."), self.data)
+            for s in skills:
+                if s['name'] == skill:
+                    if (subfield is not None
+                            and subfield != s.get('subskill', 'None')):
+                        continue
+                    s['occupation'] = check
         else:
             print("Set some other attribute")
             s = reduce(lambda x, y: x[y], attribute['field'].split(".")[:-1],
@@ -116,3 +129,5 @@ class Character(db.Model):
     def add_skill(self, skillname, value="1"):
         self.check_data()
         self.data['skills'].append({"name": skillname, "value": str(value)})
+        if isinstance(self.data['skills'], list):
+            self.data['skills'].sort(key=lambda x: x['name'])

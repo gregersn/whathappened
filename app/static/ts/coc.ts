@@ -3,7 +3,7 @@ console.log("Cthulhu fhtagn!");
 type Datamap = {
     field: string,
     subfield?: string | undefined,
-    type?: "skillcheck" | "binary" | "area" | "table" | undefined
+    type?: "skillcheck" | "binary" | "area" | "table" | "occupationcheck" | undefined
 }
 
 type Elementdata = any;
@@ -48,6 +48,37 @@ function init_editable_binaries() {
             }
         }
     });
+}
+
+function init_occupation_skillchecks() {
+    console.log("Init occupation skillchecks");
+    const skillnames: HTMLElement[] = <HTMLElement[]>Array.from(document.getElementsByClassName('skillname'));
+    skillnames.forEach(element => {
+        const occupation_field = element.getAttribute('data-field');
+        
+        const occupation_checker = document.createElement('input');
+        occupation_checker.type = "checkbox";
+        occupation_checker.hidden = true;
+        if(element.classList.contains('occupation')) {
+            occupation_checker.checked = true;
+        }
+        occupation_checker.onchange = () => {
+            console.log("Changed occupation on skill", occupation_field);
+            if(occupation_checker.checked) {
+                element.classList.add('occupation');
+            } else {
+                element.classList.remove('occupation');
+            }
+            occupation_checker.hidden = true;
+            send_update({field: occupation_field, type: "occupationcheck"}, occupation_checker.checked);
+        }
+        element.parentElement.appendChild(occupation_checker);
+        element.onclick = (e: Event) => {
+            //element.classList.toggle('occupation')
+            occupation_checker.hidden = !occupation_checker.hidden;
+        }
+
+    })
 }
 
 function get_meta_tag(tagname: string): string|undefined {
@@ -162,6 +193,10 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
 
         data_rows.push(row_data);
     }
+    /*data_rows.sort((a, b) => { 
+        if( a['name'] < b['name'] ) return -1;
+        if( a['name'] > b['name'] ) return 1;
+        return 0;})*/
 
     return data_rows
 }
@@ -295,4 +330,5 @@ document.addEventListener('DOMContentLoaded', function(event) {
     init_editable_binaries();
     init_editable_tables();
     init_editable_lists();
+    init_occupation_skillchecks();
   })
