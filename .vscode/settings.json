@@ -8,6 +8,10 @@
     "python.testing.nosetestArgs": [
         "test"
     ],
+    "python.linting.pylintArgs": [
+        "--load-plugins",
+        "pylint-flask"
+    ],
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": true,
     "python.pythonPath": "venv/bin/python"
