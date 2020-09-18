@@ -199,7 +199,9 @@ def editjson(id):
         c.body = form.body.data
         if form.conversion.data:
             print("Conversion is checked")
-            c.body = convert_from_dholes(c.body)
+            data = json.loads(c.body)
+
+            c.body = json.dumps(convert_from_dholes(data), indent=4)
         db.session.commit()
         return redirect(url_for('character.view', id=c.id))
 

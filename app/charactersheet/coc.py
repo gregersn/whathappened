@@ -20,6 +20,8 @@ def convert_from_dholes(indata):
 
     def convert_weapons(weapons):
         inweapons = weapons['weapon']
+        if not isinstance(inweapons, list):
+            inweapons = [inweapons, ]
         outweapons = []
         for weapon in inweapons:
             weapon.pop('hard', None)
@@ -28,10 +30,11 @@ def convert_from_dholes(indata):
         return outweapons
 
     def convert_possessions(possessions):
-        inpossessions = possessions['item']
         outpossessions = []
-        for item in inpossessions:
-            outpossessions.append(item['description'])
+        if possessions is not None:
+            inpossessions = possessions['item']
+            for item in inpossessions:
+                outpossessions.append(item['description'])
 
         return outpossessions
 
