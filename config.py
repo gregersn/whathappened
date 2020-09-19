@@ -17,4 +17,4 @@ class Config():
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 8025)
     ADMINS = ['your-email@example.com']
     ASSETS_DEBUG = False
-    ASSETS_AUTO_BUILD = True
+    ASSETS_AUTO_BUILD = False if os.environ.get('FLASK_ENV') != 'development' else True
