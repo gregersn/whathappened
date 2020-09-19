@@ -2,8 +2,22 @@ import json
 from functools import reduce
 from jsoncomment import JsonComment
 from datetime import datetime
+import base64
+import io
+from PIL import Image
 
 from app import db
+
+
+def fix_image(imagedata: str) -> str:
+    imagetype, imagedata = imagedata.split(',')
+    decoded = base64.b64decode(imagedata)
+    buf = io.BytesIO(decoded)
+    img = Image.open(buf)
+    img.thumbnail((192, 192))
+    buf = io.BytesIO()
+    img.save(buf, format='JPEG')
+    return base64.b64encode(buf.getvalue()).decode('utf-8')
 
 
 class Character(db.Model):
@@ -51,7 +65,6 @@ class Character(db.Model):
     def set_attribute(self, attribute):
         """Set a specific attribute."""
         self.check_data()
-        print(attribute)
 
         if attribute.get('type', None) == 'skill':
             print("Set a skill")
@@ -93,6 +106,11 @@ class Character(db.Model):
                             and subfield != s.get('subskill', 'None')):
                         continue
                     s['occupation'] = check
+        
+        elif attribute.get('type', None) == 'portrait':
+            print("Set portrait")
+            data = attribute.get('value', None)
+            self.set_portrait(data)
         else:
             print("Set some other attribute")
             s = reduce(lambda x, y: x[y], attribute['field'].split(".")[:-1],
@@ -132,3 +150,12 @@ class Character(db.Model):
         self.data['skills'].append({"name": skillname, "value": str(value)})
         if isinstance(self.data['skills'], list):
             self.data['skills'].sort(key=lambda x: x['name'])
+
+    def get_portrait(self):
+        self.check_data()
+        return self.data['personalia']['Portrait']
+
+    def set_portrait(self, data):
+        self.check_data()
+        self.data['personalia']['Portrait'] = fix_image(data)
+        return self.get_portrait()

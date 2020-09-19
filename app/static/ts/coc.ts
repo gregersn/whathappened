@@ -321,6 +321,27 @@ function init_editable_lists() {
     })
 }
 
+function init_set_portrait() {
+    console.log("Init set portrait");
+    const portraitbox: HTMLElement = <HTMLElement>document.getElementsByClassName('portrait')[0];
+    const uploadelement: HTMLInputElement = document.createElement('input');
+    uploadelement.type = 'file';
+    uploadelement.style.display = 'none';
+    uploadelement.onchange = (e: Event) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(uploadelement.files[0]);
+        reader.onload = () => {
+            send_update({field: 'personalia.Portrait', type: 'portrait'}, reader.result);
+        }
+    }
+
+    portraitbox.appendChild(uploadelement);
+    portraitbox.onclick = (e: Event) => {
+        uploadelement.click();
+    }
+
+}
+
 
 document.addEventListener('DOMContentLoaded', function(event) {
     //the event occurred
@@ -331,4 +352,5 @@ document.addEventListener('DOMContentLoaded', function(event) {
     init_editable_tables();
     init_editable_lists();
     init_occupation_skillchecks();
+    init_set_portrait();
   })

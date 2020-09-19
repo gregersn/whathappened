@@ -67,6 +67,9 @@
             width: 33%;
             height: 100%;
         }*/
+        .portrait {
+            flex-grow: 1;
+        }
     }
 
     .box {
@@ -76,6 +79,12 @@
             text-align: center;
             background-color: rgb(119, 154, 170);
             margin-top: 0;
+        }
+    }
+    .portrait {
+        align-items: center;
+        img {
+            height: 100%;
         }
     }
 

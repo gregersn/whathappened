@@ -93,6 +93,9 @@
                 </tr>
             </table>
         </div>
+        <div class="box portrait">
+            {% if character.get_portrait() %}<img src="data:image/jpg;base64, {{ character.get_portrait() }}" />{% endif %}
+        </div>
     </div>
     <div class="splitcontainer">
         <div class="box hitpoints">

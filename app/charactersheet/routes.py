@@ -98,29 +98,6 @@ def import_character(type=None):
     return render_template('character/import.html.jinja', form=form, type=None)
 
 
-"""
-@bp.route('/<int:id>/update', methods=('GET', 'POST'))
-def update(id):
-    character = get_character(id)
-
-    if request.method == 'POST':
-        title = request.form['title']
-        # body = request.form['body']
-        error = None
-
-        if not title:
-            error = "Title is required."
-
-        if error is not None:
-            flash(error)
-        else:
-            flash("Implement update character")
-            return redirect(url_for('character.index'))
-
-    return render_template('character/update.html.jinja', character=character)
-"""
-
-
 @bp.route('/<int:id>/update', methods=('POST',))
 @login_required
 def update(id):
