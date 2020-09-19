@@ -7,9 +7,10 @@ from app import db
 
 
 class Character(db.Model):
+    __tablename__ = 'charactersheet'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(256))
-    body = db.Column(db.String)
+    body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'))
 

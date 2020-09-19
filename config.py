@@ -11,7 +11,7 @@ class Config():
         'sqlite:///' + os.path.join(BASEDIR, 'whathappened.sqlite')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = os.environ.get('MAIL_SERVER') or "localhost"
-    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 8025, 10)
+    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 8025)
     ADMINS = ['your-email@example.com']
     ASSETS_DEBUG = False
     ASSETS_AUTO_BUILD = True
