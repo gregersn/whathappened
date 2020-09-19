@@ -22,3 +22,5 @@ app/static/css/
 
 .noseids
 nosetests.xml
+
+.env
