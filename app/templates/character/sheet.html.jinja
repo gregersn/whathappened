@@ -100,7 +100,7 @@
                 </tr>
             </table>
         </div>
-        <div class="box portrait">
+        <div class="box portrait {%- if editable %}editable{%- endif %}">
             {% if character.get_portrait() %}<img src="data:image/jpg;base64, {{ character.get_portrait() }}" />{% endif %}
         </div>
     </div>
