@@ -30,6 +30,7 @@
         .skill {
             border-bottom: 1px dotted gray;
             .value {
+                width: 3em;
                 input {
                     width: 3em;
                 }
@@ -37,6 +38,40 @@
             & .occupation {
                     font-weight: bolder;
                 }
+        }
+
+    }
+
+    .stat {
+        display: inline-grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        row-gap: 0;
+        column-gap: 0;
+        grid-row-gap: 0;
+        grid-column-gap: 0;
+        column-count: 2;
+        span {
+            margin: auto;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            line-height: 100%;
+            vertical-align: middle;
+        }
+
+        :first-child {
+            grid-row-start: 1;
+            grid-row-end: 3;
+        }
+        .half {
+            font-size: x-small;
+            background-color:rgb(255, 255, 230);
+        }
+
+        .fifth {
+            font-size: x-small;
+            background-color: rgb(255, 230, 230);
         }
 
     }
