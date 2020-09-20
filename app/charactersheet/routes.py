@@ -22,7 +22,7 @@ def get_character(id, check_author=True):
     if character is None:
         abort(404, "Character id {0} doesn't exist.".format(id))
 
-    if check_author and character.user_id != current_user.id:
+    if check_author and character.user_id != current_user.profile.id:
         abort(403)
 
     return character
@@ -76,7 +76,7 @@ def create(chartype=None):
                                     timestamp=time.time())
         c = Character(title=form.title.data,
                       body=char_data,
-                      user_id=current_user.id)
+                      user_id=current_user.profile.id)
         db.session.add(c)
         db.session.commit()
         return redirect(url_for('character.view', id=c.id))
@@ -91,7 +91,7 @@ def import_character(type=None):
     if form.validate_on_submit():
         c = Character(title=form.title.data,
                       body=form.body.data,
-                      user_id=current_user.id)
+                      user_id=current_user.profile.id)
         db.session.add(c)
         db.session.commit()
         return redirect(url_for('character.view', id=c.id))
@@ -121,7 +121,8 @@ def view(id):
 
     editable = False
 
-    if current_user.is_authenticated and current_user.id == character.user_id:
+    if (current_user.is_authenticated and
+            current_user.profile.id == character.user_id):
         editable = True
 
     skillform = SkillForm()
@@ -186,4 +187,7 @@ def editjson(id):
     form.title.data = c.title
     form.submit.label.text = 'Save'
 
-    return render_template('character/import.html.jinja', title="Edit JSON", form=form, type=None)
+    return render_template('character/import.html.jinja',
+                           title="Edit JSON",
+                           form=form,
+                           type=None)

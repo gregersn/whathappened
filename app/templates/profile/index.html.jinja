@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block content %}
+    <section id="characters">
     {% if profile.characters.all() %}
-    Your characters:
+    <h2>Your characters</h2>
     <ul>
     {% for character in profile.characters.all() %}
         <li><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }}</a> [<a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>]</li>
@@ -17,4 +18,5 @@
         <a class="action" href="{{ url_for('character.create', chartype='coc') }}">Create a new character</a><br />
         <a class="action" href="{{ url_for('character.import_character') }}">Import a character</a><br />
     </div>
+    </section>
 {% endblock %}

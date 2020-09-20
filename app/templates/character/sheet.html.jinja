@@ -22,45 +22,45 @@
     {% endif %}
 {% endblock %}
 
-{% macro editable_field(field, default='') -%}
-    <span {%- if editable %} class="editable" {% endif -%} data-field="{{field}}">{{ character.attribute(field) or default }}</span>    
+{%- macro editable_field(field, default='') %}
+    <span {%- if editable %} class="editable" {%- endif %} data-field="{{field}}">{{ character.attribute(field) or default }}</span>    
 {%- endmacro %}
 
-{% macro editable_stat(field, default='') -%}
-    <span {%- if editable %} class="editable" {% endif -%} data-field="{{field}}">{{ character.attribute(field) or default }}</span>    
+{%- macro editable_stat(field, default='') %}
+    <span {%- if editable %} class="editable" {%- endif %} data-field="{{field}}">{{ character.attribute(field) or default }}</span>    
     <span class="half">{{ character.attribute(field)|half }}</span>
     <span class="fifth">{{ character.attribute(field)|fifth }}</span>
 
 {%- endmacro %}
 
-{% macro editable_area(field, default='') -%}
-    <div {%- if editable %} class="editable" {% endif -%} data-field="{{field}}" data-type="area">{{ character.attribute(field) or default }}</div>
+{%- macro editable_area(field, default='') %}
+    <div {%- if editable %} class="editable" {%- endif %} data-field="{{field}}" data-type="area">{{ character.attribute(field) or default }}</div>
 {%- endmacro %}
 
 
-{% macro editable_binary(field, default=False) -%}
+{%- macro editable_binary(field, default=False) %}
     {%- if editable %}<input type="checkbox" data-field="{{field}}" data-type="binary" {%- if character.attribute(field) %}checked{%- endif %} />{%- else %}
         {%- if character.attribute(field)%}*{%- else %}&nbsp;&nbsp;{%- endif %}
     {%- endif %}
 {%- endmacro %}
 
-{% macro editable_skill(field, subfield=None, default='') -%}
-    <span {%- if editable %} class="skill editable" {% endif -%} data-field="{{field}}" data-subfield="{{subfield}}" data-type="skill">{{ character.skill(field, subfield)['value'] }}</span>
+{%- macro editable_skill(field, subfield=None, default='') %}
+    <span {%- if editable %} class="skill editable" {%- endif %} data-field="{{field}}" data-subfield="{{subfield}}" data-type="skill">{{ character.skill(field, subfield)['value'] }}</span>
     <span class="half">{{ character.skill(field, subfield)['value']|half }}</span>
     <span class="fifth">{{ character.skill(field, subfield)['value']|fifth }}</span>
 {%- endmacro %}
 
-{% macro skill_checkmark(field, subfield=None) -%}
+{%- macro skill_checkmark(field, subfield=None) %}
     {%- if editable %}<input type="checkbox" data-field="{{field}}" data-subfield="{{subfield}}" data-type="skillcheck" {%- if character.skill(field, subfield)['checked'] %}checked{%- endif %} />{%- else %}
         {%- if character.skill(field, subfield)['checked'] %}*{%- else %}&nbsp;&nbsp;{%- endif %}
     {%- endif %}
 {%- endmacro %}
 
-{% macro editable_weapon(key, weapon) -%}
+{%- macro editable_weapon(key, weapon) %}
     {{ key }}
 {%- endmacro %}
 
-{% macro editable_lines(key, default) -%}
+{%- macro editable_lines(key, default) %}
     {% for item in character.attribute(key) or default %}
         {{ item }}
     {% endfor %}
@@ -145,17 +145,19 @@
             </div>  
             {% endif %}     
             {% endfor %}
+            {% if current_user.is_authenticated and current_user.profile.id == character.user_id %}
             <div class="skill newskill">
                 <form method="POST" action="{{ url_for('character.view', id=character.id) }}">
                     {{ skillform.hidden_tag() }} {{ skillform.name(placeholder="New skill...")}}
                 </form>
             </div>
+            {% endif %}
         </section>
     </div>
     <section class="splitcontainer" id="weaponsandcombat">
         <div class="weapons box">
         <h3>Weapons</h3>
-            <table id="tblWeapons" class="editableTable" data-field="weapons">
+            <table id="tblWeapons" class="{%- if current_user.is_authenticated and current_user.profile.id == character.user_id %} editableTable{%- endif %}" data-field="weapons">
                 <thead>
                     <tr>
                         <th data-property="name">Weapon</th>
@@ -243,7 +245,7 @@
     <section class="splitcontainer">
         <div class="gearpossessions box">
             <h3>Gear &amp; Possessions</h3>
-            <ul class="editable_list" data-field="possessions">
+            <ul class="{%- if editable %} editable_list{%- endif %}" data-field="possessions">
             {% for item in character.attribute('possessions') or [] %}
                 <li>{{ item }}</li>
             {% endfor %}
