@@ -68,45 +68,28 @@ class Character(db.Model):
 
         if attribute.get('type', None) == 'skill':
             print("Set a skill")
-            path, skill = attribute['field'].split('#')
+            skill = attribute['field']
             subfield = attribute.get('subfield', None)
             value = attribute.get('value')
-            skills = reduce(lambda x, y: x[y], path.split("."),
-                            self.data)
-            for s in skills:
-                if s['name'] == skill:
-                    if (subfield is not None
-                            and subfield != s.get('subskill', 'None')):
-                        continue
-                    print("Setting value")
-                    s['value'] = value
+            skill = self.skill(skill, subfield)
+            skill['value'] = value
 
         elif attribute.get('type', None) == 'skillcheck':
             print("Check a skill")
-            path, skill = attribute['field'].split('#')
+            skill = attribute['field']
             subfield = attribute.get('subfield', None)
             check = attribute.get('value', False)
-            skills = reduce(lambda x, y: x[y], path.split("."), self.data)
-            for s in skills:
-                if s['name'] == skill:
-                    if (subfield is not None
-                            and subfield != s.get('subskill', 'None')):
-                        continue
-                    s['checked'] = check
+            skill = self.skill(skill, subfield)
+            skill['checked'] = check
 
         elif attribute.get('type', None) == 'occupationcheck':
             print("Mark occupation skill")
-            path, skill = attribute['field'].split('#')
+            skill = attribute['field']
             subfield = attribute.get('subfield', None)
             check = attribute.get('value', False)
-            skills = reduce(lambda x, y: x[y], path.split("."), self.data)
-            for s in skills:
-                if s['name'] == skill:
-                    if (subfield is not None
-                            and subfield != s.get('subskill', 'None')):
-                        continue
-                    s['occupation'] = check
-        
+            skill = self.skill(skill, subfield)
+            skill['occupation'] = check
+
         elif attribute.get('type', None) == 'portrait':
             print("Set portrait")
             data = attribute.get('value', None)
@@ -120,25 +103,27 @@ class Character(db.Model):
     def store_data(self):
         """Put loaded data back into JSON."""
         self.check_data()
-        self.body = json.dumps(self.data)
+        self.body = json.dumps(self.data, indent=4)
 
-    def skill(self, skillpath, subskill=None):
+    def skill(self, skill, subskill=None):
         """Return a single skill, or something."""
         self.check_data()
-        path, skill = skillpath.split('#')
-
         skills = self.skills()
 
         for s in skills:
             if s['name'] == skill:
-                if subskill is not None and subskill != s.get('subskill',
-                                                              'None'):
-                    print("Wrong subskill", skill, repr(subskill))
-                    continue
+                if subskill is not None and 'subskills' not in s:
+                    return None
+                if subskill is not None:
+                    for ss in s['subskills']:
+                        if ss['name'] == subskill:
+                            return ss
+                    print("Did not find subskill", skill, subskill)
+                    return None
                 return s
 
         print("Did not find", skill, subskill)
-        return 0
+        return None
 
     def skills(self, *args):
         """Return a list of skills."""
@@ -150,6 +135,21 @@ class Character(db.Model):
         self.data['skills'].append({"name": skillname, "value": str(value)})
         if isinstance(self.data['skills'], list):
             self.data['skills'].sort(key=lambda x: x['name'])
+
+    def add_subskill(self, name, parent):
+        self.check_data()
+        value = self.skill(parent)['value']
+        print("Try to add subskill")
+        print(f"Name: {name}, parent {parent}, value {value}")
+        if self.skill(parent, name) is None:
+            skill = self.skill(parent)
+            if 'subskills' not in skill:
+                skill['subskills'] = []
+            skill['subskills'].append({
+                'name': name,
+                'value': value
+            })
+
 
     def get_portrait(self):
         self.check_data()

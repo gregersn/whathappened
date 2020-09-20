@@ -11,7 +11,7 @@ from werkzeug.exceptions import abort
 from . import bp, api
 
 from .models import Character
-from .forms import ImportForm, CreateForm, SkillForm
+from .forms import ImportForm, CreateForm, SkillForm, SubskillForm
 from .coc import convert_from_dholes
 from app import db
 
@@ -125,8 +125,15 @@ def view(id):
             current_user.profile.id == character.user_id):
         editable = True
 
-    skillform = SkillForm()
-    if editable and skillform.validate_on_submit():
+    subskillform = SubskillForm(prefix="subskillform")
+    if editable and subskillform.data and subskillform.validate_on_submit():
+        character.add_subskill(subskillform.name.data, subskillform.parent.data)
+        character.store_data()
+        db.session.commit()
+        return redirect(url_for('character.view', id=id))
+
+    skillform = SkillForm(prefix="skillform")
+    if editable and skillform.data and skillform.validate_on_submit():
         skills = character.skills()
         for skill in skills:
             if skillform.name.data == skill['name']:
@@ -141,7 +148,8 @@ def view(id):
     return render_template('character/sheet.html.jinja',
                            character=character,
                            editable=editable,
-                           skillform=skillform)
+                           skillform=skillform,
+                           subskillform=subskillform)
 
 
 @api.route('/<int:id>/', methods=('GET', ))

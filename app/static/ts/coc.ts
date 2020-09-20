@@ -50,11 +50,47 @@ function init_editable_binaries() {
     });
 }
 
-function init_occupation_skillchecks() {
-    console.log("Init occupation skillchecks");
+let popup: HTMLDivElement = null;
+function init_popup() {
+    popup = document.createElement('div');
+    popup.style.backgroundColor = "#ff0000";
+    popup.style.width = "100px";
+    popup.style.height = "50px";
+    popup.style.position = "absolute";
+    popup.style.top = "100px";
+    popup.style.left = "100px";
+    popup.hidden = true;
+    document.body.appendChild(popup);
+}
+
+function show_popup(x: number, y: number, content: HTMLElement) {
+    popup.style.left = x + "px";
+    popup.style.top = y + "px";
+    popup.hidden = false;
+    popup.innerHTML = "";
+    popup.appendChild(content);
+}
+
+function close_popup() {
+    popup.hidden = true;
+}
+
+function show_subskillform(x: number, y: number, parent: string) {
+    const formcontainer: HTMLDivElement = <HTMLDivElement>document.getElementById("subskillform");
+    formcontainer.style.left = x + "px";
+    formcontainer.style.top = y + "px";
+    formcontainer.hidden = false;
+
+    const parentfield: HTMLInputElement = <HTMLInputElement>document.getElementById('subskillform-parent');
+    parentfield.value = parent;
+}
+
+function init_skill_edits() {
+    console.log("Init skill edits");
     const skillnames: HTMLElement[] = <HTMLElement[]>Array.from(document.getElementsByClassName('skillname'));
     skillnames.forEach(element => {
         const occupation_field = element.getAttribute('data-field');
+        const occupation_subfield = element.getAttribute('data-subfield');
         
         const occupation_checker = document.createElement('input');
         occupation_checker.type = "checkbox";
@@ -70,13 +106,32 @@ function init_occupation_skillchecks() {
                 element.classList.remove('occupation');
             }
             occupation_checker.hidden = true;
-            send_update({field: occupation_field, type: "occupationcheck"}, occupation_checker.checked);
+            send_update({field: occupation_field, subfield: occupation_subfield, type: "occupationcheck"}, occupation_checker.checked);
         }
         element.parentElement.appendChild(occupation_checker);
+
+        let btn_add_subskill = null;
+        if(element.getAttribute('data-specializations')) {
+            btn_add_subskill = document.createElement('button');
+            btn_add_subskill.hidden  = true;
+            btn_add_subskill.innerHTML = "Add subskill";
+            btn_add_subskill.onclick = (e: MouseEvent) => {
+                console.log(e);
+                show_subskillform(e.pageX, e.pageY, element.getAttribute('data-field'));
+                
+            }
+            element.parentElement.appendChild(btn_add_subskill);
+
+        }
+
         element.onclick = (e: Event) => {
             //element.classList.toggle('occupation')
             occupation_checker.hidden = !occupation_checker.hidden;
+            if(element.getAttribute('data-specializations')) {
+                btn_add_subskill.hidden = !btn_add_subskill.hidden;
+            }
         }
+
 
     })
 }
@@ -346,12 +401,12 @@ function init_set_portrait() {
 
 document.addEventListener('DOMContentLoaded', function(event) {
     //the event occurred
-    
+    init_popup();
     init_skillchecks();
     init_editable();
     init_editable_binaries();
     init_editable_tables();
     init_editable_lists();
-    init_occupation_skillchecks();
+    init_skill_edits();
     init_set_portrait();
   })

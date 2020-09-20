@@ -69,6 +69,14 @@
 
 
 {% block content %}
+<div class="form-subskill" id="subskillform" hidden>
+    <form method="POST" action="{{ url_for('character.view', id=character.id) }}">
+        {{ subskillform.hidden_tag() }}
+        {{ subskillform.parent() }}
+        {{ subskillform.name(placeholder="New subskill...")}} {{ subskillform.submit()}}
+    </form>
+</div>
+
 <div class="charactersheet">
     <div class="splitcontainer">
         <div class="box personalia">
@@ -134,15 +142,19 @@
         <h3>Investigator skills</h3>
         <section class="skills" id="skills">
             {% for skill in character.skills() %}
-            {% if loop.previtem and loop.previtem['name'] == skill['name'] and loop.previtem['subskill'] == skill['subskill'] %}
-            {% else %}
             <div class="skill">
-                <span>{{skill_checkmark("skills#" + skill['name'], skill['subskill'] or None ) }}</span>
-                
-                <span class="skillname {% if skill['occupation'] %}occupation{% endif %}" data-field="skills#{{ skill['name'] }}">{{ skill['name'] }}{%- if skill['subskill'] and skill['subskill'] != "None" %}: {{ skill['subskill']}} {% endif %}: </span>
-                
-                <span class="value stat">{{ editable_skill("skills#" + skill['name'], skill['subskill'] or None, 0)}}</span>
-            </div>  
+                <span>{{skill_checkmark(skill['name']) }}</span>
+                <span class="skillname {% if skill['occupation'] %}occupation{% endif %}" data-field="{{ skill['name'] }}" data-specializations="{{skill['specializations']}}">{{ skill['name'] }}: </span>
+                <span class="value stat">{{ editable_skill(skill['name'], None, 0)}}</span>
+            </div>
+            {% if skill.specializations and skill.subskills %}
+                {% for subskill in skill.subskills %}
+            <div class="skill">
+                <span>{{skill_checkmark(skill['name'], subskill.name ) }}</span>
+                <span class="skillname {% if subskill['occupation'] %}occupation{% endif %}" data-field="{{ skill['name'] }}" data-subfield="{{ subskill['name'] }}">{{ skill['name'] }}: {{ subskill['name'] }}: </span>
+                <span class="value stat">{{ editable_skill(skill['name'], subskill.name or None, 0)}}</span>
+            </div>
+                {% endfor %}
             {% endif %}     
             {% endfor %}
             {% if current_user.is_authenticated and current_user.profile.id == character.user_id %}

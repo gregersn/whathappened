@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, BooleanField
+from wtforms import StringField, TextAreaField, BooleanField, HiddenField
 from wtforms import ValidationError, SubmitField
 from wtforms.validators import DataRequired
 import json
@@ -34,3 +34,10 @@ class CreateForm(FlaskForm):
 class SkillForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     # value = IntegerField('Value', validators=[DataRequired()])
+    submit = SubmitField('Add')
+
+
+class SubskillForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    parent = HiddenField('Parent', validators=[DataRequired()])
+    submit = SubmitField('Add')
