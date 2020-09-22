@@ -3,7 +3,9 @@ import os
 import json
 import pytest
 
+from jsonschema import validate
 from app.charactersheet.coc import convert_from_dholes, convert_to_dholes
+from app.charactersheet.coc import schema, new_character
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -27,6 +29,13 @@ def fixture_test_sheet() -> dict:
         sheet = json.load(input_file)
 
     return sheet
+
+
+def test_validate(test_sheet: dict):
+    nc = new_character("Test Character")
+
+    validate(nc, schema=schema)
+    validate(test_sheet, schema=schema)
 
 
 def test_convert_from_dholes(dholes_sheet: dict, test_sheet: dict):
@@ -58,6 +67,8 @@ def test_convert_from_dholes(dholes_sheet: dict, test_sheet: dict):
     assert isinstance(possessions, list)
 
     assert converted == test_sheet
+
+    validate(converted, schema=schema)
 
 
 def test_convert_from_to_dholes(dholes_sheet: dict):
