@@ -340,10 +340,16 @@ function init_editable() {
     }
 
     editables.forEach(element => {
-        if(element.getAttribute('data-type') == 'area') {
-            make_element_editable(element, save, "area");
-        } else {
-            make_element_editable(element, save);
+        const dataType = element.getAttribute('data-type');
+        switch(dataType) {
+            case 'area':
+                make_element_editable(element, save, "area");
+                break;
+            case 'picture':
+                break;
+            default:
+                make_element_editable(element, save);
+                break;
         }
     })
 }

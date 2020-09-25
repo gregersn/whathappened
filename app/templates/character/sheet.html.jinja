@@ -108,8 +108,8 @@
                 </tr>
             </table>
         </div>
-        <div class="box portrait {%- if editable %}editable{%- endif %}">
-            {% if character.get_portrait() %}<img src="data:image/jpg;base64, {{ character.get_portrait() }}" />{% endif %}
+        <div class="box portrait {%- if editable %} editable{%- endif %}" data-type="picture">
+            {% if character.get_portrait() %}<img src="data:image/jpg;base64, {{ character.get_portrait() }}" />{% else %}<img src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
         </div>
     </div>
     <div class="splitcontainer">
