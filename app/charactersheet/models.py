@@ -109,6 +109,8 @@ class Character(db.Model):
         """Return a single skill, or something."""
         self.check_data()
         skills = self.skills()
+        if subskill == 'None':
+            subskill = None
 
         for s in skills:
             if s['name'] == skill:
