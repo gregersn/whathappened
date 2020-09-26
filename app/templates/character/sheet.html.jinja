@@ -6,9 +6,11 @@
         var csrf_token = "{{ csrf_token() }}";
     </script>
 
+    {% if editable %}
     {% assets "ts_coc" %}
     <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
+    {% endif %}
 {% endblock %}
 
 {% block header %}
@@ -18,7 +20,7 @@
 {% block menu %}
     {% if current_user.is_authenticated %}
         <a href="{{ url_for('character.export', id=character['id']) }}">Export</a>
-        | <a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>
+        {% if editable %}| <a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>{% endif %}
     {% endif %}
 {% endblock %}
 
