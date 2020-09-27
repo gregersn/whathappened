@@ -8,8 +8,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.declarative import declarative_base
 from flask_assets import Environment, Bundle
 from flask_login import LoginManager
-from flask_migrate import Migrate
 from flask_mail import Mail
+from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 
 from config import Config
@@ -62,7 +62,6 @@ def create_app(config_class=Config):
         return "Hello, World!"
 
     with app.app_context():
-        db.create_all()
 
         print("Registering stuff")
         assets.url = app.static_url_path
