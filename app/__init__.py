@@ -83,4 +83,7 @@ def create_app(config_class=Config):
                       output='css/all.css')
         assets.register('scss_all', scss)
 
+        ts_coc = Bundle("ts/coc.ts", filters='typescript', output='js/coc.js')
+        assets.register('ts_coc', ts_coc)
+
     return app
