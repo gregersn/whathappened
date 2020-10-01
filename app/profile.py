@@ -7,6 +7,8 @@ from app import db
 
 bp = Blueprint('profile', __name__)
 
+from app.charactersheet.models import Character
+
 
 class UserProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,4 +33,5 @@ def index():
 
     print(user_profile)
     print(user_profile.characters.all())
-    return render_template('profile/index.html.jinja', profile=user_profile)
+    characters = user_profile.characters.order_by(Character.timestamp.desc())
+    return render_template('profile/index.html.jinja', profile=user_profile, characters=characters)

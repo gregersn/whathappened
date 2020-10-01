@@ -6,10 +6,10 @@
 
 {% block content %}
     <section id="characters">
-    {% if profile.characters.all() %}
+    {% if characters %}
     <h2>Your characters</h2>
     <ul>
-    {% for character in profile.characters.all() %}
+    {% for character in characters %}
         <li><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }}</a> [<a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>]</li>
     {% endfor %}
     </ul>

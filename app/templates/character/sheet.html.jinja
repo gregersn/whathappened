@@ -21,6 +21,7 @@
     {% if current_user.is_authenticated %}
         <a href="{{ url_for('character.export', id=character['id']) }}">Export</a>
         {% if editable %}| <a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>{% endif %}
+        {% if editable %}| <a href="{{ url_for('character.delete', id=character.id) }}">Delete</a>{% endif %}
     {% endif %}
 {% endblock %}
 

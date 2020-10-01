@@ -1,0 +1,16 @@
+{% extends 'base.html.jinja' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block header %}
+    <h1>{% block title %}Delete "{{ character.title }} {{ character.name }}" ? {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        {{ form.submit() }}
+    </form>
+{% endblock %}

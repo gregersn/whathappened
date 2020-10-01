@@ -41,3 +41,8 @@ class SubskillForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     parent = HiddenField('Parent', validators=[DataRequired()])
     submit = SubmitField('Add')
+
+
+class DeleteForm(FlaskForm):
+    character_id = HiddenField('CharacterId', validators=[DataRequired()])
+    submit = SubmitField('Delete')

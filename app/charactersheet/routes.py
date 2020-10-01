@@ -11,7 +11,7 @@ from werkzeug.exceptions import abort
 from . import bp, api
 
 from .models import Character
-from .forms import ImportForm, CreateForm, SkillForm, SubskillForm
+from .forms import ImportForm, CreateForm, SkillForm, SubskillForm, DeleteForm
 from .coc import convert_from_dholes
 from app import db
 
@@ -159,13 +159,27 @@ def get(id):
     return jsonify(data.to_dict())
 
 
-@bp.route('/<int:id>/delete', methods=('POST', ))
-@api.route('/<int:id>/delete', methods=('POST', ))
+@login_required
+@bp.route('/<int:id>/delete', methods=('GET', 'POST', ))
+@api.route('/<int:id>/delete', methods=('GET', 'POST', ))
 def delete(id):
     """Delete a character."""
-    get_character(id)
-    flash("Implement deletion of character")
-    return redirect(url_for('character.index'))
+    character = get_character(id)
+
+    if current_user.profile.id != character.user_id:
+        abort(404)
+
+    form = DeleteForm()
+    if form.validate_on_submit():
+        db.session.delete(character)
+        db.session.commit()
+        return redirect(url_for('character.index'))
+
+    form.character_id.data = character.id
+
+    return render_template('character/delete_character.html.jinja',
+                           form=form,
+                           character=character)
 
 
 @bp.route('/<int:id>/export', methods=('GET', ))
