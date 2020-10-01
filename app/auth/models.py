@@ -1,3 +1,4 @@
+import logging
 from time import time
 import jwt
 from flask_login import UserMixin
@@ -6,6 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
 
+logger = logging.getLogger(__name__)
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,5 +38,6 @@ class User(UserMixin, db.Model):
             id = jwt.decode(token, current_app.config['SECRET_KEY'],
                             algorithms=['HS256'])['reset_password']
         except Exception:
+            logger.error("Exception occurent while trying to reset password.", exc_info=True)
             return
         return User.query.get(id)

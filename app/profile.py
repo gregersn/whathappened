@@ -1,3 +1,4 @@
+import logging
 from flask import (
     Blueprint, render_template
 )
@@ -8,6 +9,8 @@ from app import db
 bp = Blueprint('profile', __name__)
 
 from app.charactersheet.models import Character
+
+logger = logging.getLogger(__name__)
 
 
 class UserProfile(db.Model):
@@ -31,7 +34,7 @@ def index():
         db.session.add(user_profile)
         db.session.commit()
 
-    print(user_profile)
-    print(user_profile.characters.all())
+    logger.info(f"Showing profile {user_profile.id}")
+
     characters = user_profile.characters.order_by(Character.timestamp.desc())
     return render_template('profile/index.html.jinja', profile=user_profile, characters=characters)

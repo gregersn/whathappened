@@ -1,5 +1,6 @@
 import json
 import time
+import logging
 
 from flask import render_template, request, flash
 from flask import redirect, url_for, jsonify
@@ -15,6 +16,7 @@ from .forms import ImportForm, CreateForm, SkillForm, SubskillForm, DeleteForm
 from .coc import convert_from_dholes
 from app import db
 
+logger = logging.getLogger(__name__)
 
 def get_character(id, check_author=True):
     character = Character.query.get(id)
@@ -198,7 +200,7 @@ def editjson(id):
         c.title = form.title.data
         c.body = form.body.data
         if form.conversion.data:
-            print("Conversion is checked")
+            logger.debug("Conversion is checked")
             data = json.loads(c.body)
 
             c.body = json.dumps(convert_from_dholes(data), indent=4)

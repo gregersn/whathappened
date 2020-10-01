@@ -1,4 +1,3 @@
-import os
 import json
 from jsoncomment import JsonComment
 import jinja2
@@ -143,9 +142,8 @@ schema = {
 
 
 def new_character(title):
-    print(os.getcwd())
     templateloader = jinja2.FileSystemLoader(searchpath="./app/templates/")
-    templateenv =  jinja2.Environment(loader=templateloader)
+    templateenv = jinja2.Environment(loader=templateloader)
     template = templateenv.get_template('character/blank_character.json.jinja')
     return JsonComment(json).loads(template.render(title=title,
                                    timestamp=time.time()))

@@ -1,3 +1,4 @@
+import logging
 from flask import flash, redirect, render_template, request, url_for
 
 from flask_login import current_user, login_user, logout_user
@@ -9,8 +10,10 @@ from .models import User
 
 from app import db
 
+
 from . import bp, send_password_reset_email
 
+logger = logging.getLogger(__name__)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -18,13 +21,12 @@ def login():
     if not next_page or url_parse(next_page).netloc != '':
         next_page = url_for('main.index')
 
-    print("Logging in!")
     if current_user.is_authenticated:
-        print("User is already logged in")
+        logger.debug(f"User {current_user.id} is already logged in")
         return redirect(next_page)
     form = LoginForm()
     if form.validate_on_submit():
-        print("Login form was validated")
+        logger.debug("Login form was validated")
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')

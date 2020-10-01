@@ -1,3 +1,4 @@
+import logging
 import json
 from functools import reduce
 from jsoncomment import JsonComment
@@ -8,6 +9,8 @@ from PIL import Image
 
 from app import db
 
+
+logger = logging.getLogger(__name__)
 
 def fix_image(imagedata: str) -> str:
     imagetype, imagedata = imagedata.split(',')
@@ -67,7 +70,7 @@ class Character(db.Model):
         self.check_data()
 
         if attribute.get('type', None) == 'skill':
-            print("Set a skill")
+            logger.debug("Set a skill")
             skill = attribute['field']
             subfield = attribute.get('subfield', None)
             value = attribute.get('value')
@@ -75,7 +78,7 @@ class Character(db.Model):
             skill['value'] = value
 
         elif attribute.get('type', None) == 'skillcheck':
-            print("Check a skill")
+            logger.debug("Check a skill")
             skill = attribute['field']
             subfield = attribute.get('subfield', None)
             check = attribute.get('value', False)
@@ -83,7 +86,7 @@ class Character(db.Model):
             skill['checked'] = check
 
         elif attribute.get('type', None) == 'occupationcheck':
-            print("Mark occupation skill")
+            logger.debug("Mark occupation skill")
             skill = attribute['field']
             subfield = attribute.get('subfield', None)
             check = attribute.get('value', False)
@@ -91,11 +94,11 @@ class Character(db.Model):
             skill['occupation'] = check
 
         elif attribute.get('type', None) == 'portrait':
-            print("Set portrait")
+            logger.debug("Set portrait")
             data = attribute.get('value', None)
             self.set_portrait(data)
         else:
-            print("Set some other attribute")
+            logger.debug("Set some other attribute")
             s = reduce(lambda x, y: x[y], attribute['field'].split(".")[:-1],
                        self.data)
             s[attribute['field'].split(".")[-1]] = attribute['value']
@@ -120,11 +123,11 @@ class Character(db.Model):
                     for ss in s['subskills']:
                         if ss['name'] == subskill:
                             return ss
-                    print("Did not find subskill", skill, subskill)
+                    logger.debug(f"Did not find subskill {skill}, {subskill}")
                     return None
                 return s
 
-        print("Did not find", skill, subskill)
+        logger.debug(f"Did not find {skill}, {subskill}")
         return None
 
     def skills(self, *args):
@@ -141,8 +144,8 @@ class Character(db.Model):
     def add_subskill(self, name, parent):
         self.check_data()
         value = self.skill(parent)['value']
-        print("Try to add subskill")
-        print(f"Name: {name}, parent {parent}, value {value}")
+        logger.debug("Try to add subskill")
+        logger.debug(f"Name: {name}, parent {parent}, value {value}")
         if self.skill(parent, name) is None:
             skill = self.skill(parent)
             if 'subskills' not in skill:
@@ -151,7 +154,6 @@ class Character(db.Model):
                 'name': name,
                 'value': value
             })
-
 
     def get_portrait(self):
         self.check_data()
