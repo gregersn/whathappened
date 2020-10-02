@@ -1,45 +1,48 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>{% block title%}{% endblock %} - What Happened?</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{% block title%}Tell me{% endblock %} - What Happened?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300&family=Permanent+Marker&display=swap" rel="stylesheet"> 
     {% assets "scss_all" %}
     <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
     {% endassets %}
+
     {% block head %}{% endblock %}
 </head>
 
-
 <body>
-<nav>
+    <header>
     <div class="navbar">
     <h1>What Happened?</h1>
-    <ul>
-        {% if current_user.is_anonymous %}
-            <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-            <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
-        {% else %}
-            <li><a href="{{ url_for('profile.index') }}">Home</a></li>
-            <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
-        {% endif %}
-    </ul>
+        <nav>
+            <ul>
+            {% if current_user.is_anonymous %}
+                <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
+            {% else %}
+                <li><a href="{{ url_for('profile.index') }}">Home</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
+            {% endif %}
+            </ul>
+            </div>
+            {% if self.menu() %}
+            <div class="navbar">
+                {% block menu %}
+                {% endblock menu %}
+            </div>
+            {% endif %}
+        </nav>
     </div>
-    {% if self.menu() %}
-    <div class="navbar">
-    {% block menu %}
-    {% endblock menu %}
-    </div>
-    {% endif %}
-    </div>
-</nav>
-
-<section class="content">
-    <header>
-        {% block header %}{% endblock %}
     </header>
-    {% for message in get_flashed_messages() %}
-        <div class="flash">{{ message }}</div>
-    {% endfor %}
-    {% block content %}{% endblock %}
-</section>
+
+    <section class="content">
+        <header>
+            {% block header %}{% endblock %}
+        </header>
+        {%- for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {%- endfor %}
+        {% block content %}{% endblock %}
+    </section>
 </body>

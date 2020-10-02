@@ -1,13 +1,13 @@
 {% extends 'base.html.jinja' %}
 
 {% block header %}
-<h1>Actions and inventory</h1>
+<h2>Your inventory</h2>
 {% endblock %}
 
 {% block content %}
     <section id="characters">
     {% if characters %}
-    <h2>Your characters</h2>
+    <h3>Characters</h3>
     <ul>
     {% for character in characters %}
         <li><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }}</a> [<a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>]</li>
@@ -15,8 +15,8 @@
     </ul>
     {% endif %}
     <div>
-        <a class="action" href="{{ url_for('character.create', chartype='coc') }}">Create a new character</a><br />
-        <a class="action" href="{{ url_for('character.import_character') }}">Import a character</a><br />
+        <a class="action" href="{{ url_for('character.create', chartype='coc') }}">Create</a>
+        <a class="action" href="{{ url_for('character.import_character') }}">Import</a><br />
     </div>
     </section>
 {% endblock %}

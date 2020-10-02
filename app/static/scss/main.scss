@@ -7,10 +7,15 @@ html {
     box-sizing: inherit;
 }
 
+$main-color: rgb(119, 154, 170);
+$header-color: darken($main-color, 15%);
+
 html {
-    font-family: sans-serif;
-    background: #eee;
+    font-family: 'Hind Siliguri', sans-serif;
+    background: #666;
+    background-image: linear-gradient(#666, #aaa);
     padding: 1rem;
+    min-height: 100vh;
 }
 body {
     //max-width: 960px;
@@ -18,12 +23,12 @@ body {
     background: white;
 }
 h1 {
-    font-family: serif;
-    color: #377ba8;
+    font-family: 'Permanent Marker', cursive;
+    color: $header-color;
     margin: 1rem 0;
 }
 a {
-    color: #377ba8;
+    color: $main-color;
 }
 hr {
     border: none;
@@ -60,16 +65,16 @@ header .action {
     padding: 0 1rem 1rem;
     min-height: 80vh;
     > header {
-        border-bottom: 1px solid lightgray;
+        //border-bottom: 1px solid lightgray;
         display: flex;
         align-items: flex-end;
     }
     > header h1 {
         flex: auto;
-        margin: 1rem 0 0.25rem 0;
+        //margin: 1rem 0 0.25rem 0;
     }
     form {
-        margin: 1em 0;
+        //margin: 1em 0;
         display: flex;
         flex-direction: column;
     }
@@ -77,10 +82,10 @@ header .action {
         font-weight: bold;
         margin-bottom: 0.5em;
     }
-    input,
+    /*input,
     textarea {
         margin-bottom: 1em;
-    }
+    }*/
     textarea {
         min-height: 12em;
         resize: vertical;
@@ -93,7 +98,7 @@ header .action {
     margin: 1em 0;
     padding: 1em;
     background: #cae6f6;
-    border: 1px solid #377ba8;
+    border: 1px solid $main-color;
 }
 
 input.danger {

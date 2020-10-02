@@ -1,7 +1,7 @@
 {% extends 'base.html.jinja' %}
 
 {% block header %}
-  <h1>{% block title %}Character{% endblock %}</h1>
+  <h2>{% block title %}Character{% endblock %}</h2>
   {% if not current_user.is_anonymous %}
     <a class="action" href="{{ url_for('character.create', chartype='coc') }}">New</a>
   {% endif %}
@@ -13,7 +13,7 @@
       <header>
         <div>
         <a class="action" href="{{ url_for('character.view', id=character['id']) }}">
-          <h1>{{ character['title'] }}</h1>
+          <h3>{{ character['title'] }}</h3>
           </a>
           <div class="about">by {{ character['username'] }} on {{ character['created'].strftime('%Y-%m-%d') }}</div>
         </div>
