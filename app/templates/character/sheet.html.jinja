@@ -6,6 +6,10 @@
         var csrf_token = "{{ csrf_token() }}";
     </script>
 
+    {% assets "ts_sheet" %}
+        <script type="text/javascript" src="{{ ASSET_URL}}"></script>
+    {% endassets %}
+
     {% if editable %}
     {% assets "ts_coc" %}
     <script type="text/javascript" src="{{ ASSET_URL }}"></script>
@@ -20,8 +24,11 @@
 {% block menu %}
     {% if current_user.is_authenticated %}
         <a href="{{ url_for('character.export', id=character['id']) }}">Export</a>
-        {% if editable %}| <a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>{% endif %}
-        {% if editable %}| <a href="{{ url_for('character.delete', id=character.id) }}">Delete</a>{% endif %}
+        {%- if editable %}
+            | <a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>
+            | <a href="{{ url_for('character.delete', id=character.id) }}">Delete</a>
+            | <a href="#" id="sharebtn" data-id="{{ character.id }}">Share</a>
+        {%- endif %}
     {% endif %}
 {% endblock %}
 
@@ -72,6 +79,7 @@
 
 
 {% block content %}
+{%- if subskillform %}
 <div class="form-subskill" id="subskillform" hidden>
     <form method="POST" action="{{ url_for('character.view', id=character.id) }}">
         {{ subskillform.hidden_tag() }}
@@ -79,6 +87,7 @@
         {{ subskillform.name(placeholder="New subskill...")}} {{ subskillform.submit()}}
     </form>
 </div>
+{%- endif %}
 
 <div class="charactersheet">
     <div class="splitcontainer">
@@ -172,7 +181,7 @@
                 {% endfor %}
             {% endif %}     
             {% endfor %}
-            {% if current_user.is_authenticated and current_user.profile.id == character.user_id %}
+            {% if editable and skillform%}
             <div class="skill newskill">
                 <form method="POST" action="{{ url_for('character.view', id=character.id) }}">
                     {{ skillform.hidden_tag() }} {{ skillform.name(placeholder="New skill...")}}

@@ -12,7 +12,7 @@ from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 
-import app.logging
+import app.logging as applogging  # noqa imported for side effects
 
 import logging
 
@@ -78,12 +78,20 @@ def create_app(config_class=Config):
         logger.debug("Registering assets")
         assets.url = app.static_url_path
         assets.config['TYPESCRIPT_CONFIG'] = '--target ES6'
+
         scss = Bundle('scss/main.scss', 'scss/character.scss',
                       filters='pyscss',
                       output='css/all.css')
         assets.register('scss_all', scss)
 
-        ts_coc = Bundle("ts/coc.ts", filters='typescript', output='js/coc.js')
+        ts_sheet = Bundle("ts/sheet.ts",
+                          filters='typescript',
+                          output='js/sheet.js')
+        assets.register('ts_sheet', ts_sheet)
+
+        ts_coc = Bundle("ts/coc.ts",
+                        filters='typescript',
+                        output='js/coc.js')
         assets.register('ts_coc', ts_coc)
 
     return app
