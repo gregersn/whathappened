@@ -12,9 +12,11 @@ from werkzeug.exceptions import abort
 from . import bp, api
 
 from .models import Character
-from .forms import ImportForm, CreateForm, SkillForm, SubskillForm, DeleteForm
+from .forms import ImportForm, CreateForm, SkillForm
+from .forms import SubskillForm, DeleteForm
 from .coc import convert_from_dholes
 from app import db
+from app.models import Invite
 
 logger = logging.getLogger(__name__)
 
@@ -119,9 +121,31 @@ def update(id):
     return "OK"
 
 
+@bp.route('/<code>', methods=('GET', ))
+def shared(code):
+    invite = Invite.query.get(code)
+    if invite is None or invite.table != Character.__tablename__:
+        return "Invalid code"
+
+    character = Character.query.get(invite.object_id)
+    editable = False
+
+    typeheader = "1920s Era Investigator"
+    if character.gametype == "Modern":
+        typeheader = "Modern Era"
+
+    return render_template('character/sheet.html.jinja',
+                           character=character,
+                           typeheader=typeheader,
+                           editable=editable,
+                           skillform=None,
+                           subskillform=None)
+
+
 @bp.route('/<int:id>/', methods=('GET', 'POST'))
+@login_required
 def view(id):
-    character = get_character(id, check_author=False)
+    character = get_character(id, check_author=True)
 
     editable = False
 
@@ -131,7 +155,8 @@ def view(id):
 
     subskillform = SubskillForm(prefix="subskillform")
     if editable and subskillform.data and subskillform.validate_on_submit():
-        character.add_subskill(subskillform.name.data, subskillform.parent.data)
+        character.add_subskill(subskillform.name.data,
+                               subskillform.parent.data)
         character.store_data()
         db.session.commit()
         return redirect(url_for('character.view', id=id))
@@ -164,7 +189,7 @@ def view(id):
 @api.route('/<int:id>/', methods=('GET', ))
 def get(id):
     """API call to get all character data."""
-    data = get_character(id)
+    data = get_character(id, check_author=True)
     return jsonify(data.to_dict())
 
 
@@ -173,7 +198,7 @@ def get(id):
 @api.route('/<int:id>/delete', methods=('GET', 'POST', ))
 def delete(id):
     """Delete a character."""
-    character = get_character(id)
+    character = get_character(id, check_author=True)
 
     if current_user.profile.id != character.user_id:
         abort(404)
@@ -191,17 +216,35 @@ def delete(id):
                            character=character)
 
 
+@login_required
+@api.route('/<int:id>/share', methods=('GET', ))
+def share(id):
+    """Share a character."""
+    character = get_character(id, check_author=True)
+    logger.debug("Finding previous invite")
+    invite = Invite.query_for(character).first()
+    logger.debug(f"Invites found {invite}")
+    if not invite:
+        logger.debug(f"Creating an invite for character {character.id}")
+        invite = Invite(character)
+        invite.owner_id = character.user_id
+        db.session.add(invite)
+        db.session.commit()
+
+    return jsonify(url_for('character.shared', code=invite.id, _external=True))
+
+
 @bp.route('/<int:id>/export', methods=('GET', ))
 def export(id):
     """Exports charcter data to JSON."""
-    data = get_character(id)
+    data = get_character(id, check_author=True)
     return jsonify(data.get_sheet())
 
 
 @bp.route('/<int:id>/editjson', methods=('GET', 'POST'))
 def editjson(id):
     """Lets the user edit the raw json of the character."""
-    c = get_character(id)
+    c = get_character(id, check_author=True)
     form = ImportForm()
     if form.validate_on_submit():
         c.title = form.title.data
