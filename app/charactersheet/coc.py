@@ -3,6 +3,12 @@ from jsoncomment import JsonComment
 import jinja2
 import math
 import time
+from typing import Literal
+
+
+GameTypes = ["Classic (1920's)", "Modern"]
+GameType = Literal["Classic (1920's)", "Modern"]
+
 
 schema = {
     "$schema": "http://json-schema.org/schema#",
@@ -16,9 +22,12 @@ schema = {
                 "CreateDate": {"type": "string"},
                 "GameName": {"type": "string"},
                 "GameVersion": {"type": "string"},
-                "GameType": {"type": "string"},
+                "GameType": {
+                    "type": "string",
+                    "enum": GameTypes
+                },
                 "Disclaimer": {"type": "string"},
-                "Version": {"type": "string"}
+                "Version": {"type": "string", "value": "0.0.1"}
             }
         },
         "personalia": {
@@ -141,12 +150,14 @@ schema = {
 }
 
 
-def new_character(title):
+def new_character(title, gametype: GameType):
     templateloader = jinja2.FileSystemLoader(searchpath="./app/templates/")
     templateenv = jinja2.Environment(loader=templateloader)
     template = templateenv.get_template('character/blank_character.json.jinja')
+    gtype = gametype
     return JsonComment(json).loads(template.render(title=title,
-                                   timestamp=time.time()))
+                                   timestamp=time.time(),
+                                   type=gtype))
 
 
 def convert_from_dholes(indata):

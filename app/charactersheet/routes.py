@@ -18,6 +18,7 @@ from app import db
 
 logger = logging.getLogger(__name__)
 
+
 def get_character(id, check_author=True):
     character = Character.query.get(id)
 
@@ -75,6 +76,7 @@ def create(chartype=None):
     if form.validate_on_submit():
         char_data = render_template('character/blank_character.json.jinja',
                                     title=form.title.data,
+                                    type=form.gametype.data,
                                     timestamp=time.time())
         c = Character(title=form.title.data,
                       body=char_data,
@@ -147,8 +149,13 @@ def view(id):
         db.session.commit()
         return redirect(url_for('character.view', id=id))
 
+    typeheader = "1920s Era Investigator"
+    if character.gametype == "Modern":
+        typeheader = "Modern Era"
+
     return render_template('character/sheet.html.jinja',
                            character=character,
+                           typeheader=typeheader,
                            editable=editable,
                            skillform=skillform,
                            subskillform=subskillform)

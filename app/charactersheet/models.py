@@ -12,6 +12,7 @@ from app import db
 
 logger = logging.getLogger(__name__)
 
+
 def fix_image(imagedata: str) -> str:
     imagetype, imagedata = imagedata.split(',')
     decoded = base64.b64decode(imagedata)
@@ -163,3 +164,8 @@ class Character(db.Model):
         self.check_data()
         self.data['personalia']['Portrait'] = fix_image(data)
         return self.get_portrait()
+
+    @property
+    def gametype(self):
+        self.check_data()
+        return self.data['meta']['GameType']

@@ -32,7 +32,7 @@ def fixture_test_sheet() -> dict:
 
 
 def test_validate(test_sheet: dict):
-    nc = new_character("Test Character")
+    nc = new_character("Test Character", "Classic (1920's)")
 
     validate(nc, schema=schema)
     validate(test_sheet, schema=schema)
