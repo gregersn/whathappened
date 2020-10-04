@@ -15,6 +15,7 @@ from . import bp, send_password_reset_email
 
 logger = logging.getLogger(__name__)
 
+
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     next_page = request.args.get('next')
