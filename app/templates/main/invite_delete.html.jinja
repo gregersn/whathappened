@@ -1,0 +1,19 @@
+{% extends 'base.html.jinja' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block header %}
+    <h2>{% block title %}Delete share ? {% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+    <p>
+        Are you sure you want to delete share link "{{ invite.id }}" for "{{ obj.title }}"
+    </p>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        {{ form.submit() }}
+    </form>
+{% endblock %}

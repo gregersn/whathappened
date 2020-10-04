@@ -5,6 +5,7 @@ import logging
 from flask import render_template, request, flash
 from flask import redirect, url_for, jsonify
 from flask_login import login_required, current_user
+from flask_migrate import current
 
 from werkzeug.exceptions import abort
 
@@ -27,8 +28,17 @@ def get_character(id, check_author=True):
     if character is None:
         abort(404, "Character id {0} doesn't exist.".format(id))
 
-    if (check_author and character.user_id != current_user.profile.id) \
-            and not current_user.has_role('admin'):
+    if current_user.has_role('admin'):
+        return character
+
+    if character.campaigns:
+        logger.debug("Checking if character is in same campaign as user")
+        for campaign in character.campaigns:
+            if current_user.profile in campaign.players:
+                logger.debug(f"Character '{character.title}' is in '{campaign.title}' with '{current_user.username}''")
+                return character
+
+    if check_author and character.user_id != current_user.profile.id:
         abort(403)
 
     return character
@@ -154,6 +164,11 @@ def view(id):
             current_user.profile.id == character.user_id):
         editable = True
 
+    for campaign in character.campaigns:
+        if campaign.user_id == current_user.profile.id:
+            editable = True
+            break
+
     subskillform = SubskillForm(prefix="subskillform")
     if editable and subskillform.data and subskillform.validate_on_submit():
         character.add_subskill(subskillform.name.data,
@@ -179,7 +194,10 @@ def view(id):
     if character.gametype == "Modern":
         typeheader = "Modern Era"
 
+    shared = Invite.query_for(character).count()
+
     return render_template('character/sheet.html.jinja',
+                           shared=shared,
                            character=character,
                            typeheader=typeheader,
                            editable=editable,
@@ -232,7 +250,18 @@ def share(id):
         db.session.add(invite)
         db.session.commit()
 
-    return jsonify(url_for('character.shared', code=invite.id, _external=True))
+    share_url = url_for('character.shared', code=invite.id, _external=True)
+
+    form = None
+
+    html_response = render_template('character/api_share.html.jinja',
+                                    form=form,
+                                    url=share_url,
+                                    code=invite.id)
+
+    return jsonify({'url': share_url,
+                    'html': html_response})
+                
 
 
 @bp.route('/<int:id>/export', methods=('GET', ))

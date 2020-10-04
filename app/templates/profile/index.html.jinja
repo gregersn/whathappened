@@ -19,4 +19,28 @@
         <a class="action" href="{{ url_for('character.import_character') }}">Import</a><br />
     </div>
     </section>
+    <section id="playercampaigns">
+    <h2>Campaigns as player</h2>
+    {% if profile.campaigns_as_player %}
+        <ul>
+        {% for campaign in profile.campaigns_as_player %}
+            <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </section>
+
+    <section id="campaigns">
+    {% if profile.campaigns.all() %}
+        <h2>Your campaigns</h2>
+        <ul>
+        {% for campaign in profile.campaigns.all() %}
+            <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title}}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <div>
+        <a class="action" href="{{ url_for('campaign.create') }}">Create a new campaign</a><br />
+    </div>
+    </section>
 {% endblock %}
