@@ -1,0 +1,104 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+  <h2>{% block title %}{{ campaign.title }}{% endblock %}</h2>
+{% endblock %}
+
+{% block menu %}
+    {% if editable %}
+        <a href="{{ url_for('campaign.edit', id=campaign.id) }}">Edit</a>
+    {% endif %}
+    {% if current_user.profile in campaign.players %}
+        <a href="">Leave</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+{%- if campaign.description %}
+<section class="description">
+{{ campaign.description }}
+</section>
+{% endif %}
+<section class="characters">
+<h3>Characters</h3>
+    <div>
+    {% if campaign.characters %}
+    <ul>
+        {% for character in campaign.characters %}
+            <li>
+                <a href="{{url_for('character.view', id=character.id)}}">
+                {{ character.title }}</a>
+                ({{ character.player.user.username }})
+                {%- if editable or character.player.user == current_user %}
+                    [<a href="{{ url_for('campaign.remove_character', id=campaign.id, characterid=character.id) }}">Remove</a>]
+                {%- endif %}
+            </li>
+            
+        {% endfor %}
+    </ul>
+    {% else %}
+        There are no characters.
+    {% endif %}
+    </div>
+
+    <div>
+        <h4>Add a character.</h4>
+        <form action="" method="post">
+            {{ characterform.hidden_tag() }}
+            {{ characterform.character() }} {{ characterform.submit() }}
+            {% for error in characterform.character.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </form>
+    </div>
+</section>
+
+
+{% if campaign.user_id == current_user.profile.id %}
+<section class="players">
+    <h3>Players</h3>
+    <div>
+    {% if campaign.players %}
+        <ul>
+        {% for player in campaign.players %}
+            <li>
+                {{ player.user.username }}
+                {%- if editable %} [<a href="{{ url_for('campaign.remove_player', id=campaign.id, playerid=player.id) }}">Remove</a>]{%- endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        There are no players.
+    {% endif %}
+    </div>
+    {#
+    <div>
+        Invite player.
+        <form action="" method="post">
+            {{ inviteform.hidden_tag() }}
+                <p>
+                {{ inviteform.email.label }}<br>
+                {{ inviteform.email(size=32) }}<br>
+                {% for error in inviteform.email.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ inviteform.submit() }}</p>
+        </form>
+    </div>#}
+    <h4>Share links</h4>
+    <div>
+        {% if invites %}
+         {% for invite in invites %}
+            <a href="{{ url_for('campaign.join', code=invite.id) }}">{{ invite.id }}</a> [<a href="">Remove</a>]<br />
+         {% endfor %}
+        {% endif %}
+        <form action="" method="post">
+            {{ createinviteform.hidden_tag() }}
+            <p>{{ createinviteform.submit() }}</p>
+        </form>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

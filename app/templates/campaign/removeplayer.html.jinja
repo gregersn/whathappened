@@ -1,0 +1,13 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+  <h2>{% block title %}Remove player{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+    Do you wish to remove '{{ player.user.username }}' from '{{ campaign.title }}'?  
+      <form action="" method="post">
+    {{ form.hidden_tag() }}
+      <p>{{ form.submit() }}</p>
+  </form>
+{% endblock %}

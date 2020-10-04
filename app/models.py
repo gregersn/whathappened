@@ -46,6 +46,7 @@ class UserProfile(db.Model):
     user = db.relationship("User", back_populates="profile")
 
     characters = db.relationship('Character', backref='player', lazy='dynamic')
+    campaigns = db.relationship('Campaign', backref='owner', lazy='dynamic')
 
     def __repr__(self):
         return f'<UserProfile {self.user_id}>'
@@ -66,3 +67,6 @@ class Invite(db.Model):
     def query_for(cls, target: db.Model):
         return cls.query.filter_by(object_id=target.id) \
                         .filter_by(table=target.__tablename__)
+
+    def matches(self, target: db.Model):
+        return target.__tablename__ == self.table and target.id == self.object_id

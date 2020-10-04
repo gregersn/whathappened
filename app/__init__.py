@@ -43,6 +43,7 @@ def create_app(config_class=Config):
     except OSError as e:
         logger.info(f"Exception occured: {e} ")
 
+    # Init addons
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
@@ -50,6 +51,7 @@ def create_app(config_class=Config):
     mail.init_app(app)
     assets.init_app(app)
 
+    # Register blueprints
     from . import auth
     logger.debug("Registering blueprint auth")
     app.register_blueprint(auth.bp)
@@ -66,6 +68,9 @@ def create_app(config_class=Config):
     logger.debug("Registering blueprint charactersheet")
     app.register_blueprint(charactersheet.bp, url_prefix='/character')
     app.register_blueprint(charactersheet.api, url_prefix='/api/character')
+
+    from . import campaign
+    app.register_blueprint(campaign.bp, url_prefix='/campaign')
 
     app.add_url_rule('/', endpoint='profile.index')
 

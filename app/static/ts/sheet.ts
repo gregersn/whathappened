@@ -21,13 +21,8 @@ function init_sharebutton() {
             xhr.open('GET', url);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
-                const share_url = JSON.parse(xhr.responseText)
-                const message = document.createElement('span');
-                message.innerHTML = "Sharable link: ";
-                const link = document.createElement('a');
-                link.href = share_url;
-                link.innerText = share_url;
-                message.appendChild(link)
+                const share_data = JSON.parse(xhr.responseText)
+                const message = share_data.html;
                 show_message(message);
             }
             xhr.send();

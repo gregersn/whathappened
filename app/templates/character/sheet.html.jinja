@@ -27,7 +27,7 @@
         {%- if editable %}
             | <a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>
             | <a href="{{ url_for('character.delete', id=character.id) }}">Delete</a>
-            | <a href="#" id="sharebtn" data-id="{{ character.id }}">Share</a>
+            | <a href="#" id="sharebtn" data-id="{{ character.id }}">{% if not shared %}Share{% else %}Share link{% endif %}</a>
         {%- endif %}
     {% endif %}
 {% endblock %}
@@ -88,6 +88,12 @@
     </form>
 </div>
 {%- endif %}
+<div class="extrainfo">
+  {% if character.campaigns %}
+    In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{ character.campaigns.0.title }}</a>
+  {% endif %}
+
+</div>
 
 <div class="charactersheet">
     <div class="splitcontainer">
