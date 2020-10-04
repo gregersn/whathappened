@@ -27,7 +27,8 @@ def get_character(id, check_author=True):
     if character is None:
         abort(404, "Character id {0} doesn't exist.".format(id))
 
-    if check_author and character.user_id != current_user.profile.id:
+    if (check_author and character.user_id != current_user.profile.id) \
+            and not current_user.has_role('admin'):
         abort(403)
 
     return character
