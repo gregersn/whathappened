@@ -9,7 +9,7 @@ from . import bp
 from werkzeug.exceptions import abort
 
 from .models import Campaign
-from app.charactersheet.models import Character
+from app.character.models import Character
 from app.models import UserProfile
 from .forms import CreateForm, InvitePlayerForm, AddCharacterForm
 from .forms import JoinCampaignForm, EditForm, RemoveCharacterForm

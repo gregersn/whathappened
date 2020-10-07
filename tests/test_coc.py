@@ -4,8 +4,8 @@ import json
 import pytest
 
 from jsonschema import validate
-from app.charactersheet.coc import convert_from_dholes, convert_to_dholes
-from app.charactersheet.coc import schema, new_character
+from app.character.coc import convert_from_dholes, convert_to_dholes
+from app.character.coc import schema, new_character
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 

@@ -7,7 +7,7 @@ from app import db
 
 bp = Blueprint('profile', __name__, template_folder='templates')
 
-from app.charactersheet.models import Character  # noqa F401
+from app.character.models import Character  # noqa F401
 from .models import UserProfile  # noqa F401
 
 logger = logging.getLogger(__name__)

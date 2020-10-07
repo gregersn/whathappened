@@ -64,10 +64,10 @@ def create_app(config_class=Config):
     logger.debug("Registering blueprint profile")
     app.register_blueprint(profile.bp, url_prefix='/profile')
 
-    from . import charactersheet
-    logger.debug("Registering blueprint charactersheet")
-    app.register_blueprint(charactersheet.bp, url_prefix='/character')
-    app.register_blueprint(charactersheet.api, url_prefix='/api/character')
+    from . import character
+    logger.debug("Registering blueprint character")
+    app.register_blueprint(character.bp, url_prefix='/character')
+    app.register_blueprint(character.api, url_prefix='/api/character')
 
     from . import campaign
     app.register_blueprint(campaign.bp, url_prefix='/campaign')

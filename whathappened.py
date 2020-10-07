@@ -2,7 +2,7 @@ from app import create_app, db
 
 from app.auth.models import User, Role, UserRoles
 from app.profile import UserProfile
-from app.charactersheet.models import Character
+from app.character.models import Character
 
 app = create_app()
 
