@@ -5,7 +5,7 @@ from flask_login import login_user, logout_user
 from app import login_manager
 from app.email import send_mail
 
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint('auth', __name__, url_prefix='/auth', template_folder='templates')
 
 from .models import User  # noqa E402
 from .forms import LoginForm, RegistrationForm  # noqa E402

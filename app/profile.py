@@ -5,7 +5,7 @@ from flask import (
 from flask_login import login_required, current_user
 from app import db
 
-bp = Blueprint('profile', __name__)
+bp = Blueprint('profile', __name__, template_folder='templates')
 
 from app.charactersheet.models import Character  # noqa F401
 from .models import UserProfile  # noqa F401
