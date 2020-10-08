@@ -203,7 +203,7 @@ function editElement(element: HTMLElement, type: "area" | "input", save: SaveFun
     })
 
     editfield.addEventListener("keypress", (e) => {
-        if(e.keyCode === 13 && e.ctrlKey === false) {
+        if(e.keyCode === 13 && e.shiftKey === false) {
             saveElement(editfield, element, save, editable_handler);
         }
     })
