@@ -1,17 +1,19 @@
-<!DOCTYPE html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+{% extends 'shell.html.jinja' %}
+{% block head %}
+    {{ super() }}
     <title>{% block title%}Tell me{% endblock %} - What Happened?</title>
+    <meta name="_token" content="{{ csrf_token() }}">
+    <script type="text/javascript">
+        var csrf_token = "{{ csrf_token() }}";
+    </script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300&family=Permanent+Marker&display=swap" rel="stylesheet"> 
     {% assets "scss_all" %}
     <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
     {% endassets %}
+{% endblock %}
 
-    {% block head %}{% endblock %}
-</head>
-
-<body>
+{% block body %}
     <header>
     <div class="navbar">
     <h1>What Happened?</h1>
@@ -21,7 +23,7 @@
                 <li><a href="{{ url_for('auth.register') }}">Register</a></li>
                 <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
             {% else %}
-                <li><a href="{{ url_for('profile.index') }}">Home</a></li>
+                <li><a href="{{ url_for('profile.index') }}">{{ current_user.username }}</a></li>
                 <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
             {% endif %}
             </ul>
@@ -49,3 +51,4 @@
         {% block content %}{% endblock %}
     </section>
 </body>
+{% endblock %}

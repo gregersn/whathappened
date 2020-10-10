@@ -1,0 +1,41 @@
+{% extends 'base.html.jinja' %}
+{% block head %}
+    {{ super() }}
+    {% assets "scss_handout" %}
+    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+    {% endassets %}
+{% endblock %}
+
+{% block header %}
+    <h2>Handouts for <a href="{{ url_for('campaign.view', id=campaign.id) }}">'{{ campaign.title }}'</a></h2>
+{% endblock %}
+
+
+{% block content %}
+    <section class="handouts">
+    <ul>
+    {% for handout in handouts %}
+    <li>
+        <a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id, handout_id=handout.id) }}">{{ handout.title }}</a>
+         [ <a href="{{ url_for('campaign.handout_delete', campaign_id=campaign.id, handout_id=handout.id) }}">Delete</a> ]
+    </li>
+    {% endfor %}
+    <ul>
+    </section>
+
+    {% if editable %}
+    <section class="create">
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+                <p>
+                {{ form.title.label }}<br>
+                {{ form.title(size=32) }}<br>
+                {% for error in form.title.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+    </section>
+    {% endif %}
+{% endblock %}

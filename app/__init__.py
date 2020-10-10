@@ -71,6 +71,7 @@ def create_app(config_class=Config):
 
     from . import campaign
     app.register_blueprint(campaign.bp, url_prefix='/campaign')
+    app.register_blueprint(campaign.apibp, url_prefix='/api/campaign')
 
     app.add_url_rule('/', endpoint='profile.index')
 
@@ -89,14 +90,42 @@ def create_app(config_class=Config):
                       output='css/all.css')
         assets.register('scss_all', scss)
 
+        css_profile = Bundle('scss/profile.scss', filters='pyscss', output='css/profile.css')
+        assets.register('scss_profile', css_profile)
+
+        css_campaign = Bundle('scss/campaign.scss', filters='pyscss', output='css/campaign.css')
+        assets.register('scss_campaign', css_campaign)
+
+        css_handout = Bundle('scss/handout.scss', filters='pyscss', output='css/handout.css')
+        assets.register('scss_handout', css_handout)
+
+        css_character = Bundle('scss/character.scss', filters='pyscss', output='css/character.css')
+        assets.register('scss_character', css_character)
+
+
+        # Character sheet functions
         ts_sheet = Bundle("ts/sheet.ts",
                           filters='typescript',
                           output='js/sheet.js')
         assets.register('ts_sheet', ts_sheet)
 
+        # CoC specific functions
         ts_coc = Bundle("ts/coc.ts",
                         filters='typescript',
                         output='js/coc.js')
         assets.register('ts_coc', ts_coc)
+
+        # Campaign specific functions
+        ts_campaign = Bundle("ts/campaign.ts",
+                             filters='typescript',
+                             output='js/campaign.js')
+        assets.register('ts_campaign', ts_campaign)
+
+        # Handout specific functions
+        ts_handout = Bundle("ts/handout.ts",
+                            filters="typescript",
+                            output="js/handout.js")
+        assets.register('ts_handout', ts_handout)
+
 
     return app

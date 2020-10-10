@@ -1,0 +1,27 @@
+.handouts {
+    .table-header-rotated {
+        border-collapse: collapse;
+
+        td {
+            width: 30px;
+            text-align: center;
+            padding: 10px 5px;
+            border: 1px solid #ccc;
+        }        
+    }
+    .rot90 {
+        height: 140px;
+        white-space: nowrap;
+
+        > div {
+            transform: 
+                translate(17px, 50px)
+                rotate(315deg);
+            width: 30px;
+        }
+        > div > span {
+                border-bottom: 1px solid #ccc;
+                padding: 0px 10px;
+            }
+    }
+}

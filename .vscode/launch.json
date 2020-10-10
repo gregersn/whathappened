@@ -18,7 +18,8 @@
             "args": [
                 "run"
             ],
-            "jinja": true
+            "jinja": true,
+            "justMyCode": false
         },
         {
             "name": "Init db",
