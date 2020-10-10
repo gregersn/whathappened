@@ -1,6 +1,7 @@
 {% extends 'base.html.jinja' %}
 
 {% block head %}
+{{ super() }}
 {% assets filters="pyscss", output="profile.css",
           "scss/profile.scss" %}
         <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">

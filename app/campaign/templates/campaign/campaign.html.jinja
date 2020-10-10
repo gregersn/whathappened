@@ -1,10 +1,16 @@
 {% extends 'base.html.jinja' %}
 
 {% block head %}
+    {{ super() }}
 {% assets filters="pyscss", output="campaign.css",
           "scss/campaign.scss" %}
         <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+
 {% endassets %}
+{% assets "ts_campaign" %}
+    <script type="text/javascript" src="{{ ASSET_URL}}"></script>
+{% endassets %}
+
 {% endblock %}
 
 {% block header %}
@@ -58,6 +64,49 @@
             {% endfor %}
         </form>
     </div>
+</section>
+
+<section class="handouts">
+<h3>Handouts</h3>
+
+{% if editable %}
+<table class="table-header-rotated handoutshares">
+<thead>
+<tr>
+    <th></th>
+    {% for player in campaign.players %}
+    <th class="rot90">
+        <div>
+            <span>
+            {{ player.user.username }}
+            </span>
+        </div>
+    </th>
+    {% endfor %}
+</tr>
+</thead>
+<tbody>
+{% for handout in campaign.handouts %}
+    <tr>      
+        <th><a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id, handout_id=handout.id) }}">{{ handout.title }}</a></th>
+        {% for player in campaign.players %}
+        <td>
+            <input type="checkbox" autocomplete="off" {%- if player in handout.players %}checked{%- endif %} data-handout="{{ handout.id }}"  data-campaign="{{ campaign.id }}" data-player="{{ player.id }}"/>
+        </td>
+        {% endfor %}
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+    <a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id) }}">Edit handouts</a>
+{% else %}
+    <ul>
+{% for handout in campaign.handouts %}
+    {%- if current_user.profile in handout.players %}<li><a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id, handout_id=handout.id) }}">{{ handout.title }}</a></li>{%- endif %}
+{% endfor %}
+    </ul>
+
+{% endif %}
 </section>
 
 

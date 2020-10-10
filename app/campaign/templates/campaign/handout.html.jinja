@@ -1,0 +1,39 @@
+{% extends 'base.html.jinja' %}
+
+{% block head %}
+    {{ super() }}
+    {% assets "ts_handout" %}
+        <script type="text/javascript" src="{{ ASSET_URL}}"></script>
+    {% endassets %}
+{% endblock head %}
+{% block header %}
+    <h2>Handout '{{ handout.title }}'</h2>
+{% endblock %}
+
+
+{% block content %}
+    <section class="handout">
+        <div class="tabs">
+            <div class="tab-content" id="tab_content_view" data-name="View">
+                <div id="view" class="container tab-pane active">
+                    {{ handout.content|markdown }}
+                </div>
+            </div>
+            {% if editable %}
+            <div class="tab-content" id="tab_content_edit" data-name="Edit">
+                <div id="edit" class="container tab-pane fade">
+                    <form action="" method="POST">
+                        {{ form.hidden_tag() }}
+                        {{ form.title }}
+                        {{ form.content }}
+                        {{ form.status }}
+                        {{ form.players.label }}
+                        {{ form.players }}
+                        {{ form.submit }}
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'shell.html.jinja' %}
+
+{% block head %}
+    {{ super() }}
+    {% assets "ts_handout" %}
+        <script type="text/javascript" src="{{ ASSET_URL}}"></script>
+    {% endassets %}
+{% endblock head %}
+{% block header %}
+    <h2>Handout '{{ handout.title }}'</h2>
+{% endblock %}
+
+
+{% block body %}
+    {{ handout.content|markdown }}
+{% endblock %}

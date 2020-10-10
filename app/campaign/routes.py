@@ -168,4 +168,3 @@ def remove_player(id, playerid):
     form.id.data = c.id
     form.player.data = player.id
     return render_template('campaign/removeplayer.html.jinja', player=player, campaign=c, form=form)
-

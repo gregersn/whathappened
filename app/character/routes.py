@@ -5,7 +5,6 @@ import logging
 from flask import render_template, request, flash
 from flask import redirect, url_for, jsonify
 from flask_login import login_required, current_user
-from flask_migrate import current
 
 from werkzeug.exceptions import abort
 
@@ -35,7 +34,9 @@ def get_character(id, check_author=True):
         logger.debug("Checking if character is in same campaign as user")
         for campaign in character.campaigns:
             if current_user.profile in campaign.players:
-                logger.debug(f"Character '{character.title}' is in '{campaign.title}' with '{current_user.username}''")
+                logger.debug(f"Character '{character.title}' " +
+                             f"is in '{campaign.title}' " +
+                             f"with '{current_user.username}''")
                 return character
 
     if check_author and character.user_id != current_user.profile.id:
@@ -261,7 +262,6 @@ def share(id):
 
     return jsonify({'url': share_url,
                     'html': html_response})
-                
 
 
 @bp.route('/<int:id>/export', methods=('GET', ))

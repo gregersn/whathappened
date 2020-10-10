@@ -1,10 +1,7 @@
 {% extends 'base.html.jinja' %}
 
 {% block head %}
-    <meta name="_token" content="{{ csrf_token() }}">
-    <script type="text/javascript">
-        var csrf_token = "{{ csrf_token() }}";
-    </script>
+    {{ super() }}
 
     {% assets filters="pyscss", output="character.css",
             "scss/character.scss" %}
