@@ -9,8 +9,6 @@ def test_config(app):
     assert create_app(Config).testing
 
 
-def test_hello():
-    assets._named_bundles = {}
-    client = create_app(Config).test_client()
+def test_hello(client):
     response = client.get('/hello')
     assert response.data == b'Hello, World!'

@@ -151,7 +151,7 @@ schema = {
 
 
 def new_character(title, gametype: GameType):
-    templateloader = jinja2.FileSystemLoader(searchpath="./app/templates/")
+    templateloader = jinja2.FileSystemLoader(searchpath="./app/character/templates/")
     templateenv = jinja2.Environment(loader=templateloader)
     template = templateenv.get_template('character/blank_character.json.jinja')
     gtype = gametype
