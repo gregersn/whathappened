@@ -6,6 +6,12 @@
         var csrf_token = "{{ csrf_token() }}";
     </script>
 
+    {% assets filters="pyscss", output="character.css",
+            "scss/character.scss" %}
+            <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+    {% endassets %}
+
+
     {% assets "ts_sheet" %}
         <script type="text/javascript" src="{{ ASSET_URL}}"></script>
     {% endassets %}

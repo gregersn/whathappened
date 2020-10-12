@@ -84,7 +84,7 @@ def create_app(config_class=Config):
         assets.url = app.static_url_path
         assets.config['TYPESCRIPT_CONFIG'] = '--target ES6'
 
-        scss = Bundle('scss/main.scss', 'scss/character.scss',
+        scss = Bundle('scss/main.scss',
                       filters='pyscss',
                       output='css/all.css')
         assets.register('scss_all', scss)

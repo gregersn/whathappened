@@ -1,5 +1,12 @@
 {% extends 'base.html.jinja' %}
 
+{% block head %}
+{% assets filters="pyscss", output="profile.css",
+          "scss/profile.scss" %}
+        <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+{% endassets %}
+{% endblock %}
+
 {% block header %}
 <h2>Your inventory</h2>
 {% endblock %}
@@ -19,22 +26,23 @@
         <a class="action" href="{{ url_for('character.import_character') }}">Import</a><br />
     </div>
     </section>
-    <section id="playercampaigns">
-    <h2>Campaigns as player</h2>
+
     {% if profile.campaigns_as_player %}
+    <section id="playercampaigns">
+    <h3>Joined campaigns</h3>
         <ul>
         {% for campaign in profile.campaigns_as_player %}
-            <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a></li>
+            <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a> (by {{ campaign.owner.user.username }})</li>
         {% endfor %}
         </ul>
-    {% endif %}
     </section>
+    {% endif %}
 
     <section id="campaigns">
-    {% if profile.campaigns.all() %}
-        <h2>Your campaigns</h2>
+    <h3>Your campaigns</h3>
+    {% if profile.campaigns %}
         <ul>
-        {% for campaign in profile.campaigns.all() %}
+        {% for campaign in profile.campaigns %}
             <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title}}</a></li>
         {% endfor %}
         </ul>

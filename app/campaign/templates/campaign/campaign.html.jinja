@@ -1,5 +1,12 @@
 {% extends 'base.html.jinja' %}
 
+{% block head %}
+{% assets filters="pyscss", output="campaign.css",
+          "scss/campaign.scss" %}
+        <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+{% endassets %}
+{% endblock %}
+
 {% block header %}
   <h2>{% block title %}{{ campaign.title }}{% endblock %}</h2>
 {% endblock %}
@@ -9,7 +16,7 @@
         <a href="{{ url_for('campaign.edit', id=campaign.id) }}">Edit</a>
     {% endif %}
     {% if current_user.profile in campaign.players %}
-        <a href="">Leave</a>
+        | <a href="">Leave</a>
     {% endif %}
 {% endblock %}
 
@@ -26,7 +33,7 @@
     <ul>
         {% for character in campaign.characters %}
             <li>
-                <a href="{{url_for('character.view', id=character.id)}}">
+                <a href="{{url_for('character.view', id=character.id)}}" {%- if character.player.user == current_user %} class="strong"{%- endif %}>
                 {{ character.title }}</a>
                 ({{ character.player.user.username }})
                 {%- if editable or character.player.user == current_user %}
@@ -42,8 +49,8 @@
     </div>
 
     <div>
-        <h4>Add a character.</h4>
-        <form action="" method="post">
+        <input id="show_add_character" type="checkbox" autocomplete="off"><label for="show_add_character">Add character</label>
+        <form action="" method="post" id="add_character_form">
             {{ characterform.hidden_tag() }}
             {{ characterform.character() }} {{ characterform.submit() }}
             {% for error in characterform.character.errors %}
@@ -61,7 +68,7 @@
     {% if campaign.players %}
         <ul>
         {% for player in campaign.players %}
-            <li>
+            <li {%- if player.user == current_user %} class="strong"{%- endif %}>
                 {{ player.user.username }}
                 {%- if editable %} [<a href="{{ url_for('campaign.remove_player', id=campaign.id, playerid=player.id) }}">Remove</a>]{%- endif %}
             </li>

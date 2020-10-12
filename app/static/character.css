@@ -1,0 +1,141 @@
+#subskillform {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  margin: 10px;
+  padding: 10px; }
+
+  .charactersheet .skills {
+    columns: 360px;
+    column-gap: 2em; }
+    .charactersheet .skills .skill {
+      break-inside: avoid;
+      border-bottom: 1px dotted gray;
+      height: 32px; }
+      .charactersheet .skills .skill .value {
+        width: 3em; }
+        .charactersheet .skills .skill .value input {
+          width: 3em;
+          height: 20px;
+          margin: 0; }
+      .charactersheet .skills .skill .occupation {
+        font-weight: bolder; }
+        .charactersheet .skills .skill .skillcheckmark {
+          width: 100%; }
+  .charactersheet .characteristics table {
+    width: 100%; }
+    .charactersheet .characteristics table tr:nth-child(odd) {
+      background-color: #eee; }
+  @media only screen
+and (max-width: 760px), (min-device-width: 768px)
+and (max-device-width: 1024px) {
+    .charactersheet .weapons table, .charactersheet .weapons thead,
+    .charactersheet .weapons tbody, .charactersheet .weapons th,
+    .charactersheet .weapons td, .charactersheet .weapons tr {
+      display: block;   }
+      .charactersheet .weapons thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;   }
+        .charactersheet .weapons tr {
+          margin: 0 0 1rem 0;   }
+          .charactersheet .weapons tr:nth-child(odd) {
+            background: #ccc;   }
+            .charactersheet .weapons td {
+              border: none;
+              border-bottom: 1px solid #eee;
+              position: relative;
+              padding-left: 50%;   }
+              .charactersheet .weapons td:before {
+                position: absolute;
+                top: 0;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;   }
+                .charactersheet .weapons td:nth-of-type(1):before {
+                  content: "Weapon";   }
+                  .charactersheet .weapons td:nth-of-type(2):before {
+                    content: "Regular";   }
+                    .charactersheet .weapons td:nth-of-type(3):before {
+                      content: "Hard";   }
+                      .charactersheet .weapons td:nth-of-type(4):before {
+                        content: "Extreme";   }
+                        .charactersheet .weapons td:nth-of-type(5):before {
+                          content: "Damage";   }
+                          .charactersheet .weapons td:nth-of-type(6):before {
+                            content: "Range";   }
+                            .charactersheet .weapons td:nth-of-type(7):before {
+                              content: "Attacks";   }
+                              .charactersheet .weapons td:nth-of-type(8):before {
+                                content: "Ammo";   }
+                                .charactersheet .weapons td:nth-of-type(9):before {
+                                  content: "Malf";   }
+}
+  .charactersheet .weapons table {
+    margin: 0 auto;
+    width: 100%; }
+  .charactersheet .stat {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    row-gap: 0;
+    column-gap: 0;
+    grid-row-gap: 0;
+    grid-column-gap: 0;
+    column-count: 2; }
+    .charactersheet .stat span {
+      margin: auto;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      line-height: 100%;
+      vertical-align: middle; }
+      .charactersheet .stat :first-child {
+        grid-row-start: 1;
+        grid-row-end: 3; }
+        .charactersheet .stat .half {
+          font-size: x-small;
+          background-color: #ffffe6; }
+          .charactersheet .stat .fifth {
+            font-size: x-small;
+            background-color: #ffe6e6; }
+  .charactersheet .categories, .charactersheet .backstory {
+    columns: 360px;
+    column-gap: 1em; }
+    .charactersheet .categories .backstorysection,
+    .charactersheet .backstory .backstorysection {
+      break-inside: avoid; }
+      .charactersheet .categories h4, .charactersheet .backstory h4 {
+        margin: 0; }
+        .charactersheet .categories div, .charactersheet .backstory div {
+          break-inside: avoid;
+          page-break-inside: avoid; }
+  .charactersheet .splitcontainer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch; }
+    .charactersheet .splitcontainer > div {
+      flex-grow: 1; }
+      .charactersheet .splitcontainer .portrait {
+        flex-grow: 0;
+        align-items: center; }
+  .charactersheet .box {
+    border: 1px solid gray;
+    padding: 2px; }
+    .charactersheet .box section {
+      padding-left: 0.5em;
+      padding-right: 0.5em; }
+      .charactersheet .box h3 {
+        text-align: center;
+        background-color: #779aaa;
+        margin-top: 0;
+        margin-bottom: 0.5em; }
+
+.editjson textarea {
+  width: 90vw;
+  min-height: 50vh; }

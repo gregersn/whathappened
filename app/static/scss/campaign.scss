@@ -1,0 +1,27 @@
+#show_add_character,#add_character_form {
+    display:none;
+}
+
+
+#show_add_character + label {
+    color: gray;
+}
+
+#show_add_character:checked + label {
+    color: black;
+}
+
+#show_add_character:checked~#add_character_form {
+    display:block;
+}
+
+.strong {
+    font-weight: 800;
+    font-style: italic;
+}
+
+section {
+    li {
+        list-style: none;
+    }
+}
