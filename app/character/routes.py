@@ -212,9 +212,9 @@ def get(id):
     return jsonify(data.to_dict())
 
 
-@login_required
 @bp.route('/<int:id>/delete', methods=('GET', 'POST', ))
 @api.route('/<int:id>/delete', methods=('GET', 'POST', ))
+@login_required
 def delete(id):
     """Delete a character."""
     character = get_character(id, check_author=True)
@@ -235,8 +235,8 @@ def delete(id):
                            character=character)
 
 
-@login_required
 @api.route('/<int:id>/share', methods=('GET', ))
+@login_required
 def share(id):
     """Share a character."""
     character = get_character(id, check_author=True)

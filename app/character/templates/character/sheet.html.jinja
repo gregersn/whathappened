@@ -89,7 +89,7 @@
 </div>
 {%- endif %}
 <div class="extrainfo">
-  {% if character.campaigns %}
+  {% if editable and character.campaigns %}
     In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{ character.campaigns.0.title }}</a>
   {% endif %}
 

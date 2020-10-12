@@ -18,8 +18,8 @@ from app.models import Invite
 
 logger = logging.getLogger(__name__)
 
-@login_required
 @bp.route('/<code>', methods=('GET', 'POST'))
+@login_required
 def join(code):
     inv = Invite.query.get(code)
 
@@ -46,8 +46,8 @@ def join(code):
                            joinform=joinform)
 
 
-@login_required
 @bp.route('/<int:id>', methods=('GET', 'POST'))
+@login_required
 def view(id):
     invites = None
     campaign = Campaign.query.get(id)
