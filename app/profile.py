@@ -26,6 +26,6 @@ def index():
     logger.info(f"Showing profile {user_profile.id}")
 
     characters = user_profile.characters.order_by(Character.timestamp.desc())
-    return render_template('profile/index.html.jinja',
+    return render_template('profile/profile.html.jinja',
                            profile=user_profile,
                            characters=characters)

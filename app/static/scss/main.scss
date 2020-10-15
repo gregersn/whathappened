@@ -89,6 +89,7 @@ header .action {
     textarea {
         min-height: 12em;
         resize: vertical;
+        width: 100%;
     }
     &:last-child {
         margin-bottom: 0;

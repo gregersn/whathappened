@@ -18,3 +18,6 @@ class Config():
     ADMINS = [os.environ.get('ADMIN_EMAIL') or 'your-email@example.com']
     ASSETS_DEBUG = False
     ASSETS_AUTO_BUILD = False if os.environ.get('FLASK_ENV') != 'development' else True
+    MAX_CONTENT_LENGTH = 1024 * 1024  # Max upload size
+    UPLOAD_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.gif']
+    UPLOAD_PATH = 'uploads'

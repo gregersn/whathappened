@@ -2,8 +2,13 @@
 
 {% block head %}
     {{ super() }}
+
+    {% assets "scss_handout" %}
+    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+    {% endassets %}
+
     {% assets "ts_handout" %}
-        <script type="text/javascript" src="{{ ASSET_URL}}"></script>
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
 {% endblock head %}
 {% block header %}
@@ -12,5 +17,7 @@
 
 
 {% block body %}
-    {{ handout.content|markdown }}
+    <div class="markdown">
+        {{ handout.content|markdown }}
+    </div>
 {% endblock %}

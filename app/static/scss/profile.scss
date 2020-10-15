@@ -3,3 +3,9 @@ section {
         list-style: none;
     }
 }
+
+.assetlist {
+    height: 200px;
+    overflow: scroll;
+    border: 1px black dotted;
+}

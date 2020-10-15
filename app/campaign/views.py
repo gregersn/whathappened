@@ -12,6 +12,7 @@ from . import bp
 
 from .models import Campaign, Handout
 from .forms import HandoutForm, DeleteHandoutForm, RevealHandout
+from app.userassets.forms import AssetSelectForm
 
 logger = logging.getLogger(__name__)
 
@@ -56,9 +57,9 @@ class HandoutView(View):
     def update(self, campaign_id, handout_id):
         logger.debug("Put to handout")
         handout = Handout.query.get(handout_id)
-        form = HandoutForm()
+        form = HandoutForm(prefix="handout")
 
-        if form.validate_on_submit():
+        if form.submit.data and form.validate_on_submit():
             logger.debug("Form is valid")
             form.populate_obj(handout)
             db.session.commit()
@@ -75,11 +76,12 @@ class HandoutView(View):
         logger.debug(f"view({campaign_id}, {handout_id})")
         handout = Handout.query.get(handout_id)
 
-        if current_user.profile not in handout.players and current_user.profile != handout.campaign.user:
+        if current_user.is_authenticated and current_user.profile not in handout.players \
+                and current_user.profile != handout.campaign.user:
             abort(403)
 
         editable = False
-        if current_user.profile.id == handout.campaign.user_id:
+        if current_user.is_authenticated and current_user.profile.id == handout.campaign.user_id:
             editable = True
 
         if not editable:
@@ -89,11 +91,13 @@ class HandoutView(View):
         logger.debug(handout.title)
         logger.debug(handout.status)
 
-        form = HandoutForm(obj=handout)
-        
+        form = HandoutForm(obj=handout, prefix="handout")
+        assetsform = AssetSelectForm(prefix="assetselect")
+
         return render_template('campaign/handout.html.jinja',
                                handout=handout,
                                form=form,
+                               assetsform=assetsform,
                                editable=editable)
 
     def list_view(self, campaign_id: int) -> Text:

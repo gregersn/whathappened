@@ -24,3 +24,5 @@ app/static/css/
 nosetests.xml
 
 .env
+
+uploads/
