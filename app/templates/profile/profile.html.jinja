@@ -51,4 +51,19 @@
         <a class="action" href="{{ url_for('campaign.create') }}">Create a new campaign</a><br />
     </div>
     </section>
+
+    <section id="assets">
+    <h3>Assets</h3>
+    {% if profile.assets %}
+        <ul class="assetlist">
+        {% for asset in profile.assets %}
+            <li>{{ asset.filename }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <div>
+        <a class="action" href="{{url_for('userassets.index')}}">Manage</a>
+    </div>
+
+    </section>
 {% endblock %}

@@ -125,6 +125,5 @@ class RevealHandout(FlaskForm):
                                validators=[DataRequired()])
     id = IntegerField(widget=HiddenInput(),
                       validators=[DataRequired()])
-    # players = PlayerField("Show to", choices=[])
-    players = QuerySelectMultipleField('Show to', get_label=lambda x: x.user.username)
-
+    players = QuerySelectMultipleField('Show to',
+                                       get_label=lambda x: x.user.username)

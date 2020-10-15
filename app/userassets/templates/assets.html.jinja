@@ -1,0 +1,46 @@
+{% extends 'base.html.jinja' %}
+
+{% block content %}
+<section class="folders">
+    <h4>{{ folder|clickpath }}</h4>
+    {% if not folder.subfolders and not folder.files and folder.parent %}
+        <form action="{{ url_for('userassets.delete_folder', id=folder.id) }}" method="post">
+            {{ deletefolderform.hidden_tag() }}
+            {{ deletefolderform.delete }}
+        </form>
+    {% endif %}
+    <ul>
+    {% for subfolder in folder.subfolders %}
+        <li><a href="{{ url_for('userassets.index', folder_id=subfolder.id) }}">{{ subfolder.title }}</a></li>
+    {% endfor %}
+    </ul>
+    <ul>
+    {% for file in folder.files %}
+        <li><a href="{{ url_for('userassets.view', fileid=file.id, filename=file.filename) }}">{{ file.filename }}</a>[<a href="{{ url_for('userassets.edit', fileid=file.id, filename=file.filename) }}">Edit</a>]</li>
+    {% endfor %}
+    </ul>
+
+</section>
+<section class="upload">
+    <form action="" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.uploaded }}<br />
+            {% for error in form.uploaded.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+
+        </p>
+        <p>{{ form.submit }}</p>
+    </form>
+</section>
+<section class="newfolder">
+    <form action="{{ url_for('userassets.create_folder', folder_id=folder.id)}}" method="post">
+        {{ folderform.hidden_tag() }}
+        <p>
+            {{ folderform.title }}
+            {{ folderform.add}}
+        </p>
+    </form>
+</section>
+{% endblock %}

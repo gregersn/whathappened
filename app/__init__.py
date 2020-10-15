@@ -64,6 +64,11 @@ def create_app(config_class=Config):
     logger.debug("Registering blueprint profile")
     app.register_blueprint(profile.bp, url_prefix='/profile')
 
+    from . import userassets
+    logger.debug("Registering assets module")
+    app.register_blueprint(userassets.bp, url_prefix='/assets')
+    app.register_blueprint(userassets.apibp, url_prefix='/api/assets')
+
     from . import character
     logger.debug("Registering blueprint character")
     app.register_blueprint(character.bp, url_prefix='/character')
