@@ -1,12 +1,4 @@
-function get_meta_tag(tagname: string): string|undefined {
-    const metas = document.getElementsByTagName('meta');
-    for(const meta of metas) {
-        if(meta.name === tagname)
-            return meta.content;
-    }
-    return undefined;
-}
-
+import { get_meta_tag } from "../common"
 
 function set_handout_state(player_id: number, campaign_id: number, handout_id: number, state: boolean) {
     const url = `/api/campaign/${campaign_id}/handout/${handout_id}/players`;

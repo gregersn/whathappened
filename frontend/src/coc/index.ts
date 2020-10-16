@@ -1,3 +1,5 @@
+import { get_meta_tag } from "../common"
+
 console.log("Cthulhu fhtagn!");
 
 type Datamap = {
@@ -110,7 +112,7 @@ function init_skill_edits() {
         }
         element.parentElement.appendChild(occupation_checker);
 
-        let btn_add_subskill = null;
+        let btn_add_subskill: null | HTMLButtonElement = null;
         if(element.getAttribute('data-specializations')) {
             btn_add_subskill = document.createElement('button');
             btn_add_subskill.hidden  = true;
@@ -134,15 +136,6 @@ function init_skill_edits() {
 
 
     })
-}
-
-function get_meta_tag(tagname: string): string|undefined {
-    const metas = document.getElementsByTagName('meta');
-    for(const meta of metas) {
-        if(meta.name === tagname)
-            return meta.content;
-    }
-    return undefined;
 }
 
 function send_update(datamap: Datamap|DOMStringMap, value: any) {
