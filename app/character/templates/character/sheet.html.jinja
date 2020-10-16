@@ -7,15 +7,12 @@
     <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
     {% endassets %}
 
-    {% assets "ts_sheet" %}
-        <script type="text/javascript" src="{{ ASSET_URL}}"></script>
-    {% endassets %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/sheet.js') }}"></script>
 
     {% if editable %}
-    {% assets "ts_coc" %}
-    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-    {% endassets %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/coc.js') }}"></script>
     {% endif %}
+
 {% endblock %}
 
 {% block header %}

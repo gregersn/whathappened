@@ -1,13 +1,5 @@
-function show_message(message: string|HTMLElement) {
-    const message_box = document.getElementById('messagebox');
-    message_box.innerHTML = "";
-    if(message instanceof HTMLElement) {
-        message_box.appendChild(message);
-    } else {
-        message_box.innerHTML = message;
-    }
-    message_box.style.display = 'block';
-}
+import { show_message } from "../common";
+
 
 function init_sharebutton() {
     const button = document.getElementById('sharebtn')

@@ -5,9 +5,7 @@
     {% assets "scss_campaign" %}
     <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
     {% endassets %}
-{% assets "ts_campaign" %}
-    <script type="text/javascript" src="{{ ASSET_URL}}"></script>
-{% endassets %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/campaign.js') }}"></script>
 {% endblock %}
 
 {% block header %}
