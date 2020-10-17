@@ -21,7 +21,8 @@ logger = logging.getLogger(__name__)
 @bp.route('/')
 @login_required
 def index(folder_id=None):
-    if not current_user.profile.assetfolders:
+    if current_user.profile.assetfolders.count() < 1:
+        logger.debug("Creating initial folder")
         rootfolder = AssetFolder(title='assets', owner=current_user.profile)
         db.session.add(rootfolder)
         db.session.commit()
