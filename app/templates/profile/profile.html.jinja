@@ -57,7 +57,7 @@
     {% if profile.assets %}
         <ul class="assetlist">
         {% for asset in profile.assets %}
-            <li>{{ asset.filename }}</li>
+            <li><a href="{{ url_for('userassets.edit', fileid=asset.id, filename=asset.filename) }}">{{ asset.path }}</a></li>
         {% endfor %}
         </ul>
     {% endif %}
