@@ -25,3 +25,37 @@ section {
         list-style: none;
     }
 }
+
+.handouts {
+    .table-header-rotated {
+        border-collapse: collapse;
+        //width: 100%;
+        th {
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+          }
+        td {
+            width: 30px;
+            text-align: center;
+            padding: 10px 5px;
+            border: 1px solid #ccc;
+        }        
+    }
+    .rot90 {
+        height: 140px;
+        white-space: nowrap;
+
+        > div {
+            transform: 
+                translate(4px, 54px)
+                rotate(270deg);
+            width: 30px;
+        }
+        > div > span {
+                border-bottom: 1px solid #ccc;
+                padding: 0px 10px;
+            }
+    }
+}

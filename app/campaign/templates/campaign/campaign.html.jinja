@@ -8,7 +8,6 @@
 {% assets "ts_campaign" %}
     <script type="text/javascript" src="{{ ASSET_URL}}"></script>
 {% endassets %}
-
 {% endblock %}
 
 {% block header %}
@@ -25,46 +24,18 @@
 {% endblock %}
 
 {% block content %}
+<div class="page">
+
 {%- if campaign.description %}
-<section class="description">
-{{ campaign.description }}
+<section class="description box">
+    <div class="markdown">
+        {{ campaign.description|markdown }}
+    </div>
 </section>
 {% endif %}
-<section class="characters">
-<h3>Characters</h3>
-    <div>
-    {% if campaign.characters %}
-    <ul>
-        {% for character in campaign.characters %}
-            <li>
-                <a href="{{url_for('character.view', id=character.id)}}" {%- if character.player.user == current_user %} class="strong"{%- endif %}>
-                {{ character.title }}</a>
-                ({{ character.player.user.username }})
-                {%- if editable or character.player.user == current_user %}
-                    [<a href="{{ url_for('campaign.remove_character', id=campaign.id, characterid=character.id) }}">Remove</a>]
-                {%- endif %}
-            </li>
-            
-        {% endfor %}
-    </ul>
-    {% else %}
-        There are no characters.
-    {% endif %}
-    </div>
 
-    <div>
-        <input id="show_add_character" type="checkbox" autocomplete="off"><label for="show_add_character">Add character</label>
-        <form action="" method="post" id="add_character_form">
-            {{ characterform.hidden_tag() }}
-            {{ characterform.character() }} {{ characterform.submit() }}
-            {% for error in characterform.character.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </form>
-    </div>
-</section>
-
-<section class="handouts">
+<div class="splitcontainer">
+<section class="handouts box">
 <h3>Handouts</h3>
 
 {% if editable %}
@@ -107,9 +78,45 @@
 {% endif %}
 </section>
 
+<section class="characters box">
+<h3>Characters</h3>
+    <div>
+    {% if campaign.characters %}
+    <ul>
+        {% for character in campaign.characters %}
+            <li>
+                <a href="{{url_for('character.view', id=character.id)}}" {%- if character.player.user == current_user %} class="strong"{%- endif %}>
+                {{ character.title }}</a>
+                ({{ character.player.user.username }})
+                {%- if editable or character.player.user == current_user %}
+                    [<a href="{{ url_for('campaign.remove_character', id=campaign.id, characterid=character.id) }}">Remove</a>]
+                {%- endif %}
+            </li>
+            
+        {% endfor %}
+    </ul>
+    {% else %}
+        There are no characters.
+    {% endif %}
+    </div>
 
-{% if campaign.user_id == current_user.profile.id %}
-<section class="players">
+    <div>
+        <input id="show_add_character" type="checkbox" autocomplete="off"><label for="show_add_character">Add character</label>
+        <form action="" method="post" id="add_character_form">
+            {{ characterform.hidden_tag() }}
+            {{ characterform.character() }} {{ characterform.submit() }}
+            {% for error in characterform.character.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </form>
+    </div>
+</section>
+
+</div>
+
+{% if editable %}
+<div class="splitcontainer">
+<section class="players box">
     <h3>Players</h3>
     <div>
     {% if campaign.players %}
@@ -125,22 +132,9 @@
         There are no players.
     {% endif %}
     </div>
-    {#
-    <div>
-        Invite player.
-        <form action="" method="post">
-            {{ inviteform.hidden_tag() }}
-                <p>
-                {{ inviteform.email.label }}<br>
-                {{ inviteform.email(size=32) }}<br>
-                {% for error in inviteform.email.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-            </p>
-            <p>{{ inviteform.submit() }}</p>
-        </form>
-    </div>#}
-    <h4>Share links</h4>
+</section>
+<section class="invites box">
+    <h3>Share links</h3>
     <div>
         {% if invites %}
          {% for invite in invites %}
@@ -154,5 +148,6 @@
     </div>
 </section>
 {% endif %}
-
+</div>
+</div>
 {% endblock %}
