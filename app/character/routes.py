@@ -67,20 +67,6 @@ def fifth(value):
 def index():
     return redirect("/")
 
-    rows = Character.query.all()
-
-    characters = []
-
-    for row in rows:
-        characters.append({
-            'id': row.id,
-            'username': row.user_id,
-            'title': row.title,
-            'created': row.timestamp,
-            'data': json.loads(row.body)
-            })
-
-    return render_template('character/index.html.jinja')
 
 
 @bp.route('/create/<string:chartype>', methods=('GET', 'POST'))
@@ -102,10 +88,22 @@ def create(chartype=None):
 
 
 @bp.route('/import/<string:type>', methods=('GET', 'POST'))
+@bp.route('/import/<int:id>', methods=('GET', 'POST'))
+@bp.route('/import/<uuid:code>', methods=('GET', 'POST'))
 @bp.route('/import', methods=('GET', 'POST'))
 @login_required
-def import_character(type=None):
-    form = ImportForm()
+def import_character(type=None, id=None, code=None):
+    logger.debug(f"{type}, {code}, {id}")
+    character = None
+    if id:
+        character = get_character(id, check_author=True)
+    elif code is not None:
+        invite = Invite.query.get(code)
+        if invite is None or invite.table != Character.__tablename__:
+            return "Invalid code"
+        character = Character.query.get(invite.object_id)
+
+    form = ImportForm(obj=character)
     if form.validate_on_submit():
         c = Character(title=form.title.data,
                       body=form.body.data,
@@ -133,7 +131,7 @@ def update(id):
     return "OK"
 
 
-@bp.route('/<code>', methods=('GET', ))
+@bp.route('/<uuid:code>', methods=('GET', ))
 def shared(code):
     invite = Invite.query.get(code)
     if invite is None or invite.table != Character.__tablename__:
@@ -147,6 +145,7 @@ def shared(code):
         typeheader = "Modern Era"
 
     return render_template('character/sheet.html.jinja',
+                           code=code,
                            character=character,
                            typeheader=typeheader,
                            editable=editable,

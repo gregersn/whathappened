@@ -25,6 +25,7 @@
 {% block menu %}
     {% if current_user.is_authenticated %}
         <a href="{{ url_for('character.export', id=character['id']) }}">Export</a>
+        | <a href="{{ url_for('character.import_character', id=character.id) if editable else url_for('character.import_character', code=code) }}">Copy</a>
         {%- if editable %}
             | <a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>
             | <a href="{{ url_for('character.delete', id=character.id) }}">Delete</a>
