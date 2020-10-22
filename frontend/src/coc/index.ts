@@ -139,6 +139,7 @@ function init_skill_edits() {
 }
 
 function send_update(datamap: Datamap|DOMStringMap, value: any) {
+    const busy = document.getElementById("busy");
     const xhr = new XMLHttpRequest()
     const url = document.location.href + 'update';
     xhr.open('POST', url);
@@ -146,14 +147,16 @@ function send_update(datamap: Datamap|DOMStringMap, value: any) {
     xhr.setRequestHeader("X-CSRFToken", get_meta_tag('_token'));
     xhr.setRequestHeader('x-csrf-token', get_meta_tag('_token'));
     xhr.onload = () => {
-        console.log("Post done");
-        console.log(url);
-        console.log(xhr.status);
-        console.log(xhr.statusText);
+        console.log(`Post done, got ${xhr.status} ${xhr.statusText}`);
+        if(xhr.status === 200 && xhr.statusText === 'OK') {
+            busy.style.display = 'none';
+        }
     }
+
     datamap['value'] = value;
 
-    console.log(JSON.stringify(datamap));
+    console.log(`Sending: ${JSON.stringify(datamap)}`);
+    busy.style.display = 'block';
     xhr.send(JSON.stringify([datamap, ]));
 }
 
