@@ -54,7 +54,7 @@ def fixture_test_sheet() -> dict:
 def fixture_test_character() -> Character:
     nc = new_character("Test Character", "Classic (1920's)")
     c = Character(title="Test Character",
-                     body=json.dumps(nc))
+                  body=nc)
 
     return c
 

@@ -18,15 +18,37 @@ class JsonString(object):
 
     def __call__(self, form, field):
         try:
-            json.loads(field.data)
+            _ = json.loads(field.data)
         except Exception:
-            logger.error("Could not verify  JSON data", exc_info=True)
+            logger.error("Could not verify JSON data", exc_info=True)
             raise ValidationError(self.message)
+
+
+class JsonField(TextAreaField):
+    def _value(self):
+        return json.dumps(self.data, indent=4) if self.data else ''
+
+    def process_formdata(self, valuelist):
+        if valuelist:
+            try:
+                self.data = json.loads(valuelist[0])
+            except ValueError:
+                raise ValueError('This field is not valid JSON')
+        else:
+            self.data = None
+
+    def pre_validate(self, form):
+        super().pre_validate(form)
+        if self.data:
+            try:
+                json.dumps(self.data)
+            except TypeError:
+                raise ValueError("Invalid JSON")
 
 
 class ImportForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    body = TextAreaField('Body', validators=[DataRequired(), JsonString()])
+    body = JsonField('Body', validators=[DataRequired()])
     conversion = BooleanField('Convert')
     migration = BooleanField('Migrate')
     submit = SubmitField('Import')
