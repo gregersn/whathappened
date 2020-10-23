@@ -81,7 +81,7 @@ def create(chartype=None):
                                     type=form.gametype.data,
                                     timestamp=time.time())
         c = Character(title=form.title.data,
-                      body=char_data,
+                      body=json.loads(char_data),
                       user_id=current_user.profile.id)
         db.session.add(c)
         db.session.commit()
@@ -193,12 +193,12 @@ def view(id):
         return redirect(url_for('character.view', id=id))
 
     typeheader = "1920s Era Investigator"
-    if character.game[1] == "Modern":
+    if character.game and character.game[1] == "Modern":
         typeheader = "Modern Era"
 
     shared = Invite.query_for(character).count()
 
-    if character.validate() and editable:
+    if (character.game is None or character.validate()) and editable:
         return redirect(url_for('character.editjson', id=id))
 
     return render_template('character/sheet.html.jinja',
@@ -279,26 +279,26 @@ def export(id):
 def editjson(id):
     """Lets the user edit the raw json of the character."""
     c = get_character(id, check_author=True)
-    form = ImportForm()
+    form = ImportForm(obj=c)
+
     if form.validate_on_submit():
         c.title = form.title.data
         c.body = form.body.data
+
         if form.migration.data:
             logger.debug("Trying to migrate data")
-            data = json.loads(form.body.data)
-            c.body = json.dumps(migrate(data,
-                                        "0.0.2",
-                                        migrations=migrations), indent=4)
+            data = form.body.data
+            c.body = migrate(data,
+                             "0.0.2",
+                             migrations=migrations)
         elif form.conversion.data:
             logger.debug("Conversion is checked")
-            data = json.loads(form.body.data)
+            data = form.body.data
+            c.body = convert_from_dholes(data)
 
-            c.body = json.dumps(convert_from_dholes(data), indent=4)
         db.session.commit()
         return redirect(url_for('character.view', id=c.id))
 
-    form.body.data = c.body
-    form.title.data = c.title
     form.submit.label.text = 'Save'
 
     validation_errors = c.validate()

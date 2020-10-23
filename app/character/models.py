@@ -1,11 +1,8 @@
-import logging
 import json
-from flask import flash
-from json import JSONDecodeError
+import logging
 from functools import reduce
-
 from jsonschema import Draft7Validator
-
+from sqlalchemy.orm.attributes import flag_modified
 from datetime import datetime
 import base64
 import io
@@ -33,7 +30,7 @@ class Character(db.Model):
     __tablename__ = 'charactersheet'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(256))
-    body = db.Column(db.Text)
+    body = db.Column(db.JSON)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'))
 
@@ -41,15 +38,12 @@ class Character(db.Model):
         return '<Character {}>'.format(self.title)
 
     @property
-    def data(self):
-        if not hasattr(self, '_data') or self._data is None:
-            self._data = json.loads(self.body)
-
-        return self._data
-
-    @property
     def game(self):
-        return (self.data['meta']['GameName'], self.data['meta']['GameType'])
+        try:
+            return (self.body['meta']['GameName'],
+                    self.body['meta']['GameType'])
+        except Exception as e:
+            return None
 
     def __init__(self, *args, **kwargs):
         super(Character, self).__init__(*args, **kwargs)
@@ -58,13 +52,14 @@ class Character(db.Model):
     def validate(self, filename=schema_file):
         schema = load_schema(filename)
         v = Draft7Validator(schema)
-        return [{'path': "/".join(str(x) for x in e.path), "message": e.message} for e in v.iter_errors(self.data)]
+        return [{'path': "/".join(str(x) for x in e.path),
+                 "message": e.message} for e in v.iter_errors(self.body)]
 
     def to_dict(self):
         return {
             'id': self.id,
             'title': self.title,
-            'body': json.loads(self.body),
+            'body': self.body,
             'timestamp': self.timestamp,
             'user_id': self.user_id
         }
@@ -73,32 +68,20 @@ class Character(db.Model):
         return json.loads(self.body)
 
     @property
-    def data(self):
-        if not hasattr(self, '_data') or self._data is None:
-            try:
-                self._data = json.loads(self.body)
-            except JSONDecodeError as e:
-                logger.debug(e.msg)
-                flash(f"Error in JSON: {e.msg} {e.lineno}, {e.colno}")
-                self._data = e.doc
-
-        return self._data
-
-    @property
     def name(self):
-        return self.data['personalia']['Name']
+        return self.body['personalia']['Name']
 
     @property
     def age(self):
-        return self.data['personalia']['Age']
+        return self.body['personalia']['Age']
 
     @property
     def portrait(self):
-        return self.data['personalia']['Portrait']
+        return self.body['personalia']['Portrait']
 
     @property
     def description(self):
-        return self.data['personalia']['Occupation']
+        return self.body['personalia']['Occupation']
 
     def attribute(self, *args):
 
@@ -106,7 +89,7 @@ class Character(db.Model):
 
         val = reduce(lambda x, y: x.get(y, None) if x is not None else None,
                      path.split("."),
-                     self.data)
+                     self.body)
 
         return val
 
@@ -144,12 +127,12 @@ class Character(db.Model):
         else:
             logger.debug("Set some other attribute")
             s = reduce(lambda x, y: x[y], attribute['field'].split(".")[:-1],
-                       self.data)
+                       self.body)
             s[attribute['field'].split(".")[-1]] = attribute['value']
 
     def store_data(self):
-        """Put loaded data back into JSON."""
-        self.body = json.dumps(self.data, indent=4)
+        """Mark data as modified."""
+        flag_modified(self, "body")
 
     def skill(self, skill, subskill=None):
         """Return a single skill, or something."""
@@ -174,15 +157,15 @@ class Character(db.Model):
 
     def skills(self, *args):
         """Return a list of skills."""
-        return self.data['skills']
+        return self.body['skills']
 
     def add_skill(self, skillname, value="1"):
         if self.skill(skillname) is not None:
             raise ValueError(f"Skill {skillname} already exists.")
 
-        self.data['skills'].append({"name": skillname, "value": str(value)})
-        if isinstance(self.data['skills'], list):
-            self.data['skills'].sort(key=lambda x: x['name'])
+        self.body['skills'].append({"name": skillname, "value": str(value)})
+        if isinstance(self.body['skills'], list):
+            self.body['skills'].sort(key=lambda x: x['name'])
 
     def add_subskill(self, name, parent):
         value = self.skill(parent)['value']
@@ -202,10 +185,9 @@ class Character(db.Model):
         })
 
     def set_portrait(self, data):
-        self.data['personalia']['Portrait'] = fix_image(data)
+        self.body['personalia']['Portrait'] = fix_image(data)
         return self.portrait
-
 
     @property
     def schema_version(self):
-        return self.data['meta']['Version']
+        return self.body['meta']['Version']
