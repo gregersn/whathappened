@@ -37,7 +37,7 @@ class Character(db.Model):
 
     def __init__(self, *args, **kwargs):
         super(Character, self).__init__(*args, **kwargs)
-        self.data = None
+        self._data = None
 
     def to_dict(self):
         return {
@@ -51,9 +51,31 @@ class Character(db.Model):
     def get_sheet(self):
         return JsonComment(json).loads(self.body)
 
+    @property
+    def data(self):
+        if not hasattr(self, '_data') or self._data is None:
+            self._data = JsonComment(json).loads(self.body)
+
+        return self._data
+
+    @property
+    def name(self):
+        return self.data['personalia']['Name']
+
+    @property
+    def age(self):
+        return self.data['personalia']['Age']
+
+    @property
+    def portrait(self):
+        return self.data['personalia']['Portrait']
+
+    @property
+    def description(self):
+        return self.data['personalia']['Occupation']
+
     def check_data(self):
-        if not hasattr(self, 'data') or self.data is None:
-            self.data = JsonComment(json).loads(self.body)
+        pass
 
     def attribute(self, *args):
         self.check_data()
@@ -156,14 +178,10 @@ class Character(db.Model):
                 'value': value
             })
 
-    def get_portrait(self):
-        self.check_data()
-        return self.data['personalia']['Portrait']
-
     def set_portrait(self, data):
         self.check_data()
         self.data['personalia']['Portrait'] = fix_image(data)
-        return self.get_portrait()
+        return self.portrait
 
     @property
     def gametype(self):

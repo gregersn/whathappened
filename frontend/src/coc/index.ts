@@ -1,7 +1,5 @@
 import { get_meta_tag } from "../common"
 
-console.log("Cthulhu fhtagn!");
-
 type Datamap = {
     field: string,
     subfield?: string | undefined,
@@ -9,12 +7,8 @@ type Datamap = {
 }
 
 type Elementdata = any;
-
-
 type Tabledata = any[];
 type Listdata = string[];
-
-
 type SaveFunction = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => void
    
 
@@ -118,7 +112,6 @@ function init_skill_edits() {
             btn_add_subskill.hidden  = true;
             btn_add_subskill.innerHTML = "Add subskill";
             btn_add_subskill.onclick = (e: MouseEvent) => {
-                console.log(e);
                 show_subskillform(e.pageX, e.pageY, element.getAttribute('data-field'));
                 
             }
@@ -127,7 +120,6 @@ function init_skill_edits() {
         }
 
         element.onclick = (e: Event) => {
-            //element.classList.toggle('occupation')
             occupation_checker.hidden = !occupation_checker.hidden;
             if(element.getAttribute('data-specializations')) {
                 btn_add_subskill.hidden = !btn_add_subskill.hidden;
@@ -402,7 +394,8 @@ function init_set_portrait() {
 
 
 document.addEventListener('DOMContentLoaded', function(event) {
-    //the event occurred
+    console.log("Cthulhu fhtagn!");
+
     init_popup();
     init_skillchecks();
     init_editable();

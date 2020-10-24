@@ -1,5 +1,22 @@
 {% extends 'base.html.jinja' %}
 
+{%- macro character_info(character) %}
+                <div class="characterinfo splitcontainer">
+                    <div class="personalia">
+                    {{ character.name }} ({{ character.age }})<br />
+                    {{ character.description }}<br />
+                    <em>{{ character.player.user.username }}</em><br />
+                    [<a href="{{url_for('character.view', id=character.id)}}" {%- if character.player.user == current_user %} class="strong"{%- endif %}>View</a>]
+                    {%- if editable or character.player.user == current_user %}
+                        [<a href="{{ url_for('campaign.remove_character', id=campaign.id, characterid=character.id) }}">Remove</a>]
+                    {%- endif %}
+                    </div>
+                    <div class="portrait">
+                    {% if character.portrait %}<img src="data:image/jpg;base64, {{ character.portrait }}" />{% else %}<img src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
+                    </div>
+                </div>
+{%- endmacro %}
+
 {% block head %}
     {{ super() }}
     {% assets "scss_campaign" %}
@@ -80,19 +97,9 @@
 <h3>Characters</h3>
     <div>
     {% if campaign.characters %}
-    <ul>
         {% for character in campaign.characters %}
-            <li>
-                <a href="{{url_for('character.view', id=character.id)}}" {%- if character.player.user == current_user %} class="strong"{%- endif %}>
-                {{ character.title }}</a>
-                ({{ character.player.user.username }})
-                {%- if editable or character.player.user == current_user %}
-                    [<a href="{{ url_for('campaign.remove_character', id=campaign.id, characterid=character.id) }}">Remove</a>]
-                {%- endif %}
-            </li>
-            
+            {{ character_info(character) }}          
         {% endfor %}
-    </ul>
     {% else %}
         There are no characters.
     {% endif %}
