@@ -4,150 +4,19 @@ import jinja2
 import math
 import time
 from typing import Literal
+import os
 
 
-GameTypes = ["Classic (1920's)", "Modern"]
+def load_schema(filename: str):
+    with open(filename, 'r') as f:
+        return json.load(f)
+
+
+schema = load_schema(os.path.join(os.path.dirname(__file__), 'schema/coc.json'))
+
+# This is not pretty
 GameType = Literal["Classic (1920's)", "Modern"]
-
-
-schema = {
-    "$schema": "http://json-schema.org/schema#",
-    "type": "object",
-    "properties": {
-        "meta": {
-            "type": "object",
-            "properties": {
-                "Title": {"type": "string"},
-                "Creator": {"type": "string"},
-                "CreateDate": {"type": "string"},
-                "GameName": {"type": "string"},
-                "GameVersion": {"type": "string"},
-                "GameType": {
-                    "type": "string",
-                    "enum": GameTypes
-                },
-                "Disclaimer": {"type": "string"},
-                "Version": {"type": "string", "value": "0.0.1"}
-            }
-        },
-        "personalia": {
-            "type": "object",
-            "properties": {
-                "Name": {"type": "string"},
-                "Occupation": {"type": "string"},
-                "Gender": {"type": "string"},
-                "Age": {"type": "string"},
-                "Birthplace": {"type": "string"},
-                "Residence": {"type": "string"}
-            }
-        },
-        "characteristics": {
-            "type": "object",
-            "properties": {
-                "STR": {"type": "string"},
-                "DEX": {"type": "string"},
-                "INT": {"type": "string"},
-                "CON": {"type": "string"},
-                "APP": {"type": "string"},
-                "POW": {"type": "string"},
-                "SIZ": {"type": "string"},
-                "EDU": {"type": "string"},
-                "Move": {"type": "string"},
-                "Luck": {"type": "string"},
-                "LuckMax": {"type": "string"},
-                "Sanity": {"type": "string"},
-                "SanityStart": {"type": "string"},
-                "SanityMax": {"type": "string"},
-                "MagicPts": {"type": "string"},
-                "MagicPtsMax": {"type": "string"},
-                "HitPts": {"type": "string"},
-                "HitPtsMax": {"type": "string"},
-            }
-        },
-        "skills": {
-            "type": "array",
-            "items": {
-                    "type": "object",
-                    "properties": {
-                        "name": {"type": "string"},
-                        "value": {"type": "string"}
-                    }
-            }
-        },
-        "weapons": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string"},
-                    "regular": {"type": "string"},
-                    "damage": {"type": "string"},
-                    "range": {"type": "string"},
-                    "attacks": {"type": "string"},
-                    "ammo": {"type": "string"},
-                    "malf": {"type": "string"}
-                }
-            }
-        },
-        "combat": {
-            "type": "object",
-            "properties": {
-                "DamageBonus": {"type": "string"},
-                "Build": {"type": "string"},
-                "Dodge": {"type": "string"}
-            }
-        },
-        "backstory": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "anyOf": [{"type": "string"}, {"type": "null"}]
-                },
-                "traits": {
-                    "anyOf": [{"type": "string"}, {"type": "null"}]
-                },
-                "ideology": {
-                    "anyOf": [{"type": "string"}, {"type": "null"}]
-                },
-                "injurues": {
-                    "anyOf": [{"type": "string"}, {"type": "null"}]
-                },
-                "people": {
-                    "anyOf": [{"type": "string"}, {"type": "null"}]
-                },
-                "phobias": {
-                    "anyOf": [{"type": "string"}, {"type": "null"}]
-                },
-                "locations": {
-                    "anyOf": [{"type": "string"}, {"type": "null"}]
-                },
-                "tomes": {
-                    "anyOf": [{"type": "string"}, {"type": "null"}]
-                },
-                "possessions": {
-                    "anyOf": [{"type": "string"}, {"type": "null"}]
-                },
-                "encounters": {
-                    "anyOf": [{"type": "string"}, {"type": "null"}]
-                }
-            }
-        },
-        "possessions": {
-            "anyOf": [{"type": "array"}, {"type": "null"}]
-        },
-        "cash": {
-            "type": "object",
-            "properties": {
-                "spending": {"type": "string"},
-                "cash": {"type": "string"},
-                "assets": {"type": "string"}
-            }
-        },
-        "assets": {
-            "anyOf": [{"type": "object"}, {"type": "null"}]
-        }
-    }
-}
+GameTypes = ["Classic (1920's)", "Modern"]
 
 
 def new_character(title, gametype: GameType):
