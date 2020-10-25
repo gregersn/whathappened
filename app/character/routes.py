@@ -33,7 +33,8 @@ def get_character(id, check_author=True):
     if character.campaigns:
         logger.debug("Checking if character is in same campaign as user")
         for campaign in character.campaigns:
-            if current_user.profile in campaign.players:
+            if current_user.profile in campaign.players \
+                        or campaign in current_user.profile.campaigns:
                 logger.debug(f"Character '{character.title}' " +
                              f"is in '{campaign.title}' " +
                              f"with '{current_user.username}''")
