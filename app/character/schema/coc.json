@@ -1,5 +1,18 @@
 {
-    "$schema": "http://json-schema.org/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "skill": {
+            "$id": "#skill",
+            "type": "object",
+            "properties": {
+                "name": {"type": "string"},
+                "value": {"type": "string"}
+            },
+            "required": [
+                "name", "value"
+            ]
+        }
+    },
     "type": "object",
     "properties": {
         "meta": {
@@ -50,16 +63,34 @@
                 "MagicPtsMax": {"type": "string"},
                 "HitPts": {"type": "string"},
                 "HitPtsMax": {"type": "string"}
-            }
+            },
+            "required": ["STR", "DEX", "INT", "CON", "APP", "POW", "SIZ", "EDU",
+                         "Move", "Luck", "Sanity", "SanityMax", "MagicPts", "MagicPtsMax",
+                         "HitPts", "HitPtsMax"]
         },
         "skills": {
             "type": "array",
             "items": {
-                    "type": "object",
-                    "properties": {
-                        "name": {"type": "string"},
-                        "value": {"type": "string"}
-                    }
+                    "allOf": [
+                    { "$ref": "#/definitions/skill"},
+                    {
+                        "properties": {
+                            "specializations": {"type": "string", "enum": ["true", "false"]}
+                    },
+                    "if": {
+                        "properties": {"specialization": {"const": "true"}}
+                    }, 
+                    "then": {
+                        "properties": {
+                            "subskills": {
+                                "type": "array", 
+                                "items": { 
+                                    "$ref": "#/definitions/skill"
+                                    }
+                                }
+                            }
+                        }
+                    }]
             }
         },
         "weapons": {
@@ -74,7 +105,10 @@
                     "attacks": {"type": "string"},
                     "ammo": {"type": "string"},
                     "malf": {"type": "string"}
-                }
+                },
+                "required": [
+                    "name", "skillname", "regular", "damage", "range", "attacks", "ammo", "malf"
+                ]
             }
         },
         "combat": {
@@ -83,7 +117,8 @@
                 "DamageBonus": {"type": "string"},
                 "Build": {"type": "string"},
                 "Dodge": {"type": "string"}
-            }
+            },
+            "required": ["DamageBonus", "Build", "Dodge"]
         },
         "backstory": {
             "type": "object",
