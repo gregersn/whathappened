@@ -176,14 +176,14 @@
             {% for skill in character.skills() %}
             <div class="skill">
                 <span class="skillcheckmark">{{skill_checkmark(skill['name']) }}</span>
-                <span class="skillname {% if skill['occupation'] %}occupation{% endif %}" data-field="{{ skill['name'] }}" data-specializations="{{skill['specializations']}}">{{ skill['name'] }}: </span>
+                <span class="skillname {% if skill['occupation'] %}occupation{% endif %}" data-field="{{ skill['name'] }}" data-specializations="{{skill['specializations']}}">{{ skill['name'] }} <span class="initial_value">({{ skill['start_value'] }}%)</span>: </span>
                 <span class="value stat">{{ editable_skill(skill['name'], None, 0)}}</span>
             </div>
             {% if skill.specializations and skill.subskills %}
                 {% for subskill in skill.subskills %}
             <div class="skill">
                 <span class="skillcheckmark">{{skill_checkmark(skill['name'], subskill.name ) }}</span>
-                <span class="skillname {% if subskill['occupation'] %}occupation{% endif %}" data-field="{{ skill['name'] }}" data-subfield="{{ subskill['name'] }}">{{ skill['name'] }}: {{ subskill['name'] }}: </span>
+                <span class="skillname {% if subskill['occupation'] %}occupation{% endif %}" data-field="{{ skill['name'] }}" data-subfield="{{ subskill['name'] }}">{{ skill['name'] }}: {{ subskill['name'] }} <span class="initial_value">({{ subskill['start_value'] }}%)</span>: </span>
                 <span class="value stat">{{ editable_skill(skill['name'], subskill.name or None, 0)}}</span>
             </div>
                 {% endfor %}
