@@ -4,7 +4,7 @@ from wtforms.compat import text_type, iteritems
 from markupsafe import escape, Markup
 from wtforms import SubmitField
 from wtforms import widgets
-from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
+from wtforms_alchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.fields.core import IntegerField, SelectMultipleField
 from wtforms.validators import DataRequired, Email
 from flask_login import current_user

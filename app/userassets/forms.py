@@ -5,7 +5,8 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from sqlalchemy.orm import query
 
 from wtforms import SubmitField
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms_alchemy.fields import QuerySelectField
+
 from wtforms.fields.core import StringField
 from wtforms.fields.simple import HiddenField
 from wtforms.validators import DataRequired, Required

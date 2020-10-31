@@ -15,3 +15,4 @@ PyJWT
 pyScss
 python-dotenv
 pywebpack
+wtforms-alchemy
