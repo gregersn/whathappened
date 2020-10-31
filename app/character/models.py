@@ -186,6 +186,7 @@ class CharacterCoC(Character):
 
     def add_subskill(self, name, parent):
         value = self.skill(parent)['value']
+        start_value = self.skill(parent)['start_value']
         logger.debug("Try to add subskill")
         logger.debug(f"Name: {name}, parent {parent}, value {value}")
         if self.skill(parent, name) is not None:
@@ -196,7 +197,8 @@ class CharacterCoC(Character):
             skill['subskills'] = []
         skill['subskills'].append({
             'name': name,
-            'value': value
+            'value': value,
+            'start_value': start_value
         })
 
     def set_portrait(self, data):

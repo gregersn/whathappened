@@ -28,6 +28,7 @@ class ImportForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     body = TextAreaField('Body', validators=[DataRequired(), JsonString()])
     conversion = BooleanField('Convert')
+    migration = BooleanField('Migrate')
     submit = SubmitField('Import')
 
 

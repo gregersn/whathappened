@@ -16,7 +16,9 @@ from .forms import ImportForm, CreateForm, SkillForm
 from .forms import SubskillForm, DeleteForm
 from .coc import convert_from_dholes
 from app import db
+from app.utils.schema import migrate
 from app.models import Invite
+from app.character.schema.coc import migrations
 
 logger = logging.getLogger(__name__)
 
@@ -290,9 +292,15 @@ def editjson(id):
     if form.validate_on_submit():
         c.title = form.title.data
         c.body = form.body.data
-        if form.conversion.data:
+        if form.migration.data:
+            logger.debug("Trying to migrate data")
+            data = json.loads(form.body.data)
+            c.body = json.dumps(migrate(data,
+                                        "0.0.2",
+                                        migrations=migrations), indent=4)
+        elif form.conversion.data:
             logger.debug("Conversion is checked")
-            data = json.loads(c.body)
+            data = json.loads(form.body.data)
 
             c.body = json.dumps(convert_from_dholes(data), indent=4)
         db.session.commit()
