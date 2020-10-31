@@ -12,6 +12,7 @@ from app.character.coc import convert_from_dholes
 from app.character.coc import new_character
 from app.character.coc import schema_file, load_schema
 from app.character.models import Character
+from app.character.models import CharacterCoC
 from app.character.coc import fifth, half
 from app.character.coc import schema_file, load_schema, new_character
 
@@ -51,10 +52,10 @@ def fixture_test_sheet() -> dict:
 
 
 @pytest.fixture(name="newly_created_character")
-def fixture_test_character() -> Character:
+def fixture_test_character() -> CharacterCoC:
     nc = new_character("Test Character", "Classic (1920's)")
-    c = Character(title="Test Character",
-                  body=json.dumps(nc))
+    c = CharacterCoC(title="Test Character",
+                     body=json.dumps(nc))
 
     return c
 
@@ -63,7 +64,6 @@ def test_validate(test_sheet: dict):
     nc = new_character("Test Character", "Classic (1920's)")
     schema = load_schema(schema_file)
     validate(nc, schema=schema)
-    validate(test_sheet, schema=schema)
 
 
 def test_convert_from_dholes(dholes_sheet: dict):
@@ -74,20 +74,21 @@ def test_convert_from_dholes(dholes_sheet: dict):
     validate(converted, schema=schema)
 
 
-def test_personalia_and_attributes(newly_created_character: Character):
+def test_personalia_and_attributes(newly_created_character: CharacterCoC):
     assert newly_created_character.name == "Unknown"
     assert newly_created_character.age == "18"
     assert newly_created_character.description == "Unknown"
-    assert newly_created_character.gametype == "Classic (1920's)"
+    assert newly_created_character.game[0] == "Call of Cthulhu TM"
+    assert newly_created_character.game[1] == "Classic (1920's)"
 
 
-def test_skills(newly_created_character: Character):
+def test_skills(newly_created_character: CharacterCoC):
     skill = newly_created_character.skill('Spot Hidden')
     assert skill is not None
     assert skill['value'] == "25"
 
 
-def test_skill(newly_created_character: Character):
+def test_skill(newly_created_character: CharacterCoC):
     skill_name = "test skill"
     skill = newly_created_character.skill(skill_name)
     assert skill is None
@@ -109,7 +110,7 @@ def test_skill(newly_created_character: Character):
     assert skill['value'] == "21"
 
 
-def test_subskill(newly_created_character: Character):
+def test_subskill(newly_created_character: CharacterCoC):
     skill_name = "Science"
     subskill_name = "Biology"
 

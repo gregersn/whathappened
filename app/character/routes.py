@@ -11,7 +11,7 @@ from werkzeug.exceptions import abort
 
 from . import bp, api
 
-from .models import Character
+from .models import Character, CharacterCoC
 from .forms import ImportForm, CreateForm, SkillForm
 from .forms import SubskillForm, DeleteForm
 from .coc import convert_from_dholes
@@ -141,7 +141,7 @@ def shared(code):
     editable = False
 
     typeheader = "1920s Era Investigator"
-    if character.gametype == "Modern":
+    if character.game[1] == "Modern":
         typeheader = "Modern Era"
 
     return render_template('character/sheet.html.jinja',
@@ -158,6 +158,15 @@ def shared(code):
 def view(id):
     character = get_character(id, check_author=True)
 
+    if character.game[0] == "Call of Cthulhu TM":
+        return view_coc(id, character)
+
+
+def view_coc(id: int, character: Character = None):
+    if character is None:
+        character = CharacterCoC.query.get(id)
+    else:
+        character.__class__ = CharacterCoC
     editable = False
 
     if (current_user.is_authenticated and
@@ -191,7 +200,7 @@ def view(id):
         return redirect(url_for('character.view', id=id))
 
     typeheader = "1920s Era Investigator"
-    if character.gametype == "Modern":
+    if character.game[1] == "Modern":
         typeheader = "Modern Era"
 
     shared = Invite.query_for(character).count()

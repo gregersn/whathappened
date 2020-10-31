@@ -38,6 +38,24 @@ class Character(db.Model):
     def __repr__(self):
         return '<Character {}>'.format(self.title)
 
+    @property
+    def data(self):
+        if not hasattr(self, '_data') or self._data is None:
+            self._data = json.loads(self.body)
+
+        return self._data
+
+    @property
+    def game(self):
+        return (self.data['meta']['GameName'], self.data['meta']['GameType'])
+
+    def validate(self, filename=schema_file):
+        schema = load_schema(filename)
+        v = Draft7Validator(schema)
+        return [{'path': "/".join(str(x) for x in e.path), "message": e.message} for e in v.iter_errors(self.data)]
+
+
+class CharacterCoC(Character):
     def __init__(self, *args, **kwargs):
         super(Character, self).__init__(*args, **kwargs)
         self._data = None
@@ -82,11 +100,7 @@ class Character(db.Model):
     def description(self):
         return self.data['personalia']['Occupation']
 
-    def check_data(self):
-        pass
-
     def attribute(self, *args):
-        self.check_data()
 
         path = args[0]
 
@@ -98,7 +112,6 @@ class Character(db.Model):
 
     def set_attribute(self, attribute):
         """Set a specific attribute."""
-        self.check_data()
 
         if attribute.get('type', None) == 'skill':
             logger.debug("Set a skill")
@@ -136,12 +149,10 @@ class Character(db.Model):
 
     def store_data(self):
         """Put loaded data back into JSON."""
-        self.check_data()
         self.body = json.dumps(self.data, indent=4)
 
     def skill(self, skill, subskill=None):
         """Return a single skill, or something."""
-        self.check_data()
         skills = self.skills()
         if subskill == 'None':
             subskill = None
@@ -163,12 +174,9 @@ class Character(db.Model):
 
     def skills(self, *args):
         """Return a list of skills."""
-        self.check_data()
         return self.data['skills']
 
     def add_skill(self, skillname, value="1"):
-        self.check_data()
-
         if self.skill(skillname) is not None:
             raise ValueError(f"Skill {skillname} already exists.")
 
@@ -177,7 +185,6 @@ class Character(db.Model):
             self.data['skills'].sort(key=lambda x: x['name'])
 
     def add_subskill(self, name, parent):
-        self.check_data()
         value = self.skill(parent)['value']
         logger.debug("Try to add subskill")
         logger.debug(f"Name: {name}, parent {parent}, value {value}")
@@ -193,14 +200,9 @@ class Character(db.Model):
         })
 
     def set_portrait(self, data):
-        self.check_data()
         self.data['personalia']['Portrait'] = fix_image(data)
         return self.portrait
 
-    @property
-    def gametype(self):
-        self.check_data()
-        return self.data['meta']['GameType']
 
     @property
     def schema_version(self):
