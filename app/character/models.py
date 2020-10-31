@@ -1,7 +1,6 @@
 import logging
 import json
 from functools import reduce
-from jsoncomment import JsonComment
 from datetime import datetime
 import base64
 import io
@@ -43,18 +42,18 @@ class Character(db.Model):
         return {
             'id': self.id,
             'title': self.title,
-            'body': JsonComment(json).loads(self.body),
+            'body': json.loads(self.body),
             'timestamp': self.timestamp,
             'user_id': self.user_id
         }
 
     def get_sheet(self):
-        return JsonComment(json).loads(self.body)
+        return json.loads(self.body)
 
     @property
     def data(self):
         if not hasattr(self, '_data') or self._data is None:
-            self._data = JsonComment(json).loads(self.body)
+            self._data = json.loads(self.body)
 
         return self._data
 

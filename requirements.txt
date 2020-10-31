@@ -8,7 +8,6 @@ Flask-Migrate
 Flask-SQLAlchemy
 Flask-WTF
 gunicorn
-jsoncomment
 jsonschema
 markdown2
 Pillow

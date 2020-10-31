@@ -1,5 +1,4 @@
 import json
-from jsoncomment import JsonComment
 import jinja2
 import math
 import time
@@ -26,9 +25,9 @@ def new_character(title, gametype: GameType):
     templateenv = jinja2.Environment(loader=templateloader)
     template = templateenv.get_template('character/blank_character.json.jinja')
     gtype = gametype
-    return JsonComment(json).loads(template.render(title=title,
-                                   timestamp=time.time(),
-                                   type=gtype))
+    return json.loads(template.render(title=title,
+                                      timestamp=time.time(),
+                                      type=gtype))
 
 
 def convert_from_dholes(indata):

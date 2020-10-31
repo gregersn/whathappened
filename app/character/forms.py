@@ -4,7 +4,6 @@ from wtforms import StringField, TextAreaField, BooleanField, HiddenField
 from wtforms import ValidationError, SubmitField, SelectField
 from wtforms.validators import DataRequired
 import json
-from jsoncomment import JsonComment
 
 from .coc import GameTypes
 
@@ -19,7 +18,7 @@ class JsonString(object):
 
     def __call__(self, form, field):
         try:
-            JsonComment(json).loads(field.data)
+           json.loads(field.data)
         except Exception:
             logger.error("Could not verify  JSON data", exc_info=True)
             raise ValidationError(self.message)
