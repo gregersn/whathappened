@@ -12,7 +12,8 @@ def load_schema(filename: str):
         return json.load(f)
 
 
-schema = load_schema(os.path.join(os.path.dirname(__file__), 'schema/coc.json'))
+schema = load_schema(os.path.join(os.path.dirname(__file__),
+                     'schema/coc.json'))
 
 # This is not pretty
 GameType = Literal["Classic (1920's)", "Modern"]
@@ -20,7 +21,8 @@ GameTypes = ["Classic (1920's)", "Modern"]
 
 
 def new_character(title, gametype: GameType):
-    templateloader = jinja2.FileSystemLoader(searchpath="./app/character/templates/")
+    templateloader = jinja2 \
+                     .FileSystemLoader(searchpath="./app/character/templates/")
     templateenv = jinja2.Environment(loader=templateloader)
     template = templateenv.get_template('character/blank_character.json.jinja')
     gtype = gametype
@@ -35,14 +37,55 @@ def convert_from_dholes(indata):
     if 'Investigator' in indata:
         investigator = indata['Investigator']
 
+    def convert_header(header):
+        header['Version'] = '0.0.1'
+        return header
+
     def convert_skills(skills):
         inskills = skills['Skill']
         outskills = []
 
+        skill_index = {}
+        subskills = []
+
         for skill in inskills:
             skill.pop('fifth', None)
             skill.pop('half', None)
-            outskills.append(skill)
+
+            if 'occupation' in skill:
+                skill['occupation'] = skill['occupation'] == "true"
+
+            if 'subskill' in skill:
+                if skill['subskill'] == 'None':
+                    del skill['subskill']
+                else:
+                    subskills.append(skill)
+                    continue
+
+            if skill['name'] not in skill_index:
+                skill_index[skill['name']] = skill
+                outskills.append(skill)
+
+        for subskill in subskills:
+            if subskill['name'] not in skill_index:
+                if subskill['name'] == "Language (Own)":
+                    del subskill['subskill']
+                    outskills.append(subskill)
+                    skill_index[subskill['name']] = subskill
+                    continue
+                else:
+                    parent_skill = {
+                        'name': subskill['name'],
+                        'value': subskill['value'],
+                        'subskills': [
+                            {
+                                'name': subskill['subskill'],
+                                'value': subskill['value'],
+                            }
+                        ]
+                    }
+                    outskills.append(parent_skill)
+                    skill_index[parent_skill['name']] = parent_skill
 
         return outskills
 
@@ -73,7 +116,7 @@ def convert_from_dholes(indata):
             'Dodge': combat['Dodge']['value']
         }
 
-    header = investigator['Header']
+    header = convert_header(investigator['Header'])
     personal_details = investigator['PersonalDetails']
     characteristics = investigator['Characteristics']
     skills = convert_skills(investigator['Skills'])

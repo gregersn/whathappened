@@ -6,7 +6,9 @@
             "type": "object",
             "properties": {
                 "name": {"type": "string"},
-                "value": {"type": "string"}
+                "value": {"type": "string"},
+                "occupation": {"type": "boolean"},
+                "checked": {"type": "boolean"}
             },
             "required": [
                 "name", "value"
@@ -28,7 +30,7 @@
                     "enum": ["Classic (1920's)", "Modern"]
                 },
                 "Disclaimer": {"type": "string"},
-                "Version": {"type": "string", "value": "0.0.1"}
+                "Version": {"const": "0.0.1"}
             }
         },
         "personalia": {
@@ -39,7 +41,8 @@
                 "Gender": {"type": "string"},
                 "Age": {"type": "string"},
                 "Birthplace": {"type": "string"},
-                "Residence": {"type": "string"}
+                "Residence": {"type": "string"},
+                "Portrait": { "anyOf": [{"type": "string"}, {"type": "null"}] }
             }
         },
         "characteristics": {
@@ -87,11 +90,13 @@
                                 "items": { 
                                     "$ref": "#/definitions/skill"
                                     }
-                                }
+                                },
+                                "uniqueItems": true
                             }
                         }
                     }]
-            }
+            },
+            "uniqueItems": true
         },
         "weapons": {
             "type": "array",
@@ -107,7 +112,7 @@
                     "malf": {"type": "string"}
                 },
                 "required": [
-                    "name", "skillname", "regular", "damage", "range", "attacks", "ammo", "malf"
+                    "name", "regular", "damage", "range", "attacks", "ammo", "malf"
                 ]
             }
         },
@@ -167,7 +172,7 @@
             }
         },
         "assets": {
-            "anyOf": [{"type": "object"}, {"type": "null"}]
+            "anyOf": [{"type": "string"}, {"type": "null"}]
         }
     }
 }

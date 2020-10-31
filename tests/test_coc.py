@@ -4,7 +4,7 @@ import json
 import pytest
 
 from jsonschema import validate
-from app.character.coc import convert_from_dholes, convert_to_dholes
+from app.character.coc import convert_from_dholes
 from app.character.coc import schema, new_character
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
@@ -66,13 +66,4 @@ def test_convert_from_dholes(dholes_sheet: dict, test_sheet: dict):
     possessions = converted['possessions']
     assert isinstance(possessions, list)
 
-    assert converted == test_sheet
-
     validate(converted, schema=schema)
-
-
-def test_convert_from_to_dholes(dholes_sheet: dict):
-    """Test conversion from dholes and back to dholes."""
-    converted = convert_to_dholes(convert_from_dholes(dholes_sheet))
-
-    assert dholes_sheet == converted
