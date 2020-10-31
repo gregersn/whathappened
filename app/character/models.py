@@ -1,6 +1,9 @@
 import logging
 import json
 from functools import reduce
+
+from jsonschema import Draft7Validator
+
 from datetime import datetime
 import base64
 import io
@@ -8,6 +11,7 @@ from PIL import Image
 
 from app import db
 
+from app.character.coc import schema_file, load_schema
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +41,11 @@ class Character(db.Model):
     def __init__(self, *args, **kwargs):
         super(Character, self).__init__(*args, **kwargs)
         self._data = None
+
+    def validate(self, filename=schema_file):
+        schema = load_schema(filename)
+        v = Draft7Validator(schema)
+        return [{'path': "/".join(str(x) for x in e.path), "message": e.message} for e in v.iter_errors(self.data)]
 
     def to_dict(self):
         return {
@@ -192,3 +201,7 @@ class Character(db.Model):
     def gametype(self):
         self.check_data()
         return self.data['meta']['GameType']
+
+    @property
+    def schema_version(self):
+        return self.data['meta']['Version']

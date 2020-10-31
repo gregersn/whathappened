@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block content %}
+  <div>
+    Remember to backup your character before doing anything you are not really sure about!
+  </div>
   <form action="" method="post">
     {{ form.hidden_tag() }}
         <p>
@@ -21,10 +24,19 @@
           <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
       </p>        
-      <p>{{ form.submit() }} {{ form.conversion() }} Try to convert.</p>
+      <p>
+      {{ form.conversion() }} Try to convert from Dholes.
+      </p>
+      <p>{{ form.submit() }}</p>  
       <p>
         If you check the box, upon save, the system will try to convert the data from formats used by other generators.
         Use with caution. Backup the data first.
         </p>
   </form>
+  {% if validation_errors %}
+    <h3>Validation errors in character sheet</h3>
+    {% for error in validation_errors %}
+      {{ error.path }}: {{ error.message }}<br />
+    {% endfor %}
+  {% endif %}
 {% endblock %}
