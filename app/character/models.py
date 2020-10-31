@@ -160,6 +160,10 @@ class Character(db.Model):
 
     def add_skill(self, skillname, value="1"):
         self.check_data()
+
+        if self.skill(skillname) is not None:
+            raise ValueError(f"Skill {skillname} already exists.")
+
         self.data['skills'].append({"name": skillname, "value": str(value)})
         if isinstance(self.data['skills'], list):
             self.data['skills'].sort(key=lambda x: x['name'])
@@ -169,14 +173,16 @@ class Character(db.Model):
         value = self.skill(parent)['value']
         logger.debug("Try to add subskill")
         logger.debug(f"Name: {name}, parent {parent}, value {value}")
-        if self.skill(parent, name) is None:
-            skill = self.skill(parent)
-            if 'subskills' not in skill:
-                skill['subskills'] = []
-            skill['subskills'].append({
-                'name': name,
-                'value': value
-            })
+        if self.skill(parent, name) is not None:
+            raise ValueError(f"Subskill {name} in {parent} already exists.")
+
+        skill = self.skill(parent)
+        if 'subskills' not in skill:
+            skill['subskills'] = []
+        skill['subskills'].append({
+            'name': name,
+            'value': value
+        })
 
     def set_portrait(self, data):
         self.check_data()

@@ -143,11 +143,15 @@ def convert_from_dholes(indata):
 
 
 def half(value):
-    return str(math.floor(int(value, 10) / 2))
+    if type(value) == str:
+        value = int(value, 10)
+    return str(math.floor(value / 2))
 
 
 def fifth(value):
-    return str(math.floor(int(value, 10) / 5))
+    if type(value) == str:
+        value = int(value, 10)
+    return str(math.floor(value / 5))
 
 
 def convert_to_dholes(indata):
