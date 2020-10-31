@@ -9,9 +9,11 @@ from app.auth.models import User  # noqa
 from app.campaign.models import Campaign  # noqa
 
 from app.character.coc import convert_from_dholes
-from app.character.coc import schema, new_character
+from app.character.coc import new_character
+from app.character.coc import schema_file, load_schema
 from app.character.models import Character
 from app.character.coc import fifth, half
+from app.character.coc import schema_file, load_schema, new_character
 
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
@@ -59,39 +61,16 @@ def fixture_test_character() -> Character:
 
 def test_validate(test_sheet: dict):
     nc = new_character("Test Character", "Classic (1920's)")
-
+    schema = load_schema(schema_file)
     validate(nc, schema=schema)
     validate(test_sheet, schema=schema)
 
 
-def test_convert_from_dholes(dholes_sheet: dict, test_sheet: dict):
+def test_convert_from_dholes(dholes_sheet: dict):
     """Test conversion from a character sheet generated at dholes house."""
     assert dholes_sheet is not None
+    schema = load_schema(schema_file)
     converted = convert_from_dholes(dholes_sheet)
-
-    sheet_sections = ['meta', 'personalia', 'characteristics',
-                      'skills', 'weapons', 'combat', 'backstory',
-                      'possessions', 'cash', 'assets']
-
-    for section in sheet_sections:
-        assert section in converted
-
-    skills = converted['skills']
-    assert isinstance(skills, list)
-
-    skill_names = ['Accounting', 'Appraise', 'Cthulhu Mythos']
-    for skill in skills:
-        if skill['name'] in skill_names:
-            skill_names.remove(skill['name'])
-
-    assert not skill_names
-
-    weapons = converted['weapons']
-    assert isinstance(weapons, list)
-
-    possessions = converted['possessions']
-    assert isinstance(possessions, list)
-
     validate(converted, schema=schema)
 
 

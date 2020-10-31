@@ -196,6 +196,9 @@ def view(id):
 
     shared = Invite.query_for(character).count()
 
+    if character.validate() and editable:
+        return redirect(url_for('character.editjson', id=id))
+
     return render_template('character/sheet.html.jinja',
                            shared=shared,
                            character=character,
@@ -290,7 +293,10 @@ def editjson(id):
     form.title.data = c.title
     form.submit.label.text = 'Save'
 
+    validation_errors = c.validate()
+
     return render_template('character/import.html.jinja',
                            title="Edit JSON",
+                           validation_errors=validation_errors,
                            form=form,
                            type=None)

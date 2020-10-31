@@ -11,8 +11,7 @@ def load_schema(filename: str):
         return json.load(f)
 
 
-schema = load_schema(os.path.join(os.path.dirname(__file__),
-                     'schema/coc.json'))
+schema_file = os.path.join(os.path.dirname(__file__), 'schema/coc.json')
 
 # This is not pretty
 GameType = Literal["Classic (1920's)", "Modern"]
