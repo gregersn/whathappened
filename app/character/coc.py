@@ -36,7 +36,7 @@ def convert_from_dholes(indata):
         investigator = indata['Investigator']
 
     def convert_header(header):
-        header['Version'] = '0.0.1'
+        header['Version'] = '0.0.2'
         return header
 
     def convert_skills(skills):
@@ -49,6 +49,8 @@ def convert_from_dholes(indata):
         for skill in inskills:
             skill.pop('fifth', None)
             skill.pop('half', None)
+
+            skill['start_value'] = skill['value']
 
             if 'occupation' in skill:
                 skill['occupation'] = skill['occupation'] == "true"
@@ -75,10 +77,12 @@ def convert_from_dholes(indata):
                     parent_skill = {
                         'name': subskill['name'],
                         'value': subskill['value'],
+                        'start_value': subskill['value'],
                         'subskills': [
                             {
                                 'name': subskill['subskill'],
                                 'value': subskill['value'],
+                                'start_value': subskill['value']
                             }
                         ]
                     }
@@ -158,6 +162,8 @@ def convert_to_dholes(indata):
         for skill in skills:
             skill['half'] = half(skill['value'])
             skill['fifth'] = fifth(skill['value'])
+            if 'occupation' in skill:
+                skill['occupation'] = "true" if skill['occupation'] else "false"
 
             outskills.append(
                 skill

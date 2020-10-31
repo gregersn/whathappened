@@ -1,5 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
+    "version": "0.0.2",
     "definitions": {
         "skill": {
             "$id": "#skill",
@@ -7,11 +8,12 @@
             "properties": {
                 "name": {"type": "string"},
                 "value": {"type": "string"},
+                "start_value": {"type": "string"},
                 "occupation": {"type": "boolean"},
                 "checked": {"type": "boolean"}
             },
             "required": [
-                "name", "value"
+                "name", "value", "start_value"
             ]
         }
     },
@@ -30,7 +32,7 @@
                     "enum": ["Classic (1920's)", "Modern"]
                 },
                 "Disclaimer": {"type": "string"},
-                "Version": {"const": "0.0.1"}
+                "Version": {"const": "0.0.2"}
             }
         },
         "personalia": {
@@ -78,10 +80,10 @@
                     { "$ref": "#/definitions/skill"},
                     {
                         "properties": {
-                            "specializations": {"type": "string", "enum": ["true", "false"]}
+                            "specializations": {"type": "boolean"}
                     },
                     "if": {
-                        "properties": {"specialization": {"const": "true"}}
+                        "properties": {"specialization": {"const": true}}
                     }, 
                     "then": {
                         "properties": {

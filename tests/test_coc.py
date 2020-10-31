@@ -14,8 +14,8 @@ from app.character.coc import schema_file, load_schema
 from app.character.models import Character
 from app.character.models import CharacterCoC
 from app.character.coc import fifth, half
-from app.character.coc import schema_file, load_schema, new_character
-
+from app.utils.schema import migrate
+from app.character.schema.coc import migrations
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -132,3 +132,22 @@ def test_subskill(newly_created_character: CharacterCoC):
     subskill = newly_created_character.skill(skill_name, subskill_name)
     assert subskill is not None
     assert subskill['value'] == '21'
+
+
+def test_validate_migration_up(test_sheet: dict):
+    schema = load_schema(schema_file)
+    validate(migrate(test_sheet,
+                     "0.0.2",
+                     migrations=migrations),
+             schema=schema)
+
+
+def test_validate_migration_up_and_down(test_sheet: dict):  
+    migrated = migrate(test_sheet.copy(),
+                       "0.0.2",
+                       migrations=migrations)
+
+    back_down = migrate(migrated, "0.0.1", migrations=migrations)
+
+    assert test_sheet == back_down
+
