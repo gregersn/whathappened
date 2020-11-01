@@ -58,6 +58,7 @@ def invite_delete(id):
                            invite=invite,
                            form=form)
 
+
 @api.route('/invite/<int:id>/delete', methods=('POST', ))
 @login_required
 def api_invite_delete(id):

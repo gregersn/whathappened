@@ -1,14 +1,14 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, HiddenField, SelectField
-from wtforms.compat import text_type, iteritems
-from markupsafe import escape, Markup
+from wtforms.compat import text_type
+from markupsafe import Markup
 from wtforms import SubmitField
 from wtforms import widgets
 from wtforms_alchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.fields.core import IntegerField, SelectMultipleField
 from wtforms.validators import DataRequired, Email
 from flask_login import current_user
-from wtforms.widgets.core import HiddenInput, Select, TextArea
+from wtforms.widgets.core import HiddenInput, TextArea
 
 
 from .models import HandoutStatus

@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 import logging
-from flask import render_template, current_app, flash
-from flask import request, redirect, url_for
+from flask import render_template, flash
+from flask import redirect, url_for
 from flask.helpers import send_from_directory
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
@@ -10,7 +10,8 @@ from werkzeug.exceptions import abort
 
 from app import db
 from . import bp
-from .forms import DeleteAssetFolderForm, DeleteAssetForm, UploadForm, NewFolderForm, MoveAssetForm
+from .forms import DeleteAssetFolderForm, DeleteAssetForm
+from .forms import UploadForm, NewFolderForm, MoveAssetForm
 
 from .models import Asset, AssetFolder
 
@@ -52,7 +53,9 @@ def create_folder(folder_id=None):
     folderform = NewFolderForm(prefix="newfolderform")
     if folderform.validate_on_submit():
         logger.debug("Create a new folder")
-        folder = AssetFolder(parent_id=folderform.parent_id.data, title=folderform.title.data, owner=current_user.profile)
+        folder = AssetFolder(parent_id=folderform.parent_id.data,
+                             title=folderform.title.data,
+                             owner=current_user.profile)
         db.session.add(folder)
         db.session.commit()
     return redirect(url_for('userassets.index', folder_id=folder_id))
@@ -77,7 +80,8 @@ def delete_folder(id=None):
         parent_id = folder.parent.id
 
         if str(folder.id) != deletefolderform.id.data:
-            logger.debug(f"Wrong ids specified {folder.id} and {deletefolderform.id.data}")
+            logger.debug(f"Wrong ids specified {folder.id} "
+                         f"and {deletefolderform.id.data}")
             abort(403)
 
         if folder.files:
@@ -176,8 +180,10 @@ def move(fileid, filename):
         if asset.owner != current_user.profile:
             abort(403)
         destinationfolder = form.folder.data
-        logger.debug(f"Move {asset.system_path} to {destinationfolder.system_path}")
-        os.replace(asset.system_path, os.path.join(destinationfolder.system_path, asset.filename))
+        logger.debug(f"Move {asset.system_path} "
+                     f"to {destinationfolder.system_path}")
+        os.replace(asset.system_path,
+                   os.path.join(destinationfolder.system_path, asset.filename))
         asset.folder = destinationfolder
         db.session.commit()
         flash("You moved your file")

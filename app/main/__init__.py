@@ -1,14 +1,11 @@
 from flask import Blueprint
+from pywebpack import WebpackProject
+import logging
 
 bp = Blueprint('main', __name__, template_folder='templates')
 api = Blueprint('main', __name__, template_folder='templates')
 
 from . import routes  # noqa: E402, F401 isort:skip
-
-import logging
-import click
-
-from pywebpack import WebpackProject
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +18,7 @@ def build():
 
     project.build()
 
+
 @bp.cli.command('watch')
 def watch():
     logger.debug("Watch stuff")
@@ -28,4 +26,3 @@ def watch():
     project = WebpackProject(project_path)
 
     project.run('watch')
-

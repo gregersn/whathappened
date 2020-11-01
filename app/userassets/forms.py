@@ -2,14 +2,13 @@ from flask_login import current_user
 from flask import url_for
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from sqlalchemy.orm import query
 
 from wtforms import SubmitField
 from wtforms_alchemy.fields import QuerySelectField
 
 from wtforms.fields.core import StringField
 from wtforms.fields.simple import HiddenField
-from wtforms.validators import DataRequired, Required
+from wtforms.validators import DataRequired
 
 
 def available_folders():

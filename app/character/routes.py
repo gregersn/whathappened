@@ -69,7 +69,6 @@ def index():
     return redirect("/")
 
 
-
 @bp.route('/create/<string:chartype>', methods=('GET', 'POST'))
 @login_required
 def create(chartype=None):

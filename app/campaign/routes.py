@@ -1,7 +1,6 @@
 import logging
 from flask_login import login_required, current_user
-from flask import render_template, redirect, url_for, flash, request
-from flask_migrate import current
+from flask import render_template, redirect, url_for, flash
 from app import db
 from app.main.forms import CreateInviteForm
 from app.auth.models import User
@@ -17,6 +16,7 @@ from .forms import RemovePlayerForm
 from app.models import Invite
 
 logger = logging.getLogger(__name__)
+
 
 @bp.route('/<code>', methods=('GET', 'POST'))
 @login_required
@@ -94,7 +94,7 @@ def view(id):
             flash("Character is already added to campaign")
 
         return redirect(url_for('campaign.view', id=id))
-    
+
     createinviteform.submit.label.text = "Create share link."
 
     return render_template('campaign/campaign.html.jinja',
@@ -138,7 +138,8 @@ def remove_character(id, characterid):
     c = Campaign.query.get(id)
     char = Character.query.get(characterid)
 
-    if current_user.profile.id != c.user_id and char.user_id != current_user.profile.id:
+    if current_user.profile.id != c.user_id \
+            and char.user_id != current_user.profile.id:
         abort(404)
     form = RemoveCharacterForm()
 
@@ -149,7 +150,10 @@ def remove_character(id, characterid):
 
     form.id.data = c.id
     form.character.data = char.id
-    return render_template('campaign/removecharacter.html.jinja', character=char, campaign=c, form=form)
+    return render_template('campaign/removecharacter.html.jinja',
+                           character=char,
+                           campaign=c,
+                           form=form)
 
 
 @bp.route('/<int:id>/removeplayer/<int:playerid>',
@@ -167,4 +171,7 @@ def remove_player(id, playerid):
 
     form.id.data = c.id
     form.player.data = player.id
-    return render_template('campaign/removeplayer.html.jinja', player=player, campaign=c, form=form)
+    return render_template('campaign/removeplayer.html.jinja',
+                           player=player,
+                           campaign=c,
+                           form=form)

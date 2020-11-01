@@ -15,4 +15,4 @@ def make_shell_context():
             'Character': Character,
             'Role': Role,
             'UserRoles': UserRoles
-          }
+            }

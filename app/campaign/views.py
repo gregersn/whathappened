@@ -11,7 +11,7 @@ from app import db
 from . import bp
 
 from .models import Campaign, Handout
-from .forms import HandoutForm, DeleteHandoutForm, RevealHandout
+from .forms import HandoutForm, DeleteHandoutForm
 from app.userassets.forms import AssetSelectForm
 
 logger = logging.getLogger(__name__)
@@ -49,7 +49,9 @@ class HandoutView(View):
         else:
             logger.debug("Form did not validate")
             for error, message in form.errors.items():
-                logger.debug(f"Field: {error}, value: {form[error].data}, errors: {', '.join(message)}")
+                logger.debug(f"Field: {error}, "
+                             f"value: {form[error].data}, "
+                             f"errors: {', '.join(message)}")
 
         return redirect(url_for('campaign.handout_view',
                                 campaign_id=campaign_id))
@@ -66,7 +68,9 @@ class HandoutView(View):
         else:
             logger.debug("Form did not validate")
             for error, message in form.errors.items():
-                logger.debug(f"Field: {error}, value: {form[error].data}, errors: {', '.join(message)}")
+                logger.debug(f"Field: {error}, "
+                             f"value: {form[error].data}, "
+                             f"errors: {', '.join(message)}")
 
         return redirect(url_for('campaign.handout_view',
                                 campaign_id=campaign_id,
@@ -76,12 +80,14 @@ class HandoutView(View):
         logger.debug(f"view({campaign_id}, {handout_id})")
         handout = Handout.query.get(handout_id)
 
-        if current_user.is_authenticated and current_user.profile not in handout.players \
+        if current_user.is_authenticated \
+            and current_user.profile not in handout.players \
                 and current_user.profile != handout.campaign.user:
             abort(403)
 
         editable = False
-        if current_user.is_authenticated and current_user.profile.id == handout.campaign.user_id:
+        if current_user.is_authenticated \
+                and current_user.profile.id == handout.campaign.user_id:
             editable = True
 
         if not editable:
