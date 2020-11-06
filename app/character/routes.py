@@ -11,7 +11,7 @@ from werkzeug.exceptions import abort
 
 from . import bp, api
 
-from .models import Character, CharacterCoC
+from .models import Character
 from .forms import ImportForm, CreateForm, SkillForm
 from .forms import SubskillForm, DeleteForm
 from .coc import convert_from_dholes
@@ -44,8 +44,6 @@ def get_character(id, check_author=True):
 
     if check_author and character.user_id != current_user.profile.id:
         abort(403)
-
-    character.__class__ = CharacterCoC
 
     return character
 
@@ -162,15 +160,6 @@ def shared(code):
 def view(id):
     character = get_character(id, check_author=True)
 
-    if character.game[0] == "Call of Cthulhu TM":
-        return view_coc(id, character)
-
-
-def view_coc(id: int, character: Character = None):
-    if character is None:
-        character = CharacterCoC.query.get(id)
-    else:
-        character.__class__ = CharacterCoC
     editable = False
 
     if (current_user.is_authenticated and

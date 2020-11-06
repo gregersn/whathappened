@@ -202,7 +202,7 @@
         <div class="weapons box">
             <h3>Weapons</h3>
             <section>
-                <table id="tblWeapons" class="{%- if current_user.is_authenticated and current_user.profile.id == character.user_id %} editableTable{%- endif %}" data-field="weapons">
+                <table id="tblWeapons" class="{%- if editable %} editableTable{%- endif %}" data-field="weapons">
                     <thead>
                         <tr>
                             <th data-property="name">Weapon</th>

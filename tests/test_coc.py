@@ -12,7 +12,6 @@ from app.character.coc import convert_from_dholes
 from app.character.coc import new_character
 from app.character.coc import schema_file, load_schema
 from app.character.models import Character
-from app.character.models import CharacterCoC
 from app.character.coc import fifth, half
 from app.utils.schema import migrate
 from app.character.schema.coc import migrations
@@ -52,9 +51,9 @@ def fixture_test_sheet() -> dict:
 
 
 @pytest.fixture(name="newly_created_character")
-def fixture_test_character() -> CharacterCoC:
+def fixture_test_character() -> Character:
     nc = new_character("Test Character", "Classic (1920's)")
-    c = CharacterCoC(title="Test Character",
+    c = Character(title="Test Character",
                      body=json.dumps(nc))
 
     return c
@@ -74,7 +73,7 @@ def test_convert_from_dholes(dholes_sheet: dict):
     validate(converted, schema=schema)
 
 
-def test_personalia_and_attributes(newly_created_character: CharacterCoC):
+def test_personalia_and_attributes(newly_created_character: Character):
     assert newly_created_character.name == "Unknown"
     assert newly_created_character.age == "18"
     assert newly_created_character.description == "Unknown"
@@ -82,13 +81,13 @@ def test_personalia_and_attributes(newly_created_character: CharacterCoC):
     assert newly_created_character.game[1] == "Classic (1920's)"
 
 
-def test_skills(newly_created_character: CharacterCoC):
+def test_skills(newly_created_character: Character):
     skill = newly_created_character.skill('Spot Hidden')
     assert skill is not None
     assert skill['value'] == "25"
 
 
-def test_skill(newly_created_character: CharacterCoC):
+def test_skill(newly_created_character: Character):
     skill_name = "test skill"
     skill = newly_created_character.skill(skill_name)
     assert skill is None
@@ -110,7 +109,7 @@ def test_skill(newly_created_character: CharacterCoC):
     assert skill['value'] == "21"
 
 
-def test_subskill(newly_created_character: CharacterCoC):
+def test_subskill(newly_created_character: Character):
     skill_name = "Science"
     subskill_name = "Biology"
 

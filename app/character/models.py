@@ -1,5 +1,7 @@
 import logging
 import json
+from flask import flash
+from json import JSONDecodeError
 from functools import reduce
 
 from jsonschema import Draft7Validator
@@ -49,13 +51,6 @@ class Character(db.Model):
     def game(self):
         return (self.data['meta']['GameName'], self.data['meta']['GameType'])
 
-    def validate(self, filename=schema_file):
-        schema = load_schema(filename)
-        v = Draft7Validator(schema)
-        return [{'path': "/".join(str(x) for x in e.path), "message": e.message} for e in v.iter_errors(self.data)]
-
-
-class CharacterCoC(Character):
     def __init__(self, *args, **kwargs):
         super(Character, self).__init__(*args, **kwargs)
         self._data = None
@@ -80,7 +75,12 @@ class CharacterCoC(Character):
     @property
     def data(self):
         if not hasattr(self, '_data') or self._data is None:
-            self._data = json.loads(self.body)
+            try:
+                self._data = json.loads(self.body)
+            except JSONDecodeError as e:
+                logger.debug(e.msg)
+                flash(f"Error in JSON: {e.msg} {e.lineno}, {e.colno}")
+                self._data = e.doc
 
         return self._data
 
