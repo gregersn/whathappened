@@ -45,6 +45,8 @@ def get_character(id, check_author=True):
     if check_author and character.user_id != current_user.profile.id:
         abort(403)
 
+    character.__class__ = CharacterCoC
+
     return character
 
 
