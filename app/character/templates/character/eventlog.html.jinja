@@ -1,0 +1,21 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+  <h2>{% block title %}Event log for <a href="{{ url_for('character.view', id=character.id)}}">{{ character.title}}</a>{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+<table>
+{% for entry in entries %}
+    <tr>
+        <td>{{ entry.created_date|datetimeformat }}</td>
+        <td>{{ entry.user.username}}</td>
+        <td>{{ entry.entry }}</td>
+    </tr>
+{% endfor %}
+</table>
+{% if prev_url or next_url %}
+{% if prev_url %}<a href="{{prev_url}}">Prev</a>{% else %}Prev{% endif %}
+{% if next_url %}<a href="{{next_url}}">Next</a>{% else %}Next{% endif %}
+{% endif %}
+{% endblock %}

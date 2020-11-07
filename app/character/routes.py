@@ -16,6 +16,7 @@ from .forms import ImportForm, CreateForm, SkillForm
 from .forms import SubskillForm, DeleteForm
 from .coc import convert_from_dholes
 from app import db
+from app.models import LogEntry
 from app.utils.schema import migrate
 from app.models import Invite
 from app.character.schema.coc import migrations
@@ -126,6 +127,9 @@ def update(id):
 
         for setting in update:
             character.set_attribute(setting)
+            log_message = f"set {setting['field']}{' ' + setting.get('subfield', '') if setting.get('subfield', 'None') != 'None' else '' }: {setting['value']}"
+            logentry = LogEntry(character, log_message, user_id=current_user.id)
+            db.session.add(logentry)
 
         character.store_data()
         db.session.commit()
@@ -175,6 +179,9 @@ def view(id):
     if editable and subskillform.data and subskillform.validate_on_submit():
         character.add_subskill(subskillform.name.data,
                                subskillform.parent.data)
+        logentry = LogEntry(character, f"add subskill {subskillform.name.data} under {subskillform.parent.data}", user_id=current_user.id)
+        db.session.add(logentry)
+
         character.store_data()
         db.session.commit()
         return redirect(url_for('character.view', id=id))
@@ -189,6 +196,9 @@ def view(id):
 
         character.add_skill(skillform.name.data)
         character.store_data()
+        logentry = LogEntry(character, f"add skill {subskillform.name.data}", user_id=current_user.id)
+        db.session.add(logentry)
+
         db.session.commit()
         return redirect(url_for('character.view', id=id))
 
@@ -296,6 +306,9 @@ def editjson(id):
             data = form.body.data
             c.body = convert_from_dholes(data)
 
+        logentry = LogEntry(c, f"JSON edited", user_id=current_user.id)
+        db.session.add(logentry)
+
         db.session.commit()
         return redirect(url_for('character.view', id=c.id))
 
@@ -308,3 +321,26 @@ def editjson(id):
                            validation_errors=validation_errors,
                            form=form,
                            type=None)
+
+
+@bp.route('/<int:id>/eventlog', methods=('GET', ))
+@login_required
+def eventlog(id: int):
+    page = request.args.get('page', 1, type=int)
+    c = get_character(id, check_author=True)
+    entries_page = LogEntry.query_for(c).paginate(page, 50, False)
+    next_url = url_for('character.eventlog', id=id,
+                       page=entries_page.next_num) \
+        if entries_page.has_next else None
+
+    prev_url = url_for('character.eventlog', id=id,
+                       page=entries_page.prev_num) \
+        if entries_page.has_prev else None
+
+    logger.debug(next_url)
+    log_entries = entries_page.items
+    return render_template('character/eventlog.html.jinja',
+                           character=c,
+                           entries=log_entries,
+                           next_url=next_url,
+                           prev_url=prev_url)
