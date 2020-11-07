@@ -1,5 +1,6 @@
 from app import db
 import uuid
+import datetime
 from sqlalchemy.types import TypeDecorator, CHAR
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -70,3 +71,29 @@ class Invite(db.Model):
 
     def matches(self, target: db.Model):
         return target.__tablename__ == self.table and target.id == self.object_id
+
+
+class LogEntry(db.Model):
+    __tablename__ = 'eventlog'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    table = db.Column(db.String(128))
+    object_id = db.Column(db.Integer)
+    entry = db.Column(db.Text)
+    created_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    user = db.relationship("User")
+
+    def __init__(self, target: db.Model, entry: str, user_id=None, **kwargs):
+        super(LogEntry, self).__init__(**kwargs)
+        self.table = target.__tablename__
+        self.object_id = target.id
+        self.entry = entry
+        if user_id is not None:
+            self.user_id = user_id
+
+    @classmethod
+    def query_for(cls, target: db.Model):
+        return cls.query.filter_by(object_id=target.id) \
+                        .filter_by(table=target.__tablename__) \
+                        .order_by(LogEntry.created_date.desc())
+
