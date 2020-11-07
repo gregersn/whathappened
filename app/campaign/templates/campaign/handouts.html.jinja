@@ -15,10 +15,12 @@
     <section class="handouts">
     <ul>
     {% for handout in handouts %}
+    {% if editable or current_user.profile in handout.players %}
     <li>
         <a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id, handout_id=handout.id) }}">{{ handout.title }}</a>
-         [ <a href="{{ url_for('campaign.handout_delete', campaign_id=campaign.id, handout_id=handout.id) }}">Delete</a> ]
+         {%- if editable %}[ <a href="{{ url_for('campaign.handout_delete', campaign_id=campaign.id, handout_id=handout.id) }}">Delete</a> ]{%- endif %}
     </li>
+    {% endif %}
     {% endfor %}
     <ul>
     </section>

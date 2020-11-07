@@ -13,6 +13,7 @@ from app.models import UserProfile
 from .forms import CreateForm, InvitePlayerForm, AddCharacterForm
 from .forms import JoinCampaignForm, EditForm, RemoveCharacterForm
 from .forms import RemovePlayerForm
+from .models import HandoutStatus
 from app.models import Invite
 
 logger = logging.getLogger(__name__)
@@ -97,8 +98,11 @@ def view(id):
 
     createinviteform.submit.label.text = "Create share link."
 
+    handouts = campaign.handouts.filter_by(status=HandoutStatus.visible)
+
     return render_template('campaign/campaign.html.jinja',
                            campaign=campaign,
+                           handouts=handouts,
                            invites=invites,
                            inviteform=inviteform,
                            createinviteform=createinviteform,

@@ -70,7 +70,7 @@
 </tr>
 </thead>
 <tbody>
-{% for handout in campaign.handouts %}
+{% for handout in handouts %}
     <tr>      
         <th><a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id, handout_id=handout.id) }}">{{ handout.title }}</a></th>
         {% for player in campaign.players %}
@@ -85,10 +85,12 @@
     <a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id) }}">Edit handouts</a>
 {% else %}
     <ul>
-{% for handout in campaign.handouts %}
+{% for handout in handouts %}
     {%- if current_user.profile in handout.players %}<li><a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id, handout_id=handout.id) }}">{{ handout.title }}</a></li>{%- endif %}
 {% endfor %}
     </ul>
+
+    [<a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id) }}">Archive</a>]
 
 {% endif %}
 </section>

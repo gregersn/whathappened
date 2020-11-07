@@ -39,7 +39,7 @@ class Campaign(db.Model):
                                  lazy='dynamic',
                                  backref=db.backref('campaigns', lazy=True))
 
-    handouts = db.relationship("Handout", back_populates='campaign')
+    handouts = db.relationship("Handout", back_populates='campaign', lazy='dynamic')
 
     @property
     def players_by_id(self):
