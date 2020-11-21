@@ -10,8 +10,8 @@ import markdown2
 from app import db
 from . import bp
 
-from .models import Campaign, Handout
-from .forms import HandoutForm, DeleteHandoutForm
+from .models import Campaign, Handout, HandoutGroup
+from .forms import HandoutForm, DeleteHandoutForm, HandoutGroupForm
 from app.userassets.forms import AssetSelectForm
 
 logger = logging.getLogger(__name__)
@@ -39,18 +39,25 @@ class HandoutView(View):
 
     def create(self, campaign_id):
         logger.debug("Posting handout")
-        form = HandoutForm()
-        if form.validate_on_submit():
+        handoutform = HandoutForm(prefix="handout")
+        groupform = HandoutGroupForm(prefix="group")
+        if handoutform.submit.data and handoutform.validate_on_submit():
             logger.debug("Store handout")
             handout = Handout()
-            form.populate_obj(handout)
+            handoutform.populate_obj(handout)
             db.session.add(handout)
+            db.session.commit()
+        elif groupform.submit.data and groupform.validate_on_submit():
+            logger.debug("Create handout group")
+            group = HandoutGroup()
+            groupform.populate_obj(group)
+            db.session.add(group)
             db.session.commit()
         else:
             logger.debug("Form did not validate")
-            for error, message in form.errors.items():
+            for error, message in handoutform.errors.items():
                 logger.debug(f"Field: {error}, "
-                             f"value: {form[error].data}, "
+                             f"value: {handoutform[error].data}, "
                              f"errors: {', '.join(message)}")
 
         return redirect(url_for('campaign.handout_view',
@@ -60,6 +67,9 @@ class HandoutView(View):
         logger.debug("Put to handout")
         handout = Handout.query.get(handout_id)
         form = HandoutForm(prefix="handout")
+        form.group_id.choices = [(None, '(none)'), ] \
+            + [(g.id, g.name)
+                for g in handout.campaign.handout_groups]
 
         if form.submit.data and form.validate_on_submit():
             logger.debug("Form is valid")
@@ -98,6 +108,10 @@ class HandoutView(View):
         logger.debug(handout.status)
 
         form = HandoutForm(obj=handout, prefix="handout")
+        form.group_id.choices = [(None, '(none)'), ] \
+            + [(g.id, g.name)
+               for g in handout.campaign.handout_groups]
+
         assetsform = AssetSelectForm(prefix="assetselect")
 
         return render_template('campaign/handout.html.jinja',
@@ -109,16 +123,26 @@ class HandoutView(View):
     def list_view(self, campaign_id: int) -> Text:
         campaign = Campaign.query.get(campaign_id)
         is_owner = current_user and current_user.profile.id == campaign.user_id
-        handouts = campaign.handouts
-        logger.debug(handouts)
-        form = HandoutForm()
-        form.campaign_id.data = campaign.id
+        handouts = campaign.handouts.filter(~Handout.group.has()) \
+            .filter(is_owner or Handout.players.contains(current_user.profile))
+
+        groups = {group.name:
+                  list(group.handouts.filter(is_owner or Handout.players.contains(current_user.profile)))
+                  for group in campaign.handout_groups}
+
+        handoutform = HandoutForm(prefix="handout")
+        handoutform.campaign_id.data = campaign.id
+
+        groupform = HandoutGroupForm(prefix="group")
+        groupform.campaign_id.data = campaign.id
 
         return render_template('campaign/handouts.html.jinja',
                                editable=is_owner,
                                campaign=campaign,
+                               groups=groups,
                                handouts=handouts,
-                               form=form)
+                               handoutform=handoutform,
+                               groupform=groupform)
 
 
 handout_view = HandoutView.as_view('handout_view')

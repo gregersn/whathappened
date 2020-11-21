@@ -69,6 +69,13 @@ class PlayerListField(QuerySelectMultipleField):
     option_widget = widgets.CheckboxInput()
 
 
+class HandoutGroupForm(FlaskForm):
+    campaign_id = IntegerField(widget=HiddenInput(),
+                               validators=[DataRequired()])
+    name = StringField('Name', validators=[DataRequired()])
+    submit = SubmitField('Add group')
+
+
 class HandoutForm(FlaskForm):
     campaign_id = IntegerField(widget=HiddenInput(),
                                validators=[DataRequired()])
@@ -78,8 +85,11 @@ class HandoutForm(FlaskForm):
                        choices=[(e.name, e.value) for e in HandoutStatus],
                        default=HandoutStatus.draft)
 
-    # players = PlayerListField('Show to', choices=[], coerce=int)
-    # players = PlayerListField('Show to', get_label=lambda x: x.user.username)
+    group_id = SelectField('Group',
+                           choices=[(None, '(none)'), ],
+                           default=None,
+                           validate_choice=False)
+
     submit = SubmitField('Save handout')
 
 
@@ -99,7 +109,7 @@ class TableRowWidget(object):
         html = []
         if self.with_tr_tag:
             kwargs.setdefault('id', field.id)
-            html.append('<tr %s>' % widgets.core.html_params(**kwargs))
+            html.append('<tr %s>' % widgets.html_params(**kwargs))
 
         hidden = ''
         for subfield in field:
