@@ -22,3 +22,4 @@ class Config():
     MAX_CONTENT_LENGTH = 1024 * 1024  # Max upload size
     UPLOAD_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.gif']
     UPLOAD_PATH = 'uploads'
+    WTF_CSRF_TIME_LIMIT = None
