@@ -6,7 +6,8 @@
     {% assets "scss_handout" %}
     <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
     {% endassets %}
-
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/handout.js') }}"></script>
 {% endblock head %}
 
@@ -42,7 +43,7 @@
                         {{ form.title.label }}{{ form.title }}
                         {{ form.content.label }}
                         {{ form.content(class_="markdown-editor") }}
-                        {{ assetsform.asset(class_="asset-selector") }}
+                        <div>{{ assetsform.asset(class_="asset-selector") }}</div>
                         {{ form.status.label }}
                         {{ form.status }}
                         {{ form.submit }}

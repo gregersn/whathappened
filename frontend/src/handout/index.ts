@@ -66,18 +66,28 @@ function selected_asset_url(): string {
     return selector.value;
 }
 
+async function insert_asset(element: HTMLTextAreaElement) {
+    const url = await selected_asset_url();
+    const extension = url.split('.').pop();
+    switch(extension) {
+        case 'glb':
+            insertAtCursor(element, `<model-viewer src="${url}" camera-controls min-camera-orbit="auto 0deg auto" max-camera-orbit="auto 180deg auto" style="width: 500px; height: 500px;"></model-viewer>`)
+            break;
+        default:
+            insertAtCursor(element, `![image](${url})\n`)
+            break;
+    }
+}
+
 function setup_editor(element: HTMLTextAreaElement) {
     const toolbar = document.createElement('div');
     const container = document.createElement('div');
-
+    const asset_selector = <HTMLSelectElement>document.getElementsByClassName('asset-selector')[0];
     element.parentElement.replaceChild(container, element);
     container.appendChild(toolbar);
     container.appendChild(element);
 
-    toolbar.appendChild(create_button("I", async () => {
-        const url = await selected_asset_url();
-        insertAtCursor(element, `![image](${url})\n`)
-    }))
+    asset_selector.parentElement.appendChild(create_button("Insert asset", () => insert_asset(element)));
 }
 
 function init_editor() {

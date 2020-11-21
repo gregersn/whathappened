@@ -19,9 +19,11 @@ def available_assets():
     return current_user.profile.assets
 
 
+VALID_FILE_EXTENSIONS = ['jpg', 'png', 'jpeg', 'gif', 'svg', 'glb']
+
 class UploadForm(FlaskForm):
     uploaded = FileField(validators=[FileRequired(),
-                                     FileAllowed(['jpg', 'png', 'jpeg', 'gif'],
+                                     FileAllowed(VALID_FILE_EXTENSIONS,
                                                  'Certain images only')])
     folder_id = HiddenField('FolderId', validators=[DataRequired()])
     submit = SubmitField('Upload')
