@@ -1,3 +1,7 @@
+import { Converter } from "showdown";
+
+const mdconverter = new Converter();
+
 function switch_tab(tab_id: string, tab_content: string, tabset: HTMLElement) {
     const tabs: HTMLElement[] = <HTMLElement[]>Array.from(tabset.getElementsByClassName('tab-content'));
     tabs.forEach(tab => {
@@ -71,7 +75,7 @@ async function insert_asset(element: HTMLTextAreaElement) {
     const extension = url.split('.').pop();
     switch(extension) {
         case 'glb':
-            insertAtCursor(element, `<model-viewer src="${url}" camera-controls min-camera-orbit="auto 0deg auto" max-camera-orbit="auto 180deg auto" style="width: 500px; height: 500px;"></model-viewer>`)
+            insertAtCursor(element, `<model-viewer src="${url}" camera-controls min-camera-orbit="auto 0deg auto" max-camera-orbit="auto 180deg auto" style="width: 500px; height: 500px;"></model-viewer>\n`)
             break;
         default:
             insertAtCursor(element, `![image](${url})\n`)
@@ -86,8 +90,12 @@ function setup_editor(element: HTMLTextAreaElement) {
     element.parentElement.replaceChild(container, element);
     container.appendChild(toolbar);
     container.appendChild(element);
-
     asset_selector.parentElement.appendChild(create_button("Insert asset", () => insert_asset(element)));
+    element.onchange = () => {
+        update_preview(element.value);
+    }
+
+
 }
 
 function init_editor() {
@@ -95,6 +103,14 @@ function init_editor() {
     const editor: HTMLTextAreaElement[] =  <HTMLTextAreaElement[]>Array.from(document.getElementsByClassName('markdown-editor'));
     editor.forEach(el => {
         setup_editor(el);
+    })
+}
+
+function update_preview(markdown: string) {
+    console.log("Init preview");
+    const preview: HTMLElement[] =  <HTMLElement[]>Array.from(document.getElementsByClassName('markdown'));
+    preview.forEach(el => {
+        el.innerHTML = mdconverter.makeHtml(markdown);
     })
 }
 
