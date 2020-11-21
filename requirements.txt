@@ -10,6 +10,7 @@ Flask-WTF
 gunicorn
 jsonschema
 markdown2
+packaging
 Pillow
 PyJWT
 pyScss
