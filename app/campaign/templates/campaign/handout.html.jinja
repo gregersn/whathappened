@@ -21,7 +21,7 @@
 
 
 {% block header %}
-    <h2>Handout: '{{ handout.title }}' in <a href="{{url_for('campaign.view', id=handout.campaign.id)}}">{{ handout.campaign.title }}</a></h2>
+    <h2><a href="{{ url_for('campaign.handout_view', campaign_id=handout.campaign.id) }}">Handout</a>: '{{ handout.title }}' in <a href="{{url_for('campaign.view', id=handout.campaign.id)}}">{{ handout.campaign.title }}</a></h2>
 {% endblock %}
 
 
@@ -46,6 +46,9 @@
                         <div>{{ assetsform.asset(class_="asset-selector") }}</div>
                         {{ form.status.label }}
                         {{ form.status }}
+                        {{ form.group_id.label }}
+                        {{ form.group_id }}
+
                         {{ form.submit }}
                     </form>
                 </div>

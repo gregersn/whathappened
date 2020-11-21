@@ -39,7 +39,13 @@ class Campaign(db.Model):
                                  lazy='dynamic',
                                  backref=db.backref('campaigns', lazy=True))
 
-    handouts = db.relationship("Handout", back_populates='campaign', lazy='dynamic')
+    handouts = db.relationship("Handout",
+                               back_populates='campaign',
+                               lazy='dynamic')
+
+    handout_groups = db.relationship("HandoutGroup",
+                                     back_populates='campaign',
+                                     lazy='dynamic')
 
     @property
     def players_by_id(self):
@@ -67,6 +73,20 @@ class HandoutStatus(enum.Enum):
     visible = "Visible"
 
 
+class HandoutGroup(db.Model):
+    __tablename__ = 'campaign_handout_group'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(256))
+    campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'))
+    campaign = db.relationship("Campaign", back_populates='handout_groups')
+    handouts = db.relationship('Handout',
+                               lazy='dynamic',
+                               back_populates='group')
+
+    def __repr__(self):
+        return f'<Handout Group {self.name}>'
+
+
 class Handout(db.Model):
     __tablename__ = 'campaign_handout'
     id = db.Column(db.Integer, primary_key=True)
@@ -74,12 +94,21 @@ class Handout(db.Model):
     content = db.Column(db.Text)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'))
     campaign = db.relationship("Campaign", back_populates='handouts')
-    status = db.Column('status', db.Enum(HandoutStatus), default=HandoutStatus.draft)
+    status = db.Column('status',
+                       db.Enum(HandoutStatus),
+                       default=HandoutStatus.draft)
+
     players = db.relationship('UserProfile',
                               secondary=player_handouts,
                               lazy='dynamic',
                               backref=db.backref('campaign_handouts',
                                                  lazy=True))
+
+    group_id = db.Column(db.Integer,
+                         db.ForeignKey('campaign_handout_group.id'),
+                         name="group_id")
+
+    group = db.relationship('HandoutGroup')
 
     def __repr__(self):
         return '<Handout {}>'.format(self.title)

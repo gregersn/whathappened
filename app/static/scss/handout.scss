@@ -25,4 +25,14 @@
                 padding: 0px 10px;
             }
     }
+    .draft {
+        font-style: italic;
+    }
+    .hidden {
+        color: lightgray;
+    }
+    .deleted {
+        color: lightgray;
+        text-decoration: line-through;
+    }
 }
