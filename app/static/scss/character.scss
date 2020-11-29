@@ -29,6 +29,25 @@
 }
 
 .charactersheet {
+    .value_adjuster {
+        max-width: 100px;
+        div {
+            width: 100%;
+        }
+        button {
+            width: 100%;
+            &.add {
+                background-color: lightgreen;
+            }
+
+            &.subtract {
+                background-color: pink;
+            }
+        }
+        input {
+            width: 100%;
+        }
+    }
     .skills {
         // border: 1px solid gray;
         columns: 360px;
@@ -187,7 +206,7 @@
         justify-content: center;
         align-items: stretch;
         > div {
-            flex-grow: 1;
+            flex: 1;
         }
         .portrait {
             flex-grow: 0;

@@ -76,6 +76,23 @@
     {% endfor %}
 {%- endmacro %}
 
+{%- macro value_adjuster(field, add_label="Add", subtract_label="Subtract") %}
+    <div class="value_adjuster", data-field="{{ field }}">
+        <div>
+            <button class="add">
+                <span>{{add_label}}</span>
+            </button>
+        </div>
+        <div>
+            <input type="number" min="0" max="2147483647" value="" data-field="{{ field }}" />
+        </div>
+        <div>
+            <button class="subtract">
+                <span>{{subtract_label}}</span>
+            </button>
+        </div>
+    </div>
+{%- endmacro %}
 
 
 {% block content %}
@@ -140,35 +157,47 @@
     <div class="splitcontainer">
         <div class="box hitpoints">
             <h3>Hitpoints</h3>
-            <section>
-                <label>Current: </label> {{ editable_field("characteristics.HitPts") }} <br />
-                <label>Max: </label>{{ editable_field("characteristics.HitPtsMax") }}<br />
-                <label>Major wound: </label>{{ editable_binary("characteristics.HitPtsMajorWound") }}
-            </section>
+            <div class="splitcontainer">
+                <section>
+                    <label>Current: </label> {{ editable_field("characteristics.HitPts") }} <br />
+                    <label>Max: </label>{{ editable_field("characteristics.HitPtsMax") }}<br />
+                    <label>Major wound: </label>{{ editable_binary("characteristics.HitPtsMajorWound") }}
+                </section>
+                {{ value_adjuster("characteristicts.HitPts", add_label="Heal", subtract_label="Damage") }}
+            </div>
         </div>
         <div class="box sanity">
             <h3>Sanity</h3>
-            <section>
-                <label>Current:</label> {{ editable_field('characteristics.Sanity', "0") }}<br />
-                <label>Start:</label> {{ editable_field('characteristics.SanityStart', "0") }}<br />
-                <label>Max:</label> {{ editable_field('characteristics.SanityMax', "99") }} <br />
-                <label>Temp insane:</label> {{ editable_binary("characteristics.SanityTemp") }}<br />
-                <label>Indefinitely insane:</label> {{ editable_binary("characteristics.SanityIndef") }}
-            </section>
+            <div class="splitcontainer">
+                <section>
+                    <label>Current:</label> {{ editable_field('characteristics.Sanity', "0") }}<br />
+                    <label>Start:</label> {{ editable_field('characteristics.SanityStart', "0") }}<br />
+                    <label>Max:</label> {{ editable_field('characteristics.SanityMax', "99") }} <br />
+                    <label>Temp insane:</label> {{ editable_binary("characteristics.SanityTemp") }}<br />
+                    <label>Indefinitely insane:</label> {{ editable_binary("characteristics.SanityIndef") }}
+                </section>
+                {{ value_adjuster("characteristicts.Sanity",) }}
+            </div>
         </div>
         <div class="box magicpoints">
             <h3>Magic points</h3>
-            <section>
-                <label>Current: </label>{{ editable_field('characteristics.MagicPts', "0") }}<br />
-                <label>Max: </label>{{ editable_field('characteristics.MagicPtsMax', "0") }}
-            </section>
+            <div class="splitcontainer">
+                <section>
+                    <label>Current: </label>{{ editable_field('characteristics.MagicPts', "0") }}<br />
+                    <label>Max: </label>{{ editable_field('characteristics.MagicPtsMax', "0") }}
+                </section>
+                {{ value_adjuster("characteristicts.MagicPts") }}
+            </div>
         </div>
         <div class="box luck">
             <h3>Luck</h3>
-            <section>
-                <label>Current: </label>{{ editable_field('characteristics.Luck', "0") }}<br />
-                <label>Max: </label>{{ editable_field('characteristics.LuckMax', "0") }}
-            </section>
+            <div class="splitcontainer">
+                <section>
+                    <label>Current: </label>{{ editable_field('characteristics.Luck', "0") }}<br />
+                    <label>Max: </label>{{ editable_field('characteristics.LuckMax', "0") }}
+                </section>
+                {{ value_adjuster("characteristicts.Luck") }}
+            </div>
         </div>
     </div>
     <div class="box">
