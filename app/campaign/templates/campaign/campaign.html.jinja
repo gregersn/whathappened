@@ -84,7 +84,7 @@
 </table>
     <a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id) }}">Edit handouts</a>
 {% else %}
-    <ul>
+    <ul class="player_handouts" data-campaign="{{ campaign.id}}">
 {% for handout in handouts %}
     {%- if current_user.profile in handout.players %}<li><a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id, handout_id=handout.id) }}">{{ handout.title }}</a></li>{%- endif %}
 {% endfor %}

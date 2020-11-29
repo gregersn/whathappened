@@ -1,3 +1,5 @@
+import json
+import hashlib
 from flask import request, jsonify
 from flask_login import current_user
 from werkzeug.exceptions import abort
@@ -6,7 +8,7 @@ import logging
 from app import db
 
 from . import apibp
-from .models import Handout
+from .models import Handout, Campaign, HandoutStatus
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +19,28 @@ def hello(name):
     return jsonify(response)
 
 
-@apibp.route('<int:campaignid>/handout/<int:handoutid>/players', methods=('GET', 'POST'))
+@apibp.route('<int:campaignid>/handouts/', methods=('GET', ))
+def handouts(campaignid: int):
+    if not current_user.is_authenticated:
+        abort(403)
+
+    campaign = Campaign.query.get(campaignid)
+    if current_user.profile not in campaign.players:
+        abort(403)
+
+    handouts = campaign.handouts.filter_by(status=HandoutStatus.visible) \
+        .filter(Handout.players.contains(current_user.profile))
+
+    handouts_dict = [handout.to_dict() for handout in handouts]
+
+    sha = hashlib.sha256()
+    sha.update(json.dumps(handouts_dict).encode('utf-8'))
+
+    return jsonify({'sha': sha.hexdigest(), 'handouts': handouts_dict})
+
+
+@apibp.route('<int:campaignid>/handout/<int:handoutid>/players',
+             methods=('GET', 'POST'))
 def handout_players(campaignid: int, handoutid: int):
     if not current_user.is_authenticated:
         abort(403)

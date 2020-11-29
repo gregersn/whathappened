@@ -1,6 +1,6 @@
 import enum
+from flask import url_for
 from app import db
-
 
 campaign_players = db.Table('campaign_players',
                             db.Column('player_id',
@@ -112,3 +112,10 @@ class Handout(db.Model):
 
     def __repr__(self):
         return '<Handout {}>'.format(self.title)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'url': url_for('campaign.handout_view', campaign_id=self.campaign.id, handout_id=self.id)
+        }
