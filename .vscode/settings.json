@@ -11,7 +11,8 @@
     ],
     "python.linting.pylintArgs": [
         "--load-plugins",
-        "pylint-flask"
+        "pyling_flask_sqlalchemy",
+        "pylint_flask"
     ],
     "python.pythonPath": "venv/bin/python",
     "python.linting.pylintEnabled": false,
