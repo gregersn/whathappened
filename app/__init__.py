@@ -2,7 +2,7 @@
 import os
 
 from flask import Flask
-
+from sqlalchemy import MetaData
 from flask_sqlalchemy import SQLAlchemy
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -18,7 +18,16 @@ import logging
 
 from config import Config
 
-db = SQLAlchemy()
+convention = {
+    "ix": 'ix_%(column_0_label)s',
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+}
+
+sql_alchemy_metadata = MetaData(naming_convention=convention)
+db = SQLAlchemy(metadata=sql_alchemy_metadata)
 migrate = Migrate()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
