@@ -24,9 +24,27 @@ def find_migration(version: Version, direction: int, migrations):
             return m
 
 
+def find_version(data) -> str:
+    version_string = None
+
+    try:
+        version_string = data['version']
+        return version_string
+    except KeyError:
+        pass
+
+    try:
+        version_string = data['meta']['Version']
+        return version_string
+    except KeyError:
+        pass
+
+    return "0.0.0"
+
+
 def migrate(data, to_version, migrations=None):
     data = copy.deepcopy(data)
-    from_version = parse(data['meta']['Version'])
+    from_version = parse(find_version(data))
     direction = up_or_down(from_version, parse(to_version))
     if direction == 0:
         return data
@@ -37,7 +55,9 @@ def migrate(data, to_version, migrations=None):
         raise Exception("Migrator not found")
 
     if direction < 0:
-        return migrator['down'](data)
+        data = migrator['down'](data)
 
     if direction > 0:
-        return migrator['up'](data)
+        data = migrator['up'](data)
+
+    return migrate(data, to_version=to_version, migrations=migrations)

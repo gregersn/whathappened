@@ -77,7 +77,7 @@ def index():
 def create(chartype=None):
     form = CreateForm()
     if form.validate_on_submit():
-        char_data = render_template('character/blank_character.json.jinja',
+        char_data = render_template('character/blank_character_coc.json.jinja',
                                     title=form.title.data,
                                     type=form.gametype.data,
                                     timestamp=time.time())

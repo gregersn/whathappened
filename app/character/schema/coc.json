@@ -1,6 +1,5 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "version": "0.0.2",
     "definitions": {
         "skill": {
             "$id": "#skill",
@@ -18,22 +17,25 @@
         }
     },
     "type": "object",
+    "required": ["version", "system", "meta", "personalia", "characteristics"],
     "properties": {
+        "version": {"const": "0.0.3"},
+        "system": {"const": "coc7e"},
         "meta": {
             "type": "object",
             "properties": {
                 "Title": {"type": "string"},
                 "Creator": {"type": "string"},
                 "CreateDate": {"type": "string"},
-                "GameName": {"type": "string"},
-                "GameVersion": {"type": "string"},
+                "GameName": {"const": "Call of Cthulhu TM"},
+                "GameVersion": {"const": "7th Edition"},
                 "GameType": {
                     "type": "string",
                     "enum": ["Classic (1920's)", "Modern"]
                 },
-                "Disclaimer": {"type": "string"},
-                "Version": {"const": "0.0.2"}
-            }
+                "Disclaimer": {"type": "string"}
+            },
+            "required": ["Title", "GameName", "GameVersion", "GameType"]
         },
         "personalia": {
             "type": "object",

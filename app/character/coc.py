@@ -6,11 +6,6 @@ from typing import Literal
 import os
 
 
-def load_schema(filename: str):
-    with open(filename, 'r') as f:
-        return json.load(f)
-
-
 schema_file = os.path.join(os.path.dirname(__file__), 'schema/coc.json')
 
 # This is not pretty
@@ -22,7 +17,7 @@ def new_character(title, gametype: GameType):
     templateloader = jinja2 \
                      .FileSystemLoader(searchpath="./app/character/templates/")
     templateenv = jinja2.Environment(loader=templateloader)
-    template = templateenv.get_template('character/blank_character.json.jinja')
+    template = templateenv.get_template('character/blank_character_coc.json.jinja')
     gtype = gametype
     return json.loads(template.render(title=title,
                                       timestamp=time.time(),
@@ -36,7 +31,7 @@ def convert_from_dholes(indata):
         investigator = indata['Investigator']
 
     def convert_header(header):
-        header['Version'] = '0.0.2'
+        del header['Version']
         return header
 
     def convert_skills(skills):
@@ -131,6 +126,8 @@ def convert_from_dholes(indata):
     assets = investigator['Assets']
 
     return {
+        'version': '0.0.3',
+        'system': 'coc7e',
         'meta': header,
         'personalia': personal_details,
         'characteristics': characteristics,
@@ -163,7 +160,8 @@ def convert_to_dholes(indata):
             skill['half'] = half(skill['value'])
             skill['fifth'] = fifth(skill['value'])
             if 'occupation' in skill:
-                skill['occupation'] = "true" if skill['occupation'] else "false"
+                skill['occupation'] = ("true" if skill['occupation']
+                                       else "false")
 
             outskills.append(
                 skill

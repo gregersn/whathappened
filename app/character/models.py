@@ -10,7 +10,8 @@ from PIL import Image
 
 from app import db
 
-from app.character.coc import schema_file, load_schema
+from app.character.schema import load_schema
+from app.character.coc import schema_file
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,10 @@ class Character(db.Model):
     def __init__(self, *args, **kwargs):
         super(Character, self).__init__(*args, **kwargs)
         self._data = None
+
+    @property
+    def system(self):
+        return self.body.get('system', '')
 
     def validate(self, filename=schema_file):
         schema = load_schema(filename)
