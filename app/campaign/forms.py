@@ -86,8 +86,8 @@ class HandoutForm(FlaskForm):
                        default=HandoutStatus.draft)
 
     group_id = SelectField('Group',
-                           choices=[(None, '(none)'), ],
-                           default=None,
+                           choices=[('', '(none)'), ],
+                           default='',
                            validate_choice=False)
 
     submit = SubmitField('Save handout')

@@ -2,6 +2,7 @@ from typing import Text
 from flask import render_template, request, redirect, url_for
 from flask_login import current_user
 from flask.views import View
+from flask_login.utils import login_required
 from werkzeug.exceptions import abort
 import logging
 
@@ -45,6 +46,9 @@ class HandoutView(View):
             logger.debug("Store handout")
             handout = Handout()
             handoutform.populate_obj(handout)
+            if not handout.group_id:
+                handout.group_id = None
+
             db.session.add(handout)
             db.session.commit()
         elif groupform.submit.data and groupform.validate_on_submit():
@@ -67,13 +71,15 @@ class HandoutView(View):
         logger.debug("Put to handout")
         handout = Handout.query.get(handout_id)
         form = HandoutForm(prefix="handout")
-        form.group_id.choices = [(None, '(none)'), ] \
+        form.group_id.choices = [('', '(none)'), ] \
             + [(g.id, g.name)
                 for g in handout.campaign.handout_groups]
 
         if form.submit.data and form.validate_on_submit():
             logger.debug("Form is valid")
             form.populate_obj(handout)
+            if not handout.group_id:
+                handout.group_id = None
             db.session.commit()
         else:
             logger.debug("Form did not validate")
@@ -88,7 +94,7 @@ class HandoutView(View):
 
     def view(self, campaign_id, handout_id=None) -> Text:
         logger.debug(f"view({campaign_id}, {handout_id})")
-        handout = Handout.query.get(handout_id)
+        handout = Handout.query.get(handout_id) or abort(404)
 
         if current_user.is_authenticated \
             and current_user.profile not in handout.players \
@@ -108,7 +114,7 @@ class HandoutView(View):
         logger.debug(handout.status)
 
         form = HandoutForm(obj=handout, prefix="handout")
-        form.group_id.choices = [(None, '(none)'), ] \
+        form.group_id.choices = [('', '(none)'), ] \
             + [(g.id, g.name)
                for g in handout.campaign.handout_groups]
 
@@ -120,6 +126,7 @@ class HandoutView(View):
                                assetsform=assetsform,
                                editable=editable)
 
+    @login_required
     def list_view(self, campaign_id: int) -> Text:
         campaign = Campaign.query.get(campaign_id)
         is_owner = current_user and current_user.profile.id == campaign.user_id
