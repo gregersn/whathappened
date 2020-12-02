@@ -10,11 +10,12 @@ from app.campaign.models import Campaign  # noqa
 
 from app.character.coc import convert_from_dholes
 from app.character.coc import new_character
-from app.character.coc import schema_file, load_schema
+from app.character.coc import schema_file
+from app.character.schema import load_schema
 from app.character.models import Character
 from app.character.coc import fifth, half
 from app.utils.schema import migrate
-from app.character.schema.coc import migrations
+from app.character.schema.coc import migrations, latest
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -77,6 +78,7 @@ def test_personalia_and_attributes(newly_created_character: Character):
     assert newly_created_character.name == "Unknown"
     assert newly_created_character.age == "18"
     assert newly_created_character.description == "Unknown"
+    assert newly_created_character.system == 'coc7e'
     assert newly_created_character.game[0] == "Call of Cthulhu TM"
     assert newly_created_character.game[1] == "Classic (1920's)"
 
@@ -136,7 +138,15 @@ def test_subskill(newly_created_character: Character):
 def test_validate_migration_up(test_sheet: dict):
     schema = load_schema(schema_file)
     validate(migrate(test_sheet,
-                     "0.0.2",
+                     "0.0.3",
+                     migrations=migrations),
+             schema=schema)
+
+
+def test_validate_migration_latest(test_sheet: dict):
+    schema = load_schema(schema_file)
+    validate(migrate(test_sheet,
+                     latest,
                      migrations=migrations),
              schema=schema)
 

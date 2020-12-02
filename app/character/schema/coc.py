@@ -1,7 +1,25 @@
-import copy
 from jsonschema import validate
 
-from app.character.coc import schema_file, load_schema, new_character
+from app.character.coc import schema_file, new_character
+from app.character.schema import load_schema
+
+latest = '0.0.3'
+
+
+def v002_to_v003(data):
+    data = data.copy()
+    data['system'] = 'coc7e'
+    data['version'] = '0.0.3'
+    del data['meta']['Version']
+    return data
+
+
+def v003_to_v002(data):
+    data = data.copy()
+    del data['version']
+    del data['system']
+    data['meta']['Version'] = "0.0.2"
+    return data
 
 
 def v001_to_002(data):
@@ -76,5 +94,11 @@ migrations = [
         'to': '0.0.2',
         'up': v001_to_002,
         'down': v002_to_001
+    },
+    {
+        'from': '0.0.2',
+        'to': '0.0.3',
+        'up': v002_to_v003,
+        'down': v003_to_v002
     }
 ]
