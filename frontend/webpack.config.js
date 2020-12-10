@@ -11,7 +11,7 @@ module.exports = {
         campaign: "./src/campaign/index.ts",
         handout: "./src/handout/index.ts",
         sheet: "./src/sheet/index.ts",
-        coc: "./src/coc/index.ts"
+        coc7e: "./src/coc7e/index.ts"
     },
     module: {
         rules: [

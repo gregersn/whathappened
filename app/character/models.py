@@ -1,8 +1,8 @@
 import json
 import logging
 from functools import reduce
-from jsonschema import Draft7Validator
 from sqlalchemy.orm.attributes import flag_modified
+from sqlalchemy.orm import reconstructor
 from datetime import datetime
 import base64
 import io
@@ -10,8 +10,7 @@ from PIL import Image
 
 from app import db
 
-from app.character.schema import load_schema
-from app.character.coc import schema_file
+from app.character.core import CharacterMechanics, MECHANICS
 
 logger = logging.getLogger(__name__)
 
@@ -38,27 +37,27 @@ class Character(db.Model):
     def __repr__(self):
         return '<Character {}>'.format(self.title)
 
-    @property
-    def game(self):
-        try:
-            return (self.body['meta']['GameName'],
-                    self.body['meta']['GameType'])
-        except Exception as e:
-            return None
-
-    def __init__(self, *args, **kwargs):
+    def __init__(self, mechanics=CharacterMechanics, *args, **kwargs):
         super(Character, self).__init__(*args, **kwargs)
         self._data = None
+        self.mechanics = mechanics(self)  # Add a subclass or something that has the mechanics of the character.
+
+    @reconstructor
+    def init_on_load(self):
+        logger.debug(f"Loading character of type {self.body.get('system', '')}")
+        system = self.body.get('system')
+        self.mechanics = MECHANICS.get(system, CharacterMechanics)(self)
 
     @property
     def system(self):
         return self.body.get('system', '')
 
-    def validate(self, filename=schema_file):
-        schema = load_schema(filename)
-        v = Draft7Validator(schema)
-        return [{'path': "/".join(str(x) for x in e.path),
-                 "message": e.message} for e in v.iter_errors(self.body)]
+    @property
+    def game(self):
+        return self.mechanics.game()
+
+    def validate(self):
+        return self.mechanics.validate()
 
     def to_dict(self):
         return {
@@ -82,7 +81,7 @@ class Character(db.Model):
 
     @property
     def portrait(self):
-        return self.body['personalia']['Portrait']
+        return self.mechanics.portrait()
 
     @property
     def description(self):
@@ -139,26 +138,8 @@ class Character(db.Model):
         """Mark data as modified."""
         flag_modified(self, "body")
 
-    def skill(self, skill, subskill=None):
-        """Return a single skill, or something."""
-        skills = self.skills()
-        if subskill == 'None':
-            subskill = None
-
-        for s in skills:
-            if s['name'] == skill:
-                if subskill is not None and 'subskills' not in s:
-                    return None
-                if subskill is not None:
-                    for ss in s['subskills']:
-                        if ss['name'] == subskill:
-                            return ss
-                    logger.debug(f"Did not find subskill {skill}, {subskill}")
-                    return None
-                return s
-
-        logger.debug(f"Did not find {skill}, {subskill}")
-        return None
+    def skill(self, *args, **kwargs):
+        return self.mechanics.skill(*args, **kwargs)
 
     def skills(self, *args):
         """Return a list of skills."""

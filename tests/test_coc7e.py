@@ -8,14 +8,14 @@ from jsonschema import validate
 from app.auth.models import User  # noqa
 from app.campaign.models import Campaign  # noqa
 
-from app.character.coc import convert_from_dholes
-from app.character.coc import new_character
-from app.character.coc import schema_file
+from app.character.coc7e import CoCMechanics, convert_from_dholes
+from app.character.coc7e import new_character
+from app.character.coc7e import schema_file
 from app.character.schema import load_schema
 from app.character.models import Character
-from app.character.coc import fifth, half
+from app.character.coc7e import fifth, half
 from app.utils.schema import migrate
-from app.character.schema.coc import migrations, latest
+from app.character.schema.coc7e import migrations, latest
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -55,7 +55,8 @@ def fixture_test_sheet() -> dict:
 def fixture_test_character() -> Character:
     nc = new_character("Test Character", "Classic (1920's)")
     c = Character(title="Test Character",
-                  body=nc)
+                  body=nc,
+                  mechanics=CoCMechanics)
 
     return c
 
@@ -153,7 +154,7 @@ def test_validate_migration_latest(test_sheet: dict):
 
 def test_validate_migration_up_and_down(test_sheet: dict):  
     migrated = migrate(test_sheet.copy(),
-                       "0.0.2",
+                       "0.0.3",
                        migrations=migrations)
 
     back_down = migrate(migrated, "0.0.1", migrations=migrations)

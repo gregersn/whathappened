@@ -1,16 +1,6 @@
-import { get_meta_tag } from "../common"
+import { get_meta_tag, Listdata, make_element_editable, saveCheck, SaveFunction, Tabledata } from "../common"
+import { send_update, Datamap } from "../common"
 
-type Datamap = {
-    field: string,
-    subfield?: string | undefined,
-    type?: "skillcheck" | "binary" | "area" | "table" | "occupationcheck" | undefined
-}
-
-type Elementdata = any;
-type Tabledata = any[];
-type Listdata = string[];
-type SaveFunction = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => void
-   
 
 function init_skillchecks() {
     console.log("Init skillchecks");
@@ -25,26 +15,6 @@ function init_skillchecks() {
     });
 }
 
-function saveCheck(editfield: HTMLInputElement) {
-    const value = editfield.checked;
-    const datafields: DOMStringMap = editfield.dataset;
-    const data = Object.assign({}, datafields);
-    //console.log(data, value);
-    send_update(data, value);
-}
-
-function init_editable_binaries() {
-    console.log("Init editable binaries");
-    const checkboxes: HTMLInputElement[] = Array.from(document.getElementsByTagName('input'));
-    checkboxes.forEach(element => {
-        if(element.type === "checkbox" && element.getAttribute('data-type') === 'binary') {
-            element.onchange = () => {
-                //console.log(element.getAttribute('data-field'), element.checked);
-                saveCheck(element);
-            }
-        }
-    });
-}
 
 let popup: HTMLDivElement = null;
 function init_popup() {
@@ -129,92 +99,6 @@ function init_skill_edits() {
 
     })
 }
-
-function send_update(datamap: Datamap|DOMStringMap, value: any) {
-    const busy = document.getElementById("busy");
-    const xhr = new XMLHttpRequest()
-    const url = document.location.href + 'update';
-    xhr.open('POST', url);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader("X-CSRFToken", get_meta_tag('_token'));
-    xhr.setRequestHeader('x-csrf-token', get_meta_tag('_token'));
-    xhr.onload = () => {
-        console.log(`Post done, got ${xhr.status} ${xhr.statusText}`);
-        if(xhr.status === 200 && xhr.statusText === 'OK') {
-            busy.style.display = 'none';
-        }
-    }
-
-    datamap['value'] = value;
-
-    console.log(`Sending: ${JSON.stringify(datamap)}`);
-    busy.style.display = 'block';
-    xhr.send(JSON.stringify([datamap, ]));
-}
-
-
-
-
-function saveElement(editfield: HTMLInputElement, element: HTMLElement, save: SaveFunction, editable_handler: (e: Event) => void) {
-    const value = editfield.value;
-    const datafields: DOMStringMap = element.dataset;
-    const data = Object.assign({}, datafields);
-    
-    const field = element.getAttribute('data-field');
-    console.log(`Save changes to ${field}, new value ${value}`);
-    element.innerHTML = value;
-    element.addEventListener("click", editable_handler);
-    save(data, value);
-}
-
-
-function editElement(element: HTMLElement, type: "area" | "input", save: SaveFunction, editable_handler: (e: Event) => void) {
-    console.log("Edit element");
-    const value = element.innerHTML;
-    let editfield = null;
-
-    if(type === "input") {
-        editfield = document.createElement("input");
-    }
-    else if(type == "area") {
-        editfield = document.createElement('textarea');
-    }
-
-    editfield.value = value;
-
-    element.innerHTML = "";
-    element.append(editfield);
-    editfield.focus();
-
-    editfield.addEventListener("focusout", (e) => {
-        saveElement(editfield, element, save, editable_handler);
-    })
-
-    editfield.addEventListener("keypress", (e) => {
-        if(e.keyCode === 13 && e.shiftKey === false) {
-            saveElement(editfield, element, save, editable_handler);
-        }
-    })
-    
-    element.removeEventListener("click", editable_handler);
-}
-
-
-const make_editable_handler = (element: HTMLElement, save: SaveFunction, type: "input" | "area" = "input") => {
-    const f = (e: Event) => {
-        e.preventDefault();
-        editElement(element, type, save, f);
-    }
-
-    return f;
-}
-
-function make_element_editable(element: HTMLElement, save: SaveFunction, type: "input" | "area"  = "input") {
-    const editable_handler = make_editable_handler(element, save, type);
-    element.addEventListener("click", editable_handler);
-}
-
-
 
 function table_to_obj(table: HTMLTableElement): Tabledata {
     let data_rows = [];
@@ -317,30 +201,6 @@ const editable_table = (table: HTMLTableElement, save: (data: Tabledata) => void
     parent.appendChild(button);
 }
 
-function init_editable() {
-    console.log("Init editable values");
-    const editables: HTMLElement[] = <HTMLElement[]>Array.from(document.getElementsByClassName('editable'));
-    
-    const save = (datamap: Datamap | DOMStringMap, data: Elementdata|Tabledata) => {
-        console.log("Save data");
-        console.log(data);
-        send_update(datamap, data);
-    }
-
-    editables.forEach(element => {
-        const dataType = element.getAttribute('data-type');
-        switch(dataType) {
-            case 'area':
-                make_element_editable(element, save, "area");
-                break;
-            case 'picture':
-                break;
-            default:
-                make_element_editable(element, save);
-                break;
-        }
-    })
-}
 
 
 function init_editable_tables() {
@@ -398,8 +258,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
     init_popup();
     init_skillchecks();
-    init_editable();
-    init_editable_binaries();
     init_editable_tables();
     init_editable_lists();
     init_skill_edits();

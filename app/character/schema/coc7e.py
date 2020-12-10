@@ -1,6 +1,6 @@
 from jsonschema import validate
 
-from app.character.coc import schema_file, new_character
+from app.character.coc7e import schema_file, new_character
 from app.character.schema import load_schema
 
 latest = '0.0.3'
