@@ -131,6 +131,8 @@ def update(id):
             subfield = setting.get('subfield', '')
             value = setting['value']
             type = setting.get('type', 'value')
+            if type == 'portrait' and value is not None:
+                value = "[image]"
             log_message = f"set {type} on {field}{' ' + subfield if subfield is not None and subfield != 'None' else '' }: {value}"
             logentry = LogEntry(character, log_message, user_id=current_user.id)
             db.session.add(logentry)
