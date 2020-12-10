@@ -1,0 +1,11 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+  <h2>{% block title %}New Character{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+  {% for system, name in systems %}
+    <a href="{{ system }}">{{ name }}</a><br />
+  {% endfor %}
+{% endblock %}

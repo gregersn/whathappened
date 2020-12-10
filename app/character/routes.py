@@ -1,8 +1,9 @@
+from app.character.core import GameSystems
 import json
 import time
 import logging
 
-from flask import render_template, request, flash
+from flask import render_template, request
 from flask import redirect, url_for, jsonify
 from flask_login import login_required, current_user
 
@@ -12,14 +13,18 @@ from werkzeug.exceptions import abort
 from . import bp, api
 
 from .models import Character
-from .forms import ImportForm, CreateForm, SkillForm
-from .forms import SubskillForm, DeleteForm
-from .coc import convert_from_dholes
+from .forms import ImportForm, CreateForm
+from .forms import DeleteForm
+from .coc7e import CoCMechanics, convert_from_dholes
+from .coc7e.forms import CreateFormCoC
 from app import db
 from app.models import LogEntry
 from app.utils.schema import migrate
 from app.models import Invite
-from app.character.schema.coc import migrations
+from app.character.schema.coc7e import migrations
+
+from .coc7e.routes import view as coc7eview
+from .coc7e import CHARACTER_TEMPLATE as CHARACTER_TEMPLATE_COC7E
 
 logger = logging.getLogger(__name__)
 
@@ -49,45 +54,41 @@ def get_character(id, check_author=True):
     return character
 
 
-@bp.app_template_filter('half')
-def half(value):
-    try:
-        o = int(value, 10) // 2
-        return o
-    except Exception:
-        return ''
-
-
-@bp.app_template_filter('fifth')
-def fifth(value):
-    try:
-        o = int(value, 10) // 5
-        return o
-    except Exception:
-        return ''
-
-
 @bp.route('/')
 def index():
     return redirect("/")
 
 
-@bp.route('/create/<string:chartype>', methods=('GET', 'POST'))
-@login_required
-def create(chartype=None):
+@bp.route('/create/<string:chartype>/', methods=('GET', 'POST'))
+def create(chartype):
     form = CreateForm()
-    if form.validate_on_submit():
-        char_data = render_template('character/blank_character_coc.json.jinja',
-                                    title=form.title.data,
-                                    type=form.gametype.data,
-                                    timestamp=time.time())
-        c = Character(title=form.title.data,
-                      body=json.loads(char_data),
-                      user_id=current_user.profile.id)
-        db.session.add(c)
-        db.session.commit()
-        return redirect(url_for('character.view', id=c.id))
-    return render_template('character/create.html.jinja', form=form, type=type)
+    template = 'character/create.html.jinja'
+
+    if chartype == 'coc7e':
+        form = CreateFormCoC()
+        template = 'character/coc7e/create.html.jinja'
+
+        if form.validate_on_submit():
+            char_data = render_template(CHARACTER_TEMPLATE_COC7E,
+                                        title=form.title.data,
+                                        type=form.gametype.data,
+                                        timestamp=time.time())
+            c = Character(title=form.title.data,
+                          body=json.loads(char_data),
+                          user_id=current_user.profile.id)
+            db.session.add(c)
+            db.session.commit()
+            return redirect(url_for('character.view', id=c.id))
+
+    form.system.data = chartype
+    return render_template(template, form=form, type=type)
+
+
+@bp.route('/create/', methods=('GET', ))
+@login_required
+def system_select(chartype=None):
+    return render_template('character/system_select.html.jinja',
+                           systems=GameSystems)
 
 
 @bp.route('/import/<string:type>', methods=('GET', 'POST'))
@@ -156,7 +157,7 @@ def shared(code):
     if character.game[1] == "Modern":
         typeheader = "Modern Era"
 
-    return render_template('character/sheet.html.jinja',
+    return render_template('character/coc7e/sheet.html.jinja',
                            code=code,
                            character=character,
                            typeheader=typeheader,
@@ -181,49 +182,13 @@ def view(id):
             editable = True
             break
 
-    subskillform = SubskillForm(prefix="subskillform")
-    if editable and subskillform.data and subskillform.validate_on_submit():
-        character.add_subskill(subskillform.name.data,
-                               subskillform.parent.data)
-        logentry = LogEntry(character, f"add subskill {subskillform.name.data} under {subskillform.parent.data}", user_id=current_user.id)
-        db.session.add(logentry)
-
-        character.store_data()
-        db.session.commit()
-        return redirect(url_for('character.view', id=id))
-
-    skillform = SkillForm(prefix="skillform")
-    if editable and skillform.data and skillform.validate_on_submit():
-        skills = character.skills()
-        for skill in skills:
-            if skillform.name.data == skill['name']:
-                flash("Skill already exists")
-                return redirect(url_for('character.view', id=id))
-
-        character.add_skill(skillform.name.data)
-        character.store_data()
-        logentry = LogEntry(character, f"add skill {subskillform.name.data}", user_id=current_user.id)
-        db.session.add(logentry)
-
-        db.session.commit()
-        return redirect(url_for('character.view', id=id))
-
-    typeheader = "1920s Era Investigator"
-    if character.game and character.game[1] == "Modern":
-        typeheader = "Modern Era"
-
-    shared = Invite.query_for(character).count()
-
-    if (character.game is None or character.validate()) and editable:
+    if (character.system is None or character.validate()) and editable:
         return redirect(url_for('character.editjson', id=id))
 
-    return render_template('character/sheet.html.jinja',
-                           shared=shared,
-                           character=character,
-                           typeheader=typeheader,
-                           editable=editable,
-                           skillform=skillform,
-                           subskillform=subskillform)
+    if character.system == 'coc7e':
+        return coc7eview(id, character, editable)
+
+    return f"A view for {character.system} is not yet implemented."
 
 
 @api.route('/<int:id>/', methods=('GET', ))
@@ -305,7 +270,7 @@ def editjson(id):
             logger.debug("Trying to migrate data")
             data = form.body.data
             c.body = migrate(data,
-                             "0.0.2",
+                             "0.0.3",
                              migrations=migrations)
         elif form.conversion.data:
             logger.debug("Conversion is checked")

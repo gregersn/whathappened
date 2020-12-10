@@ -1,3 +1,4 @@
+import logging
 import json
 import jinja2
 import math
@@ -5,19 +6,66 @@ import time
 from typing import Literal
 import os
 
+from ..core import CharacterMechanics, register_game
+from ..schema import validate
 
-schema_file = os.path.join(os.path.dirname(__file__), 'schema/coc.json')
+logger = logging.getLogger(__name__)
+
+schema_file = os.path.join(os.path.dirname(__file__), '../schema/coc7e.json')
 
 # This is not pretty
 GameType = Literal["Classic (1920's)", "Modern"]
 GameTypes = ["Classic (1920's)", "Modern"]
 
 
+CHARACTER_TEMPLATE = 'character/coc7e/blank_character.json.jinja'
+
+
+class CoCMechanics(CharacterMechanics):
+    def game(self):
+        try:
+            return (self.parent.body['meta']['GameName'],
+                    self.parent.body['meta']['GameType'])
+        except Exception as e:
+            logger.warning(e)
+            return None
+
+    def validate(self):
+        return validate(self.parent.body, schema_file)
+
+    def version(self):
+        return '0.0.3'
+
+    def portrait(self):
+        return self.parent.body['personalia']['Portrait']
+
+    def skill(self, skill, subskill=None):
+        """Return a single skill, or something."""
+        skills = self.parent.skills()
+        if subskill == 'None':
+            subskill = None
+
+        for s in skills:
+            if s['name'] == skill:
+                if subskill is not None and 'subskills' not in s:
+                    return None
+                if subskill is not None:
+                    for ss in s['subskills']:
+                        if ss['name'] == subskill:
+                            return ss
+                    logger.debug(f"Did not find subskill {skill}, {subskill}")
+                    return None
+                return s
+
+        logger.debug(f"Did not find {skill}, {subskill}")
+        return None
+
+
 def new_character(title, gametype: GameType):
     templateloader = jinja2 \
                      .FileSystemLoader(searchpath="./app/character/templates/")
     templateenv = jinja2.Environment(loader=templateloader)
-    template = templateenv.get_template('character/blank_character_coc.json.jinja')
+    template = templateenv.get_template(CHARACTER_TEMPLATE)
     gtype = gametype
     return json.loads(template.render(title=title,
                                       timestamp=time.time(),
@@ -213,3 +261,6 @@ def convert_to_dholes(indata):
             'Assets': indata['assets']
         }
     }
+
+
+register_game('coc7e', 'Call of Cthulhu TM', CoCMechanics)

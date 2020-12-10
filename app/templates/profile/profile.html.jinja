@@ -17,12 +17,12 @@
     <h3>Characters</h3>
     <ul>
     {% for character in characters %}
-        <li><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }}</a> [<a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>]</li>
+        <li><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }} ( {{ character.system }} )</a> [<a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>]</li>
     {% endfor %}
     </ul>
     {% endif %}
     <div>
-        <a class="action" href="{{ url_for('character.create', chartype='coc') }}">Create</a>
+        <a class="action" href="{{ url_for('character.system_select') }}">Create</a>
         <a class="action" href="{{ url_for('character.import_character') }}">Import</a><br />
     </div>
     </section>
