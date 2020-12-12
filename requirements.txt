@@ -16,4 +16,5 @@ PyJWT
 pyScss
 python-dotenv
 pywebpack
+flask-webpackext
 wtforms-alchemy

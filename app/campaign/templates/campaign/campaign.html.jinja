@@ -22,7 +22,7 @@
     {% assets "scss_campaign" %}
     <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
     {% endassets %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/campaign.js') }}"></script>
+    {{ webpack['campaign.js'] }}
 {% endblock %}
 
 {% block header %}

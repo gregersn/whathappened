@@ -11,6 +11,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
+from flask_webpackext import FlaskWebpackExt
 
 import app.logging as applogging  # noqa imported for side effects
 
@@ -34,6 +35,7 @@ login_manager.login_view = 'auth.login'
 mail = Mail()
 assets = Environment()
 csrf = CSRFProtect()
+webpackext = FlaskWebpackExt()
 Base = declarative_base()
 
 
@@ -58,6 +60,7 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     csrf.init_app(app)
     mail.init_app(app)
+    webpackext.init_app(app)
     assets.init_app(app)
 
     # Register blueprints
@@ -104,16 +107,24 @@ def create_app(config_class=Config):
                       output='css/all.css')
         assets.register('scss_all', scss)
 
-        css_profile = Bundle('scss/profile.scss', filters='pyscss', output='css/profile.css')
+        css_profile = Bundle('scss/profile.scss',
+                             filters='pyscss',
+                             output='css/profile.css')
         assets.register('scss_profile', css_profile)
 
-        css_campaign = Bundle('scss/campaign.scss', filters='pyscss', output='css/campaign.css')
+        css_campaign = Bundle('scss/campaign.scss',
+                              filters='pyscss',
+                              output='css/campaign.css')
         assets.register('scss_campaign', css_campaign)
 
-        css_handout = Bundle('scss/handout.scss', filters='pyscss', output='css/handout.css')
+        css_handout = Bundle('scss/handout.scss',
+                             filters='pyscss',
+                             output='css/handout.css')
         assets.register('scss_handout', css_handout)
 
-        css_character = Bundle('scss/character.scss', filters='pyscss', output='css/character.css')
+        css_character = Bundle('scss/character.scss',
+                               filters='pyscss',
+                               output='css/character.css')
         assets.register('scss_character', css_character)
 
     return app

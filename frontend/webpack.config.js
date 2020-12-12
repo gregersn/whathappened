@@ -1,4 +1,10 @@
 const path = require('path');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const options = {
+    fileName: "manifest.json",
+    stripSrc: true,
+    publicPath: "/static/"
+};
 
 module.exports = {
     entry: {
@@ -20,8 +26,12 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-        path: path.resolve(__dirname, '../app/static/js')
-    }
+        path: path.resolve(__dirname, '../app/static/'),
+        filename: 'js/[name].[contenthash].js'
+    },
+    plugins: [
+        new WebpackManifestPlugin(options)
+    ]
 };
 
 

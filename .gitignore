@@ -18,6 +18,7 @@ build/
 
 app/static/js/
 app/static/css/
+app/static/manifest.json
 *.sqlite
 
 .noseids

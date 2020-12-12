@@ -7,10 +7,10 @@
     <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
     {% endassets %}
 
-    <script type="text/javascript" src="{{ url_for('static', filename='js/sheet.js') }}"></script>
+    {{ webpack['sheet.js']}}
 
     {% if editable %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/coc.js') }}"></script>
+    {{ webpack['coc.js']}}
     {% endif %}
 
 {% endblock %}
