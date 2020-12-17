@@ -45,12 +45,23 @@ class Character(db.Model):
     @reconstructor
     def init_on_load(self):
         logger.debug(f"Loading character of type {self.body.get('system', '')}")
-        system = self.body.get('system')
+        system = self.system
         self.mechanics = MECHANICS.get(system, CharacterMechanics)(self)
 
     @property
     def system(self):
-        return self.body.get('system', '')
+        s = self.body.get('system', None)
+        if s is None:
+            logger.warning("Deprecation: Outdated character data")
+            if self.body.get('meta', {}).get('GameName') == "Call of Cthulhu TM":
+                logger.warning("Trying old CoC stuff.")
+                return "coc7e"
+        return s
+
+    @property
+    def version(self):
+        v = self.body.get('version', None)
+        return v
 
     @property
     def game(self):
