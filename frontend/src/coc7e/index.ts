@@ -79,5 +79,5 @@ document.addEventListener('DOMContentLoaded', function(event) {
     console.log("Cthulhu fhtagn!");
     init_skillchecks();
     init_skill_edits();
-    init_set_portrait();
+    init_set_portrait('personalia.Portrait');
   })

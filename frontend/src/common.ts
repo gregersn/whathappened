@@ -223,7 +223,7 @@ export const editable_table = (table: HTMLTableElement, save: (data: Tabledata) 
     parent.appendChild(button);
 }
 
-export function init_set_portrait() {
+export function init_set_portrait(field_name: string) {
     console.log("Init set portrait");
     const portraitbox: HTMLElement = <HTMLElement>document.getElementsByClassName('portrait')[0];
     if(portraitbox.classList.contains("editable")) {
@@ -234,7 +234,7 @@ export function init_set_portrait() {
             const reader = new FileReader();
             reader.readAsDataURL(uploadelement.files[0]);
             reader.onload = () => {
-                send_update({field: 'personalia.Portrait', type: 'portrait'}, reader.result);
+                send_update({field: field_name, type: 'portrait'}, reader.result);
             }
         }
 
