@@ -1,6 +1,6 @@
 import { make_element_editable, saveCheck, show_message } from "../common";
 import { send_update, Datamap, Elementdata, Tabledata } from "../common";
-import { editable_list, editable_table, Listdata } from "../common"
+import { editable_list, editable_table, Listdata, edit_type } from "../common"
 
 function init_sharebutton() {
     const button = document.getElementById('sharebtn')
@@ -43,7 +43,7 @@ function init_editable() {
             case 'picture':
                 break;
             default:
-                make_element_editable(element, save);
+                make_element_editable(element, save, dataType as edit_type);
                 break;
         }
     })

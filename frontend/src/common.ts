@@ -10,7 +10,13 @@ export type Listdata = string[];
 export type SaveFunction = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => void
 
 function saveElement(editfield: HTMLInputElement, element: HTMLElement, save: SaveFunction, editable_handler: (e: Event) => void) {
-    const value = editfield.value;
+    let value = null; 
+    if(editfield.type === "number") {
+        value = editfield.valueAsNumber;
+    }
+    else {
+        value = editfield.value;
+    }
     const datafields: DOMStringMap = element.dataset;
     const data = Object.assign({}, datafields);
     
@@ -41,7 +47,7 @@ export const editable_list = (list: HTMLUListElement, save: (data: Listdata) => 
 
     const parent = list.parentElement;
     const button = document.createElement('button');
-    button.innerHTML = "Add item";
+    button.innerHTML = "Add...";
     button.onclick = () => {
         const new_item = document.createElement('li');
         new_item.innerHTML = 'New item...';
@@ -54,16 +60,23 @@ export const editable_list = (list: HTMLUListElement, save: (data: Listdata) => 
 }
 
 
-function editElement(element: HTMLElement, type: "area" | "input", save: SaveFunction, editable_handler: (e: Event) => void) {
+function editElement(element: HTMLElement, type: edit_type, save: SaveFunction, editable_handler: (e: Event) => void) {
     console.log("Edit element");
     const value = element.innerHTML;
     let editfield = null;
 
-    if(type === "input") {
+    if(type === "string") {
         editfield = document.createElement("input");
     }
-    else if(type == "area") {
+    else if(type === "number") {
+        editfield = document.createElement("input");
+        editfield.type = "number";
+    }
+    else if(type === "area") {
         editfield = document.createElement('textarea');
+    }
+    else {
+        editfield = document.createElement("input");       
     }
 
     editfield.value = value;
@@ -86,7 +99,9 @@ function editElement(element: HTMLElement, type: "area" | "input", save: SaveFun
 }
 
 
-const make_editable_handler = (element: HTMLElement, save: SaveFunction, type: "input" | "area" = "input") => {
+export type edit_type = "input" | "area" | "string" | "number";
+
+const make_editable_handler = (element: HTMLElement, save: SaveFunction, type: edit_type = "input") => {
     const f = (e: Event) => {
         e.preventDefault();
         editElement(element, type, save, f);
@@ -95,7 +110,7 @@ const make_editable_handler = (element: HTMLElement, save: SaveFunction, type: "
     return f;
 }
 
-export function make_element_editable(element: HTMLElement, save: SaveFunction, type: "input" | "area"  = "input") {
+export function make_element_editable(element: HTMLElement, save: SaveFunction, type: edit_type  = "input") {
     const editable_handler = make_editable_handler(element, save, type);
     element.addEventListener("click", editable_handler);
 }
@@ -159,7 +174,7 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
 
     //const tableName = table.getAttribute('data-field');
     const fields = Array.from(table.tHead.rows[0].cells).map((element, index) => {
-        return {'property': element.getAttribute('data-property'), 'index': index};
+        return {'property': element.getAttribute('data-property'), 'index': index, 'type': element.getAttribute('data-type')};
     }).filter((element, index) => {
         if(element['property']) return true;
         return false;
@@ -169,7 +184,11 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
     for(const row of rows) {
         const row_data = {}
         fields.forEach(field => {
-            row_data[field['property']] = row.cells.item(field['index']).innerHTML;
+            if(field['type'] === "number") {
+                row_data[field['property']] = Number.parseInt(row.cells.item(field['index']).innerHTML);
+            } else {
+                row_data[field['property']] = row.cells.item(field['index']).innerHTML;
+            }
         });
 
         data_rows.push(row_data);
@@ -186,7 +205,7 @@ export const editable_table = (table: HTMLTableElement, save: (data: Tabledata) 
     const make_cell_editable = (cell: HTMLTableCellElement) => {
         make_element_editable(cell, (data: any) => {
             save(table_to_obj(table));
-        });
+        }, cell.getAttribute('data-type') as edit_type);
     }
     const make_row_editable = (row: HTMLTableRowElement, fields: any[]) => {
         const cells = Array.from(row.cells);
