@@ -15,16 +15,15 @@ from . import bp, api
 from .models import Character
 from .forms import ImportForm, CreateForm
 from .forms import DeleteForm
-from .coc7e import CoCMechanics, convert_from_dholes
-from .coc7e.forms import CreateFormCoC
+
+from . import coc7e
+
 from app import db
 from app.models import LogEntry
 from app.utils.schema import migrate
 from app.models import Invite
 from app.character.schema.coc7e import migrations
 
-from .coc7e.routes import view as coc7eview
-from .coc7e import CHARACTER_TEMPLATE as CHARACTER_TEMPLATE_COC7E
 
 logger = logging.getLogger(__name__)
 
@@ -65,11 +64,11 @@ def create(chartype):
     template = 'character/create.html.jinja'
 
     if chartype == 'coc7e':
-        form = CreateFormCoC()
+        form = coc7e.CreateForm()
         template = 'character/coc7e/create.html.jinja'
 
         if form.validate_on_submit():
-            char_data = render_template(CHARACTER_TEMPLATE_COC7E,
+            char_data = render_template(coc7e.CHARACTER_TEMPLATE,
                                         title=form.title.data,
                                         type=form.gametype.data,
                                         timestamp=time.time())
@@ -186,7 +185,7 @@ def view(id):
         return redirect(url_for('character.editjson', id=id))
 
     if character.system == 'coc7e':
-        return coc7eview(id, character, editable)
+        return coc7e.view(id, character, editable)
 
     return f"A view for {character.system} is not yet implemented."
 
@@ -275,7 +274,7 @@ def editjson(id):
         elif form.conversion.data:
             logger.debug("Conversion is checked")
             data = form.body.data
-            c.body = convert_from_dholes(data)
+            c.body = coc7e.convert_from_dholes(data)
 
         logentry = LogEntry(c, f"JSON edited", user_id=current_user.id)
         db.session.add(logentry)

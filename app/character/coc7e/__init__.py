@@ -7,6 +7,7 @@ from typing import Literal
 import os
 
 from ..core import register_game
+from ..schema import validate
 
 logger = logging.getLogger(__name__)
 
@@ -17,8 +18,11 @@ GameType = Literal["Classic (1920's)", "Modern"]
 GameTypes = ["Classic (1920's)", "Modern"]
 
 from .mechanics import CoCMechanics
+from .forms import CreateForm
 
 CHARACTER_TEMPLATE = 'character/coc7e/blank_character.json.jinja'
+
+from .routes import view
 
 
 def new_character(title, gametype: GameType):
