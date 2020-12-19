@@ -1,6 +1,8 @@
 import { make_element_editable, saveCheck, show_message } from "../common";
 import { send_update, Datamap, Elementdata, Tabledata } from "../common";
 import { editable_list, editable_table, Listdata, edit_type } from "../common"
+import { editable_check_progress } from "../widgets/check_progress";
+
 
 function init_sharebutton() {
     const button = document.getElementById('sharebtn')
@@ -116,6 +118,19 @@ function init_editable_tables() {
 
 }
 
+
+function init_check_progress() {
+    console.log("Init check progress");
+    const bars: HTMLSpanElement[] = <HTMLSpanElement[]>Array.from(document.getElementsByClassName('editable_check_progress'));
+    bars.forEach(bar => {
+        editable_check_progress(bar, (value: number) => {
+            const field = bar.getAttribute('data-field');
+            console.log("Saving progress.\n"); console.log(value);
+            send_update({field: field}, value);
+        })
+    })
+}
+
 document.addEventListener('DOMContentLoaded', function(event) {
     console.log("Initiate the basic character sheet.")
     init_popup();
@@ -124,4 +139,5 @@ document.addEventListener('DOMContentLoaded', function(event) {
     init_editable_lists();
     init_editable_binaries();
     init_editable_tables();
+    init_check_progress();
 })
