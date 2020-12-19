@@ -1,7 +1,8 @@
 import os
 import pytest
+from packaging.version import parse
 
-from app.utils.schema import migrate, up_or_down, find_migration
+from app.utils.schema import migrate, up_or_down, find_migration, find_version
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -10,6 +11,18 @@ def test_up_or_down():
     assert up_or_down("1.0.0", "1.0.0") == 0
     assert up_or_down("1.0.0", "1.0.1") == 1
     assert up_or_down("1.0.1", "1.0.0") == -1
+
+
+def test_find_migration():
+    assert find_migration(parse("2.0.0"), 1, migrations) is None
+    assert find_migration(parse("1.0.1"), 1, migrations) == migrations[2]
+    assert find_migration(parse("1.0.1"), -1, migrations) == migrations[1]
+
+
+def test_find_version():
+    assert find_version({'version': '1.2.3'}) == '1.2.3'
+    assert find_version({'meta': {'Version': '2.3.4'}}) == '2.3.4'
+    assert find_version({}) == "0.0.0"
 
 
 def test_migrate_same():
@@ -60,6 +73,12 @@ def test_migrate_up():
     migrated = migrate(data, "1.0.1", migrations=migrations)
 
     assert migrated['meta']['Version'] == "1.0.1"
+
+
+def test_migrate_unavailable():
+    data = {"version": "1.0.2"}
+    with pytest.raises(Exception):
+        migrate(data, "2.0.0", migrations=migrations)
 
 
 def test_migrate_down():

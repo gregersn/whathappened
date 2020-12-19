@@ -1,4 +1,5 @@
 from flask import session
+from app.auth.models import User
 
 
 def test_register(app, db):
@@ -12,6 +13,10 @@ def test_register(app, db):
                                 'password2': 'b'}
     )
     assert 'http://localhost/auth/login' == response.headers['Location']
+
+    user = User.query.get(1)
+    assert user.username == 'a'
+    assert user.email == 't@t.com'
 
 
 def test_logout(client, auth):

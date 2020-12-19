@@ -110,6 +110,10 @@
             "value": "5"
         },
         {
+            "name": "Custom skill",
+            "value": "23"
+        },
+        {
             "name": "Fighting",
             "specializations": "true",
             "value": "0",

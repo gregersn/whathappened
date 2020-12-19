@@ -3,16 +3,13 @@ from packaging.version import Version, parse
 
 
 def up_or_down(from_version: Version, to_version: Version) -> int:
-    if from_version == to_version:
-        return 0
-
     if from_version > to_version:
         return -1
 
     if to_version > from_version:
         return 1
 
-    raise Exception("Version comparison error")
+    return 0
 
 
 def find_migration(version: Version, direction: int, migrations):
