@@ -1,0 +1,19 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+  <h2>{% block title %}New Character{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+  <form action="" method="post">
+    {{ form.hidden_tag() }}
+        <p>
+          {{ form.title.label }}<br>
+          {{ form.title(size=32) }}<br>
+          {% for error in form.title.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+      </p>
+      <p>{{ form.submit() }}</p>
+  </form>
+{% endblock %}

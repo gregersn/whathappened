@@ -17,6 +17,7 @@ from .forms import ImportForm, CreateForm
 from .forms import DeleteForm
 
 from . import coc7e
+from . import tftl
 
 from app import db
 from app.models import LogEntry
@@ -71,6 +72,21 @@ def create(chartype):
             char_data = render_template(coc7e.CHARACTER_TEMPLATE,
                                         title=form.title.data,
                                         type=form.gametype.data,
+                                        timestamp=time.time())
+            c = Character(title=form.title.data,
+                          body=json.loads(char_data),
+                          user_id=current_user.profile.id)
+            db.session.add(c)
+            db.session.commit()
+            return redirect(url_for('character.view', id=c.id))
+
+    if chartype == 'tftl':
+        form = tftl.CreateForm()
+        template = 'character/tftl/create.html.jinja'
+
+        if form.validate_on_submit():
+            char_data = render_template(tftl.CHARACTER_TEMPLATE,
+                                        title=form.title.data,
                                         timestamp=time.time())
             c = Character(title=form.title.data,
                           body=json.loads(char_data),
@@ -186,6 +202,9 @@ def view(id):
 
     if character.system == 'coc7e':
         return coc7e.view(id, character, editable)
+
+    if character.system == 'tftl':
+        return tftl.view(id, character, editable)
 
     return f"A view for {character.system} is not yet implemented."
 
