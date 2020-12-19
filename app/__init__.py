@@ -85,10 +85,12 @@ def create_app(config_class=Config):
     logger.debug("Registering blueprint character")
     app.register_blueprint(character.bp, url_prefix='/character')
     app.register_blueprint(character.api, url_prefix='/api/character')
+    character.register_assets(assets)
 
     from . import campaign
     app.register_blueprint(campaign.bp, url_prefix='/campaign')
     app.register_blueprint(campaign.apibp, url_prefix='/api/campaign')
+    campaign.register_assets(assets)
 
     app.add_url_rule('/', endpoint='profile.index')
 
@@ -112,19 +114,9 @@ def create_app(config_class=Config):
                              output='css/profile.css')
         assets.register('scss_profile', css_profile)
 
-        css_campaign = Bundle('scss/campaign.scss',
-                              filters='pyscss',
-                              output='css/campaign.css')
-        assets.register('scss_campaign', css_campaign)
-
         css_handout = Bundle('scss/handout.scss',
                              filters='pyscss',
                              output='css/handout.css')
         assets.register('scss_handout', css_handout)
-
-        css_character = Bundle('scss/character.scss',
-                               filters='pyscss',
-                               output='css/character.css')
-        assets.register('scss_character', css_character)
 
     return app
