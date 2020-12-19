@@ -6,6 +6,10 @@
     {{ webpack['coc7e.js']}}
     {% endif %}
 
+    {% assets "scss_character_coc7e" %}
+    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+    {% endassets %}
+
 {% endblock %}
 
 

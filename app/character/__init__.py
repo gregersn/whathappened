@@ -17,3 +17,4 @@ def register_assets(assets):
     assets.register('scss_character', 'character/scss/character.scss',
                     filters='pyscss',
                     output='css/character.css')
+    assets.register('scss_character_coc7e', 'character/scss/character_coc7e.scss', filters='pyscss', output='css/character_coc7e.css')

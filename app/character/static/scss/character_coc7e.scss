@@ -1,0 +1,28 @@
+.skills {
+    // border: 1px solid gray;
+    columns: 360px;
+    column-gap: 2em;
+    .skill {
+        break-inside: avoid;
+        border-bottom: 1px dotted gray;
+        height: 32px;
+        .value {
+            width: 3em;
+            input {
+                width: 3em;
+                height: 20px;
+                margin: 0;
+            }
+        }
+        & .occupation {
+            font-weight: bolder;
+        }
+        .skillcheckmark {
+            width: 100%;
+        }
+    }
+    .initial_value {
+        font-size: x-small;
+    }
+
+}
