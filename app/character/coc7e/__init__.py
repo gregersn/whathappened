@@ -36,6 +36,18 @@ class CoCMechanics(CharacterMechanics):
     def version(self):
         return '0.0.3'
 
+    @property
+    def name(self):
+        return self.parent.body['personalia']['Name']
+
+    @property
+    def age(self):
+        return self.parent.body['personalia']['Age']
+
+    @property
+    def description(self):
+        return self.parent.body['personalia']['Occupation']
+
     def portrait(self):
         return self.parent.body['personalia']['Portrait']
 
@@ -59,6 +71,10 @@ class CoCMechanics(CharacterMechanics):
 
         logger.debug(f"Did not find {skill}, {subskill}")
         return None
+
+    def set_portrait(self, data):
+        self.parent.body['personalia']['Portrait'] = data
+        return self.portrait
 
 
 def new_character(title, gametype: GameType):

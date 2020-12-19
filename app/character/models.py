@@ -84,11 +84,11 @@ class Character(db.Model):
 
     @property
     def name(self):
-        return self.body['personalia']['Name']
+        return self.mechanics.name
 
     @property
     def age(self):
-        return self.body['personalia']['Age']
+        return self.mechanics.age
 
     @property
     def portrait(self):
@@ -96,7 +96,7 @@ class Character(db.Model):
 
     @property
     def description(self):
-        return self.body['personalia']['Occupation']
+        return self.mechanics.description
 
     def attribute(self, *args):
 
@@ -138,7 +138,7 @@ class Character(db.Model):
         elif attribute.get('type', None) == 'portrait':
             logger.debug("Set portrait")
             data = attribute.get('value', None)
-            self.set_portrait(data)
+            self.mechanics.set_portrait(fix_image(data))
         else:
             logger.debug("Set some other attribute")
             s = reduce(lambda x, y: x[y], attribute['field'].split(".")[:-1],
@@ -180,10 +180,6 @@ class Character(db.Model):
             'value': value,
             'start_value': start_value
         })
-
-    def set_portrait(self, data):
-        self.body['personalia']['Portrait'] = fix_image(data)
-        return self.portrait
 
     @property
     def schema_version(self):

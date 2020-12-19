@@ -1,4 +1,7 @@
+import logging
 from typing import Type
+
+logger = logging.getLogger(__name__)
 
 GAMES = {
 }
@@ -17,16 +20,27 @@ class CharacterMechanics():
         raise NotImplementedError
 
     def validate(self, *args, **kwargs):
-        raise NotImplementedError
+        logger.error("validate: Not implemented")
+        return [{"path": "/", "message": "This character sheet has no known schema or validation."}]
 
+    @property
     def name(self):
-        raise NotImplementedError
+        logger.error("name: Not implemented")
+        return "Unknown property, name"
 
+    @property
     def age(self):
-        raise NotImplementedError
+        logger.error("age: Not implemented")
+        return "Unknown property, age"
+
+    @property
+    def description(self):
+        logger.error("description: Not implemented")
+        return "Unknown property, description"
 
     def portrait(self):
-        raise NotImplementedError
+        logger.error("portrait: Not implemented")
+        return "Unknown property, portrait"
 
     def attribute(self, *args):
         raise NotImplementedError
@@ -41,6 +55,9 @@ class CharacterMechanics():
         raise NotImplementedError
 
     def skills(self, *args):
+        raise NotImplementedError
+
+    def set_portrait(self, data: str):
         raise NotImplementedError
 
 
