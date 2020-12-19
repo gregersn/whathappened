@@ -2,16 +2,17 @@ const path = require('path');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const options = {
     fileName: "manifest.json",
-    stripSrc: true,
     publicPath: "/static/"
 };
 
 module.exports = {
+    mode: 'production',
     entry: {
         campaign: "./src/campaign/index.ts",
         handout: "./src/handout/index.ts",
         sheet: "./src/sheet/index.ts",
-        coc7e: "./src/coc7e/index.ts"
+        coc7e: "./src/coc7e/index.ts",
+        tftl: "./src/tftl/index.ts"
     },
     module: {
         rules: [

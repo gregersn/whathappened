@@ -1,0 +1,159 @@
+{% extends 'character/sheet.html.jinja' %}
+
+{% block head %}
+    {{ super() }}
+
+    {% assets "scss_character_tftl" %}
+    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+    {% endassets %}
+
+    {% if editable %}
+    {{ webpack['tftl.js']}}
+    {% endif %}
+
+{% endblock %}
+
+{%- macro check_progress(field, points=10) %}
+    <span {%- if editable %} class="editable_check_progress" {%- endif %} data-field="{{field}}">
+        {% for v in range(points) %}
+            <input type="checkbox" {{ "checked" if v < character.attribute(field) }} autocomplete="off" />
+        {% endfor %}
+    </span>
+{%- endmacro %}
+
+
+{% block content %}
+<div id="busy">
+
+</div>
+
+<div class="extrainfo">
+  {% if editable and character.campaigns %}
+    In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{ character.campaigns.0.title }}</a>
+  {% endif %}
+
+</div>
+
+
+<div class="charactersheet">
+    <section id="stats">
+        <div class="box attributes">
+            <h3>Attributes</h3>
+            <div class="keyvalue">
+                <label>Body: </label>{{ editable_field("attributes.Body", 1, "number") }}
+                <label>Tech: </label>{{ editable_field("attributes.Tech", 1, "number") }}
+                <label>Heart: </label>{{ editable_field("attributes.Heart", 1, "number") }}
+                <label>Mind: </label>{{ editable_field("attributes.Mind", 1, "number") }}
+            </div>
+        </div>
+        <div class="box skills">
+            <h3>Skills</h3>
+            <div class="keyvalue">
+                <label>Sneak (Body): </label>{{ editable_field("skills.Sneak (Body)", 0, "number") }}
+                <label>Force (Body): </label>{{ editable_field("skills.Force (Body)", 0, "number") }}
+                <label>Move (Body): </label>{{ editable_field("skills.Move (Body)", 0, "number") }}
+                <label>Tinker (Tech): </label>{{ editable_field("skills.Tinker (Tech)", 0, "number") }}
+                <label>Program (Tech): </label>{{ editable_field("skills.Program (Tech)", 0, "number") }}
+                <label>Calculate (Tech): </label>{{ editable_field("skills.Calculate (Tech)", 0, "number") }}
+                <label>Contact (Heart): </label>{{ editable_field("skills.Contact (Heart)", 0, "number") }}
+                <label>Charm (Heart): </label>{{ editable_field("skills.Charm (Heart)", 0, "number") }}
+                <label>Lead (Heart): </label>{{ editable_field("skills.Lead (Heart)", 0, "number") }}
+                <label>Investigate (Mind): </label>{{ editable_field("skills.Investigate (Mind)", 0, "number") }}
+                <label>Comprehend (Mind): </label>{{ editable_field("skills.Comprehend (Mind)", 0, "number") }}
+                <label>Empathize (Mind): </label>{{ editable_field("skills.Empathize (Mind)", 0, "number") }}
+            </div>
+        </div>
+        <div class="box conditions">
+            <h3>Conditions</h3>
+            <div class="keyvalue">
+                <label>Upset: </label><span>{{ editable_binary("conditions.Upset", False) }}</span>
+                <label>Scared: </label><span>{{ editable_binary("conditions.Scared", False) }}</span>
+                <label>Exhausted: </label><span>{{ editable_binary("conditions.Exhausted", False) }}</span>
+                <label>Injured: </label><span>{{ editable_binary("conditions.Injured", False) }}</span>
+                <label>Broken: </label><span>{{ editable_binary("conditions.Broken", False) }}</span>
+            </div>
+            
+        </div>
+        <div class="box experience">
+            <h3>Experience</h3>
+            <section>
+                {{ check_progress("experience") }}
+            </section>
+        </div>
+
+    </section>
+    <section id="character">
+        <div class="splitcontainer">
+            <div class="box personalia">
+                <h3>Personalia</h3>
+                <section>
+                    <label>Name: </label>{{ editable_field("personalia.name", "Unknown") }}
+                    <label>Type: </label><span>{{ editable_field("personalia.type", "Unknown") }}</span><br />
+                    <label>Age: </label>{{ editable_field("personalia.age", "18") }}
+                    <label>Luck points: </label><span>{{ check_progress('personalia.luck_points', points=5)}}</span><br />
+                    <label>Drive: </label>{{ editable_field("personalia.drive", "Unknown") }}<br />
+                    <label>Problem: </label>{{ editable_field("personalia.problem", "Unknown") }}<br />
+                    <label>Anchor: </label>{{ editable_field("personalia.anchor", "Unknown") }}<br />
+                    <label>Pride: </label>{{ editable_field("personalia.pride.description", "Unknown") }} {{ editable_binary("personalia.pride.used") }}<br />
+                    <label>Description: </label>{{ editable_field("personalia.description", "Unknown") }}<br />
+                    <label>Favourite song: </label>{{ editable_field("personalia.favourite_song", "Unknown") }}
+                </section>
+            </div>
+            <div class="box portrait {%- if editable %} editable{%- endif %}" data-type="picture">
+                {% if character.portrait %}<img src="data:image/jpg;base64, {{ character.portrait }}" />{% else %}<img src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
+            </div>
+        </div>
+        <div class="box relationships">
+            <h3>Relationships</h3>
+            <h4>Kids</h4>
+            <section>
+                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="relationships.kids">
+                {% for item in character.mechanics.relationships('kids') %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+                </ul>
+            </section>
+
+            <h4>NPCs</h4>
+            <section>
+                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="relationships.npcs">
+                {% for item in character.mechanics.relationships('npcs') %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+                </ul>
+            </section>
+        </div>
+        <div class="box items">
+            <h3>Items</h3>
+            <section>
+            <table id="tblItems" class="{%- if editable %} editableTable{%- endif %}" data-field="items">
+            <thead>
+                <tr>
+                    <th data-property="name" data-type="string">Item</th>
+                    <th data-property="bonus" data-type="number">Bonus</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in character.mechanics.items() %}
+                <tr data-row="{{ loop.index }}">
+                    <td data-type="string">{{ item.name }}</td>
+                    <td data-type="number">{{ item.bonus }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+            </section>
+        </div>
+        <div class="box hideout">
+            <h3>Hideout</h3>
+            {{ editable_area("hideout", "None") }}
+        </div>
+        <div class="box notes">
+            <h3>Notes</h3>
+            {{ editable_area("notes", "None") }}
+            
+        </div>
+    </section>
+</div>
+
+{% endblock %}
