@@ -31,7 +31,9 @@
 
 {% block menu %}
     {% if editable %}
-        <a href="{{ url_for('campaign.edit', id=campaign.id) }}">Edit</a>
+        <a href="{{ url_for('campaign.edit', id=campaign.id) }}">Edit</a> 
+        | 
+        <a class="action" href="{{url_for('userassets.index')}}">Assets</a>
     {% endif %}
     {% if current_user.profile in campaign.players %}
         | <a href="">Leave</a>

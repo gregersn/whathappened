@@ -63,19 +63,5 @@
         </div>
     </section>
 
-    <section id="assets">
-    <h3>Assets</h3>
-    {% if profile.assets %}
-        <ul class="assetlist">
-        {% for asset in profile.assets %}
-            <li><a href="{{ url_for('userassets.edit', fileid=asset.id, filename=asset.filename) }}">{{ '/'.join(asset.path.split('/')[2:]) }}</a></li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-    <div>
-        <a class="action" href="{{url_for('userassets.index')}}">Manage</a>
-    </div>
-
-    </section>
     </div>
 {% endblock %}
