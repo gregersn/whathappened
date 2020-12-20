@@ -6,8 +6,8 @@
             "type": "object",
             "properties": {
                 "name": {"type": "string"},
-                "value": {"type": "string"},
-                "start_value": {"type": "string"},
+                "value": {"anyof": [{"type": "integer"}, {"type": "null"}]},
+                "start_value": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
                 "occupation": {"type": "boolean"},
                 "checked": {"type": "boolean"}
             },
@@ -19,7 +19,7 @@
     "type": "object",
     "required": ["version", "system", "meta", "personalia", "characteristics"],
     "properties": {
-        "version": {"const": "0.0.3"},
+        "version": {"const": "0.0.4"},
         "system": {"const": "coc7e"},
         "meta": {
             "type": "object",
@@ -52,24 +52,24 @@
         "characteristics": {
             "type": "object",
             "properties": {
-                "STR": {"type": "string"},
-                "DEX": {"type": "string"},
-                "INT": {"type": "string"},
-                "CON": {"type": "string"},
-                "APP": {"type": "string"},
-                "POW": {"type": "string"},
-                "SIZ": {"type": "string"},
-                "EDU": {"type": "string"},
-                "Move": {"type": "string"},
-                "Luck": {"type": "string"},
-                "LuckMax": {"type": "string"},
-                "Sanity": {"type": "string"},
-                "SanityStart": {"type": "string"},
-                "SanityMax": {"type": "string"},
-                "MagicPts": {"type": "string"},
-                "MagicPtsMax": {"type": "string"},
-                "HitPts": {"type": "string"},
-                "HitPtsMax": {"type": "string"}
+                "STR": {"type": "integer"},
+                "DEX": {"type": "integer"},
+                "INT": {"type": "integer"},
+                "CON": {"type": "integer"},
+                "APP": {"type": "integer"},
+                "POW": {"type": "integer"},
+                "SIZ": {"type": "integer"},
+                "EDU": {"type": "integer"},
+                "Move": {"type": "integer"},
+                "Luck": {"type": "integer"},
+                "LuckMax": {"type": "integer"},
+                "Sanity": {"type": "integer"},
+                "SanityStart": {"type": "integer"},
+                "SanityMax": {"type": "integer"},
+                "MagicPts": {"type": "integer"},
+                "MagicPtsMax": {"type": "integer"},
+                "HitPts": {"type": "integer"},
+                "HitPtsMax": {"type": "integer"}
             },
             "required": ["STR", "DEX", "INT", "CON", "APP", "POW", "SIZ", "EDU",
                          "Move", "Luck", "Sanity", "SanityMax", "MagicPts", "MagicPtsMax",
@@ -108,12 +108,12 @@
                 "type": "object",
                 "properties": {
                     "name": {"type": "string"},
-                    "regular": {"type": "string"},
+                    "regular": {"anyOf": [{"type": "integer"}, {"type": "null"}]},
                     "damage": {"type": "string"},
                     "range": {"type": "string"},
-                    "attacks": {"type": "string"},
-                    "ammo": {"type": "string"},
-                    "malf": {"type": "string"}
+                    "attacks": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
+                    "ammo": {"anyOf": [{"const": "-"}, {"type": "integer"}]},
+                    "malf": {"anyOf": [{"const": "-"}, {"type": "integer"}]}
                 },
                 "required": [
                     "name", "regular", "damage", "range", "attacks", "ammo", "malf"
@@ -123,9 +123,9 @@
         "combat": {
             "type": "object",
             "properties": {
-                "DamageBonus": {"type": "string"},
-                "Build": {"type": "string"},
-                "Dodge": {"type": "string"}
+                "DamageBonus": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
+                "Build": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
+                "Dodge": {"anyOf": [{"type": "string"}, {"type": "integer"}]}
             },
             "required": ["DamageBonus", "Build", "Dodge"]
         },
@@ -170,9 +170,9 @@
         "cash": {
             "type": "object",
             "properties": {
-                "spending": {"type": "string"},
-                "cash": {"type": "string"},
-                "assets": {"type": "string"}
+                "spending": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
+                "cash": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
+                "assets": {"anyOf": [{"type": "string"}, {"type": "integer"}]}
             }
         },
         "assets": {

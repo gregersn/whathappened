@@ -32,13 +32,15 @@ function init_skill_edits() {
     skillnames.forEach(element => {
         const occupation_field = element.getAttribute('data-field');
         const occupation_subfield = element.getAttribute('data-subfield');
-        
         const occupation_checker = document.createElement('input');
+
         occupation_checker.type = "checkbox";
         occupation_checker.hidden = true;
+
         if(element.classList.contains('occupation')) {
             occupation_checker.checked = true;
         }
+
         occupation_checker.onchange = () => {
             console.log("Changed occupation on skill", occupation_field);
             if(occupation_checker.checked) {
@@ -49,6 +51,7 @@ function init_skill_edits() {
             occupation_checker.hidden = true;
             send_update({field: occupation_field, subfield: occupation_subfield, type: "occupationcheck"}, occupation_checker.checked);
         }
+
         element.parentElement.appendChild(occupation_checker);
 
         let btn_add_subskill: null | HTMLButtonElement = null;
@@ -64,6 +67,7 @@ function init_skill_edits() {
 
         }
 
+        // Add subt functions
         element.onclick = (e: Event) => {
             occupation_checker.hidden = !occupation_checker.hidden;
             if(element.getAttribute('data-specializations')) {

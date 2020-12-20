@@ -287,7 +287,7 @@
     "weapons": [
         {
             "name": "Unarmed",
-            "regular": "0",
+            "regular": "10",
             "damage": "1d3 + db",
             "range": "-",
             "attacks": "1",
@@ -296,7 +296,7 @@
         },
         {
             "name": "Knife",
-            "regular": "-",
+            "regular": "11",
             "damage": "1d4 + 2 + db",
             "range": "-",
             "attacks": "-",

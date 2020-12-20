@@ -34,6 +34,7 @@ def convert_from_dholes(indata):
             skill.pop('fifth', None)
             skill.pop('half', None)
 
+            skill['value'] = int(skill['value'])
             skill['start_value'] = skill['value']
 
             if 'occupation' in skill:
@@ -83,6 +84,22 @@ def convert_from_dholes(indata):
         for weapon in inweapons:
             weapon.pop('hard', None)
             weapon.pop('extreme', None)
+            weapon['regular'] = int(weapon['regular'])
+            ammo = weapon['ammo']
+            try:
+                ammo = int(ammo, 10)
+            except ValueError:
+                pass
+            weapon['ammo'] = ammo
+
+            malf = weapon['malf']
+            try:
+                malf = int(malf, 10)
+            except ValueError:
+                pass
+            weapon['malf'] = malf
+
+
             outweapons.append(weapon)
         return outweapons
 
@@ -102,9 +119,17 @@ def convert_from_dholes(indata):
             'Dodge': combat['Dodge']['value']
         }
 
+    def convert_characteristics(characteristics):
+        for k, v in characteristics.items():
+            try:
+                characteristics[k] = int(v, 10)
+            except ValueError:
+                print("WTF")
+        return characteristics
+
     header = convert_header(investigator['Header'])
     personal_details = investigator['PersonalDetails']
-    characteristics = investigator['Characteristics']
+    characteristics = convert_characteristics(investigator['Characteristics'])
     skills = convert_skills(investigator['Skills'])
     # talents = investigator['Talents']  # Not used
     weapons = convert_weapons(investigator['Weapons'])
@@ -115,7 +140,7 @@ def convert_from_dholes(indata):
     assets = investigator['Assets']
 
     return {
-        'version': '0.0.3',
+        'version': '0.0.4',
         'system': 'coc7e',
         'meta': header,
         'personalia': personal_details,

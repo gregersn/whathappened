@@ -30,11 +30,17 @@
 {% endblock %}
 
 {%- macro editable_field(field, default='', type='string') %}
-    <span {%- if editable %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}">{{ character.attribute(field) or default }}</span>    
+    <span {%- if editable %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}">{{ character.attribute(field) }}</span>    
 {%- endmacro %}
 
-{%- macro editable_stat(field, default='') %}
-    <span {%- if editable %} class="editable" {%- endif %} data-field="{{ field }}">{{ character.attribute(field) or default }}</span>    
+{%- macro editable_skill(field, subfield=None, default='', type='string') %}
+    <span {%- if editable %} class="editable" {%- endif %} data-field="{{ field }}" data-subfield="{{subfield}}" data-type="{{ type }}" data-category="skill">{{ character.skill(field, subfield)['value'] or '_' }}</span>
+    <span class="half">{{ character.skill(field, subfield)['value']|half }}</span>
+    <span class="fifth">{{ character.skill(field, subfield)['value']|fifth }}</span>
+{%- endmacro %}
+
+{%- macro editable_stat(field, default='', type='string') %}
+    <span {%- if editable %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}">{{ character.attribute(field) }}</span>    
     <span class="half">{{ character.attribute(field)|half }}</span>
     <span class="fifth">{{ character.attribute(field)|fifth }}</span>
 
@@ -49,12 +55,6 @@
     {%- if editable %}<input type="checkbox" data-field="{{field}}" data-type="binary" {%- if character.attribute(field) %}checked{%- endif %} />{%- else %}
         {%- if character.attribute(field)%}*{%- else %}&nbsp;&nbsp;{%- endif %}
     {%- endif %}
-{%- endmacro %}
-
-{%- macro editable_skill(field, subfield=None, default='') %}
-    <span {%- if editable %} class="editable" {%- endif %} data-field="{{field}}" data-subfield="{{subfield}}" data-type="skill">{{ character.skill(field, subfield)['value'] }}</span>
-    <span class="half">{{ character.skill(field, subfield)['value']|half }}</span>
-    <span class="fifth">{{ character.skill(field, subfield)['value']|fifth }}</span>
 {%- endmacro %}
 
 {%- macro skill_checkmark(field, subfield=None) %}

@@ -3,7 +3,73 @@ from jsonschema import validate
 from app.character.coc7e import schema_file, new_character
 from app.character.schema import load_schema
 
-latest = '0.0.3'
+latest = '0.0.4'
+
+
+def v003_to_v004(data):
+    data = data.copy()
+    data['version'] = '0.0.4'
+    for k, v in data['characteristics'].items():
+        data['characteristics'][k] = int(v)
+
+    for skill in data['skills']:
+        value = skill['value']
+        try:
+            value = int(skill['value'], 10)
+        except ValueError:
+            value = None
+        skill['value'] = value
+
+        start_value = skill['start_value']
+        try:
+            start_value = int(start_value, 10)
+        except ValueError:
+            pass
+
+        skill['start_value'] = start_value
+
+        if 'subskills' in skill:
+            for subskill in skill['subskills']:
+                subskill['value'] = int(subskill['value'], 10)
+
+    for weapon in data['weapons']:
+        value = weapon['regular']
+        try:
+            value = int(value, 10)
+        except ValueError:
+            value = 0
+        weapon['regular'] = value
+
+        value = weapon['ammo']
+        try:
+            value = int(value, 10)
+        except ValueError:
+            pass
+        weapon['ammo'] = value
+
+    return data
+
+
+def v004_to_v003(data):
+    data = data.copy()
+    data['version'] = '0.0.3'
+    for k, v in data['characteristics'].items():
+        data['characteristics'][k] = str(v)
+
+    for skill in data['skills']:
+        skill['value'] = str(skill['value'])
+        if 'subskills' in skill:
+            for subskill in skill['subskills']:
+                subskill['value'] = str(subskill['value'])
+
+    for weapon in data['weapons']:
+        value = weapon['regular']
+        weapon['regular'] = str(value)
+
+        value = weapon['ammo']
+        weapon['ammo'] = str(value)
+
+    return data
 
 
 def v002_to_v003(data):
@@ -28,13 +94,13 @@ def v001_to_002(data):
     schema = load_schema(schema_file)
     validate(nc, schema=schema)
 
-    start_values = {skill['name']: skill['start_value']
+    start_values = {skill['name']: str(skill['start_value'])
                     for skill in nc['skills']}
 
     for skill in nc['skills']:
         if 'subskills' in skill and skill['subskills']:
             for subskill in skill['subskills']:
-                start_values[": ".join((skill['name'], subskill['name']))] = subskill['start_value']
+                start_values[": ".join((skill['name'], subskill['name']))] = str(subskill['start_value'])
 
     outskills = []
     skill_index = {}
@@ -100,5 +166,11 @@ migrations = [
         'to': '0.0.3',
         'up': v002_to_v003,
         'down': v003_to_v002
+    },
+    {
+        'from': '0.0.3',
+        'to': '0.0.4',
+        'up': v003_to_v004,
+        'down': v004_to_v003
     }
 ]
