@@ -11,6 +11,17 @@ function set_handout_state(player_id: number, campaign_id: number, handout_id: n
     xhr.send(JSON.stringify({"player_id": player_id, "state": state}));
 }
 
+function set_npc_visibility(npc_id: number, campaign_id: number, state: boolean) {
+    const url = `/api/campaign/${campaign_id}/npc/${npc_id}`;
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.setRequestHeader('Content-Type', "application/json;charset=UTF-8");
+    xhr.setRequestHeader("X-CSRFToken", get_meta_tag('_token'));
+    xhr.setRequestHeader('x-csrf-token', get_meta_tag('_token'));
+
+    xhr.send(JSON.stringify({"npc_id": npc_id, "visibility": state}));
+}
+
 function update_handouts(handouts, handout_list: HTMLUListElement) {
     console.log("Update handouts");
     const sha = handout_list.getAttribute('data-sha');
@@ -70,8 +81,25 @@ const init_handout_watch = () => {
     refresh_handouts();
 }
 
+function init_npc_control() {
+    const npcs: HTMLDivElement[] = <HTMLDivElement[]>Array.from(document.getElementsByClassName('npc'));
+
+    npcs.forEach(npc => {
+        const visibility: HTMLInputElement = <HTMLInputElement>npc.getElementsByClassName('visibility')[0];
+        visibility.onchange = () => {
+            const npc_id = Number.parseInt(visibility.getAttribute('data-npc'));
+            const campaign_id = Number.parseInt(visibility.getAttribute('data-campaign'));
+            const state = visibility.checked;
+            console.log(`Visibility toggled on ${npc_id} to ${state}`);
+            set_npc_visibility(npc_id, campaign_id, state);
+        }
+    })
+
+}
+
 document.addEventListener('DOMContentLoaded', function(event) {
     console.log("Initiate the campaign functions.");
     init_handout_share();
     init_handout_watch();
+    init_npc_control();
 })

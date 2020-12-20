@@ -1,19 +1,19 @@
 @import "markdown.scss";
 
-#show_add_character,#add_character_form {
+#show_add_character,#add_character_form,#show_add_npc,#add_npc_form {
     display:none;
 }
 
 
-#show_add_character + label {
+#show_add_character + label, #show_add_npc + label {
     color: gray;
 }
 
-#show_add_character:checked + label {
+#show_add_character:checked + label, #show_add_npc:checked + label {
     color: black;
 }
 
-#show_add_character:checked~#add_character_form {
+#show_add_character:checked~#add_character_form, #show_add_npc:checked~#add_npc_form {
     display:block;
 }
 

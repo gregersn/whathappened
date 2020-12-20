@@ -8,7 +8,7 @@ import logging
 from app import db
 
 from . import apibp
-from .models import Handout, Campaign, HandoutStatus
+from .models import Handout, Campaign, HandoutStatus, NPC
 
 logger = logging.getLogger(__name__)
 
@@ -76,5 +76,41 @@ def handout_players(campaignid: int, handoutid: int):
         'players': {
             p.user.username: p in handout.players for p in handout.campaign.players
         }
+    }
+    return jsonify(response)
+
+
+@apibp.route('<int:campaignid>/npc/<int:npcid>',
+             methods=('GET', 'POST'))
+def npc_visibility(npcid: int, campaignid: int):
+    if not current_user.is_authenticated:
+        abort(403)
+
+    npc = NPC.query.get(npcid)
+    if npc is None:
+        abort(404)
+
+    if npc.campaign.id != campaignid:
+        abort(404)
+
+    if current_user.profile != npc.campaign.user:
+        abort(403)
+
+    if request.method == 'POST':
+        data = request.get_json()
+        logger.debug(data)
+        if data['visibility']:
+            logger.debug(f"Showing NPC {npc.character.title}")
+            npc.visible = True
+        else:
+            logger.debug(f"Hiding NPC {npc.character.title}")
+            npc.visible = False
+
+        db.session.commit()
+
+        logger.debug(data)
+
+    response = {
+        'npc': npcid, 'campaign': campaignid, 'visibility': npc.visible
     }
     return jsonify(response)

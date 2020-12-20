@@ -10,10 +10,10 @@ from werkzeug.exceptions import abort
 from .models import Campaign
 from app.character.models import Character
 from app.models import UserProfile
-from .forms import CreateForm, InvitePlayerForm, AddCharacterForm
+from .forms import CreateForm, InvitePlayerForm, AddCharacterForm, AddNPCForm
 from .forms import JoinCampaignForm, EditForm, RemoveCharacterForm
 from .forms import RemovePlayerForm
-from .models import HandoutStatus
+from .models import HandoutStatus, NPC
 from app.models import Invite
 
 logger = logging.getLogger(__name__)
@@ -55,6 +55,7 @@ def view(id):
     inviteform = InvitePlayerForm(prefix="inviteform")
     createinviteform = CreateInviteForm(prefix="createinviteform")
     characterform = AddCharacterForm(prefix="characterform")
+    npcform = AddNPCForm(prefix="npcform")
 
     is_player = current_user.profile in campaign.players
     is_owner = current_user and current_user.profile.id == campaign.user_id
@@ -84,6 +85,15 @@ def view(id):
 
         invites = Invite.query_for(campaign)
 
+        if npcform.submit.data and npcform.validate_on_submit():
+            print("Adding NPC")
+            character = npcform.character.data
+            npc = NPC(character=character, campaign=campaign)
+            db.session.add(npc)
+            db.session.commit()
+
+            return redirect(url_for('campaign.view', id=id))
+
     if characterform.submit.data and characterform.validate_on_submit():
         print("Adding character")
         character = characterform.character.data
@@ -107,6 +117,7 @@ def view(id):
                            inviteform=inviteform,
                            createinviteform=createinviteform,
                            characterform=characterform,
+                           npcform=npcform,
                            editable=is_owner)
 
 
@@ -158,6 +169,25 @@ def remove_character(id, characterid):
                            character=char,
                            campaign=c,
                            form=form)
+
+
+@bp.route('/<int:id>/removenpc/<int:characterid>', methods=('GET', 'POST'))
+@login_required
+def remove_npc(id, characterid):
+    npc = NPC.query.get(characterid)
+
+    form = RemoveCharacterForm()
+
+    if form.validate_on_submit():
+        if npc.campaign.id == id:
+            db.session.delete(npc)
+            db.session.commit()
+        return redirect(url_for('campaign.view', id=id))
+
+    form.id.data = npc.campaign.id
+    form.character.data = npc.character.id
+
+    return render_template('campaign/removecharacter.html.jinja', character=npc.character, campaign=npc.campaign, form=form)
 
 
 @bp.route('/<int:id>/removeplayer/<int:playerid>',

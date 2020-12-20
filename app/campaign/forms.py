@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, HiddenField, SelectField
+from wtforms import StringField, HiddenField, SelectField, BooleanField
 from wtforms.compat import text_type
 from markupsafe import Markup
 from wtforms import SubmitField
@@ -38,6 +38,10 @@ class AddCharacterForm(FlaskForm):
     character = QuerySelectField(query_factory=available_characters,
                                  get_label=lambda x: x.title)
     submit = SubmitField('Add character')
+
+
+class AddNPCForm(AddCharacterForm):
+    visible = BooleanField('Visible', default=False)
 
 
 class RemoveCharacterForm(FlaskForm):
