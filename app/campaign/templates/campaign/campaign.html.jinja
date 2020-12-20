@@ -26,6 +26,7 @@
                         [<a href="{{url_for('character.view', id=npc.character.id)}}" {%- if npc.character.player.user == current_user %} class="strong"{%- endif %}>View</a>]
                         [<a href="{{ url_for('campaign.remove_npc', id=campaign.id, characterid=npc.id) }}">Remove</a>]
                         <input type="checkbox" autocomplete="off" data-campaign="{{ campaign.id }}" data-npc="{{ npc.id }}" {%- if npc.visible %}checked{%- endif %} class="visibility" />
+                        [<a href="{{ url_for('campaign.manage_npc', id=campaign.id, npcid=npc.id) }}">Manage</a>]
                     {%- endif %}
                     </div>
                     <div class="portrait">

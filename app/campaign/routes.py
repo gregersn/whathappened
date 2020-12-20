@@ -12,7 +12,7 @@ from app.character.models import Character
 from app.models import UserProfile
 from .forms import CreateForm, InvitePlayerForm, AddCharacterForm, AddNPCForm
 from .forms import JoinCampaignForm, EditForm, RemoveCharacterForm
-from .forms import RemovePlayerForm
+from .forms import RemovePlayerForm, NPCTransferForm
 from .models import HandoutStatus, NPC
 from app.models import Invite
 
@@ -187,7 +187,57 @@ def remove_npc(id, characterid):
     form.id.data = npc.campaign.id
     form.character.data = npc.character.id
 
-    return render_template('campaign/removecharacter.html.jinja', character=npc.character, campaign=npc.campaign, form=form)
+    return render_template('campaign/removecharacter.html.jinja',
+                           character=npc.character,
+                           campaign=npc.campaign,
+                           form=form)
+
+
+@bp.route('/<int:id>/npc/<int:npcid>', methods=('GET', 'POST'))
+@login_required
+def manage_npc(id, npcid):
+    npc = NPC.query.get(npcid)
+
+    transferform = NPCTransferForm(prefix="npctransfer", npc_id=npcid)
+
+    if npc is None:
+        return abort(404)
+
+    if npc.campaign_id != id:
+        return abort(404)
+
+    if current_user.profile != npc.campaign.user:
+        return abort(404)
+
+    if transferform.submit.data:
+        if transferform.validate_on_submit():
+            player = UserProfile.query.get(transferform.player.data)
+            campaign = npc.campaign
+
+            # Create a copy of the character
+            new_character = Character(title=npc.character.title,
+                                      body=npc.character.body,
+                                      user_id=player.id)
+
+            db.session.add(new_character)
+
+            # Add the character to the campaign
+            campaign.characters.append(new_character)
+
+            # Remove the NPC
+            db.session.delete(npc)
+
+            # Commit changes
+            db.session.commit()
+
+            return redirect(url_for('campaign.view', id=campaign.id))
+
+    transferform.player.choices = [(p.id, p.user.username)
+                                   for p in npc.campaign.players]
+
+    return render_template('campaign/managenpc.html.jinja',
+                           npc=npc,
+                           transferform=transferform)
 
 
 @bp.route('/<int:id>/removeplayer/<int:playerid>',

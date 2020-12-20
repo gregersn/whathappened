@@ -141,3 +141,9 @@ class RevealHandout(FlaskForm):
                       validators=[DataRequired()])
     players = QuerySelectMultipleField('Show to',
                                        get_label=lambda x: x.user.username)
+
+
+class NPCTransferForm(FlaskForm):
+    npc_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
+    player = SelectField(validate_choice=False)
+    submit = SubmitField('Transfer NPC')
