@@ -9,7 +9,7 @@
         .value {
             width: 3em;
             input {
-                width: 3em;
+                width: 5em;
                 height: 20px;
                 margin: 0;
             }
@@ -25,4 +25,10 @@
         font-size: x-small;
     }
 
+}
+
+.characteristics {
+    input {
+        width: 5em;
+    }
 }

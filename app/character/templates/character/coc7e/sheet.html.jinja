@@ -51,19 +51,19 @@
             <section>
             <table>
                 <tr>
-                    <td><label>STR:</label></td><td><span class="stat">{{ editable_stat('characteristics.STR') }}</span></td>
-                    <td><label>DEX:</label></td><td><span class="stat">{{ editable_stat('characteristics.DEX') }}</span></td>
-                    <td><label>POW:</label></td><td><span class="stat">{{ editable_stat('characteristics.POW') }}</span></td>
+                    <td><label>STR:</label></td><td><span class="stat">{{ editable_stat('characteristics.STR', type="number") }}</span></td>
+                    <td><label>DEX:</label></td><td><span class="stat">{{ editable_stat('characteristics.DEX', type="number") }}</span></td>
+                    <td><label>POW:</label></td><td><span class="stat">{{ editable_stat('characteristics.POW', type="number") }}</span></td>
                 </tr>
                 <tr>
-                    <td><label>CON:</label></td><td><span class="stat">{{ editable_stat('characteristics.CON') }}</span></td>
-                    <td><label>APP:</label></td><td><span class="stat">{{ editable_stat('characteristics.APP') }}</span></td>
-                    <td><label>EDU:</label></td><td><span class="stat">{{ editable_stat('characteristics.EDU') }}</span></td>
+                    <td><label>CON:</label></td><td><span class="stat">{{ editable_stat('characteristics.CON', type="number") }}</span></td>
+                    <td><label>APP:</label></td><td><span class="stat">{{ editable_stat('characteristics.APP', type="number") }}</span></td>
+                    <td><label>EDU:</label></td><td><span class="stat">{{ editable_stat('characteristics.EDU', type="number") }}</span></td>
                 </tr>
                 <tr>
-                    <td><label>SIZ:</label></td><td><span class="stat">{{ editable_stat('characteristics.SIZ') }}</span></td>
-                    <td><label>INT:</label></td><td><span class="stat">{{ editable_stat('characteristics.INT') }}</span></td>
-                    <td><label>Move:</label></td><td>{{ editable_field('characteristics.Move') }}</td>
+                    <td><label>SIZ:</label></td><td><span class="stat">{{ editable_stat('characteristics.SIZ', type="number") }}</span></td>
+                    <td><label>INT:</label></td><td><span class="stat">{{ editable_stat('characteristics.INT', type="number") }}</span></td>
+                    <td><label>Move:</label></td><td>{{ editable_field('characteristics.Move', type="number") }}</td>
                 </tr>
             </table>
             </section>
@@ -76,18 +76,18 @@
         <div class="box hitpoints">
             <h3>Hitpoints</h3>
             <section>
-                <label>Current: </label> {{ editable_field("characteristics.HitPts") }} <br />
-                <label>Max: </label>{{ editable_field("characteristics.HitPtsMax") }}<br />
+                <label>Current: </label> {{ editable_field("characteristics.HitPts", type="number") }} <br />
+                <label>Max: </label>{{ editable_field("characteristics.HitPtsMax", type="number") }}<br />
                 <label>Major wound: </label>{{ editable_binary("characteristics.HitPtsMajorWound") }}
             </section>
         </div>
         <div class="box sanity">
             <h3>Sanity</h3>
             <section>
-                <label>Current:</label> {{ editable_field('characteristics.Sanity', "0") }}<br />
-                <label>Start:</label> {{ editable_field('characteristics.SanityStart', "0") }}<br />
-                <label>Threshold:</label> <span>{{ (character.attribute('characteristics.SanityStart')|int - (character.attribute('characteristics.SanityStart')|int)*0.2)|int }}</span><br />
-                <label>Max:</label> {{ editable_field('characteristics.SanityMax', "99") }} <br />
+                <label>Current:</label> {{ editable_field('characteristics.Sanity', 0, type="number") }}<br />
+                <label>Start:</label> {{ editable_field('characteristics.SanityStart', 0, type="number") }}<br />
+                <label>Threshold:</label> <span>{{ (character.attribute('characteristics.SanityStart') - (character.attribute('characteristics.SanityStart'))*0.2)|int }}</span><br />
+                <label>Max:</label> {{ editable_field('characteristics.SanityMax', 99, type="number") }} <br />
                 <label>Temp insane:</label> {{ editable_binary("characteristics.SanityTemp") }}<br />
                 <label>Indefinitely insane:</label> {{ editable_binary("characteristics.SanityIndef") }}
             </section>
@@ -95,14 +95,14 @@
         <div class="box magicpoints">
             <h3>Magic points</h3>
             <section>
-                <label>Current: </label>{{ editable_field('characteristics.MagicPts', "0") }}<br />
-                <label>Max: </label>{{ editable_field('characteristics.MagicPtsMax', "0") }}
+                <label>Current: </label>{{ editable_field('characteristics.MagicPts', type="number") }}<br />
+                <label>Max: </label>{{ editable_field('characteristics.MagicPtsMax', type="number") }}
             </section>
         </div>
         <div class="box luck">
             <h3>Luck</h3>
             <section>
-                <label>Current: </label>{{ editable_field('characteristics.Luck', "0") }}<br />
+                <label>Current: </label>{{ editable_field('characteristics.Luck', type="number") }}<br />
             </section>
         </div>
     </div>
@@ -113,14 +113,14 @@
             <div class="skill">
                 <span class="skillcheckmark">{{skill_checkmark(skill['name']) }}</span>
                 <span class="skillname {% if skill['occupation'] %}occupation{% endif %}" data-field="{{ skill['name'] }}" data-specializations="{{skill['specializations']}}">{{ skill['name'] }} <span class="initial_value">({{ skill['start_value'] }}%)</span>: </span>
-                <span class="value stat">{{ editable_skill(skill['name'], None, 0)}}</span>
+                <span class="value stat">{{ editable_skill(skill['name'], None, 0, type="number")}}</span>
             </div>
             {% if skill.specializations and skill.subskills %}
                 {% for subskill in skill.subskills %}
             <div class="skill">
                 <span class="skillcheckmark">{{skill_checkmark(skill['name'], subskill.name ) }}</span>
                 <span class="skillname {% if subskill['occupation'] %}occupation{% endif %}" data-field="{{ skill['name'] }}" data-subfield="{{ subskill['name'] }}">{{ skill['name'] }}: {{ subskill['name'] }} <span class="initial_value">({{ subskill['start_value'] }}%)</span>: </span>
-                <span class="value stat">{{ editable_skill(skill['name'], subskill.name or None, 0)}}</span>
+                <span class="value stat">{{ editable_skill(skill['name'], subskill.name or None, 0, type="number")}}</span>
             </div>
                 {% endfor %}
             {% endif %}     
@@ -142,7 +142,7 @@
                     <thead>
                         <tr>
                             <th data-property="name">Weapon</th>
-                            <th data-property="regular">Regular</th>
+                            <th data-property="regular" data-type="number">Regular</th>
                             <th>Hard</th>
                             <th>Extreme</th>
                             <th data-property="damage">Damage</th>
@@ -156,7 +156,7 @@
                     {% for weapon in character.attribute('weapons') %}
                         <tr data-row="{{ loop.index }}">
                             <td>{{ weapon['name'] }}</td>
-                            <td>{{ weapon['regular'] }}</td>
+                            <td data-type="number">{{ weapon['regular'] }}</td>
                             <td>{{ weapon['regular'] | half }}</td>
                             <td>{{ weapon['regular'] | fifth }}</td>
                             <td>{{ weapon['damage'] }}</td>

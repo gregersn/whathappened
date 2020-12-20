@@ -111,11 +111,16 @@ class Character(db.Model):
     def set_attribute(self, attribute):
         """Set a specific attribute."""
 
-        if attribute.get('type', None) == 'skill':
+        if attribute.get('category', None) == 'skill':
             logger.debug("Set a skill")
+            datatype = attribute.get('type', 'string')
             skill = attribute['field']
             subfield = attribute.get('subfield', None)
             value = attribute.get('value')
+
+            if datatype == 'number' and not isinstance(value, int):
+                value = None
+
             skill = self.skill(skill, subfield)
             skill['value'] = value
 
@@ -156,11 +161,11 @@ class Character(db.Model):
         """Return a list of skills."""
         return self.body['skills']
 
-    def add_skill(self, skillname, value="1"):
+    def add_skill(self, skillname, value=1):
         if self.skill(skillname) is not None:
             raise ValueError(f"Skill {skillname} already exists.")
 
-        self.body['skills'].append({"name": skillname, "value": str(value)})
+        self.body['skills'].append({"name": skillname, "value": value, "start_value": value})
         if isinstance(self.body['skills'], list):
             self.body['skills'].sort(key=lambda x: x['name'])
 

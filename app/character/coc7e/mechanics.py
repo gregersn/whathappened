@@ -22,7 +22,7 @@ class CoCMechanics(CharacterMechanics):
         return validate(self.parent.body, schema_file)
 
     def version(self):
-        return '0.0.3'
+        return '0.0.4'
 
     @property
     def name(self):

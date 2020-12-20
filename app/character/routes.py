@@ -23,7 +23,7 @@ from app import db
 from app.models import LogEntry
 from app.utils.schema import migrate
 from app.models import Invite
-from app.character.schema.coc7e import migrations
+from app.character.schema.coc7e import migrations, latest
 
 
 logger = logging.getLogger(__name__)
@@ -304,7 +304,7 @@ def editjson(id):
             logger.debug("Trying to migrate data")
             data = form.body.data
             c.body = migrate(data,
-                             "0.0.3",
+                             latest,
                              migrations=migrations)
         elif form.conversion.data:
             logger.debug("Conversion is checked")
