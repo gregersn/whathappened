@@ -1,0 +1,18 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+    <h2>Manage NPC</h2>
+{% endblock %}
+
+{% block content %}
+Character <a href="{{ url_for('character.view', id=npc.character.id) }}">{{ npc.character.title }}</a> in 
+<a href="{{url_for('campaign.view', id=npc.campaign.id) }}">{{ npc.campaign.title }}</a>
+<section>
+    <h3>Give to player</h3>
+    <form action="" method="post" novalidate>
+    {{ transferform.hidden_tag() }}
+    {{ transferform.player() }}
+    {{ transferform.submit() }}
+    </form>
+</section>
+{% endblock %}
