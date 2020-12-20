@@ -15,7 +15,10 @@ class Asset(db.Model):
     id = db.Column(GUID(), primary_key=True, default=uuid.uuid4)
     filename = db.Column(db.String(128))
     owner_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'))
-    owner = db.relationship('UserProfile', backref='assets')
+    owner = db.relationship('UserProfile',
+                            backref=db.backref('assets',
+                                               lazy='dynamic',
+                                               order_by='[Asset.folder_id, Asset.filename]'))
     folder_id = db.Column(GUID(), db.ForeignKey('asset_folder.id'))
     folder = db.relationship('AssetFolder', back_populates='files')
 

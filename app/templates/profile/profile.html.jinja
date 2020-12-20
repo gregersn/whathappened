@@ -12,14 +12,24 @@
 {% endblock %}
 
 {% block content %}
+    <div class="profile_inventory">
     <section id="characters">
     {% if characters %}
     <h3>Characters</h3>
-    <ul>
+    <table>
+    <tr><th>Title</th><th>System</th><th>Actions</th><th>In campaigns</th></tr>
     {% for character in characters %}
-        <li><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }} ( {{ character.system }} )</a> [<a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>]</li>
+        <tr>
+            <td><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }}</a></td>
+            <td>{{ character.system }}</td>
+            <td><a href="{{ url_for('character.editjson', id=character.id) }}">Edit</a></td>
+            <td>{% if character.campaigns %}{% for campaign in character.campaigns %}
+                <a href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a> 
+                {% endfor %}{% endif %}
+            </td>
+        </tr>
     {% endfor %}
-    </ul>
+    </table>
     {% endif %}
     <div>
         <a class="action" href="{{ url_for('character.system_select') }}">Create</a>
@@ -27,29 +37,30 @@
     </div>
     </section>
 
-    {% if profile.campaigns_as_player %}
-    <section id="playercampaigns">
-    <h3>Joined campaigns</h3>
-        <ul>
-        {% for campaign in profile.campaigns_as_player %}
-            <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a> (by {{ campaign.owner.user.username }})</li>
-        {% endfor %}
-        </ul>
-    </section>
-    {% endif %}
-
     <section id="campaigns">
-    <h3>Your campaigns</h3>
-    {% if profile.campaigns %}
-        <ul>
-        {% for campaign in profile.campaigns %}
-            <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title}}</a></li>
-        {% endfor %}
-        </ul>
+    {% if profile.campaigns_as_player %}
+        <div>
+            <h3>Joined campaigns</h3>
+            <ul>
+            {% for campaign in profile.campaigns_as_player %}
+                <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a> (by {{ campaign.owner.user.username }})</li>
+            {% endfor %}
+            </ul>
+        </div>
     {% endif %}
-    <div>
-        <a class="action" href="{{ url_for('campaign.create') }}">Create a new campaign</a><br />
-    </div>
+        <div>
+            <h3>Your campaigns</h3>
+            {% if profile.campaigns %}
+                <ul>
+                {% for campaign in profile.campaigns %}
+                    <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title}}</a></li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            <div>
+                <a class="action" href="{{ url_for('campaign.create') }}">Create a new campaign</a><br />
+            </div>
+        </div>
     </section>
 
     <section id="assets">
@@ -57,7 +68,7 @@
     {% if profile.assets %}
         <ul class="assetlist">
         {% for asset in profile.assets %}
-            <li><a href="{{ url_for('userassets.edit', fileid=asset.id, filename=asset.filename) }}">{{ asset.path }}</a></li>
+            <li><a href="{{ url_for('userassets.edit', fileid=asset.id, filename=asset.filename) }}">{{ '/'.join(asset.path.split('/')[2:]) }}</a></li>
         {% endfor %}
         </ul>
     {% endif %}
@@ -66,4 +77,5 @@
     </div>
 
     </section>
+    </div>
 {% endblock %}

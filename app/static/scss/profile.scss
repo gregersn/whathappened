@@ -2,10 +2,29 @@ section {
     li {
         list-style: none;
     }
+
+    &#characters {
+        table {
+            width: 100%;
+            padding-bottom: 1em;
+            tr:nth-child(even) {
+                background-color: lightgray;
+            }
+            td {
+                padding: 0;
+            }
+        }
+    }
 }
 
 .assetlist {
     height: 200px;
     overflow: scroll;
     border: 1px black dotted;
+}
+
+.profile_inventory {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    column-gap: 1em;
 }
