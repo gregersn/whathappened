@@ -43,6 +43,8 @@ class Campaign(db.Model):
                                back_populates='campaign',
                                lazy='dynamic')
 
+    NPCs = db.relationship("NPC", back_populates='campaign', lazy='dynamic')
+
     handout_groups = db.relationship("HandoutGroup",
                                      back_populates='campaign',
                                      lazy='dynamic')
@@ -119,3 +121,17 @@ class Handout(db.Model):
             'title': self.title,
             'url': url_for('campaign.handout_view', campaign_id=self.campaign.id, handout_id=self.id)
         }
+
+
+class NPC(db.Model):
+    __tablename__ = 'campaign_npc'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=False)
+    campaign = db.relationship('Campaign', back_populates='NPCs')
+
+    character_id = db.Column(db.Integer, db.ForeignKey('charactersheet.id'), nullable=False)
+    character = db.relationship('Character')
+
+    visible = db.Column(db.Boolean, default=False)
