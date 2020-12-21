@@ -7,8 +7,8 @@ import logging
 from ..core import register_game
 
 from .mechanics import TftlMechanics
-from .forms import CreateForm
-from .routes import view
+from .forms import CreateForm  # noqa F401
+from .routes import view  # noqa F401
 
 logger = logging.getLogger(__name__)
 
@@ -28,10 +28,3 @@ def new_character(title):
 
 
 register_game('tftl', 'Tales from the Loop', TftlMechanics)
-
-# from .. import assets
-"""
-assets.register('scss_tftl', 'character/scss/tftl.scss',
-                filters='pyscss',
-                output='css/character_tftl.css')
-"""

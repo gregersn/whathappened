@@ -12,15 +12,18 @@ from wtforms.validators import DataRequired
 
 from .models import Asset
 
+
 def available_folders():
     return current_user.profile.assetfolders
 
 
 def available_assets():
-    return Asset.query.filter(Asset.owner==current_user.profile).order_by(Asset.folder_id).order_by(Asset.filename)
+    return Asset.query.filter(Asset.owner == current_user.profile) \
+                        .order_by(Asset.folder_id).order_by(Asset.filename)
 
 
 VALID_FILE_EXTENSIONS = ['jpg', 'png', 'jpeg', 'gif', 'svg', 'glb']
+
 
 class UploadForm(FlaskForm):
     uploaded = FileField(validators=[FileRequired(),
