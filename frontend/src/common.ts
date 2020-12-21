@@ -27,7 +27,7 @@ function saveElement(editfield: HTMLInputElement, element: HTMLElement, save: Sa
     save(data, value);
 }
 
-function list_to_obj(list: HTMLUListElement): Listdata {
+export function list_to_obj(list: HTMLUListElement): Listdata {
     let data_rows  = []
     const lines: HTMLLIElement[] = Array.from(list.getElementsByTagName('li'));
     for(const line of lines) {
