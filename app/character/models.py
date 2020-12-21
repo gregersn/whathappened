@@ -139,11 +139,15 @@ class Character(db.Model):
             logger.debug("Set portrait")
             data = attribute.get('value', None)
             self.mechanics.set_portrait(fix_image(data))
+
         else:
             logger.debug("Set some other attribute")
             s = reduce(lambda x, y: x[y], attribute['field'].split(".")[:-1],
                        self.body)
-            s[attribute['field'].split(".")[-1]] = attribute['value']
+            indexer = attribute['field'].split(".")[-1]
+            if attribute.get('type', None) == 'list':
+                indexer = int(indexer, 10)
+            s[indexer] = attribute['value']
 
     def store_data(self):
         """Mark data as modified."""

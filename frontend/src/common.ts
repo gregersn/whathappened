@@ -1,13 +1,21 @@
 export type Datamap = {
     field: string,
     subfield?: string | undefined,
-    type?: "skillcheck" | "binary" | "area" | "table" | "occupationcheck" | undefined
+    type: "skillcheck" | "binary" | "area" | "table" | "occupationcheck" | undefined
 }
 
 export type Elementdata = any;
 export type Tabledata = any[];
 export type Listdata = string[];
+
+export type ListLineData = {
+    line: number,
+    value: string
+}
+
 export type SaveFunction = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => void
+export type EditType = "input" | "text" | "string" | "number";
+
 
 function saveElement(editfield: HTMLInputElement, element: HTMLElement, save: SaveFunction, editable_handler: (e: Event) => void) {
     let value = null; 
@@ -36,12 +44,13 @@ function list_to_obj(list: HTMLUListElement): Listdata {
     return data_rows;
 }
 
-export const editable_list = (list: HTMLUListElement, save: (data: Listdata) => void) => {
+export const editable_list = (list: HTMLUListElement, save: (data: ListLineData) => void) => {
     console.log("Editable list...");
     const lines: HTMLLIElement[] = Array.from(list.getElementsByTagName('li'));
     for(const line of lines) {
         make_element_editable(line, (data: any) => {
-            save(list_to_obj(list));
+            //save(list_to_obj(list));
+            console.log("Saving data");
         })
     }
 
@@ -53,14 +62,15 @@ export const editable_list = (list: HTMLUListElement, save: (data: Listdata) => 
         new_item.innerHTML = 'New item...';
         list.appendChild(new_item);
         make_element_editable(new_item, (data: any) => {
-            save(list_to_obj(list));
+            //save(list_to_obj(list));
+            console.log("Saving data");
         })
     }
     parent.appendChild(button);
 }
 
 
-function editElement(element: HTMLElement, type: edit_type, save: SaveFunction, editable_handler: (e: Event) => void) {
+function editElement(element: HTMLElement, type: EditType, save: SaveFunction, editable_handler: (e: Event) => void) {
     console.log("Edit element");
     const value = element.innerHTML;
     let editfield = null;
@@ -72,7 +82,7 @@ function editElement(element: HTMLElement, type: edit_type, save: SaveFunction, 
         editfield = document.createElement("input");
         editfield.type = "number";
     }
-    else if(type === "area") {
+    else if(type === "text") {
         editfield = document.createElement('textarea');
     }
     else {
@@ -99,9 +109,7 @@ function editElement(element: HTMLElement, type: edit_type, save: SaveFunction, 
 }
 
 
-export type edit_type = "input" | "area" | "string" | "number";
-
-const make_editable_handler = (element: HTMLElement, save: SaveFunction, type: edit_type = "input") => {
+const make_editable_handler = (element: HTMLElement, save: SaveFunction, type: EditType = "input") => {
     const f = (e: Event) => {
         e.preventDefault();
         editElement(element, type, save, f);
@@ -110,7 +118,7 @@ const make_editable_handler = (element: HTMLElement, save: SaveFunction, type: e
     return f;
 }
 
-export function make_element_editable(element: HTMLElement, save: SaveFunction, type: edit_type  = "input") {
+export function make_element_editable(element: HTMLElement, save: SaveFunction, type: EditType  = "input") {
     const editable_handler = make_editable_handler(element, save, type);
     element.addEventListener("click", editable_handler);
 }
@@ -205,7 +213,7 @@ export const editable_table = (table: HTMLTableElement, save: (data: Tabledata) 
     const make_cell_editable = (cell: HTMLTableCellElement) => {
         make_element_editable(cell, (data: any) => {
             save(table_to_obj(table));
-        }, cell.getAttribute('data-type') as edit_type);
+        }, cell.getAttribute('data-type') as EditType);
     }
     const make_row_editable = (row: HTMLTableRowElement, fields: any[]) => {
         const cells = Array.from(row.cells);

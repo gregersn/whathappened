@@ -1,8 +1,8 @@
 import { make_element_editable, saveCheck, show_message } from "../common";
 import { send_update, Datamap, Elementdata, Tabledata } from "../common";
-import { editable_list, editable_table, Listdata, edit_type } from "../common"
+import { editable_list, editable_table, Listdata, EditType } from "../common"
 import { editable_check_progress } from "../widgets/check_progress";
-
+import { ListLineData } from "../common"
 
 function init_sharebutton() {
     const button = document.getElementById('sharebtn')
@@ -40,12 +40,12 @@ function init_editable() {
         const dataType = element.getAttribute('data-type');
         switch(dataType) {
             case 'area':
-                make_element_editable(element, save, "area");
+                make_element_editable(element, save, "text");
                 break;
             case 'picture':
                 break;
             default:
-                make_element_editable(element, save, dataType as edit_type);
+                make_element_editable(element, save, dataType as EditType);
                 break;
         }
     })
@@ -64,16 +64,79 @@ function init_editable_binaries() {
     });
 }
 
+function save_list_element(element: HTMLInputElement, line: HTMLLIElement, index: number, handler: (e: Event) => void, save: (data: ListLineData) => void) {
+    const value = element.value;
+    line.innerHTML = value;
+    line.addEventListener("click", handler);
+    console.log(`Should save ${value}`);
+    save({line: index, value: value})
+}
+
+function edit_list_item(index: number, line: HTMLLIElement, type: EditType, handler: (Event) => void, save: (data: ListLineData) => void) {
+    const value = line.innerHTML;
+    let editfield = null;
+
+    if(type === "string") {
+        editfield = document.createElement('input');
+    } else {
+        editfield = document.createElement('input');
+    }
+
+    editfield.value = value;
+
+    line.innerHTML = "";
+    line.append(editfield);
+    editfield.focus();
+
+    editfield.addEventListener('focusout', (e: Event) => {
+        console.log("Save element");
+        save_list_element(editfield, line, index, handler, save);
+    })
+
+    editfield.addEventListener('keypress', (e: KeyboardEvent) => {
+        const key = e.key || e.keyCode;
+        if(key === 13 && e.shiftKey === false) {
+            console.log("Save element from keyboard");
+            save_list_element(editfield, line, index, handler, save);
+        }
+    })
+
+    line.removeEventListener("click", handler);
+}
+
+function make_list_item_editable(index: number, line: HTMLLIElement, save: (data: ListLineData) => void) {
+    const handler = (e: Event) => {
+        e.preventDefault();
+        console.log("Clicked on list line");
+        edit_list_item(index, line, "string", handler, save);
+    }
+
+    line.addEventListener('click', handler);
+}
+
+function make_list_editable(list: HTMLUListElement|HTMLOListElement, save: (data: ListLineData) => void) {
+    const lines: HTMLLIElement[] = Array.from(list.getElementsByTagName('li'));
+
+    lines.forEach((line, index) => {
+        console.log(line);
+        make_list_item_editable(index, line, save)
+        console.log(line.innerHTML, index);
+    })
+}
+
 function init_editable_lists() {
     console.log("Init editable lists");
     const lists = <HTMLUListElement[]>Array.from(document.getElementsByClassName("editable_list"))
 
+
     lists.forEach(list => {
-        editable_list(list, (data: Listdata) => {
+        make_list_editable(list, (data: ListLineData) => {
             const field = list.getAttribute('data-field');
-            console.log("Saving list.\n"); console.log(data);
-            send_update({field: field}, data)
+            console.log("Saving list.\n"); 
+            console.log(field, data);
+            send_update({field: `${field}.${data.line}`, type: "list"}, data.value)
         })
+
     })
 }
 
