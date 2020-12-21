@@ -149,8 +149,15 @@ def update(id):
             type = setting.get('type', 'value')
             if type == 'portrait' and value is not None:
                 value = "[image]"
-            log_message = f"set {type} on {field}{' ' + subfield if subfield is not None and subfield != 'None' else '' }: {value}"
-            logentry = LogEntry(character, log_message, user_id=current_user.id)
+
+            log_subfield = ''
+            if subfield is not None and subfield != 'None':
+                log_subfield = ' ' + subfield
+            log_message = (f"set {type} on {field}{log_subfield}: {value}")
+
+            logentry = LogEntry(character,
+                                log_message,
+                                user_id=current_user.id)
             db.session.add(logentry)
 
         character.store_data()
@@ -295,7 +302,7 @@ def editjson(id):
             data = form.body.data
             c.body = coc7e.convert_from_dholes(data)
 
-        logentry = LogEntry(c, f"JSON edited", user_id=current_user.id)
+        logentry = LogEntry(c, "JSON edited", user_id=current_user.id)
         db.session.add(logentry)
 
         db.session.commit()

@@ -8,12 +8,12 @@ from jsonschema import validate
 from app.auth.models import User  # noqa
 from app.campaign.models import Campaign  # noqa
 
-from app.character.coc7e import CoCMechanics, convert_from_dholes
+from app.character.coc7e import CoCMechanics
 from app.character.coc7e import new_character
 from app.character.coc7e import schema_file
 from app.character.schema import load_schema
 from app.character.models import Character
-from app.character.coc7e import fifth, half
+from app.character.coc7e.convert import fifth, half, convert_from_dholes
 from app.utils.schema import migrate
 from app.character.schema.coc7e import migrations, latest
 
@@ -152,7 +152,7 @@ def test_validate_migration_latest(test_sheet: dict):
              schema=schema)
 
 
-def test_validate_migration_up_and_down(test_sheet: dict):  
+def test_validate_migration_up_and_down(test_sheet: dict):
     migrated = migrate(test_sheet.copy(),
                        "0.0.3",
                        migrations=migrations)
@@ -160,4 +160,3 @@ def test_validate_migration_up_and_down(test_sheet: dict):
     back_down = migrate(migrated, "0.0.1", migrations=migrations)
 
     assert test_sheet == back_down
-

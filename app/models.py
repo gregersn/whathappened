@@ -70,7 +70,8 @@ class Invite(db.Model):
                         .filter_by(table=target.__tablename__)
 
     def matches(self, target: db.Model):
-        return target.__tablename__ == self.table and target.id == self.object_id
+        return (target.__tablename__ == self.table
+                and target.id == self.object_id)
 
 
 class LogEntry(db.Model):
@@ -96,4 +97,3 @@ class LogEntry(db.Model):
         return cls.query.filter_by(object_id=target.id) \
                         .filter_by(table=target.__tablename__) \
                         .order_by(LogEntry.created_date.desc())
-
