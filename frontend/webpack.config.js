@@ -12,7 +12,8 @@ module.exports = {
         handout: "./src/handout/index.ts",
         sheet: "./src/sheet/index.ts",
         coc7e: "./src/coc7e/index.ts",
-        tftl: "./src/tftl/index.ts"
+        tftl: "./src/tftl/index.ts",
+        tokens: "./src/tokens/index.ts"
     },
     module: {
         rules: [
@@ -34,5 +35,3 @@ module.exports = {
         new WebpackManifestPlugin(options)
     ],
 };
-
-

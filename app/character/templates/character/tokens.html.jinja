@@ -1,0 +1,11 @@
+{% extends 'base.html.jinja' %}
+
+{% block head %}
+    {{ super() }}
+    
+    {{ webpack['tokens.js'] }}
+{% endblock %}
+
+{% block content %}
+<img src="data:image/jpg;base64, {{ picture }}" id="source_picture" />
+{% endblock %}
