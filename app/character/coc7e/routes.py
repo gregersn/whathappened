@@ -28,7 +28,7 @@ def fifth(value):
 
 def view(id, character, editable):
     subskillform = SubskillForm(prefix="subskillform")
-    if editable and subskillform.submit.data and subskillform.validate_on_submit():
+    if editable and subskillform.data and subskillform.validate_on_submit():
         character.add_subskill(subskillform.name.data,
                                subskillform.parent.data)
         logentry = LogEntry(character,
@@ -41,7 +41,7 @@ def view(id, character, editable):
         return redirect(url_for('character.view', id=id))
 
     skillform = SkillForm(prefix="skillform")
-    if editable and skillform.submit.data and skillform.validate_on_submit():
+    if editable and skillform.data and skillform.validate_on_submit():
         skills = character.skills()
         for skill in skills:
             if skillform.name.data == skill['name']:
