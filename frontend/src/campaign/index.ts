@@ -36,7 +36,33 @@ function update_handouts(handouts, handout_list: HTMLUListElement) {
     handout_list.setAttribute('data-sha', handouts['sha']);
 }
 
+function update_npcs(npcs, npc_container: HTMLElement) {
+    console.log("Update NPCs");
+    const list = document.getElementById('npc_list');
+
+    const npcs_elements = npcs.npcs.map(npc => {
+        const div = document.createElement('div');
+        div.classList.add("characterinfo");
+        div.classList.add("splitcontainer");
+
+        div.innerHTML = 
+                '<div class="personalia npc">' + 
+                    `${npc.name} (${npc.age})<br />${npc.description}` +
+                '</div>' +
+                '<div class="portrait">' +
+                     `<img src="${npc.portrait}" />`+
+                '</div>';
+        
+        return div;
+    })
+
+    list.innerHTML = "";
+    npcs_elements.forEach(el => list.appendChild(el))
+
+}
+
 function get_handouts(campaign_id: number, handout_list: HTMLUListElement) {
+    console.log("Getting handouts");
     const url = `/api/campaign/${campaign_id}/handouts/`;
 
     const xhr = new XMLHttpRequest();
@@ -50,6 +76,23 @@ function get_handouts(campaign_id: number, handout_list: HTMLUListElement) {
     }
     xhr.send();
 }
+
+function get_npcs(campaign_id: number, npc_container: HTMLElement) {
+    console.log("Get NPCs");
+    const url = `/api/campaign/${campaign_id}/npcs/`;
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Content-Type', "application/json;charset=UTF-8");
+    xhr.onload = () => {
+        if(xhr.status >= 200 && xhr.status < 300) {
+            const npcs = JSON.parse(xhr.responseText)
+            update_npcs(npcs, npc_container);
+        }
+    }
+    xhr.send();
+}
+
+
 
 function init_handout_share() {
     const table: HTMLTableElement = <HTMLTableElement>document.getElementsByClassName('handoutshares')[0];
@@ -74,11 +117,13 @@ const init_handout_watch = () => {
     const handout_list = <HTMLUListElement>document.getElementsByClassName('player_handouts')[0];
     if(!handout_list) return false;
     const campaign_id = Number.parseInt(handout_list.getAttribute('data-campaign'), 10);
-    const refresh_handouts = () => {
+    const handout_section = document.getElementById('handout_section');
+    handout_section.getElementsByTagName('h3')[0].onclick = () => get_handouts(campaign_id, handout_list);
+    /*const refresh_handouts = () => {
         get_handouts(campaign_id, handout_list);
         window.setTimeout(refresh_handouts, 10000);
     }
-    refresh_handouts();
+        refresh_handouts();*/
 }
 
 function init_npc_control() {
@@ -86,6 +131,7 @@ function init_npc_control() {
 
     npcs.forEach(npc => {
         const visibility: HTMLInputElement = <HTMLInputElement>npc.getElementsByClassName('visibility')[0];
+        if(visibility)
         visibility.onchange = () => {
             const npc_id = Number.parseInt(visibility.getAttribute('data-npc'));
             const campaign_id = Number.parseInt(visibility.getAttribute('data-campaign'));
@@ -97,9 +143,18 @@ function init_npc_control() {
 
 }
 
+function init_npc_refresh() {
+    console.log("Init NPC refresh")
+    const npc_container: HTMLElement = document.getElementById('npc_section');
+    if(npc_container.classList.contains("editable")) return;
+    const campaign_id = Number.parseInt(npc_container.getAttribute('data-campaign'));
+    npc_container.getElementsByTagName('h3')[0].onclick = () => get_npcs(campaign_id, npc_container);
+}
+
 document.addEventListener('DOMContentLoaded', function(event) {
     console.log("Initiate the campaign functions.");
     init_handout_share();
     init_handout_watch();
     init_npc_control();
+    init_npc_refresh();
 })
