@@ -40,7 +40,7 @@
 {%- endmacro %}
 
 {%- macro editable_area(field, default='') %}
-    <pre {%- if editable %} class="editable" {%- endif %} data-field="{{field}}" data-type="area">{{ character.attribute(field) or default }}</pre>
+    <pre {%- if editable %} class="editable freetext" {%- endif %} data-field="{{field}}" data-type="area">{{ character.attribute(field) or default }}</pre>
 {%- endmacro %}
 
 

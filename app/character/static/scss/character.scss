@@ -37,6 +37,9 @@
             }
         }
     }
+    .freetext {
+        white-space: pre-wrap;
+    }
     .weapons {
         @media
         only screen 
