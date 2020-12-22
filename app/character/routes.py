@@ -216,6 +216,15 @@ def view(id):
     return f"A view for {character.system} is not yet implemented."
 
 
+@bp.route('/<int:id>/tokens/', methods=('GET', 'POST'))
+@login_required
+def tokens(id):
+    character = get_character(id, check_author=False)
+
+    return render_template('character/tokens.html.jinja',
+                           picture=character.portrait)
+
+
 @api.route('/<int:id>/', methods=('GET', ))
 def get(id):
     """API call to get all character data."""

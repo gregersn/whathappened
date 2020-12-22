@@ -25,6 +25,7 @@
             | <a href="#" id="sharebtn" data-id="{{ character.id }}">{% if not shared %}Share{% else %}Share link{% endif %}</a>
             | <a href="{{ url_for('character.eventlog', id=character.id) }}">Event log</a>
         {%- endif %}
+            | <a href="{{ url_for('character.tokens', id=character.id) }}">Tokens</a>
     {% endif %}
 {% endblock %}
 
