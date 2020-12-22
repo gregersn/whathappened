@@ -70,7 +70,7 @@
 {% endif %}
 
 <div class="splitcontainer">
-<section class="handouts box">
+<section class="handouts box{%- if editable %} editable{%- endif %}" id="handout_section">
 <h3>Handouts</h3>
 
 {% if editable %}
@@ -140,9 +140,9 @@
 </section>
 
 
-<section class="npcs box">
+<section class="npcs box{%- if editable %} editable{%- endif %}" id="npc_section" data-campaign="{{ campaign.id }}">
     <h3>NPCs</h3>
-    <div>
+    <div id="npc_list">
     {% if campaign.NPCs %}
         {% for npc in campaign.NPCs %}
             {%- if editable or npc.visible %}{{ npc_info(npc) }}{%- endif %}

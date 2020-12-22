@@ -2,6 +2,7 @@ import json
 import hashlib
 from flask import request, jsonify
 from flask_login import current_user
+from flask_login.utils import login_required
 from werkzeug.exceptions import abort
 import logging
 
@@ -80,8 +81,25 @@ def handout_players(campaignid: int, handoutid: int):
     return jsonify(response)
 
 
+@apibp.route('<int:campaignid>/npcs/', methods=('GET', 'POST'))
+@login_required
+def npcs(campaignid: int):
+    campaign = Campaign.query.get(campaignid)
+
+    if campaign is None:
+        abort(404)
+
+    npcs = [{'name': npc.character.name,
+             'age': npc.character.age,
+             'description': npc.character.description,
+             'portrait': "data:image/jpg;base64, " + npc.character.portrait } for npc in campaign.NPCs.filter(NPC.visible).all()]
+    response = {'npcs': npcs}
+    return jsonify(response)
+
+
 @apibp.route('<int:campaignid>/npc/<int:npcid>',
              methods=('GET', 'POST'))
+@login_required
 def npc_visibility(npcid: int, campaignid: int):
     if not current_user.is_authenticated:
         abort(403)
