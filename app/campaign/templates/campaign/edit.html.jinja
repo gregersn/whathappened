@@ -1,7 +1,7 @@
 {% extends 'base.html.jinja' %}
 
 {% block header %}
-  <h2>{% block title %}New Campaign{% endblock %}</h2>
+  <h2>{% block title %}Edit campaign{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
@@ -18,6 +18,27 @@
           {{ form.description.label }}<br>
           {{ form.description }}<br>
           {% for error in form.description.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+      </p>
+        <p>
+          {{ form.characters_enabled.label }}
+          {{ form.characters_enabled }}<br>
+          {% for error in form.characters_enabled.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+      </p>
+        <p>
+          {{ form.npcs_enabled.label }}
+          {{ form.npcs_enabled }}<br>
+          {% for error in form.npcs_enabled.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+      </p>
+        <p>
+          {{ form.handouts_enabled.label }}
+          {{ form.handouts_enabled }}<br>
+          {% for error in form.handouts_enabled.errors %}
           <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
       </p>

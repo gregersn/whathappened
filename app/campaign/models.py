@@ -27,27 +27,41 @@ class Campaign(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(256))
     description = db.Column(db.Text)
+
+    # Owner of the campaign (GM)
     user_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'))
     user = db.relationship("UserProfile", back_populates='campaigns')
+
+    # The players in a campaign
     players = db.relationship('UserProfile',
                               secondary=campaign_players,
                               lazy='dynamic',
                               backref=db.backref('campaigns_as_player',
                                                  lazy=True))
+
+    # Characters added to the campaign
     characters = db.relationship('Character',
                                  secondary=campaign_characters,
                                  lazy='dynamic',
                                  backref=db.backref('campaigns', lazy=True))
 
+    # NPCs added to campaign
+    NPCs = db.relationship("NPC", back_populates='campaign', lazy='dynamic')
+
+    # Handouts added to campaign
     handouts = db.relationship("Handout",
                                back_populates='campaign',
                                lazy='dynamic')
 
-    NPCs = db.relationship("NPC", back_populates='campaign', lazy='dynamic')
-
+    # Handout groups for the campaign
     handout_groups = db.relationship("HandoutGroup",
                                      back_populates='campaign',
                                      lazy='dynamic')
+
+    # Features used for campaign
+    characters_enabled = db.Column(db.Boolean, default=True)
+    npcs_enabled = db.Column(db.Boolean, default=False)
+    handouts_enabled = db.Column(db.Boolean, default=False)
 
     @property
     def players_by_id(self):

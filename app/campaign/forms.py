@@ -16,6 +16,9 @@ from .models import HandoutStatus
 
 class CreateForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
+    characters_enabled = BooleanField('Use Characters')
+    npcs_enabled = BooleanField('Use NPCs')
+    handouts_enabled = BooleanField('Use handouts')
     submit = SubmitField('Create')
 
 

@@ -70,100 +70,18 @@
 {% endif %}
 
 <div class="splitcontainer">
-<section class="handouts box{%- if editable %} editable{%- endif %}" id="handout_section">
-<h3>Handouts</h3>
-
-{% if editable %}
-<table class="table-header-rotated handoutshares">
-<thead>
-<tr>
-    <th></th>
-    {% for player in campaign.players %}
-    <th class="rot90">
-        <div>
-            <span>
-            {{ player.user.username }}
-            </span>
-        </div>
-    </th>
-    {% endfor %}
-</tr>
-</thead>
-<tbody>
-{% for handout in handouts %}
-    <tr>      
-        <th><a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id, handout_id=handout.id) }}">{{ handout.title }}</a></th>
-        {% for player in campaign.players %}
-        <td>
-            <input type="checkbox" autocomplete="off" {%- if player in handout.players %}checked{%- endif %} data-handout="{{ handout.id }}"  data-campaign="{{ campaign.id }}" data-player="{{ player.id }}"/>
-        </td>
-        {% endfor %}
-    </tr>
-{% endfor %}
-</tbody>
-</table>
-    <a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id) }}">Edit handouts</a>
-{% else %}
-    <ul class="player_handouts" data-campaign="{{ campaign.id}}">
-{% for handout in handouts %}
-    {%- if current_user.profile in handout.players %}<li><a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id, handout_id=handout.id) }}">{{ handout.title }}</a></li>{%- endif %}
-{% endfor %}
-    </ul>
-
-    [<a href="{{ url_for('campaign.handout_view', campaign_id=campaign.id) }}">Archive</a>]
-
+{% if campaign.handouts_enabled %}
+{% include 'campaign/campaign_handouts.html.jinja' %}
 {% endif %}
-</section>
 
-<section class="characters box">
-<h3>Characters</h3>
-    <div>
-    {% if campaign.characters %}
-        {% for character in campaign.characters %}
-            {{ character_info(character) }}          
-        {% endfor %}
-    {% else %}
-        There are no characters.
-    {% endif %}
-    </div>
+{% if campaign.characters_enabled %}
+{% include 'campaign/campaign_characters.html.jinja' %}
+{% endif %}
 
-    <div>
-        <input id="show_add_character" type="checkbox" autocomplete="off"><label for="show_add_character">Add character</label>
-        <form action="" method="post" id="add_character_form">
-            {{ characterform.hidden_tag() }}
-            {{ characterform.character() }} {{ characterform.submit() }}
-            {% for error in characterform.character.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </form>
-    </div>
-</section>
+{% if campaign.npcs_enabled %}
+{% include 'campaign/campaign_npcs.html.jinja' %}
+{% endif %}
 
-
-<section class="npcs box{%- if editable %} editable{%- endif %}" id="npc_section" data-campaign="{{ campaign.id }}">
-    <h3>NPCs</h3>
-    <div id="npc_list">
-    {% if campaign.NPCs %}
-        {% for npc in campaign.NPCs %}
-            {%- if editable or npc.visible %}{{ npc_info(npc) }}{%- endif %}
-        {% endfor %}
-    {% else %}
-        There are no NPCs.
-    {% endif %}
-    </div>
-    {% if editable %}
-    <div>
-        <input id="show_add_npc" type="checkbox" autocomplete="off"><label for="show_add_npc">Add NPC</label>
-        <form action="" method="post" id="add_npc_form">
-            {{ npcform.hidden_tag() }}
-            {{ npcform.character() }} {{ npcform.submit() }}
-            {% for error in npcform.character.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </form>
-    </div>
-    {% endif %}
-</section>
 </div>
 
 {% if editable %}

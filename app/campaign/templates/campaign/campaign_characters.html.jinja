@@ -1,0 +1,24 @@
+<section class="characters box">
+<h3>Characters</h3>
+    <div>
+    {% if campaign.characters %}
+        {% for character in campaign.characters %}
+            {{ character_info(character) }}          
+        {% endfor %}
+    {% else %}
+        There are no characters.
+    {% endif %}
+    </div>
+
+    <div>
+        <input id="show_add_character" type="checkbox" autocomplete="off"><label for="show_add_character">Add character</label>
+        <form action="" method="post" id="add_character_form">
+            {{ characterform.hidden_tag() }}
+            {{ characterform.character() }} {{ characterform.submit() }}
+            {% for error in characterform.character.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </form>
+    </div>
+</section>
+

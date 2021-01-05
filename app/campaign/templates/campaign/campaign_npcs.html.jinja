@@ -1,0 +1,24 @@
+<section class="npcs box{%- if editable %} editable{%- endif %}" id="npc_section" data-campaign="{{ campaign.id }}">
+    <h3>NPCs</h3>
+    <div id="npc_list">
+    {% if campaign.NPCs %}
+        {% for npc in campaign.NPCs %}
+            {%- if editable or npc.visible %}{{ npc_info(npc) }}{%- endif %}
+        {% endfor %}
+    {% else %}
+        There are no NPCs.
+    {% endif %}
+    </div>
+    {% if editable %}
+    <div>
+        <input id="show_add_npc" type="checkbox" autocomplete="off"><label for="show_add_npc">Add NPC</label>
+        <form action="" method="post" id="add_npc_form">
+            {{ npcform.hidden_tag() }}
+            {{ npcform.character() }} {{ npcform.submit() }}
+            {% for error in npcform.character.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </form>
+    </div>
+    {% endif %}
+</section>
