@@ -27,7 +27,6 @@
                 <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
             {% endif %}
             </ul>
-            </div>
             {% if self.menu() %}
             <div class="navbar">
                 {% block menu %}
@@ -50,5 +49,4 @@
         {%- endfor %}
         {% block content %}{% endblock %}
     </section>
-</body>
 {% endblock %}

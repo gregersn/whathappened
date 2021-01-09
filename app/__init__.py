@@ -92,6 +92,10 @@ def create_app(config_class=Config):
     app.register_blueprint(campaign.apibp, url_prefix='/api/campaign')
     campaign.register_assets(assets)
 
+    from . import map
+    app.register_blueprint(map.bp, url_prefix='/map')
+    map.register_assets(assets)
+
     app.add_url_rule('/', endpoint='profile.index')
 
     @app.route('/hello')

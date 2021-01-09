@@ -23,6 +23,7 @@
     "webpack-manifest-plugin": "^3.0.0"
   },
   "dependencies": {
+    "@svgdotjs/svg.js": "^3.0.16",
     "showdown": "^1.9.1"
   },
   "jest": {

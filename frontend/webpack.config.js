@@ -13,7 +13,8 @@ module.exports = {
         sheet: "./src/sheet/index.ts",
         coc7e: "./src/coc7e/index.ts",
         tftl: "./src/tftl/index.ts",
-        tokens: "./src/tokens/index.ts"
+        tokens: "./src/tokens/index.ts",
+        map: "./src/map/index.ts"
     },
     module: {
         rules: [
@@ -29,7 +30,8 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, '../app/static/'),
-        filename: 'js/[name].[contenthash].js'
+        filename: 'js/[name].[contenthash].js',
+        library: "whathappened"
     },
     plugins: [
         new WebpackManifestPlugin(options)

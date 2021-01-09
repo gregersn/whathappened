@@ -1,0 +1,20 @@
+{% extends 'base.html.jinja' %}
+
+{% block head %}
+    {{ super() }}
+    {% assets "scss_map" %}
+    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+    {% endassets %}
+
+    {{ webpack['map.js'] }}
+{% endblock %}
+
+
+{% block content %}
+<div class="toolbar"></div>
+<div class="map" id="map">
+</div>
+<script>
+    window.whathappened.show_map(document.getElementById('map'));
+</script>
+{% endblock %}
