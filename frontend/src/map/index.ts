@@ -1,10 +1,5 @@
 import { SVG, Element, Svg, G } from '@svgdotjs/svg.js';
 
-
-//document.addEventListener('DOMContentLoaded', function(event) {
-    //console.log("Hello, map")
-//}
-
 let svg: Svg | undefined = undefined;
 let map_content: G;
 
@@ -14,7 +9,7 @@ type position = {
 };
 
 function getMousePosition(evt) {
-    const CTM = (svg as Svg).screenCTM();
+    const CTM = map_content.screenCTM();
     return {
         x: (evt.clientX - CTM.e) / CTM.a,
         y: (evt.clientY - CTM.f) / CTM.d
@@ -29,6 +24,7 @@ function draw_grid(draw: Svg) {
 let selectedElement: Element;
 let offset: position;
 let zoom_factor: number = 1.0;
+let panning: boolean = false;
 
 function makeDraggable(element: Element) {
     element.mousedown((evt: MouseEvent) => {
@@ -39,25 +35,10 @@ function makeDraggable(element: Element) {
         offset.x -= selectedElement.x();
         offset.y -= selectedElement.y();
     })
-
-    svg.mousemove((evt: MouseEvent) => {
-        // Drag
-        if(selectedElement) {
-            evt.preventDefault();
-            const coord = getMousePosition(evt);
-            (selectedElement as Element).move(coord.x - offset.x, coord.y - offset.y);
-        }
-    })
-
-    element.mouseup((evt: MouseEvent) => {
-        // End drag
-        selectedElement = null;
-    })
-
 }
 
 
-function pan_and_zoom(group: G) {
+function mouse_controls(group: G) {
     svg.on('wheel', (e: WheelEvent) => {
         e.preventDefault();    
         const zoom_dir = e.deltaY / Math.abs(e.deltaY)
@@ -70,13 +51,47 @@ function pan_and_zoom(group: G) {
         }
 
         const matrix = group.transform();
-        console.log(matrix);
         group.transform({scale: zoom_factor});
     })
+
+    svg.mousedown((e: MouseEvent) => {
+        if(e.button == 0 && e.shiftKey) {
+            panning = true;
+            e.preventDefault();
+            offset = getMousePosition(e);
+            offset.x -= map_content.x();
+            offset.y -= map_content.y();
+    
+        }
+    });
+
+    svg.mousemove((evt: MouseEvent) => {
+        // Drag
+        if(selectedElement && !panning) {
+            evt.preventDefault();
+            const coord = getMousePosition(evt);
+            (selectedElement as Element).move(coord.x - offset.x, coord.y - offset.y);
+        }
+
+        if(panning) {
+            evt.preventDefault();
+            const coord = getMousePosition(evt);
+            map_content.move(coord.x - offset.x, coord.y - offset.y);
+        }
+    })
+
+    svg.mouseup((evt: MouseEvent) => {
+        // End drag
+        selectedElement = null;
+        panning = false;
+    })
+
+
 }
 
 function add_background(src: string, group: G) {
-    group.image(src);
+    const background = group.image(src);
+    background.attr({'pointer-events': 'none'});
 }
 
 function add_token(group: G) {
@@ -119,12 +134,10 @@ const map_data: MapData = {
 }
 
 export function show_map(container: HTMLDivElement) {
-    console.log("Look out!");
-
     svg = SVG().addTo(container).size('100%', '100%');
     map_content = svg.group();
 
-    pan_and_zoom(map_content);
+    mouse_controls(map_content);
 
     add_background(map_data.background.src, map_content);
     map_data.tokens.forEach(token => {
