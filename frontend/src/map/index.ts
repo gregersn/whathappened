@@ -38,7 +38,6 @@ function makeDraggable(element: Element) {
         offset = getMousePosition(evt);
         offset.x -= selectedElement.x();
         offset.y -= selectedElement.y();
-
     })
 
     svg.mousemove((evt: MouseEvent) => {
@@ -63,15 +62,60 @@ function pan_and_zoom(group: G) {
         e.preventDefault();    
         const zoom_dir = e.deltaY / Math.abs(e.deltaY)
 
-        if(zoom_dir > 0 && zoom_factor < 5) {
+        if(zoom_dir < 0 && zoom_factor < 5) {
             zoom_factor *= 1.5;
         }
-        else if(zoom_dir < 0 && zoom_factor > 0.2) {
+        else if(zoom_dir > 0 && zoom_factor > 0.2) {
             zoom_factor /= 1.5;
         }
 
+        const matrix = group.transform();
+        console.log(matrix);
         group.transform({scale: zoom_factor});
     })
+}
+
+function add_background(src: string, group: G) {
+    group.image(src);
+}
+
+function add_token(group: G) {
+
+}
+
+type Token = {
+    position: {
+        x: number,
+        y: number
+    },
+    color: string
+}
+
+type MapData = {
+    background: {
+        src: string
+    },
+    tokens: Token[]
+}
+
+const map_data: MapData = {
+    background: {
+        src: 'https://mk0a2minutetabl7hq7i.kinstacdn.com/wp-content/uploads/2018/10/Haunted-Garden-RPG-battle-map-square-grid-1.jpg'
+    },
+    tokens: [
+        {
+            position: {x: 0, y: 0},
+            color: "#f06"
+        },
+        {
+            position: {x: 70, y: 105},
+            color: "#60f"
+        },
+        {
+            position: {x: 442, y: 170},
+            color: "#6f0"
+        }
+    ]
 }
 
 export function show_map(container: HTMLDivElement) {
@@ -81,11 +125,10 @@ export function show_map(container: HTMLDivElement) {
     map_content = svg.group();
 
     pan_and_zoom(map_content);
-    const rect = map_content.rect(100, 100).attr({fill: '#f06'});
-    const rect2 = map_content.rect(150, 150).attr({fill: '#60f'}).move(50, 50);
-    const rect3 = map_content.rect(150, 150).attr({fill: '#6f0'}).move(100, 100);
 
-    makeDraggable(rect);
-    makeDraggable(rect2);
-    makeDraggable(rect3);
+    add_background(map_data.background.src, map_content);
+    map_data.tokens.forEach(token => {
+        const t = map_content.rect(34, 34).attr({fill: token.color}).move(token.position.x, token.position.y)
+        makeDraggable(t);
+    })
 }
