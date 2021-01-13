@@ -86,6 +86,7 @@
             <section>
                 <label>Current:</label> {{ editable_field('characteristics.Sanity', "0") }}<br />
                 <label>Start:</label> {{ editable_field('characteristics.SanityStart', "0") }}<br />
+                <label>Threshold:</label> <span>{{ (character.attribute('characteristics.SanityStart')|int - (character.attribute('characteristics.SanityStart')|int)*0.2)|int }}</span><br />
                 <label>Max:</label> {{ editable_field('characteristics.SanityMax', "99") }} <br />
                 <label>Temp insane:</label> {{ editable_binary("characteristics.SanityTemp") }}<br />
                 <label>Indefinitely insane:</label> {{ editable_binary("characteristics.SanityIndef") }}
