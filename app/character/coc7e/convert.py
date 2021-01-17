@@ -1,16 +1,4 @@
-import math
-
-
-def half(value):
-    if type(value) == str:
-        value = int(value, 10)
-    return str(math.floor(value / 2))
-
-
-def fifth(value):
-    if type(value) == str:
-        value = int(value, 10)
-    return str(math.floor(value / 5))
+from .utils import half, fifth
 
 
 def convert_from_dholes(indata):

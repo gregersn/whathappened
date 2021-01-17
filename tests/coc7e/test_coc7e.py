@@ -22,13 +22,13 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
 def test_fifth():
-    assert fifth("50") == "10"
-    assert fifth(50) == "10"
+    assert fifth("50") == 10
+    assert fifth(50) == 10
 
 
 def test_half():
-    assert half("20") == "10"
-    assert half(20) == "10"
+    assert half("20") == 10
+    assert half(20) == 10
 
 
 @pytest.fixture(name='dholes_sheet')
