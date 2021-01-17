@@ -1,4 +1,4 @@
-from app.character.coc7e.routes import half, fifth
+from app.character.coc7e.utils import half, fifth
 
 
 def test_half():

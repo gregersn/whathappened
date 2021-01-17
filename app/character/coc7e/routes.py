@@ -1,36 +1,9 @@
-from .. import bp
-
-import math
 from flask import redirect, render_template, url_for, flash
 from flask_login import current_user
 
 from app import db
 from ..forms import SkillForm, SubskillForm
 from app.models import LogEntry, Invite
-
-
-@bp.app_template_filter('half')
-def half(value):
-    if not value:
-        return 0
-    if type(value) == str:
-        try:
-            value = int(value, 10)
-        except ValueError:
-            return 0
-    return math.floor(value / 2)
-
-
-@bp.app_template_filter('fifth')
-def fifth(value):
-    if not value:
-        return 0
-    if type(value) == str:
-        try:
-            value = int(value, 10)
-        except ValueError:
-            return 0
-    return math.floor(value / 5)
 
 
 def view(id, character, editable):
