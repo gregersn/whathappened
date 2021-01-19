@@ -79,9 +79,24 @@ function init_skill_edits() {
     })
 }
 
+function init_update_values() {
+    const halves = document.getElementsByClassName('half');
+    for(const half of halves) {
+        const value_element = half.previousElementSibling;
+        const fifth = half.nextElementSibling;
+        console.log(value_element);
+        (value_element as HTMLSpanElement).onchange = (ev => {
+            half.innerHTML = "foo";
+            console.log(ev);
+        })
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', function(event) {
     console.log("Cthulhu fhtagn!");
     init_skillchecks();
     init_skill_edits();
     init_set_portrait('personalia.Portrait');
+    init_update_values();
   })
