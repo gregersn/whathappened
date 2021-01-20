@@ -47,6 +47,15 @@ def v003_to_v004(data):
             pass
         weapon['ammo'] = value
 
+        value = weapon['malf']
+        try:
+            value = int(value, 10)
+        except ValueError:
+            pass
+        weapon['malf'] = value
+
+
+
     return data
 
 
@@ -68,6 +77,8 @@ def v004_to_v003(data):
 
         value = weapon['ammo']
         weapon['ammo'] = str(value)
+
+        weapon['malf'] = str(weapon['malf'])
 
     return data
 

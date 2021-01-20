@@ -302,6 +302,15 @@
             "attacks": "-",
             "ammo": "-",
             "malf": "-"
+        },
+        {
+            "name": ".22 Short Automatic",
+            "regular": "25",
+            "damage": "1d6",
+            "range": "10",
+            "attacks": "1 (3)",
+            "ammo": "6",
+            "malf": "100"
         }
     ],
     "combat": {
