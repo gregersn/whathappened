@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class User(UserMixin, db.Model):
+    __tablename__ = "user_account"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(128), index=True, unique=True)
@@ -66,7 +67,7 @@ class UserRoles(db.Model):
     __tablename__ = 'user_roles'
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(),
-                        db.ForeignKey('user.id', ondelete='CASCADE'))
+                        db.ForeignKey('user_account.id', ondelete='CASCADE'))
     role_id = db.Column(db.Integer(),
                         db.ForeignKey('roles.id', ondelete='CASCADE'))
 
