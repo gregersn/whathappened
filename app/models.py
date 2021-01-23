@@ -43,7 +43,7 @@ class GUID(TypeDecorator):
 
 class UserProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'))
     user = db.relationship("User", back_populates="profile")
 
     characters = db.relationship('Character', backref='player', lazy='dynamic')
@@ -77,7 +77,7 @@ class Invite(db.Model):
 class LogEntry(db.Model):
     __tablename__ = 'eventlog'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'))
     table = db.Column(db.String(128))
     object_id = db.Column(db.Integer)
     entry = db.Column(db.Text)
