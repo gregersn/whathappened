@@ -38,6 +38,12 @@ class User(UserMixin, db.Model):
             current_app.config['SECRET_KEY'], algorithm='HS256') \
                        .decode('utf-8')
 
+    @classmethod
+    def get(cls, id: int):
+        conn = db.engine.connect()
+        u = conn.execute("SELECT * from user WHERE id = ?", id)
+        return list(u)[0]
+
     @staticmethod
     def verify_reset_password_token(token):
         try:

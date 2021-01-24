@@ -14,7 +14,7 @@ def test_register(app, db):
     )
     assert 'http://localhost/auth/login' == response.headers['Location']
 
-    user = User.query.get(1)
+    user = User.get(1)
     assert user.username == 'a'
     assert user.email == 't@t.com'
 
