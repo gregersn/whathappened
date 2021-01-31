@@ -1,40 +1,4 @@
 {% extends 'base.html.jinja' %}
-
-{%- macro character_info(character) %}
-                <div class="characterinfo splitcontainer">
-                    <div class="personalia">
-                    {{ character.name }} ({{ character.age }})<br />
-                    {{ character.description }}<br />
-                    <em>{{ character.player.user.username }}</em><br />
-                    [<a href="{{url_for('character.view', id=character.id)}}" {%- if character.player.user == current_user %} class="strong"{%- endif %}>View</a>]
-                    {%- if editable or character.player.user == current_user %}
-                        [<a href="{{ url_for('campaign.remove_character', id=campaign.id, characterid=character.id) }}">Remove</a>]
-                    {%- endif %}
-                    </div>
-                    <div class="portrait">
-                    {% if character.portrait %}<img src="data:image/jpg;base64, {{ character.portrait }}" />{% else %}<img src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
-                    </div>
-                </div>
-{%- endmacro %}
-
-{%- macro npc_info(npc) %}
-                <div class="characterinfo splitcontainer">
-                    <div class="personalia npc">
-                    {{ npc.character.name }} ({{ npc.character.age }})<br />
-                    {{ npc.character.description }}<br />
-                    {%- if editable or npc.character.player.user == current_user %}
-                        [<a href="{{url_for('character.view', id=npc.character.id)}}" {%- if npc.character.player.user == current_user %} class="strong"{%- endif %}>View</a>]
-                        [<a href="{{ url_for('campaign.remove_npc', id=campaign.id, characterid=npc.id) }}">Remove</a>]
-                        <input type="checkbox" autocomplete="off" data-campaign="{{ campaign.id }}" data-npc="{{ npc.id }}" {%- if npc.visible %}checked{%- endif %} class="visibility" />
-                        [<a href="{{ url_for('campaign.manage_npc', id=campaign.id, npcid=npc.id) }}">Manage</a>]
-                    {%- endif %}
-                    </div>
-                    <div class="portrait">
-                    {% if npc.character.portrait %}<img src="data:image/jpg;base64, {{ npc.character.portrait }}" />{% else %}<img src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
-                    </div>
-                </div>
-{%- endmacro %}
-
 {% block head %}
     {{ super() }}
     {% assets "scss_campaign" %}

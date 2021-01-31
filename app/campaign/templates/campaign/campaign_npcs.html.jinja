@@ -1,3 +1,21 @@
+{%- macro npc_info(npc) %}
+                <div class="characterinfo splitcontainer">
+                    <div class="personalia npc">
+                    {{ npc.character.name }} ({{ npc.character.age }})<br />
+                    {{ npc.character.description }}<br />
+                    {%- if editable or npc.character.player.user == current_user %}
+                        [<a href="{{url_for('character.view', id=npc.character.id)}}" {%- if npc.character.player.user == current_user %} class="strong"{%- endif %}>View</a>]
+                        [<a href="{{ url_for('campaign.remove_npc', id=campaign.id, characterid=npc.id) }}">Remove</a>]
+                        <input type="checkbox" autocomplete="off" data-campaign="{{ campaign.id }}" data-npc="{{ npc.id }}" {%- if npc.visible %}checked{%- endif %} class="visibility" />
+                        [<a href="{{ url_for('campaign.manage_npc', id=campaign.id, npcid=npc.id) }}">Manage</a>]
+                    {%- endif %}
+                    </div>
+                    <div class="portrait">
+                    {% if npc.character.portrait %}<img src="data:image/jpg;base64, {{ npc.character.portrait }}" />{% else %}<img src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
+                    </div>
+                </div>
+{%- endmacro %}
+
 <section class="npcs box{%- if editable %} editable{%- endif %}" id="npc_section" data-campaign="{{ campaign.id }}">
     <h3>NPCs</h3>
     <div id="npc_list">

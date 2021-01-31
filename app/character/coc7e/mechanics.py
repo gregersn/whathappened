@@ -36,6 +36,10 @@ class CoCMechanics(CharacterMechanics):
     def description(self):
         return self.parent.body['personalia']['Occupation']
 
+    @property
+    def htmldescription(self):
+        return "<div>Mordi!</div>"
+
     def portrait(self):
         return self.parent.body['personalia']['Portrait']
 

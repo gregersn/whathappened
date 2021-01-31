@@ -98,6 +98,10 @@ class Character(db.Model):
     def description(self):
         return self.mechanics.description
 
+    @property
+    def htmldescription(self):
+        return self.mechanics.htmldescription
+
     def attribute(self, *args):
 
         path = args[0]

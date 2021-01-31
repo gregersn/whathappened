@@ -38,6 +38,11 @@ class CharacterMechanics():
         logger.error("description: Not implemented")
         return "Unknown property, description"
 
+    @property
+    def htmldescription(self):
+        logger.error("html description: Not implemented")
+        return "Unknown property, html_description"
+
     def portrait(self):
         logger.error("portrait: Not implemented")
         return "Unknown property, portrait"
