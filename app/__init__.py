@@ -114,9 +114,4 @@ def create_app(config_class=Config):
                              output='css/profile.css')
         assets.register('scss_profile', css_profile)
 
-        css_handout = Bundle('scss/handout.scss',
-                             filters='pyscss',
-                             output='css/handout.css')
-        assets.register('scss_handout', css_handout)
-
     return app
