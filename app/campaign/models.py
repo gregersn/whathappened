@@ -1,6 +1,7 @@
 import enum
 from flask import url_for
 from app import db
+from datetime import datetime
 
 campaign_players = db.Table('campaign_players',
                             db.Column('player_id',
@@ -62,6 +63,7 @@ class Campaign(db.Model):
     characters_enabled = db.Column(db.Boolean, default=True)
     npcs_enabled = db.Column(db.Boolean, default=False)
     handouts_enabled = db.Column(db.Boolean, default=False)
+    messages_enabled = db.Column(db.Boolean, default=False)
 
     @property
     def players_by_id(self):
@@ -149,3 +151,36 @@ class NPC(db.Model):
     character = db.relationship('Character')
 
     visible = db.Column(db.Boolean, default=False)
+
+
+class Message(db.Model):
+    __tablename__ = 'campaign_message'
+    id = db.Column(db.Integer, primary_key=True)
+
+    campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=False)
+    campaign = db.relationship('Campaign', backref=db.backref('messages', lazy='dynamic'))
+
+    to_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'), nullable=True)
+    to = db.relationship('UserProfile', foreign_keys=[to_id])
+    from_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'), nullable=False)
+    sender = db.relationship('UserProfile', foreign_keys=[from_id])
+
+    message = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'timestamp': self.timestamp.timestamp(),
+            'sender_name': self.sender_name,
+            'to_name': self.to_name,
+            'message': self.message,
+            'id': self.id
+        }
+
+    @property
+    def sender_name(self):
+        return self.sender.user.username
+
+    @property
+    def to_name(self):
+        return self.to.user.username if self.to and self.to.user else "All"

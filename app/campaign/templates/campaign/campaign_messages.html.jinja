@@ -1,0 +1,25 @@
+<div class="box campaign_messages">
+<h3>Messages</h3>
+{% if messages %}
+<table id="campaign_messages">
+<tr>
+    <th>Time</th>
+    <th>From</th>
+    <th>To</th>
+    <th>Message</th>
+</tr>
+</table>
+{% endif %}
+<div class="message_form">
+    <form action="{{ url_for('campaign.message_player', campaign_id=campaign.id) }}" method="post">
+        {{ messageform.hidden_tag() }}
+        {{ messageform.message(autocomplete="off") }}
+        {% for error in messageform.message.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        To: 
+        {{ messageform.to_id() }}
+        {{ messageform.submit() }}
+    </form>
+</div>
+</div>
