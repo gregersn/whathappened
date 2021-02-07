@@ -1,0 +1,14 @@
+.campaign_messages {
+    .message_form {
+        form {
+            flex-direction: row;
+
+            #message {
+                flex: auto;
+            }
+        }
+    }
+    .out {
+        background-color: pink;
+    }
+}

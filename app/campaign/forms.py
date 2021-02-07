@@ -19,6 +19,7 @@ class CreateForm(FlaskForm):
     characters_enabled = BooleanField('Use Characters')
     npcs_enabled = BooleanField('Use NPCs')
     handouts_enabled = BooleanField('Use handouts')
+    messages_enabled = BooleanField('Use messages')
     submit = SubmitField('Create')
 
 
@@ -150,3 +151,19 @@ class NPCTransferForm(FlaskForm):
     npc_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     player = SelectField(validate_choice=False)
     submit = SubmitField('Transfer NPC')
+
+
+class MessagePlayerForm(FlaskForm):
+    campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
+    from_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
+    message = StringField()
+    submit = SubmitField('Send...')
+
+    to_id = SelectField('To', choices=[('', 'All'), ], validate_choice=False)
+
+    def __init__(self, hide_to_id=False, players=[], *args, **kwargs):
+        super(MessagePlayerForm, self).__init__(*args, **kwargs)
+        if hide_to_id:
+            self.to_id.widget = HiddenInput()
+
+        self.to_id.choices += players

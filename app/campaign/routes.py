@@ -1,6 +1,7 @@
 import logging
 from flask_login import login_required, current_user
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request, jsonify
+from flask_migrate import current
 from app import db
 from app.main.forms import CreateInviteForm
 from app.auth.models import User
@@ -12,9 +13,12 @@ from app.character.models import Character
 from app.models import UserProfile
 from .forms import CreateForm, InvitePlayerForm, AddCharacterForm, AddNPCForm
 from .forms import JoinCampaignForm, EditForm, RemoveCharacterForm
-from .forms import RemovePlayerForm, NPCTransferForm
-from .models import HandoutStatus, NPC
+from .forms import RemovePlayerForm, NPCTransferForm, MessagePlayerForm
+from .models import HandoutStatus, NPC, Message
 from app.models import Invite
+from sqlalchemy import and_, or_
+
+from . import api
 
 logger = logging.getLogger(__name__)
 
@@ -52,10 +56,16 @@ def join(code):
 def view(id):
     invites = None
     campaign = Campaign.query.get(id)
+
+    # Set up forms
     inviteform = InvitePlayerForm(prefix="inviteform")
     createinviteform = CreateInviteForm(prefix="createinviteform")
     characterform = AddCharacterForm(prefix="characterform")
     npcform = AddNPCForm(prefix="npcform")
+    messageform = MessagePlayerForm(players=[(campaign.user_id, "GM"),] + [(p.id, p.user.username)
+                                             for p in campaign.players],
+                                    campaign_id=campaign.id,
+                                    from_id=current_user.profile.id)
 
     is_player = current_user.profile in campaign.players
     is_owner = current_user and current_user.profile.id == campaign.user_id
@@ -109,6 +119,10 @@ def view(id):
     createinviteform.submit.label.text = "Create share link."
 
     handouts = campaign.handouts.filter_by(status=HandoutStatus.visible)
+    messages = campaign.messages.filter(or_(
+                                    Message.from_id == current_user.profile.id,
+                                    Message.to_id == current_user.profile.id,
+                                    Message.to_id.is_(None)))
 
     return render_template('campaign/campaign.html.jinja',
                            campaign=campaign,
@@ -117,8 +131,10 @@ def view(id):
                            inviteform=inviteform,
                            createinviteform=createinviteform,
                            characterform=characterform,
+                           messages=messages,
                            npcform=npcform,
-                           editable=is_owner)
+                           editable=is_owner,
+                           messageform=messageform)
 
 
 @bp.route('/<int:id>/edit', methods=('GET', 'POST'))
@@ -259,3 +275,45 @@ def remove_player(id, playerid):
                            player=player,
                            campaign=c,
                            form=form)
+
+
+@bp.route('/<int:campaign_id>/player/<int:player_id>/message',
+          methods=('GET', 'POST'))
+@bp.route('/<int:campaign_id>/message/',
+          methods=('GET', 'POST'))
+@login_required
+def message_player(campaign_id, player_id=None):
+    c = Campaign.query.get(campaign_id)
+    player = None
+    if player_id:
+        player = UserProfile.query.get(player_id)
+      
+
+    form = MessagePlayerForm()
+
+    if form.validate_on_submit():
+        flash(form.message.data)
+        logger.debug(request.form)
+
+        message = Message()
+        form.populate_obj(message)
+        if not form.to_id.data:
+            message.to_id = None
+
+        db.session.add(message)
+        db.session.commit()
+
+        return redirect(url_for('campaign.view', id=c.id))
+
+    form.campaign_id.data = c.id
+    form.to_id.data = player_id
+    form.from_id.data = c.user_id
+
+    messages = c.messages.filter(or_(
+                                 and_(Message.to_id==player_id, Message.from_id==current_user.profile.id),
+                                 and_(Message.to_id==current_user.profile.id, Message.from_id==player_id)))
+    return render_template('campaign/message_player.html.jinja',
+                           player=player,
+                           campaign=c,
+                           form=form,
+                           messages=messages)

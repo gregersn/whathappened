@@ -1,4 +1,4 @@
-import { get_meta_tag } from "../common"
+import { get_meta_tag, http } from "../common"
 
 function set_handout_state(player_id: number, campaign_id: number, handout_id: number, state: boolean) {
     const url = `/api/campaign/${campaign_id}/handout/${handout_id}/players`;
@@ -77,6 +77,49 @@ function get_handouts(campaign_id: number, handout_list: HTMLUListElement) {
     xhr.send();
 }
 
+
+function update_messages(messages: Message[], message_table: HTMLTableElement) {
+    messages.forEach(element => {
+        const r = document.createElement('tr');
+        const t = new Date(element.timestamp * 1000);
+
+        r.innerHTML = `<td>${t.toLocaleString()}</td>` + 
+                      `<td>${element.sender_name}</td>` +
+                      `<td>${element.to_name}</td>` +
+                      `<td>${element.message}</td>`;
+        message_table.appendChild(r);
+    });
+}
+
+
+interface Message {
+    id: number;
+    timestamp: number,
+    message: string,
+    sender_name: string,
+    to_name: string
+};
+
+
+async function get_messages(campaign_id: number, last_message: number, message_table: HTMLTableElement) {
+    const url = `/api/campaign/${campaign_id}/messages?after=${last_message}`;
+    const messages = await http<Message[]>(url);
+    update_messages(messages, message_table);
+    if(messages.length > 0)
+        last_message = messages[messages.length - 1].timestamp;
+    return last_message;
+    /*const xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Content-Type', "application/json;charset=UTF-8");
+    xhr.onload = () => {
+        if(xhr.status >= 200 && xhr.status < 300) {
+            const messages = JSON.parse(xhr.responseText)
+            update_messages(messages['messages'], message_table);
+        }
+    }
+    xhr.send();*/
+}
+
 function get_npcs(campaign_id: number, npc_container: HTMLElement) {
     console.log("Get NPCs");
     const url = `/api/campaign/${campaign_id}/npcs/`;
@@ -146,10 +189,30 @@ function init_npc_control() {
 function init_npc_refresh() {
     console.log("Init NPC refresh")
     const npc_container: HTMLElement = document.getElementById('npc_section');
-    if(npc_container.classList.contains("editable")) return;
+    if(!npc_container || npc_container.classList.contains("editable")) return;
     const campaign_id = Number.parseInt(npc_container.getAttribute('data-campaign'));
     npc_container.getElementsByTagName('h3')[0].onclick = () => get_npcs(campaign_id, npc_container);
 }
+
+
+function init_message_refresh(campaign_id: number) {
+    console.log("Init message refresh")
+    const message_table: HTMLTableElement = <HTMLTableElement>document.getElementById('campaign_messages');
+    if(message_table) {
+        let last_message = 0;
+        const refresh_messages = async () => {
+            last_message = await get_messages(campaign_id, last_message, message_table);
+            window.setTimeout(refresh_messages, 5000);
+        }
+        refresh_messages();
+    }
+}
+
+declare global {
+    interface Window { wh_campaign: any; }
+}
+
+window.wh_campaign = window.wh_campaign || {};
 
 document.addEventListener('DOMContentLoaded', function(event) {
     console.log("Initiate the campaign functions.");
@@ -157,4 +220,5 @@ document.addEventListener('DOMContentLoaded', function(event) {
     init_handout_watch();
     init_npc_control();
     init_npc_refresh();
+    init_message_refresh(window.wh_campaign.id);
 })

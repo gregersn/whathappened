@@ -1,0 +1,30 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+  <h2>{% block title %}Message player "{{ player.user.username}}" in "{{ campaign.title}}"{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+  <div class="chat">
+  <table>
+  {% for message in messages %}
+    <tr>
+      <td>{{ message.timestamp }}</td>
+      <td>{{ message.sender.user.username }}</td>
+      <td>{{ message.message }}
+  {% endfor %}
+  </table>
+  </div>
+  <form action="" method="post">
+    {{ form.hidden_tag() }}
+        <p>
+          {{ form.message.label }}<br>
+          {{ form.message() }}<br>
+          {% for error in form.message.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+      </p>
+      <p>{{ form.submit() }}</p>
+  </form>
+
+{% endblock %}

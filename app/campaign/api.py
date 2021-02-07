@@ -1,15 +1,18 @@
 import json
 import hashlib
+from datetime import datetime
 from flask import request, jsonify
 from flask_login import current_user
 from flask_login.utils import login_required
+from sqlalchemy import or_
+
 from werkzeug.exceptions import abort
 import logging
 
 from app import db
 
 from . import apibp
-from .models import Handout, Campaign, HandoutStatus, NPC
+from .models import Handout, Campaign, HandoutStatus, NPC, Message
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +41,28 @@ def handouts(campaignid: int):
     sha.update(json.dumps(handouts_dict).encode('utf-8'))
 
     return jsonify({'sha': sha.hexdigest(), 'handouts': handouts_dict})
+
+
+@apibp.route('<int:campaignid>/player/<int:playerid>/message', methods=('GET', 'POST'))
+def message_player(campaignid: int, playerid: int):
+    logger.debug("Got a message in the post")
+    logger.debug(request.form)
+    return jsonify({'status': 'ok'})
+
+
+@apibp.route('<int:campaignid>/messages', methods=('GET', ))
+@login_required
+def messages(campaignid: int):
+    after = int(request.args.get('after'), 10)
+    logger.debug(f"Get all messages for campaign {campaignid} after {after}")
+    campaign = Campaign.query.get(campaignid)
+    messages = campaign.messages.filter(or_(
+                                    Message.from_id == current_user.profile.id,
+                                    Message.to_id == current_user.profile.id,
+                                    Message.to_id.is_(None))).filter(Message.timestamp > datetime.fromtimestamp(after)).order_by('timestamp')
+
+    message_list = [m.to_dict() for m in messages]
+    return jsonify(message_list)
 
 
 @apibp.route('<int:campaignid>/handout/<int:handoutid>/players',

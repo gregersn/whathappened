@@ -40,6 +40,11 @@
     {% assets "scss_campaign" %}
     <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
     {% endassets %}
+    <script type="text/javascript">
+        window.wh_campaign = {
+            id: {{ campaign.id }}
+        }
+    </script>
     {{ webpack['campaign.js'] }}
 {% endblock %}
 
@@ -94,7 +99,10 @@
         {% for player in campaign.players %}
             <li {%- if player.user == current_user %} class="strong"{%- endif %}>
                 {{ player.user.username }}
-                {%- if editable %} [<a href="{{ url_for('campaign.remove_player', id=campaign.id, playerid=player.id) }}">Remove</a>]{%- endif %}
+                {%- if editable %}
+                    [<a href="{{ url_for('campaign.remove_player', id=campaign.id, playerid=player.id) }}">Remove</a>]
+                    [<a href="{{ url_for('campaign.message_player', campaign_id=campaign.id, player_id=player.id) }}">Message</a>]
+                {%- endif %}
             </li>
         {% endfor %}
         </ul>
@@ -119,5 +127,8 @@
 </section>
 {% endif %}
 </div>
+{% if campaign.messages_enabled %}
+{% include 'campaign/campaign_messages.html.jinja' %}
+{% endif %}
 </div>
 {% endblock %}
