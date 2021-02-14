@@ -111,7 +111,7 @@
         <section class="skills" id="skills">
             {% for skill in character.skills() %}
             <div class="skill">
-                <span class="skillcheckmark">{{skill_checkmark(skill['name']) }}</span>
+                {% if skill.get('experience', true) and not skill.get('specializations', false) %}<span class="skillcheckmark">{{skill_checkmark(skill['name']) }}</span>{% else %}<span>&nbsp;</span>{% endif %}
                 <span class="skillname {% if skill['occupation'] %}occupation{% endif %}" data-field="{{ skill['name'] }}" data-specializations="{{skill['specializations']}}">{{ skill['name'] }} <span class="initial_value">({{ skill['start_value'] }}%)</span>: </span>
                 <span class="value stat">{{ editable_skill(skill['name'], None, 0, type="number")}}</span>
             </div>
