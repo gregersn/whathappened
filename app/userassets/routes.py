@@ -8,12 +8,13 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import abort
 
-from app import db
 from . import bp
 from .forms import DeleteAssetFolderForm, DeleteAssetForm
 from .forms import UploadForm, NewFolderForm, MoveAssetForm
 
 from .models import Asset, AssetFolder
+
+from app.database import session
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +26,8 @@ def index(folder_id=None):
     if current_user.profile.assetfolders.count() < 1:
         logger.debug("Creating initial folder")
         rootfolder = AssetFolder(title='assets', owner=current_user.profile)
-        db.session.add(rootfolder)
-        db.session.commit()
+        session.add(rootfolder)
+        session.commit()
 
     if folder_id is not None:
         folder = AssetFolder.query.get(folder_id)
@@ -56,8 +57,8 @@ def create_folder(folder_id=None):
         folder = AssetFolder(parent_id=folderform.parent_id.data,
                              title=folderform.title.data,
                              owner=current_user.profile)
-        db.session.add(folder)
-        db.session.commit()
+        session.add(folder)
+        session.commit()
     return redirect(url_for('userassets.index', folder_id=folder_id))
 
 
@@ -88,8 +89,8 @@ def delete_folder(id=None):
             logger.debug("Folder contains files")
             abort(403)
 
-        db.session.delete(folder)
-        db.session.commit()
+        session.delete(folder)
+        session.commit()
         return redirect(url_for('userassets.index', folder_id=parent_id))
 
     return redirect(url_for('userassets.index', folder_id=id))
@@ -115,8 +116,8 @@ def upload_file(folder_id=None):
         asset = Asset(filename=fileobject.filename,
                       folder=folder,
                       owner=current_user.profile)
-        db.session.add(asset)
-        db.session.commit()
+        session.add(asset)
+        session.commit()
 
     return redirect(url_for('userassets.index', folder_id=folder_id))
 
@@ -164,8 +165,8 @@ def delete(fileid, filename):
         if asset.owner != current_user.profile:
             abort(403)
         flash("You just deleted an asset")
-        db.session.delete(asset)
-        db.session.commit()
+        session.delete(asset)
+        session.commit()
 
     return redirect(url_for('userassets.index', folder_id=asset.folder_id))
 
@@ -185,7 +186,7 @@ def move(fileid, filename):
         os.replace(asset.system_path,
                    os.path.join(destinationfolder.system_path, asset.filename))
         asset.folder = destinationfolder
-        db.session.commit()
+        session.commit()
         flash("You moved your file")
 
     return redirect(url_for('userassets.index', folder_id=redirect_id))

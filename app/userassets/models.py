@@ -4,23 +4,28 @@ import logging
 
 from flask import url_for, current_app
 from sqlalchemy import event
-from app import db
+from sqlalchemy.orm import backref, relationship
+from sqlalchemy.sql.schema import Column, ForeignKey
+from sqlalchemy.sql.sqltypes import Integer, String
+from app.database import Base
 from app.models import GUID
 from werkzeug.utils import secure_filename
 
 logger = logging.getLogger(__name__)
 
 
-class Asset(db.Model):
-    id = db.Column(GUID(), primary_key=True, default=uuid.uuid4)
-    filename = db.Column(db.String(128))
-    owner_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'))
-    owner = db.relationship('UserProfile',
-                            backref=db.backref('assets',
-                                               lazy='dynamic',
-                                               order_by='[Asset.folder_id, Asset.filename]'))
-    folder_id = db.Column(GUID(), db.ForeignKey('asset_folder.id'))
-    folder = db.relationship('AssetFolder', back_populates='files')
+class Asset(Base):
+    ASSET_ORDER = '[Asset.folder_id, Asset.filename]'
+    __tablename__ = "asset"
+    id = Column(GUID(), primary_key=True, default=uuid.uuid4)
+    filename = Column(String(128))
+    owner_id = Column(Integer, ForeignKey('user_profile.id'))
+    owner = relationship('UserProfile',
+                         backref=backref('assets',
+                                         lazy='dynamic',
+                                         order_by=ASSET_ORDER))
+    folder_id = Column(GUID(), ForeignKey('asset_folder.id'))
+    folder = relationship('AssetFolder', back_populates='files')
 
     def __init__(self, *args, **kwargs):
         super(Asset, self).__init__(*args, **kwargs)
@@ -58,16 +63,19 @@ def before_asset_delete(mapper, connection, target):
         os.unlink(full_file_path)
 
 
-class AssetFolder(db.Model):
-    id = db.Column(GUID(), primary_key=True, default=uuid.uuid4)
-    owner_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'))
-    owner = db.relationship("UserProfile", backref=db.backref('assetfolders', lazy='dynamic'))
-    parent_id = db.Column(GUID(),
-                          db.ForeignKey('asset_folder.id'),
-                          default=None)
-    subfolders = db.relationship('AssetFolder', backref=db.backref('parent', remote_side=[id]))
-    title = db.Column(db.String(128))
-    files = db.relationship("Asset", back_populates='folder')
+class AssetFolder(Base):
+    __tablename__ = 'asset_folder'
+    id = Column(GUID(), primary_key=True, default=uuid.uuid4)
+    owner_id = Column(Integer, ForeignKey('user_profile.id'))
+    owner = relationship("UserProfile", backref=backref('assetfolders',
+                                                        lazy='dynamic'))
+    parent_id = Column(GUID(),
+                       ForeignKey('asset_folder.id'),
+                       default=None)
+    subfolders = relationship('AssetFolder', backref=backref('parent',
+                                                             remote_side=[id]))
+    title = Column(String(128))
+    files = relationship("Asset", back_populates='folder')
 
     def get_path(self):
         if self.parent:

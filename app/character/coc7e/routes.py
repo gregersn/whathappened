@@ -1,9 +1,9 @@
 from flask import redirect, render_template, url_for, flash
 from flask_login import current_user
 
-from app import db
 from ..forms import SkillForm, SubskillForm
 from app.models import LogEntry, Invite
+from app.database import session
 from . import utils
 
 
@@ -15,10 +15,10 @@ def view(id, character, editable):
         logentry = LogEntry(character,
                             f"add subskill {subskillform.name.data} under {subskillform.parent.data}",
                             user_id=current_user.id)
-        db.session.add(logentry)
+        session.add(logentry)
 
         character.store_data()
-        db.session.commit()
+        session.commit()
         return redirect(url_for('character.view', id=id))
 
     skillform = SkillForm(prefix="skillform")
@@ -32,9 +32,9 @@ def view(id, character, editable):
         character.add_skill(skillform.name.data)
         character.store_data()
         logentry = LogEntry(character, f"add skill {subskillform.name.data}", user_id=current_user.id)
-        db.session.add(logentry)
+        session.add(logentry)
 
-        db.session.commit()
+        session.commit()
         return redirect(url_for('character.view', id=id))
 
     typeheader = "1920s Era Investigator"

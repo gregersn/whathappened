@@ -9,10 +9,9 @@ from sqlalchemy import or_
 from werkzeug.exceptions import abort
 import logging
 
-from app import db
-
 from . import apibp
 from .models import Handout, Campaign, HandoutStatus, NPC, Message
+from app.database import session
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +42,8 @@ def handouts(campaignid: int):
     return jsonify({'sha': sha.hexdigest(), 'handouts': handouts_dict})
 
 
-@apibp.route('<int:campaignid>/player/<int:playerid>/message', methods=('GET', 'POST'))
+@apibp.route('<int:campaignid>/player/<int:playerid>/message',
+             methods=('GET', 'POST'))
 def message_player(campaignid: int, playerid: int):
     logger.debug("Got a message in the post")
     logger.debug(request.form)
@@ -53,7 +53,7 @@ def message_player(campaignid: int, playerid: int):
 @apibp.route('<int:campaignid>/messages', methods=('GET', ))
 @login_required
 def messages(campaignid: int):
-    after = int(request.args.get('after'), 10)
+    after = int(request.args.get('after', '0'), 10)
     logger.debug(f"Get all messages for campaign {campaignid} after {after}")
     campaign = Campaign.query.get(campaignid)
     messages = campaign.messages.filter(or_(
@@ -94,7 +94,7 @@ def handout_players(campaignid: int, handoutid: int):
                     logger.debug(f"Removing player {player} to {handout}")
                     handout.players.remove(player)
 
-            db.session.commit()
+            session.commit()
 
         logger.debug(data)
 
@@ -149,7 +149,7 @@ def npc_visibility(npcid: int, campaignid: int):
             logger.debug(f"Hiding NPC {npc.character.title}")
             npc.visible = False
 
-        db.session.commit()
+        session.commit()
 
         logger.debug(data)
 
