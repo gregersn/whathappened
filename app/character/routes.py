@@ -19,12 +19,11 @@ from .forms import DeleteForm
 from . import coc7e
 from . import tftl
 
-from app import db
 from app.models import LogEntry
 from app.utils.schema import migrate
 from app.models import Invite
 from app.character.schema.coc7e import migrations, latest
-
+from app.database import session, paginate
 
 logger = logging.getLogger(__name__)
 
@@ -76,8 +75,8 @@ def create(chartype):
             c = Character(title=form.title.data,
                           body=json.loads(char_data),
                           user_id=current_user.profile.id)
-            db.session.add(c)
-            db.session.commit()
+            session.add(c)
+            session.commit()
             return redirect(url_for('character.view', id=c.id))
 
     if chartype == 'tftl':
@@ -91,8 +90,8 @@ def create(chartype):
             c = Character(title=form.title.data,
                           body=json.loads(char_data),
                           user_id=current_user.profile.id)
-            db.session.add(c)
-            db.session.commit()
+            session.add(c)
+            session.commit()
             return redirect(url_for('character.view', id=c.id))
 
     form.system.data = chartype
@@ -127,8 +126,8 @@ def import_character(type=None, id=None, code=None):
         c = Character(title=form.title.data,
                       body=form.body.data,
                       user_id=current_user.profile.id)
-        db.session.add(c)
-        db.session.commit()
+        session.add(c)
+        session.commit()
         return redirect(url_for('character.view', id=c.id))
     return render_template('character/import.html.jinja', form=form, type=None)
 
@@ -158,10 +157,10 @@ def update(id):
             logentry = LogEntry(character,
                                 log_message,
                                 user_id=current_user.id)
-            db.session.add(logentry)
+            session.add(logentry)
 
         character.store_data()
-        db.session.commit()
+        session.commit()
 
     return "OK"
 
@@ -244,8 +243,8 @@ def delete(id):
 
     form = DeleteForm()
     if form.validate_on_submit():
-        db.session.delete(character)
-        db.session.commit()
+        session.delete(character)
+        session.commit()
         return redirect(url_for('character.index'))
 
     form.character_id.data = character.id
@@ -267,8 +266,8 @@ def share(id):
         logger.debug(f"Creating an invite for character {character.id}")
         invite = Invite(character)
         invite.owner_id = character.user_id
-        db.session.add(invite)
-        db.session.commit()
+        session.add(invite)
+        session.commit()
 
     share_url = url_for('character.shared', code=invite.id, _external=True)
 
@@ -312,9 +311,9 @@ def editjson(id):
             c.body = coc7e.convert_from_dholes(data)
 
         logentry = LogEntry(c, "JSON edited", user_id=current_user.id)
-        db.session.add(logentry)
+        session.add(logentry)
 
-        db.session.commit()
+        session.commit()
         return redirect(url_for('character.view', id=c.id))
 
     form.submit.label.text = 'Save'
@@ -333,7 +332,9 @@ def editjson(id):
 def eventlog(id: int):
     page = request.args.get('page', 1, type=int)
     c = get_character(id, check_author=True)
-    entries_page = LogEntry.query_for(c).paginate(page, 50, False)
+    entries_page = paginate(LogEntry.query_for(c), page, 50)
+    """
+    # TODO
     next_url = url_for('character.eventlog', id=id,
                        page=entries_page.next_num) \
         if entries_page.has_next else None
@@ -341,7 +342,9 @@ def eventlog(id: int):
     prev_url = url_for('character.eventlog', id=id,
                        page=entries_page.prev_num) \
         if entries_page.has_prev else None
-
+    """
+    next_url = None
+    prev_url = None
     logger.debug(next_url)
     log_entries = entries_page.items
     return render_template('character/eventlog.html.jinja',

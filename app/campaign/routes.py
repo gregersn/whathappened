@@ -1,8 +1,6 @@
 import logging
 from flask_login import login_required, current_user
-from flask import render_template, redirect, url_for, flash, request, jsonify
-from flask_migrate import current
-from app import db
+from flask import render_template, redirect, url_for, flash, request
 from app.main.forms import CreateInviteForm
 from app.auth.models import User
 from . import bp
@@ -17,8 +15,9 @@ from .forms import RemovePlayerForm, NPCTransferForm, MessagePlayerForm
 from .models import HandoutStatus, NPC, Message
 from app.models import Invite
 from sqlalchemy import and_, or_
+from app.database import session
 
-from . import api
+from . import api  # noqa
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +36,7 @@ def join(code):
         player = current_user.profile
         if player not in campaign.players:
             campaign.players.append(player)
-            db.session.commit()
+            session.commit()
 
         return redirect(url_for('campaign.view', id=campaign.id))
 
@@ -62,7 +61,8 @@ def view(id):
     createinviteform = CreateInviteForm(prefix="createinviteform")
     characterform = AddCharacterForm(prefix="characterform")
     npcform = AddNPCForm(prefix="npcform")
-    messageform = MessagePlayerForm(players=[(campaign.user_id, "GM"),] + [(p.id, p.user.username)
+    messageform = MessagePlayerForm(players=[(campaign.user_id, "GM"), ] +
+                                            [(p.id, p.user.username)
                                              for p in campaign.players],
                                     campaign_id=campaign.id,
                                     from_id=current_user.profile.id)
@@ -82,15 +82,15 @@ def view(id):
                 createinviteform.validate_on_submit():
             invite = Invite(campaign)
             invite.owner_id = campaign.user_id
-            db.session.add(invite)
-            db.session.commit()
+            session.add(invite)
+            session.commit()
 
         if inviteform.submit.data and inviteform.validate_on_submit():
             player = (User.query
                       .filter_by(email=inviteform.email.data)
                       .first().profile)
             campaign.players.append(player)
-            db.session.commit()
+            session.commit()
             return redirect(url_for('campaign.view', id=id))
 
         invites = Invite.query_for(campaign)
@@ -99,8 +99,8 @@ def view(id):
             print("Adding NPC")
             character = npcform.character.data
             npc = NPC(character=character, campaign=campaign)
-            db.session.add(npc)
-            db.session.commit()
+            session.add(npc)
+            session.commit()
 
             return redirect(url_for('campaign.view', id=id))
 
@@ -110,7 +110,7 @@ def view(id):
         if (character not in campaign.characters
                 and character.user_id == current_user.profile.id):
             campaign.characters.append(character)
-            db.session.commit()
+            session.commit()
         else:
             flash("Character is already added to campaign")
 
@@ -143,8 +143,8 @@ def edit(id):
     form = EditForm(obj=c)
     if form.validate_on_submit():
         form.populate_obj(c)
-        db.session.add(c)
-        db.session.commit()
+        session.add(c)
+        session.commit()
         return redirect(url_for('campaign.view', id=c.id))
 
     return render_template('campaign/edit.html.jinja', form=form)
@@ -156,8 +156,8 @@ def create():
     form = CreateForm()
     if form.validate_on_submit():
         c = Campaign(title=form.title.data, user_id=current_user.profile.id)
-        db.session.add(c)
-        db.session.commit()
+        session.add(c)
+        session.commit()
         return redirect(url_for('campaign.view', id=c.id))
     return render_template('campaign/create.html.jinja', form=form)
 
@@ -176,7 +176,7 @@ def remove_character(id, characterid):
 
     if form.validate_on_submit():
         c.characters.remove(char)
-        db.session.commit()
+        session.commit()
         return redirect(url_for('campaign.view', id=c.id))
 
     form.id.data = c.id
@@ -196,8 +196,8 @@ def remove_npc(id, characterid):
 
     if form.validate_on_submit():
         if npc.campaign.id == id:
-            db.session.delete(npc)
-            db.session.commit()
+            session.delete(npc)
+            session.commit()
         return redirect(url_for('campaign.view', id=id))
 
     form.id.data = npc.campaign.id
@@ -235,16 +235,16 @@ def manage_npc(id, npcid):
                                       body=npc.character.body,
                                       user_id=player.id)
 
-            db.session.add(new_character)
+            session.add(new_character)
 
             # Add the character to the campaign
             campaign.characters.append(new_character)
 
             # Remove the NPC
-            db.session.delete(npc)
+            session.delete(npc)
 
             # Commit changes
-            db.session.commit()
+            session.commit()
 
             return redirect(url_for('campaign.view', id=campaign.id))
 
@@ -266,7 +266,7 @@ def remove_player(id, playerid):
 
     if form.validate_on_submit():
         c.players.remove(player)
-        db.session.commit()
+        session.commit()
         return redirect(url_for('campaign.view', id=c.id))
 
     form.id.data = c.id
@@ -287,7 +287,6 @@ def message_player(campaign_id, player_id=None):
     player = None
     if player_id:
         player = UserProfile.query.get(player_id)
-      
 
     form = MessagePlayerForm()
 
@@ -300,8 +299,8 @@ def message_player(campaign_id, player_id=None):
         if not form.to_id.data:
             message.to_id = None
 
-        db.session.add(message)
-        db.session.commit()
+        session.add(message)
+        session.commit()
 
         return redirect(url_for('campaign.view', id=c.id))
 
@@ -310,8 +309,11 @@ def message_player(campaign_id, player_id=None):
     form.from_id.data = c.user_id
 
     messages = c.messages.filter(or_(
-                                 and_(Message.to_id==player_id, Message.from_id==current_user.profile.id),
-                                 and_(Message.to_id==current_user.profile.id, Message.from_id==player_id)))
+                                 and_(Message.to_id == player_id,
+                                      Message.from_id ==
+                                      current_user.profile.id),
+                                 and_(Message.to_id == current_user.profile.id,
+                                      Message.from_id == player_id)))
     return render_template('campaign/message_player.html.jinja',
                            player=player,
                            campaign=c,

@@ -1,14 +1,16 @@
-import json
 import logging
 from functools import reduce
+from typing import Any, Dict
 from sqlalchemy.orm.attributes import flag_modified
-from sqlalchemy.orm import reconstructor
+from sqlalchemy.orm import reconstructor, relationship
 from datetime import datetime
 import base64
 import io
 from PIL import Image
+from sqlalchemy.sql.schema import Column, ForeignKey
+from sqlalchemy.sql.sqltypes import DateTime, Integer, JSON, String
 
-from app import db
+from app.database import Base
 
 from app.character.core import CharacterMechanics, MECHANICS
 
@@ -26,13 +28,15 @@ def fix_image(imagedata: str) -> str:
     return base64.b64encode(buf.getvalue()).decode('utf-8')
 
 
-class Character(db.Model):
+class Character(Base):
     __tablename__ = 'charactersheet'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(256))
-    body = db.Column(db.JSON)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow, onupdate=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'))
+    id = Column(Integer, primary_key=True)
+    title = Column(String(256))
+    body = Column(JSON)
+    timestamp = Column(DateTime, index=True, default=datetime.utcnow,
+                       onupdate=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey('user_profile.id'))
+    player = relationship('UserProfile', backref='characters')
 
     def __repr__(self):
         return '<Character {}>'.format(self.title)
@@ -40,27 +44,37 @@ class Character(db.Model):
     def __init__(self, mechanics=CharacterMechanics, *args, **kwargs):
         super(Character, self).__init__(*args, **kwargs)
         self._data = None
-        self.mechanics = mechanics(self)  # Add a subclass or something that has the mechanics of the character.
+        # Add a subclass or something that
+        # has the mechanics of the character.
+        self.mechanics = mechanics(self)
 
     @reconstructor
     def init_on_load(self):
-        logger.debug(f"Loading character of type {self.body.get('system', '')}")
+        system = self.data.get('system', '')
+        logger.debug(f"Loading character of type {system}")
         system = self.system
         self.mechanics = MECHANICS.get(system, CharacterMechanics)(self)
 
     @property
+    def data(self) -> Dict[str, Any]:
+        if isinstance(self.body, dict):
+            return self.body
+        raise TypeError("Body is not a dictionary")
+
+    @property
     def system(self):
-        s = self.body.get('system', None)
+        s = self.data.get('system', None)
         if s is None:
             logger.warning("Deprecation: Outdated character data")
-            if self.body.get('meta', {}).get('GameName') == "Call of Cthulhu TM":
+            default = "Call of Cthulhu TM"
+            if self.data.get('meta', {}).get('GameName') == default:
                 logger.warning("Trying old CoC stuff.")
                 return "coc7e"
         return s
 
     @property
     def version(self):
-        v = self.body.get('version', None)
+        v = self.data.get('version', None)
         return v
 
     @property
@@ -74,13 +88,13 @@ class Character(db.Model):
         return {
             'id': self.id,
             'title': self.title,
-            'body': self.body,
+            'body': self.data,
             'timestamp': self.timestamp,
             'user_id': self.user_id
         }
 
     def get_sheet(self):
-        return json.loads(self.body)
+        return self.data
 
     @property
     def name(self):
@@ -104,7 +118,7 @@ class Character(db.Model):
 
         val = reduce(lambda x, y: x.get(y, None) if x is not None else None,
                      path.split("."),
-                     self.body)
+                     self.data)
 
         return val
 
@@ -147,7 +161,7 @@ class Character(db.Model):
         else:
             logger.debug("Set some other attribute")
             s = reduce(lambda x, y: x[y], attribute['field'].split(".")[:-1],
-                       self.body)
+                       self.data)
             s[attribute['field'].split(".")[-1]] = attribute['value']
 
     def store_data(self):
@@ -159,15 +173,17 @@ class Character(db.Model):
 
     def skills(self, *args):
         """Return a list of skills."""
-        return self.body['skills']
+        return self.data['skills']
 
     def add_skill(self, skillname, value=1):
         if self.skill(skillname) is not None:
             raise ValueError(f"Skill {skillname} already exists.")
 
-        self.body['skills'].append({"name": skillname, "value": value, "start_value": value})
-        if isinstance(self.body['skills'], list):
-            self.body['skills'].sort(key=lambda x: x['name'])
+        self.data['skills'].append({"name": skillname,
+                                    "value": value,
+                                    "start_value": value})
+        if isinstance(self.data['skills'], list):
+            self.data['skills'].sort(key=lambda x: x['name'])
 
     def add_subskill(self, name, parent):
         value = self.skill(parent)['value']
@@ -188,4 +204,4 @@ class Character(db.Model):
 
     @property
     def schema_version(self):
-        return self.body['meta']['Version']
+        return self.data['meta']['Version']

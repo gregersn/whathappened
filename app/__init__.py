@@ -2,14 +2,9 @@
 import os
 
 from flask import Flask
-from sqlalchemy import MetaData
-from flask_sqlalchemy import SQLAlchemy
-
-from sqlalchemy.ext.declarative import declarative_base
 from flask_assets import Environment, Bundle
 from flask_login import LoginManager
 from flask_mail import Mail
-from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 from flask_webpackext import FlaskWebpackExt
 
@@ -19,25 +14,15 @@ import logging
 
 from config import Config
 
-convention = {
-    "ix": 'ix_%(column_0_label)s',
-    "uq": "uq_%(table_name)s_%(column_0_name)s",
-    "ck": "ck_%(table_name)s_%(column_0_name)s",
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-    "pk": "pk_%(table_name)s"
-}
+from .database import init_db, session
 
-sql_alchemy_metadata = MetaData(naming_convention=convention)
-db = SQLAlchemy(metadata=sql_alchemy_metadata)
-migrate = Migrate()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
+
 mail = Mail()
 assets = Environment()
 csrf = CSRFProtect()
 webpackext = FlaskWebpackExt()
-Base = declarative_base()
-
 
 logger = logging.getLogger(__name__)
 
@@ -55,13 +40,18 @@ def create_app(config_class=Config):
         logger.info(f"Exception occured: {e} ")
 
     # Init addons
-    db.init_app(app)
-    migrate.init_app(app, db)
+    init_db(app.config['SQLALCHEMY_DATABASE_URI'])
+
+    @app.teardown_appcontext
+    def cleanup(resp_or_exc):
+        session.remove()
+
     login_manager.init_app(app)
     csrf.init_app(app)
     mail.init_app(app)
     webpackext.init_app(app)
     assets.init_app(app)
+
 
     # Register blueprints
     from . import auth
@@ -99,6 +89,7 @@ def create_app(config_class=Config):
         return "Hello, World!"
 
     with app.app_context():
+        from .database import cli  # noqa, Add some commands for database handling.
 
         logger.debug("Registering assets")
         assets.url = app.static_url_path

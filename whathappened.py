@@ -1,4 +1,4 @@
-from app import create_app, db
+from app import create_app
 
 from app.auth.models import User, Role, UserRoles
 from app.profile import UserProfile
@@ -9,7 +9,7 @@ app = create_app()
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db,
+    return {
             'User': User,
             'UserProfile': UserProfile,
             'Character': Character,

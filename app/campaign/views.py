@@ -8,12 +8,12 @@ import logging
 
 import markdown2
 
-from app import db
 from . import bp
 
 from .models import Campaign, Handout, HandoutGroup
 from .forms import HandoutForm, DeleteHandoutForm, HandoutGroupForm
 from app.userassets.forms import AssetSelectForm
+from app.database import session
 
 logger = logging.getLogger(__name__)
 
@@ -49,14 +49,14 @@ class HandoutView(View):
             if not handout.group_id:
                 handout.group_id = None
 
-            db.session.add(handout)
-            db.session.commit()
+            session.add(handout)
+            session.commit()
         elif groupform.submit.data and groupform.validate_on_submit():
             logger.debug("Create handout group")
             group = HandoutGroup()
             groupform.populate_obj(group)
-            db.session.add(group)
-            db.session.commit()
+            session.add(group)
+            session.commit()
         else:
             logger.debug("Form did not validate")
             for error, message in handoutform.errors.items():
@@ -80,7 +80,7 @@ class HandoutView(View):
             form.populate_obj(handout)
             if not handout.group_id:
                 handout.group_id = None
-            db.session.commit()
+            session.commit()
         else:
             logger.debug("Form did not validate")
             for error, message in form.errors.items():
@@ -177,8 +177,8 @@ def handout_delete(campaign_id, handout_id):
     form = DeleteHandoutForm()
 
     if form.validate_on_submit():
-        db.session.delete(handout)
-        db.session.commit()
+        session.delete(handout)
+        session.commit()
         return redirect(url_for('campaign.handout_view',
                                 campaign_id=handout.campaign.id))
 

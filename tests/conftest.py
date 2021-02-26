@@ -1,7 +1,8 @@
 import os
 
 import pytest
-from app import create_app, db as _db, assets
+from app import create_app, assets
+from app.database import db as _db
 
 from config import Config
 
@@ -42,7 +43,6 @@ def db(app, request):
         if os.path.isfile(Conf.TESTDB):
             os.unlink(Conf.TESTDB)
 
-    _db.app = app
     _db.create_all()
 
     request.addfinalizer(teardown)

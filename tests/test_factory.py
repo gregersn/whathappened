@@ -1,12 +1,18 @@
 from .conftest import Conf as Config
+from app.auth.models import create_core_roles
 from app import create_app, assets
 
 
 def test_config(app):
     assets._named_bundles = {}
-    assert not create_app().testing
+    a = create_app()
+
+    assert not a.testing
+
     assets._named_bundles = {}
-    assert create_app(Config).testing
+    
+    a = create_app(Config)
+    assert a.testing
 
 
 def test_hello(client):

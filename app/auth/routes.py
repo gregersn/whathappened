@@ -8,7 +8,7 @@ from .forms import LoginForm, RegistrationForm
 from .forms import ResetPasswordRequestForm, ResetPasswordForm
 from .models import User
 
-from app import db
+from app.database import session
 
 
 from . import bp, send_password_reset_email
@@ -51,8 +51,8 @@ def register():
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
+        session.add(user)
+        session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html.jinja',
@@ -85,7 +85,7 @@ def reset_password(token):
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
-        db.session.commit()
+        session.commit()
         flash('Your password has been reset.')
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html.jinja', form=form)
