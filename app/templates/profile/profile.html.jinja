@@ -43,7 +43,7 @@
             <h3>Joined campaigns</h3>
             <ul>
             {% for campaign in profile.campaigns_as_player %}
-                <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a> (by {{ campaign.owner.user.username }})</li>
+                <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a> (by {{ campaign.user.user.username }})</li>
             {% endfor %}
             </ul>
         </div>
