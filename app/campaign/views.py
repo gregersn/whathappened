@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 @bp.app_template_filter('markdown')
 def markdown(value):
-    return markdown2.markdown(value)
+    return markdown2.markdown(value, extras=["tables", "fenced-code-blocks"])
 
 
 class HandoutView(View):
