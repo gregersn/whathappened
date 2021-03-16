@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 def fix_image(imagedata: str) -> str:
-    imagetype, imagedata = imagedata.split(',')
+    _, imagedata = imagedata.split(',')
     decoded = base64.b64decode(imagedata)
     buf = io.BytesIO(decoded)
     img = Image.open(buf).convert('RGB')

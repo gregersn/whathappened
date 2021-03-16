@@ -15,12 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 @login_manager.user_loader
-def load_user(id):
+def load_user(id: int) -> User:
     logger.info(f"Loading user {id}")
     return User.query.get(int(id))
 
 
-def send_password_reset_email(user):
+def send_password_reset_email(user: User):
     token = user.get_reset_password_token()
     send_mail('[What Happened?] Reset your password',
               sender=current_app.config['ADMINS'][0],

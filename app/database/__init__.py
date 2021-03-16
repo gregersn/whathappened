@@ -1,5 +1,6 @@
 import math
 from sqlalchemy import create_engine, MetaData
+from sqlalchemy.ext.declarative.api import DeclarativeMeta
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -16,7 +17,7 @@ convention = {
 
 sql_alchemy_metadata = MetaData(naming_convention=convention)
 
-Base = declarative_base(metadata=sql_alchemy_metadata)
+Base: DeclarativeMeta = declarative_base(metadata=sql_alchemy_metadata)
 Base.query = session.query_property()
 
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+from typing import Type
 
 from flask import Flask
 from flask_assets import Environment, Bundle
@@ -27,7 +28,7 @@ webpackext = FlaskWebpackExt()
 logger = logging.getLogger(__name__)
 
 
-def create_app(config_class=Config):
+def create_app(config_class: Type[Config] = Config):
     logger.info("Creating app")
     assets._named_bundles = {}
     app = Flask(__name__, instance_relative_config=True)
@@ -51,7 +52,6 @@ def create_app(config_class=Config):
     mail.init_app(app)
     webpackext.init_app(app)
     assets.init_app(app)
-
 
     # Register blueprints
     from . import auth
