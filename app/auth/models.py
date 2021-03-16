@@ -7,8 +7,12 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import Integer, String
 from werkzeug.security import check_password_hash, generate_password_hash
+from typing import TYPE_CHECKING, Union, Type, List
 
 from app.database import Base, session
+
+if TYPE_CHECKING:
+    from app.models import UserProfile
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +24,10 @@ class User(UserMixin, Base):
     email = Column(String(128), index=True, unique=True)
     password_hash = Column(String(128))
 
-    profile = relationship('UserProfile', uselist=False,
-                           back_populates="user")
+    profile: List['UserProfile'] = relationship('UserProfile', uselist=False,
+                                                back_populates="user")
 
-    roles = relationship('Role', secondary='user_roles')
+    roles: List['Role'] = relationship('Role', secondary='user_roles')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -41,7 +45,7 @@ class User(UserMixin, Base):
             .decode('utf-8')
 
     @staticmethod
-    def verify_reset_password_token(token: str):
+    def verify_reset_password_token(token: str) -> Union[None, Type['User']]:
         try:
             id = jwt.decode(token, current_app.config['SECRET_KEY'],
                             algorithms=['HS256'])['reset_password']

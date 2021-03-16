@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 @login_manager.user_loader
-def load_user(id: str):
+def load_user(id: int) -> User:
     logger.info(f"Loading user {id}")
     return User.query.get(int(id))
 

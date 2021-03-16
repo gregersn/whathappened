@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+from typing import Type
 
 from flask import Flask
 from flask_assets import Environment, Bundle

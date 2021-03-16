@@ -20,6 +20,7 @@
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true,
     "python.analysis.stubPath": "typings",
-    "python.analysis.typeCheckingMode": "basic",
-    "python.analysis.diagnosticMode": "workspace"
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.typeCheckingMode": "strict",
+    "python.analysis.useLibraryCodeForTypes": true
 }

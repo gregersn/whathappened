@@ -1,7 +1,6 @@
 from flask import Blueprint
 from flask_assets import Environment
 
-
 bp = Blueprint('character', __name__, template_folder="templates",
                static_folder="static")
 api = Blueprint('characterapi', __name__, template_folder="templates")
@@ -14,7 +13,7 @@ def datetimeformat(value, format: str = "%Y-%m-%d %H:%M:%S"):
     return value.strftime(format)
 
 
-def register_assets(assets: Environment):
+def register_assets(assets: Environment) -> None:
     assets.register('scss_character', 'character/scss/character.scss',
                     filters='pyscss',
                     output='css/character.css')

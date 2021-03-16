@@ -1,7 +1,6 @@
 from flask import Blueprint
 from flask_assets import Environment
 
-
 bp = Blueprint('campaign', __name__,
                template_folder='templates',
                static_folder='static')

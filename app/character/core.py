@@ -1,22 +1,22 @@
 import logging
-from typing import Type
+from typing import Type, Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
 
-GAMES = {
+GAMES: Dict[str, str] = {
 }
 
-MECHANICS = {
+MECHANICS: Dict[str, Type['CharacterMechanics']] = {
 }
 
-GameSystems = []
+GameSystems: List[Tuple[str, str]] = []
 
 
 class CharacterMechanics():
     def __init__(self, parent):
         self.parent = parent
 
-    def game(self):
+    def game(self) -> None:
         raise NotImplementedError
 
     def validate(self, *args, **kwargs):
