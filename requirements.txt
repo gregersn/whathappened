@@ -1,4 +1,4 @@
-alembic==1.5.5
+alembic==1.5.7
 email-validator==1.1.2
 flake8==3.8.4
 Flask==1.1.2
