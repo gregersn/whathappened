@@ -1,9 +1,11 @@
 import logging
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, BooleanField, HiddenField
+from wtforms import StringField, BooleanField, HiddenField
 from wtforms import ValidationError, SubmitField
 from wtforms.validators import DataRequired
 import json
+
+from app.forms.fields import JsonField
 
 logger = logging.getLogger(__name__)
 
@@ -20,28 +22,6 @@ class JsonString(object):
         except Exception:
             logger.error("Could not verify JSON data", exc_info=True)
             raise ValidationError(self.message)
-
-
-class JsonField(TextAreaField):
-    def _value(self):
-        return json.dumps(self.data, indent=4) if self.data else ''
-
-    def process_formdata(self, valuelist):
-        if valuelist:
-            try:
-                self.data = json.loads(valuelist[0])
-            except ValueError:
-                raise ValueError('This field is not valid JSON')
-        else:
-            self.data = None
-
-    def pre_validate(self, form):
-        super().pre_validate(form)
-        if self.data:
-            try:
-                json.dumps(self.data)
-            except TypeError:
-                raise ValueError("Invalid JSON")
 
 
 class ImportForm(FlaskForm):
