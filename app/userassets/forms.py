@@ -4,12 +4,12 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 
 from wtforms import SubmitField
-from wtforms_alchemy.fields import QuerySelectField
 
 from wtforms.fields.core import StringField
 from wtforms.fields.simple import HiddenField
 from wtforms.validators import DataRequired
 
+from app.forms.fields import QuerySelectField
 from .models import Asset
 
 
@@ -19,7 +19,7 @@ def available_folders():
 
 def available_assets():
     return Asset.query.filter(Asset.owner == current_user.profile) \
-                        .order_by(Asset.folder_id).order_by(Asset.filename)
+        .order_by(Asset.folder_id).order_by(Asset.filename)
 
 
 VALID_FILE_EXTENSIONS = ['jpg', 'png', 'jpeg', 'gif', 'svg', 'glb']
@@ -36,7 +36,8 @@ class UploadForm(FlaskForm):
 class AssetSelectForm(FlaskForm):
     asset = QuerySelectField('Asset',
                              query_factory=available_assets,
-                             get_label=lambda x: "/".join(x.path.split('/')[2:]),
+                             get_label=lambda x: "/".join(
+                                 x.path.split('/')[2:]),
                              get_pk=lambda x: url_for('userassets.view',
                                                       fileid=x.id,
                                                       filename=x.filename))
