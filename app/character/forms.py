@@ -4,6 +4,7 @@ from wtforms import StringField, TextAreaField, BooleanField, HiddenField
 from wtforms import ValidationError, SubmitField
 from wtforms.validators import DataRequired
 import json
+import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -44,9 +45,31 @@ class JsonField(TextAreaField):
                 raise ValueError("Invalid JSON")
 
 
+class YamlField(TextAreaField):
+    def _value(self):
+        return yaml.dump(self.data, indent=4) if self.data else ''
+
+    def process_formdata(self, valuelist):
+        if valuelist:
+            try:
+                self.data = yaml.load(valuelist[0])
+            except ValueError:
+                raise ValueError('This field is not valid YAML')
+        else:
+            self.data = None
+
+    def pre_validate(self, form):
+        super().pre_validate(form)
+        if self.data:
+            try:
+                yaml.dump(self.data)
+            except TypeError:
+                raise ValueError("Invalid YAML")
+
+
 class ImportForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    body = JsonField('Body', validators=[DataRequired()])
+    body = YamlField('Body', validators=[DataRequired()])
     conversion = BooleanField('Convert')
     migration = BooleanField('Migrate')
     submit = SubmitField('Import')

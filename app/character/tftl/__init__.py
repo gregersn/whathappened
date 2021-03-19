@@ -9,22 +9,21 @@ from ..core import register_game
 from .mechanics import TftlMechanics
 from .forms import CreateForm  # noqa F401
 from .routes import view  # noqa F401
+import yaml
 
 logger = logging.getLogger(__name__)
 
 schema_file = os.path.join(os.path.dirname(__file__), '../schema/tftl.json')
 
 CHARACTER_TEMPLATE = 'character/tftl/blank_character.json.jinja'
+BLANK_CHARACTER = 'app/character/tftl/blank_tftl.yaml'
 
 
 def new_character(title):
-    templateloader = jinja2 \
-                     .FileSystemLoader(searchpath="./app/character/templates/")
-    templateenv = jinja2.Environment(loader=templateloader)
-    template = templateenv.get_template(CHARACTER_TEMPLATE)
-    return json.loads(template.render(title=title,
-                                      timestamp=time.time(),
-                                      ))
+    with open('app/character/tftl/blank_tftl.yaml', 'r') as f:
+        character_data = yaml.safe_load(f)
+
+        return character_data
 
 
 register_game('tftl', 'Tales from the Loop', TftlMechanics)

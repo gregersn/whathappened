@@ -18,5 +18,10 @@
     "python.linting.pylintEnabled": false,
     "python.linting.pycodestyleEnabled": false,
     "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "yaml.schemas": {
+        "./app/character/schema/tftl.json": [
+            "blank_tftl.yaml"
+        ]
+    }
 }

@@ -20,9 +20,9 @@ from .routes import view  # noqa F401
 CHARACTER_TEMPLATE = 'character/coc7e/blank_character.json.jinja'
 
 
-def new_character(title, gametype: GameType):
+def new_character(title: str, gametype: GameType):
     templateloader = jinja2 \
-                     .FileSystemLoader(searchpath="./app/character/templates/")
+        .FileSystemLoader(searchpath="./app/character/templates/")
     templateenv = jinja2.Environment(loader=templateloader)
     template = templateenv.get_template(CHARACTER_TEMPLATE)
     gtype = gametype

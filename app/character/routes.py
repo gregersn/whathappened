@@ -41,7 +41,7 @@ def get_character(id, check_author=True):
         logger.debug("Checking if character is in same campaign as user")
         for campaign in character.campaigns:
             if current_user.profile in campaign.players \
-                        or campaign in current_user.profile.campaigns:
+                    or campaign in current_user.profile.campaigns:
                 logger.debug(f"Character '{character.title}' " +
                              f"is in '{campaign.title}' " +
                              f"with '{current_user.username}''")
@@ -68,10 +68,8 @@ def create(chartype):
         template = 'character/coc7e/create.html.jinja'
 
         if form.validate_on_submit():
-            char_data = render_template(coc7e.CHARACTER_TEMPLATE,
-                                        title=form.title.data,
-                                        type=form.gametype.data,
-                                        timestamp=time.time())
+            char_data = coc7e.new_character(
+                form.title.data, form.gametype.data)
             c = Character(title=form.title.data,
                           body=json.loads(char_data),
                           user_id=current_user.profile.id)
@@ -84,9 +82,7 @@ def create(chartype):
         template = 'character/tftl/create.html.jinja'
 
         if form.validate_on_submit():
-            char_data = render_template(tftl.CHARACTER_TEMPLATE,
-                                        title=form.title.data,
-                                        timestamp=time.time())
+            char_data = tftl.new_character(form.title.data)
             c = Character(title=form.title.data,
                           body=json.loads(char_data),
                           user_id=current_user.profile.id)
