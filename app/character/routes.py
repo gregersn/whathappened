@@ -17,6 +17,7 @@ from .forms import DeleteForm
 # Imports for registering games.
 from . import coc7e
 from . import tftl  # noqa
+from . import swd6  # noqa
 
 from app.models import LogEntry
 from app.utils.schema import migrate

@@ -21,5 +21,16 @@
     "python.linting.enabled": true,
     "python.analysis.stubPath": "typings",
     "python.analysis.typeCheckingMode": "basic",
-    "python.analysis.diagnosticMode": "workspace"
+    "python.analysis.diagnosticMode": "workspace",
+    "yaml.validate": true,
+    "yaml.schemas": {
+        "./app/character/schema/swd6.yaml": [
+            "swd6/blank_character.yaml"
+        ],
+    },
+    "json.schemas": [
+        {
+            "url": "app/character/schema/coc7e.json"
+        }
+    ]
 }

@@ -1,0 +1,53 @@
+{% extends 'character/sheet.html.jinja' %}
+
+{% block head %}
+    {{ super() }}
+
+    {% assets "scss_character_tftl" %}
+    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+    {% endassets %}
+
+    {% if editable %}
+    {{ webpack['tftl.js']}}
+    {% endif %}
+
+{% endblock %}
+
+{%- macro check_progress(field, points=10) %}
+    <span {%- if editable %} class="editable_check_progress" {%- endif %} data-field="{{field}}">
+        {% for v in range(points) %}
+            <input type="checkbox" {{ "checked" if v < character.attribute(field) }} autocomplete="off" />
+        {% endfor %}
+    </span>
+{%- endmacro %}
+
+
+{% block content %}
+<div id="busy">
+
+</div>
+
+<div class="extrainfo">
+  {% if editable and character.campaigns %}
+    In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{ character.campaigns.0.title }}</a>
+  {% endif %}
+
+</div>
+
+
+<div class="charactersheet">
+    <section id="personalia">
+        <div class="box personalia">
+            <label>Character name: </label>{{ editable_field("personalia.name")}}<br />
+            <label>Type: </label>{{ editable_field("personalia.type")}}<br />
+            <label>Gender/Species: </label>{{ editable_field("personalia.gender")}} / {{ editable_field("personalia.species")}}<br />
+            <label>Age: </label>{{ editable_field("personalia.age")}}
+            <label>Height: </label>{{ editable_field("personalia.height")}}
+            <label>Weight: </label>{{ editable_field("personalia.weight")}}<br />
+            <label>Physcial description: </label>{{ editable_field("personalia.physical_description")}}
+
+        </div>
+    </section>
+</div>
+
+{% endblock %}

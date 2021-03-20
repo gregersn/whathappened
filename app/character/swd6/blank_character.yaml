@@ -1,0 +1,28 @@
+---
+system: swd6
+meta:
+  title: No title
+personalia:
+  name: First Last
+  type: Smuggler
+  gender: female
+  species: human
+  age: 24
+stats:
+  dexterity:
+    base: 3d+1
+  knowledge:
+    base: 2d+1
+  mechanical:
+    base: 3d+2
+  perception:
+    base: 3d
+  strength:
+    base: 3d
+    skills:
+      - brawling: 3d+2
+  technical:
+    base: 2d+2
+attributes:
+  move: 10
+  force_sensitive: false

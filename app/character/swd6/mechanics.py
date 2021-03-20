@@ -1,8 +1,9 @@
-import os
+import pathlib
 from ..core import CharacterMechanics
 from ..schema import validate
 
-schema_file = os.path.join(os.path.dirname(__file__), '../schema/sw.yaml')
+schema_file = pathlib.Path(
+    __file__).parent.parent.joinpath('schema/swd6.yaml')
 
 
 class SWD6Mechanics(CharacterMechanics):

@@ -1,0 +1,130 @@
+---
+definitions:
+  skill:
+    $id: #skill
+    properties:
+      base:
+        type: string
+      skills:
+        type: array
+        items:
+          type: object
+          properties:
+            name: string
+            value: string
+
+    required:
+      - base
+type: object
+properties:
+  system:
+    const: swd6
+  meta:
+    type: object
+    properties:
+      title:
+        type: string
+    required:
+      - title
+  personalia:
+    type: object
+    properties:
+      name:
+        title: Character name
+        type: string
+      type:
+        type: string
+      gender:
+        type: string
+      species:
+        type: string
+      age:
+        type: integer
+      height:
+        type: string
+      weight:
+        type: string
+      pyhsical_description:
+        type: string
+    required:
+      - type
+      - species
+      - age
+
+  stats:
+    type: object
+    properties:
+      dexterity:
+        type: object
+        allOf:
+          - $ref: "#/definitions/skill"
+      knowledge:
+        type: object
+        allOf:
+          - $ref: "#/definitions/skill"
+      mechanical:
+        type: object
+        allOf:
+          - $ref: "#/definitions/skill"
+      perception:
+        type: object
+        allOf:
+          - $ref: "#/definitions/skill"
+      strength:
+        type: object
+        allOf:
+          - $ref: "#/definitions/skill"
+      technical:
+        type: object
+        allOf:
+          - $ref: "#/definitions/skill"
+    required:
+      - dexterity
+      - knowledge
+      - mechanical
+      - perception
+      - strength
+      - technical
+  special_abilities:
+    type: array
+    items:
+      type: string
+  wound_status:
+    type: integer
+  attributes:
+    type: object
+    properties:
+      move:
+        type: integer
+      force_sensitive:
+        type: boolean
+      force_points:
+        type: integer
+      dark_side_points:
+        type: integer
+      character_points:
+        type: integer
+    required:
+      - move
+      - force_sensitive
+  description:
+    type: object
+    propeties:
+      equipment:
+        type: string
+      background:
+        type: string
+      personality:
+        type: string
+      objectives:
+        type: string
+      quote:
+        type: string
+      connections:
+        type: string
+required:
+  - personalia
+  - attributes
+  - stats
+  - meta
+  - system
