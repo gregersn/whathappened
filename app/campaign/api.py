@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 @apibp.route('/hello/<string:name>')
-def hello(name):
+def hello(name: str):
     response = {'msg': f"Hello, {name}"}
     return jsonify(response)
 
@@ -57,9 +57,11 @@ def messages(campaignid: int):
     logger.debug(f"Get all messages for campaign {campaignid} after {after}")
     campaign = Campaign.query.get(campaignid)
     messages = campaign.messages.filter(or_(
-                                    Message.from_id == current_user.profile.id,
-                                    Message.to_id == current_user.profile.id,
-                                    Message.to_id.is_(None))).filter(Message.timestamp > datetime.fromtimestamp(after)).order_by('timestamp')
+        Message.from_id == current_user.profile.id,
+        Message.to_id == current_user.profile.id,
+        Message.to_id.is_(None))) \
+        .filter(Message.timestamp > datetime.fromtimestamp(after)) \
+        .order_by('timestamp')
 
     message_list = [m.to_dict() for m in messages]
     return jsonify(message_list)
@@ -117,7 +119,8 @@ def npcs(campaignid: int):
     npcs = [{'name': npc.character.name,
              'age': npc.character.age,
              'description': npc.character.description,
-             'portrait': "data:image/jpg;base64, " + npc.character.portrait } for npc in campaign.NPCs.filter(NPC.visible).all()]
+             'portrait': "data:image/jpg;base64, " + npc.character.portrait}
+            for npc in campaign.NPCs.filter(NPC.visible).all()]
     response = {'npcs': npcs}
     return jsonify(response)
 

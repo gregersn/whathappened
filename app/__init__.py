@@ -13,7 +13,7 @@ import app.logging as applogging  # noqa imported for side effects
 import logging
 
 from config import Config
-
+from typing import Type
 from .database import init_db, session
 
 login_manager = LoginManager()
@@ -27,7 +27,7 @@ webpackext = FlaskWebpackExt()
 logger = logging.getLogger(__name__)
 
 
-def create_app(config_class=Config):
+def create_app(config_class: Type[Config] = Config):
     logger.info("Creating app")
     assets._named_bundles = {}
     app = Flask(__name__, instance_relative_config=True)
@@ -51,7 +51,6 @@ def create_app(config_class=Config):
     mail.init_app(app)
     webpackext.init_app(app)
     assets.init_app(app)
-
 
     # Register blueprints
     from . import auth

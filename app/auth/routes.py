@@ -77,7 +77,7 @@ def reset_password_request():
 
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
-def reset_password(token):
+def reset_password(token: str):
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
 

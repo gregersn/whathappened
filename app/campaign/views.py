@@ -1,9 +1,10 @@
-from typing import Text
+from typing import Text, Union
 from flask import render_template, request, redirect, url_for
 from flask_login import current_user
 from flask.views import View
 from flask_login.utils import login_required
 from werkzeug.exceptions import abort
+from werkzeug.wrappers import Response
 import logging
 
 import markdown2
@@ -19,12 +20,14 @@ logger = logging.getLogger(__name__)
 
 
 @bp.app_template_filter('markdown')
-def markdown(value):
+def markdown(value: str):
     return markdown2.markdown(value, extras=["tables", "fenced-code-blocks"])
 
 
 class HandoutView(View):
-    def dispatch_request(self, campaign_id: int, handout_id=None) -> Text:
+    def dispatch_request(self,
+                         campaign_id: int,
+                         handout_id: int = None) -> Union[Text, Response]:
         logger.debug(f"dispatch_request({campaign_id}, {handout_id})")
 
         if request.method == 'GET' and handout_id is None:
@@ -34,11 +37,12 @@ class HandoutView(View):
             return self.create(campaign_id)
 
         if request.method == 'POST':
-            return self.update(campaign_id, handout_id)
+            if handout_id is not None:
+                return self.update(campaign_id, handout_id)
 
         return self.view(campaign_id, handout_id)
 
-    def create(self, campaign_id):
+    def create(self, campaign_id: int):
         logger.debug("Posting handout")
         handoutform = HandoutForm(prefix="handout")
         groupform = HandoutGroupForm(prefix="group")
@@ -67,7 +71,7 @@ class HandoutView(View):
         return redirect(url_for('campaign.handout_view',
                                 campaign_id=campaign_id))
 
-    def update(self, campaign_id, handout_id):
+    def update(self, campaign_id:  int, handout_id: int):
         logger.debug("Put to handout")
         handout = Handout.query.get(handout_id)
         form = HandoutForm(prefix="handout")
@@ -92,9 +96,12 @@ class HandoutView(View):
                                 campaign_id=campaign_id,
                                 handout_id=handout.id))
 
-    def view(self, campaign_id, handout_id=None) -> Text:
+    def view(self, campaign_id: int, handout_id: int = None) -> Text:
         logger.debug(f"view({campaign_id}, {handout_id})")
-        handout = Handout.query.get(handout_id) or abort(404)
+        handout: Handout = Handout.query.get(handout_id)
+
+        if not handout:
+            abort(404)
 
         if current_user.is_authenticated \
             and current_user.profile not in handout.players \
@@ -134,7 +141,9 @@ class HandoutView(View):
             .filter(is_owner or Handout.players.contains(current_user.profile))
 
         groups = {group.name:
-                  list(group.handouts.filter(is_owner or Handout.players.contains(current_user.profile)))
+                  list(group.handouts.filter(
+                      is_owner
+                      or Handout.players.contains(current_user.profile)))
                   for group in campaign.handout_groups}
 
         handoutform = HandoutForm(prefix="handout")
@@ -167,7 +176,7 @@ bp.add_url_rule('/<int:campaign_id>/handouts/<int:handout_id>/',
 
 @bp.route('/<int:campaign_id>/handouts/<int:handout_id>/delete',
           methods=('GET', 'POST'))
-def handout_delete(campaign_id, handout_id):
+def handout_delete(campaign_id: int, handout_id: int):
     """Delete a handout."""
     handout = Handout.query.get(handout_id)
 

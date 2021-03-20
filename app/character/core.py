@@ -21,7 +21,8 @@ class CharacterMechanics():
 
     def validate(self, *args, **kwargs):
         logger.error("validate: Not implemented")
-        return [{"path": "/", "message": "This character sheet has no known schema or validation."}]
+        return [{"path": "/",
+                 "message": "This character sheet has no known schema or validation."}]
 
     @property
     def name(self):

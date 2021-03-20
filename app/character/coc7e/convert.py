@@ -87,7 +87,6 @@ def convert_from_dholes(indata):
                 pass
             weapon['malf'] = malf
 
-
             outweapons.append(weapon)
         return outweapons
 
@@ -158,7 +157,7 @@ def convert_to_dholes(indata):
             )
 
         return {
-                'Skill': skills
+            'Skill': skills
         }
 
     def convert_weapons(weapons):

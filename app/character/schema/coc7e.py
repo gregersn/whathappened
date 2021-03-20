@@ -54,8 +54,6 @@ def v003_to_v004(data):
             pass
         weapon['malf'] = value
 
-
-
     return data
 
 
@@ -111,7 +109,8 @@ def v001_to_002(data):
     for skill in nc['skills']:
         if 'subskills' in skill and skill['subskills']:
             for subskill in skill['subskills']:
-                start_values[": ".join((skill['name'], subskill['name']))] = str(subskill['start_value'])
+                start_values[": ".join((skill['name'], subskill['name']))] = str(
+                    subskill['start_value'])
 
     outskills = []
     skill_index = {}

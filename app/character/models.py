@@ -1,6 +1,6 @@
 import logging
 from functools import reduce
-from typing import Any, Dict
+from typing import Any, Dict, Type
 from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.orm import reconstructor, relationship
 from datetime import datetime
@@ -41,7 +41,9 @@ class Character(Base):
     def __repr__(self):
         return '<Character {}>'.format(self.title)
 
-    def __init__(self, mechanics=CharacterMechanics, *args, **kwargs):
+    def __init__(self,
+                 mechanics: Type[CharacterMechanics] = CharacterMechanics,
+                 *args, **kwargs):
         super(Character, self).__init__(*args, **kwargs)
         self._data = None
         # Add a subclass or something that
@@ -62,15 +64,18 @@ class Character(Base):
         raise TypeError("Body is not a dictionary")
 
     @property
-    def system(self):
+    def system(self) -> str:
         s = self.data.get('system', None)
-        if s is None:
-            logger.warning("Deprecation: Outdated character data")
-            default = "Call of Cthulhu TM"
-            if self.data.get('meta', {}).get('GameName') == default:
-                logger.warning("Trying old CoC stuff.")
-                return "coc7e"
-        return s
+        if s is not None:
+            return s
+
+        logger.warning("Deprecation: Outdated character data")
+        default = "Call of Cthulhu TM"
+        if self.data.get('meta', {}).get('GameName') == default:
+            logger.warning("Trying old CoC stuff.")
+            return "coc7e"
+
+        return "Unknown"
 
     @property
     def version(self):
@@ -122,7 +127,7 @@ class Character(Base):
 
         return val
 
-    def set_attribute(self, attribute):
+    def set_attribute(self, attribute: Dict):
         """Set a specific attribute."""
 
         if attribute.get('category', None) == 'skill':
@@ -157,7 +162,8 @@ class Character(Base):
         elif attribute.get('type', None) == 'portrait':
             logger.debug("Set portrait")
             data = attribute.get('value', None)
-            self.mechanics.set_portrait(fix_image(data))
+            if data is not None:
+                self.mechanics.set_portrait(fix_image(data))
         else:
             logger.debug("Set some other attribute")
             s = reduce(lambda x, y: x[y], attribute['field'].split(".")[:-1],
@@ -175,7 +181,7 @@ class Character(Base):
         """Return a list of skills."""
         return self.data['skills']
 
-    def add_skill(self, skillname, value=1):
+    def add_skill(self, skillname: str, value: int = 1):
         if self.skill(skillname) is not None:
             raise ValueError(f"Skill {skillname} already exists.")
 
@@ -185,7 +191,7 @@ class Character(Base):
         if isinstance(self.data['skills'], list):
             self.data['skills'].sort(key=lambda x: x['name'])
 
-    def add_subskill(self, name, parent):
+    def add_subskill(self, name: str, parent: Dict):
         value = self.skill(parent)['value']
         start_value = self.skill(parent)['start_value']
         logger.debug("Try to add subskill")

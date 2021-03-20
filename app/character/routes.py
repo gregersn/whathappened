@@ -27,7 +27,7 @@ from app.database import session, paginate
 logger = logging.getLogger(__name__)
 
 
-def get_character(id, check_author=True):
+def get_character(id: int, check_author: bool = True) -> Character:
     character = Character.query.get(id)
 
     if character is None:
@@ -58,7 +58,7 @@ def index():
 
 
 @bp.route('/create/<string:chartype>/', methods=('GET', 'POST'))
-def create(chartype):
+def create(chartype: str):
 
     character_module = globals()[chartype]
 
@@ -91,7 +91,7 @@ def system_select(chartype=None):
 @bp.route('/import/<uuid:code>', methods=('GET', 'POST'))
 @bp.route('/import', methods=('GET', 'POST'))
 @login_required
-def import_character(type=None, id=None, code=None):
+def import_character(type=None, id: int = None, code: str = None):
     logger.debug(f"{type}, {code}, {id}")
     character = None
     if id:
@@ -115,7 +115,7 @@ def import_character(type=None, id=None, code=None):
 
 @bp.route('/<int:id>/update', methods=('POST',))
 @login_required
-def update(id):
+def update(id: int):
     character = get_character(id, check_author=True)
 
     if request.method == "POST":
@@ -147,7 +147,7 @@ def update(id):
 
 
 @bp.route('/<uuid:code>', methods=('GET', ))
-def shared(code):
+def shared(code: str):
     invite = Invite.query.get(code)
     if invite is None or invite.table != Character.__tablename__:
         return "Invalid code"
@@ -170,7 +170,7 @@ def shared(code):
 
 @bp.route('/<int:id>/', methods=('GET', 'POST'))
 @login_required
-def view(id):
+def view(id: int):
     character = get_character(id, check_author=True)
 
     editable = False
@@ -201,7 +201,7 @@ def view(id):
 
 @bp.route('/<int:id>/tokens/', methods=('GET', 'POST'))
 @login_required
-def tokens(id):
+def tokens(id: int):
     character = get_character(id, check_author=False)
 
     return render_template('character/tokens.html.jinja',
@@ -209,7 +209,7 @@ def tokens(id):
 
 
 @api.route('/<int:id>/', methods=('GET', ))
-def get(id):
+def get(id: int):
     """API call to get all character data."""
     data = get_character(id, check_author=True)
     return jsonify(data.to_dict())
@@ -218,7 +218,7 @@ def get(id):
 @bp.route('/<int:id>/delete', methods=('GET', 'POST', ))
 @api.route('/<int:id>/delete', methods=('GET', 'POST', ))
 @login_required
-def delete(id):
+def delete(id: int):
     """Delete a character."""
     character = get_character(id, check_author=True)
 
@@ -240,7 +240,7 @@ def delete(id):
 
 @api.route('/<int:id>/share', methods=('GET', ))
 @login_required
-def share(id):
+def share(id: int):
     """Share a character."""
     character = get_character(id, check_author=True)
     logger.debug("Finding previous invite")
@@ -267,14 +267,14 @@ def share(id):
 
 
 @bp.route('/<int:id>/export', methods=('GET', ))
-def export(id):
+def export(id: int):
     """Exports charcter data to JSON."""
     data = get_character(id, check_author=True)
     return jsonify(data.get_sheet())
 
 
 @bp.route('/<int:id>/editjson', methods=('GET', 'POST'))
-def editjson(id):
+def editjson(id: int):
     """Lets the user edit the raw json of the character."""
     c = get_character(id, check_author=True)
     form = ImportForm(obj=c)

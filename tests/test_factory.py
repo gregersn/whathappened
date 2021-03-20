@@ -1,5 +1,4 @@
 from .conftest import Conf as Config
-from app.auth.models import create_core_roles
 from app import create_app, assets
 
 
@@ -10,7 +9,7 @@ def test_config(app):
     assert not a.testing
 
     assets._named_bundles = {}
-    
+
     a = create_app(Config)
     assert a.testing
 
