@@ -1,6 +1,4 @@
 from app.character.core import GameSystems
-import json
-import time
 import logging
 
 from flask import render_template, request
@@ -16,8 +14,9 @@ from .models import Character
 from .forms import ImportForm, CreateForm
 from .forms import DeleteForm
 
+# Imports for registering games.
 from . import coc7e
-from . import tftl
+from . import tftl  # noqa
 
 from app.models import LogEntry
 from app.utils.schema import migrate
@@ -41,7 +40,7 @@ def get_character(id, check_author=True):
         logger.debug("Checking if character is in same campaign as user")
         for campaign in character.campaigns:
             if current_user.profile in campaign.players \
-                        or campaign in current_user.profile.campaigns:
+                    or campaign in current_user.profile.campaigns:
                 logger.debug(f"Character '{character.title}' " +
                              f"is in '{campaign.title}' " +
                              f"with '{current_user.username}''")
@@ -60,39 +59,21 @@ def index():
 
 @bp.route('/create/<string:chartype>/', methods=('GET', 'POST'))
 def create(chartype):
-    form = CreateForm()
-    template = 'character/create.html.jinja'
 
-    if chartype == 'coc7e':
-        form = coc7e.CreateForm()
-        template = 'character/coc7e/create.html.jinja'
+    character_module = globals()[chartype]
 
-        if form.validate_on_submit():
-            char_data = render_template(coc7e.CHARACTER_TEMPLATE,
-                                        title=form.title.data,
-                                        type=form.gametype.data,
-                                        timestamp=time.time())
-            c = Character(title=form.title.data,
-                          body=json.loads(char_data),
-                          user_id=current_user.profile.id)
-            session.add(c)
-            session.commit()
-            return redirect(url_for('character.view', id=c.id))
+    form = getattr(character_module, 'CreateForm', CreateForm)()
+    template = getattr(character_module, 'CREATE_TEMPLATE',
+                       'character/create.html.jinja')
 
-    if chartype == 'tftl':
-        form = tftl.CreateForm()
-        template = 'character/tftl/create.html.jinja'
-
-        if form.validate_on_submit():
-            char_data = render_template(tftl.CHARACTER_TEMPLATE,
-                                        title=form.title.data,
-                                        timestamp=time.time())
-            c = Character(title=form.title.data,
-                          body=json.loads(char_data),
-                          user_id=current_user.profile.id)
-            session.add(c)
-            session.commit()
-            return redirect(url_for('character.view', id=c.id))
+    if form.validate_on_submit():
+        char_data = character_module.new_character(**form.data)
+        c = Character(title=form.title.data,
+                      body=char_data,
+                      user_id=current_user.profile.id)
+        session.add(c)
+        session.commit()
+        return redirect(url_for('character.view', id=c.id))
 
     form.system.data = chartype
     return render_template(template, form=form, type=type)
@@ -206,13 +187,16 @@ def view(id):
     if (character.system is None or character.validate()) and editable:
         return redirect(url_for('character.editjson', id=id))
 
-    if character.system == 'coc7e':
-        return coc7e.view(id, character, editable)
+    character_module = globals()[character.system]
 
-    if character.system == 'tftl':
-        return tftl.view(id, character, editable)
+    system_view = getattr(character_module, 'view', None)
 
-    return f"A view for {character.system} is not yet implemented."
+    if system_view is not None:
+        return system_view(id, character, editable)
+
+    return render_template(character_module.CHARACTER_SHEET_TEMPLATE,
+                           character=character,
+                           editable=editable)
 
 
 @bp.route('/<int:id>/tokens/', methods=('GET', 'POST'))
