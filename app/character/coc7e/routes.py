@@ -4,7 +4,7 @@ from flask_login import current_user
 from ..forms import SkillForm, SubskillForm
 from app.models import LogEntry, Invite
 from app.database import session
-from . import utils
+from . import utils  # noqa # import to register filters
 
 
 def view(id, character, editable):
@@ -31,7 +31,8 @@ def view(id, character, editable):
 
         character.add_skill(skillform.name.data)
         character.store_data()
-        logentry = LogEntry(character, f"add skill {subskillform.name.data}", user_id=current_user.id)
+        logentry = LogEntry(
+            character, f"add skill {subskillform.name.data}", user_id=current_user.id)
         session.add(logentry)
 
         session.commit()

@@ -2,43 +2,93 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "version": "0.0.1",
     "type": "object",
-    "required": ["system", "version"],
+    "required": [
+        "system",
+        "version"
+    ],
     "properties": {
-        "system": {"const": "tftl"},
+        "system": {
+            "const": "tftl"
+        },
         "meta": {
             "type": "object",
             "properties": {
-                "Title": {"type": "string"},
-                "Creator": {"type": "string"},
-                "CreateDate": {"type": "string"},
-                "GameName": {"const": "Tales From The Loop"},
-                "GameVersion": {"type": "string"},
+                "Title": {
+                    "type": "string"
+                },
+                "Creator": {
+                    "type": "string"
+                },
+                "CreateDate": {
+                    "type": "string"
+                },
+                "GameName": {
+                    "const": "Tales From The Loop"
+                },
+                "GameVersion": {
+                    "type": "string"
+                },
                 "GameType": {
                     "type": "string"
                 },
-                "Disclaimer": {"type": "string"}
+                "Disclaimer": {
+                    "type": "string"
+                }
             }
         },
         "personalia": {
             "type": "object",
             "properties": {
-                "name": {"type": "string"},
-                "type": {"type": "string"},
-                "age": {"type": "string"},
-                "luck_points": {"type": "integer", "minimum": 0, "maximum": 5},
-                "drive": {"type": "string"},
-                "anchor": {"type": "string"},
-                "problem": {"type": "string"},
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "string"
+                },
+                "luck_points": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5
+                },
+                "drive": {
+                    "type": "string"
+                },
+                "anchor": {
+                    "type": "string"
+                },
+                "problem": {
+                    "type": "string"
+                },
                 "pride": {
                     "type": "object",
                     "properties": {
-                        "description": {"type": "string"},
-                        "used": {"type": "boolean"}
+                        "description": {
+                            "type": "string"
+                        },
+                        "used": {
+                            "type": "boolean"
+                        }
                     }
                 },
-                "description": {"type": "string"},
-                "favorite_song": {"type": "string"},
-                "portrait": { "anyOf": [{"type": "string"}, {"type": "null"}] }
+                "description": {
+                    "type": "string"
+                },
+                "favorite_song": {
+                    "type": "string"
+                },
+                "portrait": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                }
             }
         },
         "relationships": {
@@ -63,16 +113,20 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "name": {"type": "string"},
-                    "bonus": {"type": "integer", "minimum": 1, "maximum": 3}
+                    "name": {
+                        "type": "string"
+                    },
+                    "bonus": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 3
+                    }
                 }
             },
             "uniqueItems": true
-
         },
         "hideout": {
             "type": "string"
-
         },
         "notes": {
             "type": "string"
@@ -80,37 +134,127 @@
         "attributes": {
             "type": "object",
             "properties": {
-                "Body": {"type": "integer", "minimum": 1, "maximum": 5, "default": 1},
-                "Tech": {"type": "integer", "minimum": 1, "maximum": 5, "default": 1},
-                "Heart": {"type": "integer", "minimum": 1, "maximum": 5, "default": 1},
-                "Mind": {"type": "integer", "minimum": 1, "maximum": 5, "default": 1}
+                "Body": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "default": 1
+                },
+                "Tech": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "default": 1
+                },
+                "Heart": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "default": 1
+                },
+                "Mind": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "default": 1
+                }
             }
         },
         "conditions": {
             "type": "object",
             "properties": {
-                "Upset": {"type": "boolean"},
-                "Scared": {"type": "boolean"},
-                "Exhausted": {"type": "boolean"},
-                "Injured": {"type": "boolean"},
-                "Broken": {"type": "boolean"}
+                "Upset": {
+                    "type": "boolean"
+                },
+                "Scared": {
+                    "type": "boolean"
+                },
+                "Exhausted": {
+                    "type": "boolean"
+                },
+                "Injured": {
+                    "type": "boolean"
+                },
+                "Broken": {
+                    "type": "boolean"
+                }
             }
         },
         "skills": {
             "type": "object",
             "properties": {
-                "Sneak (Body)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0},
-                "Force (Body)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0},
-                "Move (Body)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0},
-                "Tinker (Tech)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0},
-                "Program (Tech)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0},
-                "Calculate (Tech)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0},
-                "Contact (Heart)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0},
-                "Charm (Heart)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0},
-                "Lead (Heart)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0},
-                "Investigate (Mind)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0},
-                "Comprehend (Mind)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0},
-                "Empathize (Mind)": {"type": "integer", "minimum": 0, "maximum": 5, "default": 0}
+                "Sneak (Body)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                },
+                "Force (Body)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                },
+                "Move (Body)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                },
+                "Tinker (Tech)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                },
+                "Program (Tech)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                },
+                "Calculate (Tech)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                },
+                "Contact (Heart)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                },
+                "Charm (Heart)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                },
+                "Lead (Heart)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                },
+                "Investigate (Mind)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                },
+                "Comprehend (Mind)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                },
+                "Empathize (Mind)": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 0
+                }
             }
         },
         "experience": {

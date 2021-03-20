@@ -1,3 +1,5 @@
+from typing import List, Tuple
+from app.models import UserProfile
 from flask_wtf import FlaskForm
 from wtforms import StringField, HiddenField, SelectField, BooleanField
 from wtforms.compat import text_type
@@ -110,7 +112,7 @@ class DeleteHandoutForm(FlaskForm):
 
 
 class TableRowWidget(object):
-    def __init__(self, with_tr_tag=True):
+    def __init__(self, with_tr_tag: bool = True):
         self.with_tr_tag = with_tr_tag
 
     def __call__(self, field, **kwargs):
@@ -154,16 +156,21 @@ class NPCTransferForm(FlaskForm):
 
 
 class MessagePlayerForm(FlaskForm):
-    campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
+    campaign_id = IntegerField(
+        widget=HiddenInput(), validators=[DataRequired()])
     from_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     message = StringField()
     submit = SubmitField('Send...')
 
     to_id = SelectField('To', choices=[('', 'All'), ], validate_choice=False)
 
-    def __init__(self, hide_to_id=False, players=[], *args, **kwargs):
+    def __init__(self,
+                 hide_to_id: bool = False,
+                 players: List[Tuple[int, str]] = [],
+                 *args,
+                 **kwargs):
         super(MessagePlayerForm, self).__init__(*args, **kwargs)
         if hide_to_id:
-            self.to_id.widget = HiddenInput()
+            self.to_id.widget = HiddenInput()  # Not an error
 
         self.to_id.choices += players

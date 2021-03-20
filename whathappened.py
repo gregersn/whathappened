@@ -10,9 +10,9 @@ app = create_app()
 @app.shell_context_processor
 def make_shell_context():
     return {
-            'User': User,
-            'UserProfile': UserProfile,
-            'Character': Character,
-            'Role': Role,
-            'UserRoles': UserRoles
-            }
+        'User': User,
+        'UserProfile': UserProfile,
+        'Character': Character,
+        'Role': Role,
+        'UserRoles': UserRoles
+    }

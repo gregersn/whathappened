@@ -2,6 +2,7 @@ import logging
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, HiddenField
 from wtforms import ValidationError, SubmitField
+from wtforms.fields.core import Field
 from wtforms.validators import DataRequired
 import json
 
@@ -11,12 +12,12 @@ logger = logging.getLogger(__name__)
 
 
 class JsonString(object):
-    def __init__(self, message=None):
+    def __init__(self, message: str = None):
         if not message:
             message = u'Field must be a valid JSON string'
         self.message = message
 
-    def __call__(self, form, field):
+    def __call__(self, form: FlaskForm, field: Field):
         try:
             _ = json.loads(field.data)
         except Exception:

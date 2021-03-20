@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 @bp.route('/<code>', methods=('GET', 'POST'))
 @login_required
-def join(code):
+def join(code: str):
     inv = Invite.query.get(code)
 
     if inv is None or inv.table != Campaign.__tablename__:
@@ -52,7 +52,7 @@ def join(code):
 
 @bp.route('/<int:id>', methods=('GET', 'POST'))
 @login_required
-def view(id):
+def view(id: int):
     invites = None
     campaign = Campaign.query.get(id)
 
@@ -120,9 +120,9 @@ def view(id):
 
     handouts = campaign.handouts.filter_by(status=HandoutStatus.visible)
     messages = campaign.messages.filter(or_(
-                                    Message.from_id == current_user.profile.id,
-                                    Message.to_id == current_user.profile.id,
-                                    Message.to_id.is_(None)))
+        Message.from_id == current_user.profile.id,
+        Message.to_id == current_user.profile.id,
+        Message.to_id.is_(None)))
 
     return render_template('campaign/campaign.html.jinja',
                            campaign=campaign,
@@ -138,7 +138,7 @@ def view(id):
 
 
 @bp.route('/<int:id>/edit', methods=('GET', 'POST'))
-def edit(id):
+def edit(id: int):
     c = Campaign.query.get(id)
     form = EditForm(obj=c)
     if form.validate_on_submit():
@@ -165,7 +165,7 @@ def create():
 @bp.route('/<int:id>/removecharacter/<int:characterid>',
           methods=('GET', 'POST'))
 @login_required
-def remove_character(id, characterid):
+def remove_character(id: int, characterid: int):
     c = Campaign.query.get(id)
     char = Character.query.get(characterid)
 
@@ -189,7 +189,7 @@ def remove_character(id, characterid):
 
 @bp.route('/<int:id>/removenpc/<int:characterid>', methods=('GET', 'POST'))
 @login_required
-def remove_npc(id, characterid):
+def remove_npc(id: int, characterid: int):
     npc = NPC.query.get(characterid)
 
     form = RemoveCharacterForm()
@@ -211,7 +211,7 @@ def remove_npc(id, characterid):
 
 @bp.route('/<int:id>/npc/<int:npcid>', methods=('GET', 'POST'))
 @login_required
-def manage_npc(id, npcid):
+def manage_npc(id: int, npcid: int):
     npc = NPC.query.get(npcid)
 
     transferform = NPCTransferForm(prefix="npctransfer", npc_id=npcid)
@@ -259,7 +259,7 @@ def manage_npc(id, npcid):
 @bp.route('/<int:id>/removeplayer/<int:playerid>',
           methods=('GET', 'POST'))
 @login_required
-def remove_player(id, playerid):
+def remove_player(id: int, playerid: int):
     form = RemovePlayerForm()
     c = Campaign.query.get(id)
     player = UserProfile.query.get(playerid)
@@ -282,7 +282,7 @@ def remove_player(id, playerid):
 @bp.route('/<int:campaign_id>/message/',
           methods=('GET', 'POST'))
 @login_required
-def message_player(campaign_id, player_id=None):
+def message_player(campaign_id: int, player_id: int = None):
     c = Campaign.query.get(campaign_id)
     player = None
     if player_id:

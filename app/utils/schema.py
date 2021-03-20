@@ -1,8 +1,12 @@
 import copy
-from packaging.version import Version, parse
+from typing import Union
+from packaging.version import Version, LegacyVersion, parse
 
 
-def up_or_down(from_version: Version, to_version: Version) -> int:
+SheetVersion = Union[Version, LegacyVersion]
+
+
+def up_or_down(from_version: SheetVersion, to_version: SheetVersion) -> int:
     if from_version > to_version:
         return -1
 
@@ -12,7 +16,7 @@ def up_or_down(from_version: Version, to_version: Version) -> int:
     return 0
 
 
-def find_migration(version: Version, direction: int, migrations):
+def find_migration(version: SheetVersion, direction: int, migrations):
     for m in migrations:
         if direction > 0 and parse(m['from']) == version:
             return m

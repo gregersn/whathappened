@@ -8,9 +8,9 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
 def test_up_or_down():
-    assert up_or_down("1.0.0", "1.0.0") == 0
-    assert up_or_down("1.0.0", "1.0.1") == 1
-    assert up_or_down("1.0.1", "1.0.0") == -1
+    assert up_or_down(parse("1.0.0"), parse("1.0.0")) == 0
+    assert up_or_down(parse("1.0.0"), parse("1.0.1")) == 1
+    assert up_or_down(parse("1.0.1"), parse("1.0.0")) == -1
 
 
 def test_find_migration():

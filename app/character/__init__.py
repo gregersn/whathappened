@@ -1,4 +1,5 @@
 from flask import Blueprint
+from flask_assets import Environment
 
 
 bp = Blueprint('character', __name__, template_folder="templates",
@@ -9,11 +10,11 @@ from . import routes  # noqa: E402, F401 isort:skip
 
 
 @bp.app_template_filter('datetimeformat')
-def datetimeformat(value, format="%Y-%m-%d %H:%M:%S"):
+def datetimeformat(value, format: str = "%Y-%m-%d %H:%M:%S"):
     return value.strftime(format)
 
 
-def register_assets(assets):
+def register_assets(assets: Environment):
     assets.register('scss_character', 'character/scss/character.scss',
                     filters='pyscss',
                     output='css/character.css')
