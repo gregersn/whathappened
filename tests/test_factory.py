@@ -4,13 +4,13 @@ from app import create_app, assets
 
 def test_config(app):
     assets._named_bundles = {}
-    a = create_app()
+    a, _ = create_app()
 
     assert not a.testing
 
     assets._named_bundles = {}
 
-    a = create_app(Config)
+    a, _ = create_app(Config)
     assert a.testing
 
 
