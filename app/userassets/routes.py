@@ -33,7 +33,7 @@ def index(folder_id=None):
         folder = AssetFolder.query.get(folder_id)
     else:
         folder = current_user.profile.assetfolders \
-                    .filter(AssetFolder.parent_id.__eq__(None)).first()
+            .filter(AssetFolder.parent_id.__eq__(None)).first()
 
     form = UploadForm(folder_id=folder.id, prefix="fileupload")
     folderform = NewFolderForm(parent_id=folder.id, prefix="newfolderform")
@@ -108,16 +108,18 @@ def upload_file(folder_id=None):
         if folder.owner != current_user.profile:
             abort(403)
 
-        filename = secure_filename(fileobject.filename)
-        Path(folder.system_path).mkdir(parents=True,
-                                       exist_ok=True)
-        fileobject.save(os.path.join(folder.system_path, filename))
+        if fileobject.filename:
+            filename = secure_filename(fileobject.filename)
 
-        asset = Asset(filename=fileobject.filename,
-                      folder=folder,
-                      owner=current_user.profile)
-        session.add(asset)
-        session.commit()
+            Path(folder.system_path).mkdir(parents=True,
+                                           exist_ok=True)
+            fileobject.save(os.path.join(folder.system_path, filename))
+
+            asset = Asset(filename=fileobject.filename,
+                          folder=folder,
+                          owner=current_user.profile)
+            session.add(asset)
+            session.commit()
 
     return redirect(url_for('userassets.index', folder_id=folder_id))
 
