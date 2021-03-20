@@ -191,7 +191,7 @@ class Character(Base):
         if isinstance(self.data['skills'], list):
             self.data['skills'].sort(key=lambda x: x['name'])
 
-    def add_subskill(self, name: str, parent: Dict):
+    def add_subskill(self, name: str, parent: str):
         value = self.skill(parent)['value']
         start_value = self.skill(parent)['start_value']
         logger.debug("Try to add subskill")
