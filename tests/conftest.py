@@ -19,7 +19,7 @@ class Conf(Config):
 @pytest.fixture(scope='session')
 def app(request):
     assets._named_bundles = {}
-    app = create_app(Conf)
+    app, socketio = create_app(Conf)
 
     ctx = app.app_context()
     ctx.push()

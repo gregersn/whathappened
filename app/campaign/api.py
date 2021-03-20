@@ -1,4 +1,5 @@
 import json
+import time
 import hashlib
 from datetime import datetime
 from flask import request, jsonify
@@ -53,18 +54,28 @@ def message_player(campaignid: int, playerid: int):
 @apibp.route('<int:campaignid>/messages', methods=('GET', ))
 @login_required
 def messages(campaignid: int):
-    after = int(request.args.get('after', '0'), 10)
-    logger.debug(f"Get all messages for campaign {campaignid} after {after}")
+    after = float(request.args.get('after', '0'))
+    dt = datetime.fromtimestamp(after)
+    logger.info(f"Get all messages for campaign {campaignid} after {after}")
     campaign = Campaign.query.get(campaignid)
     messages = campaign.messages.filter(or_(
         Message.from_id == current_user.profile.id,
         Message.to_id == current_user.profile.id,
         Message.to_id.is_(None))) \
-        .filter(Message.timestamp > datetime.fromtimestamp(after)) \
+        .filter(Message.timestamp > dt) \
         .order_by('timestamp')
 
     message_list = [m.to_dict() for m in messages]
-    return jsonify(message_list)
+
+    def t(n):
+        tt = n['timestamp'].timetuple()
+        n['timestamp'] = time.mktime(
+            tt) + (n['timestamp'].microsecond / 1_000_000)
+        return n
+
+    result = list(map(t, message_list))
+
+    return jsonify(result)
 
 
 @apibp.route('<int:campaignid>/handout/<int:handoutid>/players',

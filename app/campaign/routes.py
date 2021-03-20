@@ -17,6 +17,7 @@ from app.models import Invite
 from sqlalchemy import and_, or_
 from app.database import session
 from app.content.forms import ChooseFolderForm
+from app import socketio
 
 from . import api  # noqa
 
@@ -166,7 +167,7 @@ def edit(id: int):
         return redirect(url_for('campaign.view', id=c.id))
 
     if folderform.choose.data and folderform.validate_on_submit():
-        print("Folder form submitted!")
+        logger.debug("Folder form submitted!")
         c.folder = folderform.folder_id.data
         session.commit()
         return redirect(url_for('campaign.view', id=c.id))
@@ -354,3 +355,9 @@ def message_player(campaign_id: int, player_id: int = None):
                            campaign=c,
                            form=form,
                            messages=messages)
+
+
+@socketio.on('message')
+def handle_message(data):
+    logger.debug("Notify about new messages")
+    socketio.emit("update", {'message': "There are new messages"})
