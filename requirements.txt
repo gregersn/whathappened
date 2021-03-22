@@ -14,7 +14,7 @@ packaging==20.9
 Pillow==8.1.2
 PyJWT==2.0.1
 PyMySQL==1.0.2
-pyScss==1.3.7
+git+git://github.com/gregersn/pyScss.git
 python-dotenv==0.15.0
 pywebpack==1.2.0
 PyYAML==5.3.1
