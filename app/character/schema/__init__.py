@@ -61,6 +61,8 @@ def build_array(schema: Dict) -> List:
 def build_from_schema(schema: Union[List, Dict]) -> Union[Dict, List, str, int, bool]:
     if isinstance(schema, Dict):
         logger.debug("Handling a dictionary")
+        if 'anyOf' in schema:
+            return schema['default']
         if 'const' in schema:
             return schema['const']
         if schema.get('type') == 'object':
@@ -76,5 +78,6 @@ def build_from_schema(schema: Union[List, Dict]) -> Union[Dict, List, str, int, 
 
     elif isinstance(schema, List):
         logger.debug("Handling a list")
+        return []
 
-    return ''
+    raise TypeError

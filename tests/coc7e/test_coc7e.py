@@ -3,6 +3,7 @@ import os
 import json
 import pytest
 
+from jsonschema import validate
 
 from app.auth.models import User  # noqa
 from app.campaign.models import Campaign  # noqa
@@ -10,7 +11,8 @@ from app.campaign.models import Campaign  # noqa
 from app.character.coc7e import CoCMechanics
 from app.character.coc7e import new_character
 from app.character.coc7e import schema_file
-from app.character.schema import validate
+from app.character.schema import validate as validator
+from app.character.schema import load_schema
 from app.character.models import Character
 from app.character.coc7e.convert import fifth, half, convert_from_dholes
 from app.utils.schema import migrate
@@ -60,9 +62,15 @@ def fixture_test_character() -> Character:
     return c
 
 
-def test_validate(test_sheet: dict):
+def test_validate():
     nc = new_character("Test Character", "Classic (1920's)")
-    errors = validate(nc, schema_file)
+    schema = load_schema(schema_file)
+    validate(nc, schema=schema)
+
+
+def test_validator(test_sheet: dict):
+    nc = new_character("Test Character", "Classic (1920's)")
+    errors = validator(nc, schema_file)
     assert len(errors) == 0
 
 
@@ -70,7 +78,7 @@ def test_convert_from_dholes(dholes_sheet: dict):
     """Test conversion from a character sheet generated at dholes house."""
     assert dholes_sheet is not None
     converted = convert_from_dholes(dholes_sheet)
-    errors = validate(converted, schema_file)
+    errors = validator(converted, schema_file)
     error_messages = errors
     assert len(errors) == 0, error_messages
 
@@ -137,18 +145,18 @@ def test_subskill(newly_created_character: Character):
 
 
 def test_validate_migration_up(test_sheet: dict):
-    errors = validate(migrate(test_sheet,
-                              "0.0.4",
-                              migrations=migrations),
-                      schema_file)
+    errors = validator(migrate(test_sheet,
+                               "0.0.4",
+                               migrations=migrations),
+                       schema_file)
     assert len(errors) == 0, errors
 
 
 def test_validate_migration_latest(test_sheet: dict):
-    errors = validate(migrate(test_sheet,
-                              latest,
-                              migrations=migrations),
-                      schema_file)
+    errors = validator(migrate(test_sheet,
+                               latest,
+                               migrations=migrations),
+                       schema_file)
 
     assert len(errors) == 0, errors
 

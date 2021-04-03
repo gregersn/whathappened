@@ -3,6 +3,7 @@ import json
 import jinja2
 import time
 from typing import Literal
+from app.character.schema import load_schema, build_from_schema
 
 
 from .mechanics import CoCMechanics
@@ -24,14 +25,12 @@ CREATE_TEMPLATE = 'character/coc7e/create.html.jinja'
 
 
 def new_character(title: str, gametype: GameType, **kwargs):
-    templateloader = jinja2 \
-        .FileSystemLoader(searchpath="./app/character/templates/")
-    templateenv = jinja2.Environment(loader=templateloader)
-    template = templateenv.get_template(CHARACTER_TEMPLATE)
-    gtype = gametype
-    return json.loads(template.render(title=title,
-                                      timestamp=time.time(),
-                                      gametype=gtype))
+    schema = load_schema(schema_file)
+
+    nc = build_from_schema(schema)
+    nc['title'] = title
+
+    return nc
 
 
 register_game('coc7e', 'Call of Cthulhu TM', CoCMechanics)
