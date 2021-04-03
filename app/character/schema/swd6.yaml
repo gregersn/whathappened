@@ -1,17 +1,22 @@
 ---
+"$schema": "http://json-schema.org/draft-07/schema#"
 definitions:
   skill:
-    $id: #skill
+    type: object
     properties:
       base:
         type: string
+        default: ""
       skills:
         type: array
         items:
           type: object
           properties:
-            name: string
-            value: string
+            name:
+              type: string
+            value:
+              type: string
+        default: []
 
     required:
       - base
@@ -64,29 +69,17 @@ properties:
     type: object
     properties:
       dexterity:
-        type: object
-        allOf:
-          - $ref: "#/definitions/skill"
+        $ref: "#/definitions/skill"
       knowledge:
-        type: object
-        allOf:
-          - $ref: "#/definitions/skill"
+        $ref: "#/definitions/skill"
       mechanical:
-        type: object
-        allOf:
-          - $ref: "#/definitions/skill"
+        $ref: "#/definitions/skill"
       perception:
-        type: object
-        allOf:
-          - $ref: "#/definitions/skill"
+        $ref: "#/definitions/skill"
       strength:
-        type: object
-        allOf:
-          - $ref: "#/definitions/skill"
+        $ref: "#/definitions/skill"
       technical:
-        type: object
-        allOf:
-          - $ref: "#/definitions/skill"
+        $ref: "#/definitions/skill"
     required:
       - dexterity
       - knowledge
@@ -100,6 +93,7 @@ properties:
       type: string
   wound_status:
     type: integer
+    default: 0
   attributes:
     type: object
     properties:
@@ -123,7 +117,7 @@ properties:
       - force_sensitive
   description:
     type: object
-    propreties:
+    properties:
       equipment:
         type: string
         default: ""
