@@ -10,29 +10,38 @@
         "system": {
             "const": "tftl"
         },
+        "version": {
+            "const": "0.0.1"
+        },
         "meta": {
             "type": "object",
             "properties": {
                 "Title": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "New character"
                 },
                 "Creator": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "What happened? A TTRPG utility"
                 },
                 "CreateDate": {
-                    "type": "string"
+                    "type": "string",
+                    "default": ""
                 },
                 "GameName": {
                     "const": "Tales From The Loop"
                 },
                 "GameVersion": {
-                    "type": "string"
+                    "type": "string",
+                    "default": ""
                 },
                 "GameType": {
-                    "type": "string"
+                    "type": "string",
+                    "default": ""
                 },
                 "Disclaimer": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "We're not gonna take it!"
                 }
             }
         },
@@ -40,44 +49,55 @@
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "Unknown"
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "Unknown"
                 },
                 "age": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "Unknown"
                 },
                 "luck_points": {
                     "type": "integer",
                     "minimum": 0,
-                    "maximum": 5
+                    "maximum": 5,
+                    "default": 0
                 },
                 "drive": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "Unknown"
                 },
                 "anchor": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "Unknown"
                 },
                 "problem": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "Unknown"
                 },
                 "pride": {
                     "type": "object",
                     "properties": {
                         "description": {
-                            "type": "string"
+                            "type": "string",
+                            "default": "Unknown"
                         },
                         "used": {
-                            "type": "boolean"
+                            "type": "boolean",
+                            "default": false
                         }
                     }
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "Unknown"
                 },
                 "favorite_song": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "Unknown"
                 },
                 "portrait": {
                     "anyOf": [
@@ -98,13 +118,19 @@
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "default": [
+                        "Unknown"
+                    ]
                 },
                 "npcs": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "default": [
+                        "Unknown"
+                    ]
                 }
             }
         },
@@ -121,15 +147,23 @@
                         "minimum": 1,
                         "maximum": 3
                     }
-                }
+                },
+                "default": [
+                    {
+                        "name": "A precious thing",
+                        "bonus": 1
+                    }
+                ]
             },
             "uniqueItems": true
         },
         "hideout": {
-            "type": "string"
+            "type": "string",
+            "default": "Tree hut"
         },
         "notes": {
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "attributes": {
             "type": "object",
@@ -164,19 +198,24 @@
             "type": "object",
             "properties": {
                 "Upset": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 },
                 "Scared": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 },
                 "Exhausted": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 },
                 "Injured": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 },
                 "Broken": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 }
             }
         },
