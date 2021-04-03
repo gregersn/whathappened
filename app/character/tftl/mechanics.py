@@ -2,12 +2,12 @@ import os
 
 from ..core import CharacterMechanics
 from ..schema import validate
-schema_file = os.path.join(os.path.dirname(__file__), '../schema/tftl.json')
+CHARACTER_SCHEMA = os.path.join(os.path.dirname(__file__), '../schema/tftl.json')
 
 
 class TftlMechanics(CharacterMechanics):
     def validate(self):
-        return validate(self.parent.body, schema_file)
+        return validate(self.parent.body, CHARACTER_SCHEMA)
 
     def version(self):
         return '0.0.1'

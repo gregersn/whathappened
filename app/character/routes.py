@@ -24,6 +24,7 @@ from app.utils.schema import migrate
 from app.models import Invite
 from app.character.schema.coc7e import migrations, latest
 from app.database import session, paginate
+from app.character.schema import load_schema
 
 logger = logging.getLogger(__name__)
 
@@ -195,7 +196,23 @@ def view(id: int):
     if system_view is not None:
         return system_view(id, character, editable)
 
-    return render_template(character_module.CHARACTER_SHEET_TEMPLATE,
+    system_template = getattr(
+        character_module, 'CHARACTER_SHEET_TEMPLATE', None)
+
+    if system_template:
+        return render_template(character_module.CHARACTER_SHEET_TEMPLATE,
+                               character=character,
+                               editable=editable)
+
+    return render_general_view(character_module.CHARACTER_SCHEMA,
+                               character=character,
+                               editable=editable)
+
+
+def render_general_view(schema_file: str, character: Character, editable: bool):
+    schema = load_schema(schema_file)
+    return render_template('character/general_character.html.jinja',
+                           schema=schema,
                            character=character,
                            editable=editable)
 

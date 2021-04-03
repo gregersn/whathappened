@@ -1,0 +1,49 @@
+{% extends 'character/sheet.html.jinja' %}
+
+{%- macro render_section(name, section) %}
+    <div class="box">
+    <h3>{{ name }}</h3>
+    {% if 'type' in section and section.type == 'object' %}
+    {% for key, value in section.properties.items() %}
+        {{ key }} {{ value }}<br />
+    {% endfor %}
+    {% endif %}
+    </div>
+{%- endmacro %}
+
+
+{% block head %}
+    {{ super() }}
+
+    {% assets "scss_character_tftl" %}
+    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+    {% endassets %}
+
+    {% if editable %}
+    {{ webpack['tftl.js']}}
+    {% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+<div id="busy">
+
+</div>
+
+<div class="extrainfo">
+  {% if editable and character.campaigns %}
+    In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{ character.campaigns.0.title }}</a>
+  {% endif %}
+
+</div>
+
+<div class="charactersheet">
+{% for key, value in schema.properties.items() %}
+    <section id="{{ key }}">
+        {{ render_section(key, value) }}
+    </section>
+{% endfor %}
+</div>
+
+{% endblock %}
