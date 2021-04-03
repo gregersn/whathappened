@@ -1,13 +1,11 @@
 import os
-import json
-import time
-import jinja2
 import logging
 
 from ..core import register_game
 
 from .mechanics import TftlMechanics
 from .forms import CreateForm  # noqa F401
+from app.character.schema import load_schema, build_from_schema
 
 logger = logging.getLogger(__name__)
 
@@ -20,13 +18,12 @@ CHARACTER_SHEET_TEMPLATE = 'character/tftl/sheet.html.jinja'
 
 
 def new_character(title: str, **kwargs):
-    templateloader = jinja2 \
-        .FileSystemLoader(searchpath="./app/character/templates/")
-    templateenv = jinja2.Environment(loader=templateloader)
-    template = templateenv.get_template(CHARACTER_TEMPLATE)
-    return json.loads(template.render(title=title,
-                                      timestamp=time.time(),
-                                      ))
+    schema = load_schema(schema_file)
+
+    nc = build_from_schema(schema)
+    nc['title'] = title
+
+    return nc
 
 
 register_game('tftl', 'Tales from the Loop', TftlMechanics)
