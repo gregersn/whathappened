@@ -24,6 +24,7 @@ properties:
     properties:
       title:
         type: string
+        default: Unknown
     required:
       - title
   personalia:
@@ -32,20 +33,28 @@ properties:
       name:
         title: Character name
         type: string
+        default: ""
       type:
         type: string
+        default: ""
       gender:
         type: string
+        default: ""
       species:
         type: string
+        default: ""
       age:
         type: integer
+        default: 18
       height:
         type: string
+        default: ""
       weight:
         type: string
+        default: ""
       pyhsical_description:
         type: string
+        default: ""
     required:
       - type
       - species
@@ -96,32 +105,43 @@ properties:
     properties:
       move:
         type: integer
+        default: 0
       force_sensitive:
         type: boolean
+        default: false
       force_points:
         type: integer
+        default: 0
       dark_side_points:
         type: integer
+        default: 0
       character_points:
         type: integer
+        default: 0
     required:
       - move
       - force_sensitive
   description:
     type: object
-    propeties:
+    propreties:
       equipment:
         type: string
+        default: ""
       background:
         type: string
+        default: ""
       personality:
         type: string
+        default: ""
       objectives:
         type: string
+        default: ""
       quote:
         type: string
+        default: ""
       connections:
         type: string
+        default: ""
 required:
   - personalia
   - attributes
