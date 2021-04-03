@@ -209,12 +209,19 @@ def view(id: int):
                                editable=editable)
 
 
+def html_data_type(t: str) -> str:
+    if t == 'integer':
+        return 'number'
+    return t
+
+
 def render_general_view(schema_file: str, character: Character, editable: bool):
     schema = load_schema(schema_file)
     return render_template('character/general_character.html.jinja',
                            schema=schema,
                            character=character,
-                           editable=editable)
+                           editable=editable,
+                           html_data_type=html_data_type)
 
 
 @bp.route('/<int:id>/tokens/', methods=('GET', 'POST'))

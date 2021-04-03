@@ -1,12 +1,23 @@
 {% extends 'character/sheet.html.jinja' %}
 
-{%- macro render_section(name, section) %}
+{%- macro render_object(object, path='') %}
+    Path: {{ path }}<br />
+    {% for key, value in object.properties.items() %}
+        {% if value.type == 'string' or value.type == 'integer' %}
+            {{ key }}: {{ editable_field(path + '.' + key, type=html_data_type(value.type)) }}<br />
+        {% elif value.type == 'boolean' %}
+            {{key}}: {{ editable_binary(path + '.' + key) }}<br />
+        {% else %}
+        {{path}}.{{key}} {{ value }}<br />
+        {% endif %}
+    {% endfor %}
+{%- endmacro %}
+
+{%- macro render_section(name, section, path='') %}
     <div class="box">
     <h3>{{ name }}</h3>
     {% if 'type' in section and section.type == 'object' %}
-    {% for key, value in section.properties.items() %}
-        {{ key }} {{ value }}<br />
-    {% endfor %}
+        {{ render_object(section, name)}}
     {% endif %}
     </div>
 {%- endmacro %}
