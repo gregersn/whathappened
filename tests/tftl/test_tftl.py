@@ -5,7 +5,7 @@ import pytest
 from jsonschema import validate
 
 from app.character.schema import load_schema
-from app.character.tftl import schema_file
+from app.character.tftl import CHARACTER_SCHEMA
 from app.character.tftl import new_character
 from app.character.models import Character
 
@@ -23,5 +23,5 @@ def fixture_test_character() -> Character:
 
 def test_validate():
     nc = new_character("Test Character")
-    schema = load_schema(schema_file)
+    schema = load_schema(CHARACTER_SCHEMA)
     validate(nc, schema=schema)
