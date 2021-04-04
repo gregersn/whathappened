@@ -71,9 +71,3 @@ or if you're running Fish:
 `$ make clean`
 
 will clean out the build artefacts.
-
-### Troubleshooting
-
-#### No stylesheet
-
-You probably need to install sass.
