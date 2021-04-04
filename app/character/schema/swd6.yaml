@@ -1,5 +1,4 @@
 ---
-"$schema": "http://json-schema.org/draft-07/schema#"
 definitions:
   skill:
     type: object
@@ -32,113 +31,118 @@ properties:
         default: Unknown
     required:
       - title
-  personalia:
+  character_sheet:
     type: object
     properties:
-      name:
-        title: Character name
-        type: string
-        default: ""
-      type:
-        type: string
-        default: ""
-      gender:
-        type: string
-        default: ""
-      species:
-        type: string
-        default: ""
-      age:
-        type: integer
-        default: 18
-      height:
-        type: string
-        default: ""
-      weight:
-        type: string
-        default: ""
-      pyhsical_description:
-        type: string
-        default: ""
-    required:
-      - type
-      - species
-      - age
+      personalia:
+        type: object
+        properties:
+          name:
+            title: Character name
+            type: string
+            default: ""
+          type:
+            type: string
+            default: ""
+          gender:
+            type: string
+            default: ""
+          species:
+            type: string
+            default: ""
+          age:
+            type: integer
+            default: 18
+          height:
+            type: string
+            default: ""
+          weight:
+            type: string
+            default: ""
+          pyhsical_description:
+            type: string
+            default: ""
+        required:
+          - type
+          - species
+          - age
 
-  stats:
-    type: object
-    properties:
-      dexterity:
-        $ref: "#/definitions/skill"
-      knowledge:
-        $ref: "#/definitions/skill"
-      mechanical:
-        $ref: "#/definitions/skill"
-      perception:
-        $ref: "#/definitions/skill"
-      strength:
-        $ref: "#/definitions/skill"
-      technical:
-        $ref: "#/definitions/skill"
+      stats:
+        type: object
+        properties:
+          dexterity:
+            $ref: "#/definitions/skill"
+          knowledge:
+            $ref: "#/definitions/skill"
+          mechanical:
+            $ref: "#/definitions/skill"
+          perception:
+            $ref: "#/definitions/skill"
+          strength:
+            $ref: "#/definitions/skill"
+          technical:
+            $ref: "#/definitions/skill"
+        required:
+          - dexterity
+          - knowledge
+          - mechanical
+          - perception
+          - strength
+          - technical
+      special_abilities:
+        type: array
+        items:
+          type: string
+      wound_status:
+        type: integer
+        default: 0
+      attributes:
+        type: object
+        properties:
+          move:
+            type: integer
+            default: 0
+          force_sensitive:
+            type: boolean
+            default: false
+          force_points:
+            type: integer
+            default: 0
+          dark_side_points:
+            type: integer
+            default: 0
+          character_points:
+            type: integer
+            default: 0
+        required:
+          - move
+          - force_sensitive
+      description:
+        type: object
+        properties:
+          equipment:
+            type: string
+            default: ""
+          background:
+            type: string
+            default: ""
+          personality:
+            type: string
+            default: ""
+          objectives:
+            type: string
+            default: ""
+          quote:
+            type: string
+            default: ""
+          connections:
+            type: string
+            default: ""
     required:
-      - dexterity
-      - knowledge
-      - mechanical
-      - perception
-      - strength
-      - technical
-  special_abilities:
-    type: array
-    items:
-      type: string
-  wound_status:
-    type: integer
-    default: 0
-  attributes:
-    type: object
-    properties:
-      move:
-        type: integer
-        default: 0
-      force_sensitive:
-        type: boolean
-        default: false
-      force_points:
-        type: integer
-        default: 0
-      dark_side_points:
-        type: integer
-        default: 0
-      character_points:
-        type: integer
-        default: 0
-    required:
-      - move
-      - force_sensitive
-  description:
-    type: object
-    properties:
-      equipment:
-        type: string
-        default: ""
-      background:
-        type: string
-        default: ""
-      personality:
-        type: string
-        default: ""
-      objectives:
-        type: string
-        default: ""
-      quote:
-        type: string
-        default: ""
-      connections:
-        type: string
-        default: ""
+      - personalia
+      - attributes
+      - stats
+
 required:
-  - personalia
-  - attributes
-  - stats
   - meta
   - system

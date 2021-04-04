@@ -24,10 +24,12 @@
     "python.analysis.diagnosticMode": "workspace",
     "yaml.validate": true,
     "yaml.schemas": {
-        "./app/character/schema/swd6.yaml": [
-            "swd6/blank_character.yaml"
-        ],
+        "./app/character/character_sheet.yaml": [
+            "./app/character/schema/*.yaml",
+            "./app/character/schema/*.json"
+        ]
     },
+    "yaml.trace.server": "messages",
     "json.schemas": [
         {
             "url": "app/character/schema/coc7e.json"

@@ -1,5 +1,6 @@
 """Test functions related to Star Wars WEG D6."""
 import os
+import yaml
 import pytest
 
 from jsonschema import validate
@@ -19,6 +20,16 @@ def fixture_test_character() -> Character:
                   body=nc)
 
     return c
+
+
+def test_validate_schema():
+    schema = load_schema(os.path.join(os.path.dirname(__file__),
+                                      '../../app/character/character_sheet.yaml'))
+
+    with open(CHARACTER_SCHEMA, 'r') as f:
+        data = yaml.safe_load(f)
+
+        validate(data, schema=schema)
 
 
 def test_validate():

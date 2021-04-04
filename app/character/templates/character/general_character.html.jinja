@@ -3,22 +3,28 @@
 {%- macro render_object(object, path='') %}
     Path: {{ path }}<br />
     {% for key, value in object.properties.items() %}
-        {% if value.type == 'string' or value.type == 'integer' %}
-            {{ key }}: {{ editable_field(path + '.' + key, type=html_data_type(value.type)) }}<br />
-        {% elif value.type == 'boolean' %}
-            {{key}}: {{ editable_binary(path + '.' + key) }}<br />
-        {% else %}
-        {{path}}.{{key}} {{ value }}<br />
-        {% endif %}
+        {{ key }}: {{ render_item(value, path + '.' + key) }}<br />
     {% endfor %}
+{%- endmacro %}
+
+{%- macro render_item(item, path='' )%}
+    {% if 'type' in item and item.type == 'object' %}
+        {{ render_object(item, path)}}
+    {% elif 'type' in item and item.type == 'array' %}
+        Here is a list
+    {% elif 'type' in item and (item.type == 'integer' or item.type == 'string') %}
+        {{ editable_field(path, type=html_data_type(item.type)) }}
+    {% elif 'type' in item and item.type == 'boolean'%}
+        {{ editable_binary(path) }}
+    {% else %}
+        {{ item }}
+    {% endif %}
 {%- endmacro %}
 
 {%- macro render_section(name, section, path='') %}
     <div class="box">
     <h3>{{ name }}</h3>
-    {% if 'type' in section and section.type == 'object' %}
-        {{ render_object(section, name)}}
-    {% endif %}
+    {{ render_item(section, path + "." + name)}}    
     </div>
 {%- endmacro %}
 
@@ -50,9 +56,9 @@
 </div>
 
 <div class="charactersheet">
-{% for key, value in schema.properties.items() %}
+{% for key, value in schema.properties.character_sheet.properties.items() %}
     <section id="{{ key }}">
-        {{ render_section(key, value) }}
+        {{ render_section(key, value, 'character_sheet') }}
     </section>
 {% endfor %}
 </div>
