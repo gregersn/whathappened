@@ -4,7 +4,7 @@
   "description": "",
   "private": "true",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.js --progress",
     "watch": "webpack --config webpack.config.js --watch --mode=\"development\"",
     "test": "jest --collectCoverageFrom=src/**/*.ts --collectCoverage"
   },
