@@ -165,7 +165,7 @@ class Character(Base):
             if data is not None:
                 self.mechanics.set_portrait(fix_image(data))
         else:
-            logger.debug("Set some other attribute")
+            logger.debug(f"Set '{attribute['field']}' to '{attribute['value']}'")
             s = reduce(lambda x, y: x[y], attribute['field'].split(".")[:-1],
                        self.data)
             s[attribute['field'].split(".")[-1]] = attribute['value']
