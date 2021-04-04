@@ -34,23 +34,29 @@ Come back later.
 
 ## Development and testing
 
-I suggest doing development in a virtual environment. 
-To get started clone the project with git. 
-In the folder you create a new virtual environment
+To get started, clone the project with git. Now run:
 
 ```
-$ python3 -m venv venv
-$ source venv/bin/activate
-(venv) $ pip3 install -r requirements.txt
+$ make setup
 ```
 
-If you are using a different shell than bash, e.g. fish, the activation might not work like that, but you can then do
+This will have created a virtual environment for you. Feel free to activate it
+if you want, but all the make targets will do it for you if you only use those.
+
+You can run the flask app with:
+
+```
+$ make dev
+```
+
+See the output for the URL where it can be reached.
+
+### Other shells
+
+If you are using a different shell than `bash` or `zsh`, e.g. `fish`, the
+activation might not work like that, but you can then do
 
 `$ . venv/bin/activate.fish`
-
-Run flask with
-
-`$ FLASK_ENV=development flask run`
 
 ### Troubleshooting
 
