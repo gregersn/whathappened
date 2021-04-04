@@ -25,5 +25,6 @@ app/static/manifest.json
 nosetests.xml
 
 .env
+.vscode/chrome/
 
 uploads/
