@@ -4,7 +4,24 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
+        {
+            "trace": true,
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:5000",
+            "webRoot": "${workspaceFolder}/frontend/",
+            "userDataDir": "${workspaceRoot}/.vscode/chrome",
+            "sourceMaps": true,
+            "disableNetworkCache": true,
+            // we have multiple js source folders, so some source maps are still generated with webpack protocol links. Don't know why?
+            "sourceMapPathOverrides": { // if you override this, you MUST provide all defaults again
+                "webpack:///./~/*": "${webRoot}/node_modules/*", // a default
+                "webpack:///./*": "${webRoot}/src/*", // unsure how/why webpack generates ./links.js
+                "webpack:///../*": "${webRoot}/src/*", // unsure how/why webpack generates ../links.js
+                "webpack:///*": "*" // a default, catch everything else
+            }
+        },
         {
             "name": "What Happened?",
             "type": "python",
