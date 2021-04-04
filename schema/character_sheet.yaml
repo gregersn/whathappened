@@ -1,0 +1,49 @@
+---
+type: object
+properties: # this
+  definitions:
+    type: object
+  properties: # character_sheet
+    type: object
+    properties: # this
+      system: {}
+      meta:
+        type: object
+        properties: # this
+          properties:
+            type: object
+            properties: # this
+              title:
+                type: object
+                properties:
+                  properties: # this
+                    type: object
+                    properties: # this
+                      type:
+                        type: string
+                      default:
+                        type: string
+                    required:
+                      - type
+                      - default
+          type:
+            const: object
+        required:
+          - properties
+          - type
+      character_sheet:
+        type: object
+    required:
+      - system
+      - meta
+      - character_sheet
+  type:
+    type: string
+  required:
+    type: array
+    items:
+      type: string
+
+required:
+  - properties
+  - type

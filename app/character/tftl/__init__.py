@@ -10,7 +10,7 @@ from app.character.schema import load_schema, build_from_schema
 logger = logging.getLogger(__name__)
 
 CHARACTER_SCHEMA = os.path.join(
-    os.path.dirname(__file__), '../schema/tftl.json')
+    os.path.dirname(__file__), '../schema/tftl.yaml')
 
 CHARACTER_TEMPLATE = 'character/tftl/blank_character.json.jinja'
 CREATE_TEMPLATE = 'character/tftl/create.html.jinja'
