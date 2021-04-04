@@ -34,36 +34,46 @@ Come back later.
 
 ## Development and testing
 
-To get started, clone the project with git. Now run:
+To get started, clone the project with git.
 
-```
-$ make setup
-```
+### Prerequisites
 
-This will have created a virtual environment for you. Feel free to activate it
-if you want, but all the make targets will do it for you if you only use those.
+* `make` (probably the GNU variety)
+* `node` and `npm`
+* Python 3
 
-You can run the flask app with:
+### Setup and build
 
-```
-$ make dev
-```
+The following command sets up dependencies for you, and builds and runs the
+Flask app. See the terminal output for the URL where it can be reached.
 
-See the output for the URL where it can be reached.
+`$ make`
 
-### Other shells
+### Notes
 
-If you are using a different shell than `bash` or `zsh`, e.g. `fish`, the
-activation might not work like that, but you can then do
+#### How to only run the setup part
+
+`$ make setup`
+
+This creates a Python virtual environment for you. All the make targets will
+activate it as needed, but feel free to activate it in your shell if you want or
+need to:
+
+`$ . venv/bin/activate`
+
+or if you're running Fish:
 
 `$ . venv/bin/activate.fish`
 
+
+#### Cleaning
+
+`$ make clean`
+
+will clean out the build artefacts.
+
 ### Troubleshooting
 
-### No stylesheet
+#### No stylesheet
 
 You probably need to install sass.
-
-### No javascript
-
-You need to have typescript installed.
