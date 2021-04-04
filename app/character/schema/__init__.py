@@ -73,6 +73,8 @@ def build_from_schema(schema: Union[List, Dict]) -> Union[Dict, List, str, int, 
             return build_boolean(schema)
         if schema.get('type') == 'array':
             return build_array(schema)
+        if 'default' in schema:
+            return schema['default']
 
     elif isinstance(schema, List):
         logger.debug("Handling a list")
