@@ -233,8 +233,9 @@ export const editable_table = (table: HTMLTableElement, save: (data: Tabledata) 
     const button = document.createElement('button');
     button.innerHTML = "Add row";
 
+    const table_body = table.getElementsByTagName('tbody')[0];
     button.onclick = () => {
-        const new_row = table.insertRow(-1);
+        const new_row = table_body.insertRow(-1);
         new_row.innerHTML = "<td>-</td>".repeat(cells.length);
         make_row_editable(new_row, fields);
     }
