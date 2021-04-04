@@ -17,12 +17,14 @@ from .forms import DeleteForm
 # Imports for registering games.
 from . import coc7e
 from . import tftl  # noqa
+from . import swd6  # noqa
 
 from app.models import LogEntry
 from app.utils.schema import migrate
 from app.models import Invite
 from app.character.schema.coc7e import migrations, latest
 from app.database import session, paginate
+from app.character.schema import load_schema, sub_schema
 
 logger = logging.getLogger(__name__)
 
@@ -194,9 +196,33 @@ def view(id: int):
     if system_view is not None:
         return system_view(id, character, editable)
 
-    return render_template(character_module.CHARACTER_SHEET_TEMPLATE,
+    system_template = getattr(
+        character_module, 'CHARACTER_SHEET_TEMPLATE', None)
+
+    if system_template:
+        return render_template(character_module.CHARACTER_SHEET_TEMPLATE,
+                               character=character,
+                               editable=editable)
+
+    return render_general_view(character_module.CHARACTER_SCHEMA,
+                               character=character,
+                               editable=editable)
+
+
+def html_data_type(t: str) -> str:
+    if t == 'integer':
+        return 'number'
+    return t
+
+
+def render_general_view(schema_file: str, character: Character, editable: bool):
+    schema = load_schema(schema_file)
+    return render_template('character/general_character.html.jinja',
+                           schema=schema,
                            character=character,
-                           editable=editable)
+                           editable=editable,
+                           html_data_type=html_data_type,
+                           get_ref=sub_schema)
 
 
 @bp.route('/<int:id>/tokens/', methods=('GET', 'POST'))

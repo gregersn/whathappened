@@ -18,6 +18,8 @@ def register_assets(assets: Environment):
     assets.register('scss_character', 'character/scss/character.scss',
                     filters='pyscss',
                     output='css/character.css')
+
+    # TODO: Move this into register_game(?)
     assets.register('scss_character_coc7e',
                     'character/scss/character_coc7e.scss',
                     filters='pyscss',

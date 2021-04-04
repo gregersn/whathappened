@@ -4,7 +4,7 @@ import logging
 from ..core import CharacterMechanics
 from ..schema import validate
 
-schema_file = os.path.join(os.path.dirname(__file__), '../schema/coc7e.json')
+CHARACTER_SCHEMA = os.path.join(os.path.dirname(__file__), '../schema/coc7e.json')
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class CoCMechanics(CharacterMechanics):
             return None
 
     def validate(self):
-        return validate(self.parent.body, schema_file)
+        return validate(self.parent.body, CHARACTER_SCHEMA)
 
     def version(self):
         return '0.0.4'

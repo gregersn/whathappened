@@ -1,6 +1,6 @@
 from jsonschema import validate
 
-from app.character.coc7e import schema_file, new_character
+from app.character.coc7e import CHARACTER_SCHEMA, new_character
 from app.character.schema import load_schema
 
 latest = '0.0.4'
@@ -100,7 +100,7 @@ def v003_to_v002(data):
 def v001_to_002(data):
     data = data.copy()
     nc = new_character("Test Character", "Classic (1920's)")
-    schema = load_schema(schema_file)
+    schema = load_schema(CHARACTER_SCHEMA)
     validate(nc, schema=schema)
 
     start_values = {skill['name']: str(skill['start_value'])
