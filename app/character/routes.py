@@ -24,7 +24,7 @@ from app.utils.schema import migrate
 from app.models import Invite
 from app.character.schema.coc7e import migrations, latest
 from app.database import session, paginate
-from app.character.schema import load_schema
+from app.character.schema import load_schema, sub_schema
 
 logger = logging.getLogger(__name__)
 
@@ -221,7 +221,8 @@ def render_general_view(schema_file: str, character: Character, editable: bool):
                            schema=schema,
                            character=character,
                            editable=editable,
-                           html_data_type=html_data_type)
+                           html_data_type=html_data_type,
+                           get_ref=sub_schema)
 
 
 @bp.route('/<int:id>/tokens/', methods=('GET', 'POST'))

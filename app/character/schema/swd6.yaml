@@ -42,6 +42,7 @@ properties:
             type: string
             default: ""
           type:
+            title: Character type
             type: string
             default: ""
           gender:
@@ -60,6 +61,7 @@ properties:
             type: string
             default: ""
           pyhsical_description:
+            title: "Physical description"
             type: string
             default: ""
         required:

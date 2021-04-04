@@ -1,21 +1,28 @@
 {% extends 'character/sheet.html.jinja' %}
 
 {%- macro render_object(object, path='') %}
-    Path: {{ path }}<br />
+<div>
     {% for key, value in object.properties.items() %}
-        {{ key }}: {{ render_item(value, path + '.' + key) }}<br />
+        {{ value.title if 'title' in value else key }}: {{ render_item(value, path + '.' + key) }}<br />
     {% endfor %}
+</div>
 {%- endmacro %}
 
 {%- macro render_item(item, path='' )%}
     {% if 'type' in item and item.type == 'object' %}
         {{ render_object(item, path)}}
     {% elif 'type' in item and item.type == 'array' %}
-        Here is a list
+        <ul class="{%- if editable %} editable_list{%- endif %}" data-field="{{path}}">
+        {% for litem in character.attribute(path) or [] %}
+            <li>{{ litem }}</li>
+        {% endfor %}
+        </ul>
     {% elif 'type' in item and (item.type == 'integer' or item.type == 'string') %}
         {{ editable_field(path, type=html_data_type(item.type)) }}
     {% elif 'type' in item and item.type == 'boolean'%}
         {{ editable_binary(path) }}
+    {%  elif '$ref' in item %}
+        {{ render_item(get_ref(schema, item['$ref']), path)}}
     {% else %}
         {{ item }}
     {% endif %}
