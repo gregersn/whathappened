@@ -179,6 +179,7 @@
             </section>
         </div>
     </section>
+    {% if editable %}
     <section class="box">
         <h3>Backstory</h3>
         <section class="backstory">
@@ -224,6 +225,7 @@
             </div>
         </section>
     </section>
+    {% endif %}
     <section class="splitcontainer">
         <div class="gearpossessions box">
             <h3>Gear &amp; Possessions</h3>
@@ -244,6 +246,7 @@
             </section>
         </div>
     </section>
+    {% if editable %}
     <section>
         <div class="notes box">
         <h3>Notes</h3>
@@ -252,5 +255,6 @@
         </div>
         </div>
     </section>
+    {% endif %}
 </div>
 {% endblock %}
