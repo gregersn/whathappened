@@ -6,7 +6,7 @@ from typing import Literal
 
 
 from .mechanics import CoCMechanics
-from .mechanics import schema_file  # noqa F401
+from .mechanics import CHARACTER_SCHEMA  # noqa F401
 
 from ..core import register_game
 
