@@ -10,8 +10,8 @@ export type Listdata = string[];
 export type SaveFunction = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => void
 
 function saveElement(editfield: HTMLInputElement, element: HTMLElement, save: SaveFunction, editable_handler: (e: Event) => void) {
-    let value = null; 
-    if(editfield.type === "number") {
+    let value = null;
+    if (editfield.type === "number") {
         value = editfield.valueAsNumber;
     }
     else {
@@ -19,7 +19,7 @@ function saveElement(editfield: HTMLInputElement, element: HTMLElement, save: Sa
     }
     const datafields: DOMStringMap = element.dataset;
     const data = Object.assign({}, datafields);
-    
+
     const field = element.getAttribute('data-field');
     console.log(`Save changes to ${field}, new value ${value}`);
     element.innerHTML = value;
@@ -28,9 +28,9 @@ function saveElement(editfield: HTMLInputElement, element: HTMLElement, save: Sa
 }
 
 export function list_to_obj(list: HTMLUListElement): Listdata {
-    let data_rows  = []
+    let data_rows = []
     const lines: HTMLLIElement[] = Array.from(list.getElementsByTagName('li'));
-    for(const line of lines) {
+    for (const line of lines) {
         data_rows.push(line.innerHTML);
     }
     return data_rows;
@@ -39,7 +39,7 @@ export function list_to_obj(list: HTMLUListElement): Listdata {
 export const editable_list = (list: HTMLUListElement, save: (data: Listdata) => void) => {
     console.log("Editable list...");
     const lines: HTMLLIElement[] = Array.from(list.getElementsByTagName('li'));
-    for(const line of lines) {
+    for (const line of lines) {
         make_element_editable(line, (data: any) => {
             save(list_to_obj(list));
         })
@@ -65,18 +65,30 @@ function editElement(element: HTMLElement, type: edit_type, save: SaveFunction, 
     const value = element.innerHTML;
     let editfield = null;
 
-    if(type === "string") {
+    let choices = element.getAttribute('data-choices');
+
+
+    if (choices) {
+        editfield = document.createElement("select");
+        (JSON.parse(choices)).forEach(choice => {
+            const option = document.createElement('option');
+            option.value = choice
+            option.innerHTML = choice
+            editfield.appendChild(option)
+        });
+    }
+    else if (type === "string") {
         editfield = document.createElement("input");
     }
-    else if(type === "number") {
+    else if (type === "number") {
         editfield = document.createElement("input");
         editfield.type = "number";
     }
-    else if(type === "area") {
+    else if (type === "area") {
         editfield = document.createElement('textarea');
     }
     else {
-        editfield = document.createElement("input");       
+        editfield = document.createElement("input");
     }
 
     editfield.value = value;
@@ -90,11 +102,11 @@ function editElement(element: HTMLElement, type: edit_type, save: SaveFunction, 
     })
 
     editfield.addEventListener("keypress", (e) => {
-        if(e.keyCode === 13 && e.shiftKey === false) {
+        if (e.keyCode === 13 && e.shiftKey === false) {
             saveElement(editfield, element, save, editable_handler);
         }
     })
-    
+
     element.removeEventListener("click", editable_handler);
 }
 
@@ -110,26 +122,26 @@ const make_editable_handler = (element: HTMLElement, save: SaveFunction, type: e
     return f;
 }
 
-export function make_element_editable(element: HTMLElement, save: SaveFunction, type: edit_type  = "input") {
+export function make_element_editable(element: HTMLElement, save: SaveFunction, type: edit_type = "input") {
     const editable_handler = make_editable_handler(element, save, type);
     element.addEventListener("click", editable_handler);
 }
 
 
 
-export function get_meta_tag(tagname: string): string|undefined {
+export function get_meta_tag(tagname: string): string | undefined {
     const metas = document.getElementsByTagName('meta');
-    for(const meta of metas) {
-        if(meta.name === tagname)
+    for (const meta of metas) {
+        if (meta.name === tagname)
             return meta.content;
     }
     return undefined;
 }
 
-export function show_message(message: string|HTMLElement) {
+export function show_message(message: string | HTMLElement) {
     const message_box = document.getElementById('messagebox');
     message_box.innerHTML = "";
-    if(message instanceof HTMLElement) {
+    if (message instanceof HTMLElement) {
         message_box.appendChild(message);
     } else {
         message_box.innerHTML = message;
@@ -138,7 +150,7 @@ export function show_message(message: string|HTMLElement) {
 }
 
 
-export function send_update(datamap: Datamap|DOMStringMap, value: any) {
+export function send_update(datamap: Datamap | DOMStringMap, value: any) {
     const busy = document.getElementById("busy");
     const xhr = new XMLHttpRequest()
     const url = document.location.href + 'update';
@@ -148,7 +160,7 @@ export function send_update(datamap: Datamap|DOMStringMap, value: any) {
     xhr.setRequestHeader('x-csrf-token', get_meta_tag('_token'));
     xhr.onload = () => {
         console.log(`Post done, got ${xhr.status} ${xhr.statusText}`);
-        if(xhr.status === 200 && xhr.statusText === 'OK') {
+        if (xhr.status === 200 && xhr.statusText === 'OK') {
             busy.style.display = 'none';
         }
     }
@@ -157,7 +169,7 @@ export function send_update(datamap: Datamap|DOMStringMap, value: any) {
 
     console.log(`Sending: ${JSON.stringify(datamap)}`);
     busy.style.display = 'block';
-    xhr.send(JSON.stringify([datamap, ]));
+    xhr.send(JSON.stringify([datamap,]));
 }
 
 
@@ -174,17 +186,17 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
 
     //const tableName = table.getAttribute('data-field');
     const fields = Array.from(table.tHead.rows[0].cells).map((element, index) => {
-        return {'property': element.getAttribute('data-property'), 'index': index, 'type': element.getAttribute('data-type')};
+        return { 'property': element.getAttribute('data-property'), 'index': index, 'type': element.getAttribute('data-type') };
     }).filter((element, index) => {
-        if(element['property']) return true;
+        if (element['property']) return true;
         return false;
     });
 
     const rows = Array.from(table.tBodies[0].rows);
-    for(const row of rows) {
+    for (const row of rows) {
         const row_data = {}
         fields.forEach(field => {
-            if(field['type'] === "number") {
+            if (field['type'] === "number") {
                 row_data[field['property']] = Number.parseInt(row.cells.item(field['index']).innerHTML);
             } else {
                 row_data[field['property']] = row.cells.item(field['index']).innerHTML;
@@ -211,7 +223,7 @@ export const editable_table = (table: HTMLTableElement, save: (data: Tabledata) 
         const cells = Array.from(row.cells);
         //console.log(fields);
         cells.forEach((cell, index) => {
-            if(fields.find(field => (field['index'] === index))) {
+            if (fields.find(field => (field['index'] === index))) {
                 make_cell_editable(cell);
             }
         })
@@ -219,14 +231,14 @@ export const editable_table = (table: HTMLTableElement, save: (data: Tabledata) 
 
     const cells = Array.from(table.tHead.rows[0].cells);
     const fields = cells.map((element, index) => {
-        return {'property': element.getAttribute('data-property'), 'index': index};
+        return { 'property': element.getAttribute('data-property'), 'index': index };
     }).filter((element, index) => {
-        if(element['property']) return true;
+        if (element['property']) return true;
         return false;
     });
 
-    const rows =  Array.from(table.tBodies[0].rows);
-    for(const row of rows) {
+    const rows = Array.from(table.tBodies[0].rows);
+    for (const row of rows) {
         make_row_editable(row, fields);
     }
     const parent = table.parentElement;
@@ -246,7 +258,7 @@ export const editable_table = (table: HTMLTableElement, save: (data: Tabledata) 
 export function init_set_portrait(field_name: string) {
     console.log("Init set portrait");
     const portraitbox: HTMLElement = <HTMLElement>document.getElementsByClassName('portrait')[0];
-    if(portraitbox.classList.contains("editable")) {
+    if (portraitbox.classList.contains("editable")) {
         const uploadelement: HTMLInputElement = document.createElement('input');
         uploadelement.type = 'file';
         uploadelement.style.display = 'none';
@@ -254,7 +266,7 @@ export function init_set_portrait(field_name: string) {
             const reader = new FileReader();
             reader.readAsDataURL(uploadelement.files[0]);
             reader.onload = () => {
-                send_update({field: field_name, type: 'portrait'}, reader.result);
+                send_update({ field: field_name, type: 'portrait' }, reader.result);
             }
         }
 

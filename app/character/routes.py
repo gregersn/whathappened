@@ -1,4 +1,7 @@
-from app.character.core import GameSystems
+import os
+from app.character import core
+from app.character.core import CHARACTER_SCHEMA_DIR, GameSystems
+from app.character.schema import load_schema, sub_schema
 import logging
 
 from flask import render_template, request
@@ -60,13 +63,14 @@ def index():
 @bp.route('/create/<string:chartype>/', methods=('GET', 'POST'))
 def create(chartype: str):
 
-    character_module = globals()[chartype]
+    character_module = globals()[chartype] if chartype in globals() else core
 
     form = getattr(character_module, 'CreateForm', CreateForm)()
     template = getattr(character_module, 'CREATE_TEMPLATE',
                        'character/create.html.jinja')
 
     if form.validate_on_submit():
+        logger.debug(f"Creating new character specified by {form.data}")
         char_data = character_module.new_character(**form.data)
         c = Character(title=form.title.data,
                       body=char_data,
@@ -187,16 +191,49 @@ def view(id: int):
     if (character.system is None or character.validate()) and editable:
         return redirect(url_for('character.editjson', id=id))
 
-    character_module = globals()[character.system]
+    character_module = (globals()[character.system]
+                        if character.system in globals()
+                        else core)
 
     system_view = getattr(character_module, 'view', None)
 
     if system_view is not None:
         return system_view(id, character, editable)
 
-    return render_template(character_module.CHARACTER_SHEET_TEMPLATE,
+    system_template = getattr(
+        character_module, 'CHARACTER_SHEET_TEMPLATE', None)
+
+    if system_template:
+        return render_template(character_module.CHARACTER_SHEET_TEMPLATE,
+                               character=character,
+                               editable=editable)
+
+    character_schema = getattr(
+        character_module, 'CHARACTER_SCHEMA', None)
+
+    if character_schema is None:
+        character_schema = os.path.join(
+            CHARACTER_SCHEMA_DIR, character.system + '.yaml')
+
+    return render_general_view(character_schema,
+                               character=character,
+                               editable=editable)
+
+
+def html_data_type(t: str) -> str:
+    if t == 'integer':
+        return 'number'
+    return t
+
+
+def render_general_view(schema_file: str, character: Character, editable: bool):
+    schema = load_schema(schema_file)
+    return render_template('character/general_character.html.jinja',
+                           schema=schema,
                            character=character,
-                           editable=editable)
+                           editable=editable,
+                           html_data_type=html_data_type,
+                           get_ref=sub_schema)
 
 
 @bp.route('/<int:id>/tokens/', methods=('GET', 'POST'))
