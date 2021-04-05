@@ -36,6 +36,11 @@ $(FRONTEND_MARKER): frontend/package.json
 frontend: $(FRONTEND_MARKER) setup
 	@$(VENV_RUN) flask main build
 
+.PHONY: coverage
+coverage: venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
+	@$(VENV_RUN) pytest --cov=app tests/
+	@cd frontend && npm test
+
 # Clean out build artefacts:
 clean:
 	$(RMRF) venv
