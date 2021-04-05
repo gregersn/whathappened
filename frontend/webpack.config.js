@@ -13,7 +13,8 @@ module.exports = {
         sheet: "./src/sheet/index.ts",
         coc7e: "./src/coc7e/index.ts",
         tftl: "./src/tftl/index.ts",
-        tokens: "./src/tokens/index.ts"
+        tokens: "./src/tokens/index.ts",
+        general: "./src/general/index.ts"
     },
     module: {
         rules: [
