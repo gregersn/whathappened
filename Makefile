@@ -15,9 +15,10 @@ dev_server: frontend
 .PHONY: setup_dependencies
 setup_dependencies: venv/$(MARKER_FILENAME)
 
-venv/$(MARKER_FILENAME): requirements.txt
+venv/$(MARKER_FILENAME): requirements.txt requirements-dev.txt
 	@python3 -m venv venv
 	@$(VENV_RUN) pip3 install -r requirements.txt
+	@$(VENV_RUN) pip3 install -r requirements-dev.txt
 	@touch $@
 
 # Initialise database:
