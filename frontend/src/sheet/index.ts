@@ -1,4 +1,4 @@
-import { make_element_editable, saveCheck, show_message } from "../common";
+import { make_element_editable, saveCheck, show_message } from "../common";
 import { send_update, Datamap, Elementdata, Tabledata } from "../common";
 import { editable_list, editable_table, Listdata, edit_type } from "../common"
 import { editable_check_progress } from "../widgets/check_progress";
@@ -6,7 +6,7 @@ import { editable_check_progress } from "../widgets/check_progress";
 
 function init_sharebutton() {
     const button = document.getElementById('sharebtn')
-    if(button) {
+    if (button) {
         button.onclick = (e: Event) => {
             e.preventDefault();
             console.log("Activate share to get link")
@@ -29,8 +29,8 @@ function init_sharebutton() {
 function init_editable() {
     console.log("Init editable values");
     const editables: HTMLElement[] = <HTMLElement[]>Array.from(document.getElementsByClassName('editable'));
-    
-    const save = (datamap: Datamap | DOMStringMap, data: Elementdata|Tabledata) => {
+
+    const save = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => {
         console.log("Save data");
         console.log(data);
         send_update(datamap, data);
@@ -38,7 +38,7 @@ function init_editable() {
 
     editables.forEach(element => {
         const dataType = element.getAttribute('data-type');
-        switch(dataType) {
+        switch (dataType) {
             case 'area':
                 make_element_editable(element, save, "area");
                 break;
@@ -55,7 +55,7 @@ function init_editable_binaries() {
     console.log("Init editable binaries");
     const checkboxes: HTMLInputElement[] = Array.from(document.getElementsByTagName('input'));
     checkboxes.forEach(element => {
-        if(element.type === "checkbox" && element.getAttribute('data-type') === 'binary') {
+        if (element.type === "checkbox" && element.getAttribute('data-type') === 'binary') {
             element.onchange = () => {
                 //console.log(element.getAttribute('data-field'), element.checked);
                 saveCheck(element);
@@ -72,7 +72,7 @@ function init_editable_lists() {
         editable_list(list, (data: Listdata) => {
             const field = list.getAttribute('data-field');
             console.log("Saving list.\n"); console.log(data);
-            send_update({field: field}, data)
+            send_update({ field: field }, data)
         })
     })
 }
@@ -112,8 +112,8 @@ function init_editable_tables() {
         editable_table(table, (data: Tabledata) => {
             const field = table.getAttribute('data-field');
             console.log("Saving table.\n"); console.log(data)
-            send_update({field: field}, data)
-        } );
+            send_update({ field: field }, data)
+        });
     });
 
 }
@@ -126,12 +126,12 @@ function init_check_progress() {
         editable_check_progress(bar, (value: number) => {
             const field = bar.getAttribute('data-field');
             console.log("Saving progress.\n"); console.log(value);
-            send_update({field: field}, value);
+            send_update({ field: field }, value);
         })
     })
 }
 
-document.addEventListener('DOMContentLoaded', function(event) {
+document.addEventListener('DOMContentLoaded', function (event) {
     console.log("Initiate the basic character sheet.")
     init_popup();
     init_sharebutton();

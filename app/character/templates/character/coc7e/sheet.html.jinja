@@ -148,8 +148,8 @@
                             <th data-property="damage">Damage</th>
                             <th data-property="range">Range</th>
                             <th data-property="attacks">Attacks</th>
-                            <th data-property="ammo">Ammo</th>
-                            <th data-property="malf">Malf</th>
+                            <th data-property="ammo" data-type="number" data-blank="-">Ammo</th>
+                            <th data-property="malf" data-type="number" data-blank="-">Malf</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -162,8 +162,8 @@
                             <td>{{ weapon['damage'] }}</td>
                             <td>{{ weapon['range'] }}</td>
                             <td>{{ weapon['attacks'] }}</td>
-                            <td>{{ weapon['ammo'] }}</td>
-                            <td>{{ weapon['malf'] }}</td>
+                            <td data-type="number" data-blank="-">{{ weapon['ammo'] }}</td>
+                            <td data-type="number" data-blank="-">{{ weapon['malf'] }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
