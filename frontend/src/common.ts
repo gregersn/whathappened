@@ -9,10 +9,11 @@ export type Tabledata = any[];
 export type Listdata = string[];
 export type SaveFunction = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => void
 
-function saveElement(editfield: HTMLInputElement, element: HTMLElement, save: SaveFunction, editable_handler: (e: Event) => void) {
+function saveElement(editfield: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, element: HTMLElement, save: SaveFunction, editable_handler: (e: Event) => void) {
     let value = null;
-    if (editfield.type === "number") {
-        value = editfield.valueAsNumber;
+    if (editfield instanceof HTMLInputElement && editfield.type === "number") {
+        value = isNaN(editfield.valueAsNumber) ? element.getAttribute('data-blank') : editfield.valueAsNumber;
+
     }
     else {
         value = editfield.value;
@@ -63,7 +64,7 @@ export const editable_list = (list: HTMLUListElement, save: (data: Listdata) => 
 function editElement(element: HTMLElement, type: edit_type, save: SaveFunction, editable_handler: (e: Event) => void) {
     console.log("Edit element");
     const value = element.innerHTML;
-    let editfield = null;
+    let editfield: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement = null;
 
     let choices = element.getAttribute('data-choices');
 
@@ -81,8 +82,9 @@ function editElement(element: HTMLElement, type: edit_type, save: SaveFunction, 
         editfield = document.createElement("input");
     }
     else if (type === "number") {
-        editfield = document.createElement("input");
+        editfield = document.createElement("input") as HTMLInputElement;
         editfield.type = "number";
+        editfield.setAttribute('data-blank', element.getAttribute('data-blank'))
     }
     else if (type === "area") {
         editfield = document.createElement('textarea');
@@ -101,7 +103,7 @@ function editElement(element: HTMLElement, type: edit_type, save: SaveFunction, 
         saveElement(editfield, element, save, editable_handler);
     })
 
-    editfield.addEventListener("keypress", (e) => {
+    editfield.addEventListener("keypress", (e: KeyboardEvent) => {
         if (e.keyCode === 13 && e.shiftKey === false) {
             saveElement(editfield, element, save, editable_handler);
         }
@@ -186,7 +188,7 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
 
     //const tableName = table.getAttribute('data-field');
     const fields = Array.from(table.tHead.rows[0].cells).map((element, index) => {
-        return { 'property': element.getAttribute('data-property'), 'index': index, 'type': element.getAttribute('data-type') };
+        return { 'property': element.getAttribute('data-property'), 'index': index, 'type': element.getAttribute('data-type'), 'blank': element.getAttribute('data-blank') };
     }).filter((element, index) => {
         if (element['property']) return true;
         return false;
@@ -197,7 +199,8 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
         const row_data = {}
         fields.forEach(field => {
             if (field['type'] === "number") {
-                row_data[field['property']] = Number.parseInt(row.cells.item(field['index']).innerHTML);
+                const value = Number.parseInt(row.cells.item(field['index']).innerHTML);
+                row_data[field['property']] = isNaN(value) ? field['blank'] : value;
             } else {
                 row_data[field['property']] = row.cells.item(field['index']).innerHTML;
             }
