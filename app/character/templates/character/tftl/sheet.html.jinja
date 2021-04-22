@@ -40,44 +40,44 @@
         <div class="box attributes">
             <h3>Attributes</h3>
             <div class="keyvalue">
-                <label title="jump high, run fast, fight, sneak, and climb">Body: </label>{{ editable_field("attributes.Body", 1, "number") }}
-                <label title="understand machines and robots, program technological things, open locked doors, and build things.">Tech: </label>{{ editable_field("attributes.Tech", 1, "number") }}
-                <label title="make friends, lie, know the right people, create a good atmosphere, and persuade others.">Heart: </label>{{ editable_field("attributes.Heart", 1, "number") }}
-                <label title="find weak points, understand people, situations and creatures, solve riddles, understand clues, and have the right knowledge at the right time.">Mind: </label>{{ editable_field("attributes.Mind", 1, "number") }}
+                <label title="jump high, run fast, fight, sneak, and climb">Body: </label>{{ editable_field("character_sheet.attributes.Body", 1, "number") }}
+                <label title="understand machines and robots, program technological things, open locked doors, and build things.">Tech: </label>{{ editable_field("character_sheet.attributes.Tech", 1, "number") }}
+                <label title="make friends, lie, know the right people, create a good atmosphere, and persuade others.">Heart: </label>{{ editable_field("character_sheet.attributes.Heart", 1, "number") }}
+                <label title="find weak points, understand people, situations and creatures, solve riddles, understand clues, and have the right knowledge at the right time.">Mind: </label>{{ editable_field("character_sheet.attributes.Mind", 1, "number") }}
             </div>
         </div>
         <div class="box skills">
             <h3>Skills</h3>
             <div class="keyvalue">
-                <label title="hide and sneak.">Sneak (Body): </label>{{ editable_field("skills.Sneak (Body)", 0, "number") }}
-                <label title="lift heavy things, fight, and endure in physically stressful situations.">Force (Body): </label>{{ editable_field("skills.Force (Body)", 0, "number") }}
-                <label title="climb high, balance and run fast.">Move (Body): </label>{{ editable_field("skills.Move (Body)", 0, "number") }}
-                <label title="build and manipulate machines and other mechanical items.">Tinker (Tech): </label>{{ editable_field("skills.Tinker (Tech)", 0, "number") }}
-                <label title="create and manipulate computer programs and electronic devices.">Program (Tech): </label>{{ editable_field("skills.Program (Tech)", 0, "number") }}
-                <label title="understand machines and other technical systems.">Calculate (Tech): </label>{{ editable_field("skills.Calculate (Tech)", 0, "number") }}
-                <label title="know the right person.">Contact (Heart): </label>{{ editable_field("skills.Contact (Heart)", 0, "number") }}
-                <label title="charm, lie, befriend and manipulate.">Charm (Heart): </label>{{ editable_field("skills.Charm (Heart)", 0, "number") }}
-                <label title="make others work well together, and to help them when they are scared, sad or confused.">Lead (Heart): </label>{{ editable_field("skills.Lead (Heart)", 0, "number") }}
-                <label title="find hidden objects and understand clues.">Investigate (Mind): </label>{{ editable_field("skills.Investigate (Mind)", 0, "number") }}
-                <label title="have the right piece of information or to be able to find it at the library.">Comprehend (Mind): </label>{{ editable_field("skills.Comprehend (Mind)", 0, "number") }}
-                <label title="understand what makes a person, an animal or any kind of conscious thing tick, and how to find its weak spot.">Empathize (Mind): </label>{{ editable_field("skills.Empathize (Mind)", 0, "number") }}
+                <label title="hide and sneak.">Sneak (Body): </label>{{ editable_field("character_sheet.skills.Sneak (Body)", 0, "number") }}
+                <label title="lift heavy things, fight, and endure in physically stressful situations.">Force (Body): </label>{{ editable_field("character_sheet.skills.Force (Body)", 0, "number") }}
+                <label title="climb high, balance and run fast.">Move (Body): </label>{{ editable_field("character_sheet.skills.Move (Body)", 0, "number") }}
+                <label title="build and manipulate machines and other mechanical items.">Tinker (Tech): </label>{{ editable_field("character_sheet.skills.Tinker (Tech)", 0, "number") }}
+                <label title="create and manipulate computer programs and electronic devices.">Program (Tech): </label>{{ editable_field("character_sheet.skills.Program (Tech)", 0, "number") }}
+                <label title="understand machines and other technical systems.">Calculate (Tech): </label>{{ editable_field("character_sheet.skills.Calculate (Tech)", 0, "number") }}
+                <label title="know the right person.">Contact (Heart): </label>{{ editable_field("character_sheet.skills.Contact (Heart)", 0, "number") }}
+                <label title="charm, lie, befriend and manipulate.">Charm (Heart): </label>{{ editable_field("character_sheet.skills.Charm (Heart)", 0, "number") }}
+                <label title="make others work well together, and to help them when they are scared, sad or confused.">Lead (Heart): </label>{{ editable_field("character_sheet.skills.Lead (Heart)", 0, "number") }}
+                <label title="find hidden objects and understand clues.">Investigate (Mind): </label>{{ editable_field("character_sheet.skills.Investigate (Mind)", 0, "number") }}
+                <label title="have the right piece of information or to be able to find it at the library.">Comprehend (Mind): </label>{{ editable_field("character_sheet.skills.Comprehend (Mind)", 0, "number") }}
+                <label title="understand what makes a person, an animal or any kind of conscious thing tick, and how to find its weak spot.">Empathize (Mind): </label>{{ editable_field("character_sheet.skills.Empathize (Mind)", 0, "number") }}
             </div>
         </div>
         <div class="box conditions">
             <h3>Conditions</h3>
             <div class="keyvalue">
-                <label>Upset: </label><span>{{ editable_binary("conditions.Upset", False) }}</span>
-                <label>Scared: </label><span>{{ editable_binary("conditions.Scared", False) }}</span>
-                <label>Exhausted: </label><span>{{ editable_binary("conditions.Exhausted", False) }}</span>
-                <label>Injured: </label><span>{{ editable_binary("conditions.Injured", False) }}</span>
-                <label>Broken: </label><span>{{ editable_binary("conditions.Broken", False) }}</span>
+                <label>Upset: </label><span>{{ editable_binary("character_sheet.conditions.Upset", False) }}</span>
+                <label>Scared: </label><span>{{ editable_binary("character_sheet.conditions.Scared", False) }}</span>
+                <label>Exhausted: </label><span>{{ editable_binary("character_sheet.conditions.Exhausted", False) }}</span>
+                <label>Injured: </label><span>{{ editable_binary("character_sheet.conditions.Injured", False) }}</span>
+                <label>Broken: </label><span>{{ editable_binary("character_sheet.conditions.Broken", False) }}</span>
             </div>
             
         </div>
         <div class="box experience">
             <h3>Experience</h3>
             <section>
-                {{ check_progress("experience") }}
+                {{ check_progress("character_sheet.experience") }}
             </section>
         </div>
 
@@ -87,16 +87,16 @@
             <div class="box personalia">
                 <h3>Personalia</h3>
                 <section>
-                    <label>Name: </label>{{ editable_field("personalia.name", "Unknown") }}
-                    <label>Type: </label><span>{{ editable_field("personalia.type", "Unknown") }}</span><br />
-                    <label>Age: </label>{{ editable_field("personalia.age", "18") }}
-                    <label>Luck points: </label><span>{{ check_progress('personalia.luck_points', points=5)}}</span><br />
-                    <label>Drive: </label>{{ editable_field("personalia.drive", "Unknown") }}<br />
-                    <label>Problem: </label>{{ editable_field("personalia.problem", "Unknown") }}<br />
-                    <label>Anchor: </label>{{ editable_field("personalia.anchor", "Unknown") }}<br />
-                    <label>Pride: </label>{{ editable_field("personalia.pride.description", "Unknown") }} {{ editable_binary("personalia.pride.used") }}<br />
-                    <label>Description: </label>{{ editable_field("personalia.description", "Unknown") }}<br />
-                    <label>Favourite song: </label>{{ editable_field("personalia.favourite_song", "Unknown") }}
+                    <label>Name: </label>{{ editable_field("character_sheet.personalia.name", "Unknown") }}
+                    <label>Type: </label><span>{{ editable_field("character_sheet.personalia.type", "Unknown") }}</span><br />
+                    <label>Age: </label>{{ editable_field("character_sheet.personalia.age", "18") }}
+                    <label>Luck points: </label><span>{{ check_progress('character_sheet.personalia.luck_points', points=5)}}</span><br />
+                    <label>Drive: </label>{{ editable_field("character_sheet.personalia.drive", "Unknown") }}<br />
+                    <label>Problem: </label>{{ editable_field("character_sheet.personalia.problem", "Unknown") }}<br />
+                    <label>Anchor: </label>{{ editable_field("character_sheet.personalia.anchor", "Unknown") }}<br />
+                    <label>Pride: </label>{{ editable_field("character_sheet.personalia.pride.description", "Unknown") }} {{ editable_binary("character_sheet.personalia.pride.used") }}<br />
+                    <label>Description: </label>{{ editable_field("character_sheet.personalia.description", "Unknown") }}<br />
+                    <label>Favourite song: </label>{{ editable_field("character_sheet.personalia.favourite_song", "Unknown") }}
                 </section>
             </div>
             <div class="box portrait {%- if editable %} editable{%- endif %}" data-type="picture">
@@ -107,7 +107,7 @@
             <h3>Relationships</h3>
             <h4>Kids</h4>
             <section>
-                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="relationships.kids">
+                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="character_sheet.relationships.kids">
                 {% for item in character.mechanics.relationships('kids') %}
                     <li>{{ item }}</li>
                 {% endfor %}
@@ -116,7 +116,7 @@
 
             <h4>NPCs</h4>
             <section>
-                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="relationships.npcs">
+                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="character_sheet.relationships.npcs">
                 {% for item in character.mechanics.relationships('npcs') %}
                     <li>{{ item }}</li>
                 {% endfor %}
@@ -126,7 +126,7 @@
         <div class="box items">
             <h3>Items</h3>
             <section>
-            <table id="tblItems" class="{%- if editable %} editableTable{%- endif %}" data-field="items">
+            <table id="tblItems" class="{%- if editable %} editableTable{%- endif %}" data-field="character_sheet.items">
             <thead>
                 <tr>
                     <th data-property="name" data-type="string">Item</th>
