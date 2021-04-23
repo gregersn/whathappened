@@ -1,0 +1,60 @@
+{% extends 'base.html.jinja' %}
+
+{% block content %}
+<section id="path">
+{% if data.tree or data.current_folder %}
+<a href="{{ url_for('content.folders', folder_id=None)}}">root</a> /
+{% for f in data.tree %}
+    <a href="{{ url_for('content.folders', folder_id=f.id)}}">{{ f.title }}</a> /
+{% endfor %}
+{% endif %}
+    {{ data.current_folder.title }}
+</section>
+<section id="new_folder">
+    <form action="{{ url_for('content.folders') }}" method="post">
+        {{ new_folder_form.hidden_tag() }}
+        <p>
+            {{ new_folder_form.title }}
+            {% for error in new_folder_form.title.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+
+            {{ new_folder_form.add()}}
+        </p>
+    </form>
+</section>
+
+{% if data.folders %}
+<h3>Folders</h3>
+<section id="folders">
+    <ul>
+    {% for folder in data.folders %}
+        <li><a href="{{ url_for('content.folders', folder_id=folder.id) }}">{{ folder.title }}</a></li>
+    {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+{% if data.characters %}
+<h3>Characters</h3>
+<section id="characters">
+    <ul>
+    {% for character in data.characters %}
+        <li><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }}</a></li>
+    {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+{% if data.campaigns %}
+<h3>Campaigns</h3>
+<section id="campaigns">
+    <ul>
+    {% for campaign in data.campaigns %}
+        <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a></li>
+    {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+{% endblock %}

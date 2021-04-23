@@ -7,6 +7,12 @@
     {% endassets %}
 {% endblock %}
 
+{% block menu %}
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('content.folders') }}">Content</a>
+    {% endif %}
+{% endblock %}
+
 {% block header %}
 <h2>Your inventory</h2>
 {% endblock %}
@@ -36,6 +42,19 @@
         <a class="action" href="{{ url_for('character.import_character') }}">Import</a><br />
     </div>
     </section>
+
+    <section id="content">
+    <h3>Content</h3>
+        {% if folders %}
+        <ul>
+        {% for folder in folders %}
+            <li><a href="{{ url_for('content.folders', folder_id=folder.id) }}">{{ folder.title }}</a></li>
+            
+        {% endfor %}
+        </ul>
+        {% endif %}
+    </section>
+
 
     <section id="campaigns">
     {% if profile.campaigns_as_player %}

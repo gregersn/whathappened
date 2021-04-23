@@ -27,22 +27,16 @@
           {% for error in form.characters_enabled.errors %}
           <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
-      </p>
-        <p>
           {{ form.npcs_enabled.label }}
           {{ form.npcs_enabled }}<br>
           {% for error in form.npcs_enabled.errors %}
           <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
-      </p>
-        <p>
           {{ form.handouts_enabled.label }}
           {{ form.handouts_enabled }}<br>
           {% for error in form.handouts_enabled.errors %}
           <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
-      </p>
-        <p>
           {{ form.messages_enabled.label }}
           {{ form.messages_enabled }}<br>
           {% for error in form.messages_enabled.errors %}
@@ -50,5 +44,17 @@
           {% endfor %}
       </p>
       <p>{{ form.submit() }}</p>
+  </form>
+  <form action="" method="post">
+    {{ folderform.hidden_tag() }}
+        <p>
+            {{ folderform.folder_id }}
+            {% for error in folderform.folder_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+
+            {{ folderform.choose()}}
+        </p>
+
   </form>
 {% endblock %}

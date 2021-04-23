@@ -27,6 +27,8 @@ from app.models import Invite
 from app.character.schema.coc7e import migrations, latest
 from app.database import session, paginate
 
+from app.content.forms import ChooseFolderForm
+
 logger = logging.getLogger(__name__)
 
 
@@ -373,3 +375,17 @@ def eventlog(id: int):
                            entries=log_entries,
                            next_url=next_url,
                            prev_url=prev_url)
+
+
+@bp.route('/<int:id>/folder', methods=('GET', 'POST'))
+@login_required
+def folder(id: int):
+    c = get_character(id, check_author=True)
+    form = ChooseFolderForm()
+    if form.validate_on_submit():
+        c.folder = form.folder_id.data
+        session.commit()
+
+    return render_template('character/move_to_folder.html.jinja',
+                           form=form,
+                           character=c)

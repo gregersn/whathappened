@@ -1,0 +1,18 @@
+{% extends 'base.html.jinja' %}
+
+{% block content %}
+<section id="move_to_folder">
+    <form action="{{ url_for('character.folder', id=character.id) }}" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.folder_id }}
+            {% for error in form.folder_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+
+            {{ form.choose()}}
+        </p>
+    </form>
+</section>
+
+{% endblock %}

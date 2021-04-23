@@ -65,6 +65,10 @@ def create_app(config_class: Type[Config] = Config):
     logger.debug("Registering blueprint profile")
     app.register_blueprint(profile.bp, url_prefix='/profile')
 
+    from . import content
+    logger.debug("Registering blueprint content")
+    app.register_blueprint(content.bp, url_prefix='/content')
+
     from . import userassets
     logger.debug("Registering assets module")
     app.register_blueprint(userassets.bp, url_prefix='/assets')

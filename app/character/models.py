@@ -2,7 +2,7 @@ import logging
 from functools import reduce
 from typing import Any, Dict, Type
 from sqlalchemy.orm.attributes import flag_modified
-from sqlalchemy.orm import reconstructor, relationship
+from sqlalchemy.orm import reconstructor, relationship, backref
 from datetime import datetime
 import base64
 import io
@@ -13,6 +13,7 @@ from sqlalchemy.sql.sqltypes import DateTime, Integer, JSON, String
 from app.database import Base
 
 from app.character.core import CharacterMechanics, MECHANICS
+from app.content.mixins import BaseContent
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ def fix_image(imagedata: str) -> str:
     return base64.b64encode(buf.getvalue()).decode('utf-8')
 
 
-class Character(Base):
+class Character(BaseContent, Base):
     __tablename__ = 'charactersheet'
     id = Column(Integer, primary_key=True)
     title = Column(String(256))
@@ -36,7 +37,10 @@ class Character(Base):
     timestamp = Column(DateTime, index=True, default=datetime.utcnow,
                        onupdate=datetime.utcnow)
     user_id = Column(Integer, ForeignKey('user_profile.id'))
-    player = relationship('UserProfile', backref='characters')
+    player = relationship('UserProfile', backref=backref(
+        'characters', lazy='dynamic'))
+
+    folder = relationship('Folder', backref='characters')
 
     def __repr__(self):
         return '<Character {}>'.format(self.title)
@@ -165,7 +169,8 @@ class Character(Base):
             if data is not None:
                 self.mechanics.set_portrait(fix_image(data))
         else:
-            logger.debug(f"Set '{attribute['field']}' to '{attribute['value']}'")
+            logger.debug(
+                f"Set '{attribute['field']}' to '{attribute['value']}'")
             s = reduce(lambda x, y: x[y], attribute['field'].split(".")[:-1],
                        self.data)
             s[attribute['field'].split(".")[-1]] = attribute['value']
