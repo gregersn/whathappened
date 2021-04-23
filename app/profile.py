@@ -1,3 +1,4 @@
+from app.content.models import Folder
 import logging
 from flask import (
     Blueprint, render_template
@@ -27,6 +28,8 @@ def index():
     logger.info(f"Showing profile {user_profile.id}")
 
     characters = user_profile.characters
+    folders = user_profile.folders  # .filter(Folder.parent_id.__eq__(None))
     return render_template('profile/profile.html.jinja',
                            profile=user_profile,
-                           characters=characters)
+                           characters=characters,
+                           folders=folders)

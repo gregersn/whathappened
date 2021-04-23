@@ -7,6 +7,7 @@ from sqlalchemy.sql.schema import ForeignKey, Table, Column
 from sqlalchemy.sql.sqltypes import Boolean, DateTime
 from sqlalchemy.sql.sqltypes import Enum, Integer, String, Text
 from app.database import Base
+from app.content.mixins import BaseContent
 
 campaign_players = Table('campaign_players',
                          Base.metadata,
@@ -31,7 +32,7 @@ campaign_characters = Table('campaign_characters',
                                    primary_key=True))
 
 
-class Campaign(Base):
+class Campaign(Base, BaseContent):
     __tablename__ = "campaign"
     id = Column(Integer, primary_key=True)
     title = Column(String(256))
@@ -39,7 +40,8 @@ class Campaign(Base):
 
     # Owner of the campaign (GM)
     user_id = Column(Integer, ForeignKey('user_profile.id'))
-    user = relationship('UserProfile', backref='campaigns')
+    user = relationship('UserProfile', backref=backref(
+        'campaigns', lazy='dynamic'))
 
     # The players in a campaign
     players = relationship('UserProfile',
@@ -54,7 +56,8 @@ class Campaign(Base):
                               backref=backref('campaigns', lazy=True))
 
     # NPCs added to campaign
-    NPCs = relationship("NPC", back_populates='campaign', lazy='dynamic')
+    NPCs = relationship(
+        "NPC", back_populates='campaign', lazy='dynamic')
 
     # Handouts added to campaign
     handouts = relationship("Handout",
@@ -71,6 +74,8 @@ class Campaign(Base):
     npcs_enabled = Column(Boolean, default=False)
     handouts_enabled = Column(Boolean, default=False)
     messages_enabled = Column(Boolean, default=False)
+
+    folder = relationship('Folder', backref='campaigns')
 
     @property
     def players_by_id(self):

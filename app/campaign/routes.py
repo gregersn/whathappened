@@ -16,6 +16,7 @@ from .models import HandoutStatus, NPC, Message
 from app.models import Invite
 from sqlalchemy import and_, or_
 from app.database import session
+from app.content.forms import ChooseFolderForm
 
 from . import api  # noqa
 
@@ -54,13 +55,14 @@ def join(code: str):
 @login_required
 def view(id: int):
     invites = None
-    campaign = Campaign.query.get(id)
+    campaign: Campaign = Campaign.query.get(id)
 
     # Set up forms
     inviteform = InvitePlayerForm(prefix="inviteform")
     createinviteform = CreateInviteForm(prefix="createinviteform")
     characterform = AddCharacterForm(prefix="characterform")
     npcform = AddNPCForm(prefix="npcform")
+
     messageform = MessagePlayerForm(players=[(campaign.user_id, "GM"), ] +
                                             [(p.id, p.user.username)
                                              for p in campaign.players],
@@ -124,6 +126,20 @@ def view(id: int):
         Message.to_id == current_user.profile.id,
         Message.to_id.is_(None)))
 
+    added_npc_ids = [c.character_id for c in campaign.NPCs]
+
+    npcform.character.query = current_user.profile.characters.filter(
+        Character.id.notin_(added_npc_ids)).\
+        order_by(
+            Character.folder_id.__eq__(campaign.folder_id).desc()).\
+        order_by('title')
+
+    added_character_ids = [c.id for c in campaign.characters]
+    characterform.character.query = current_user.profile.characters.\
+        filter(Character.id.notin_(added_character_ids)).\
+        order_by(Character.folder_id.__eq__(campaign.folder_id).desc()).\
+        order_by('title')
+
     return render_template('campaign/campaign.html.jinja',
                            campaign=campaign,
                            handouts=handouts,
@@ -140,14 +156,24 @@ def view(id: int):
 @bp.route('/<int:id>/edit', methods=('GET', 'POST'))
 def edit(id: int):
     c = Campaign.query.get(id)
-    form = EditForm(obj=c)
-    if form.validate_on_submit():
+    form = EditForm(obj=c, prefix="campaign_edit")
+    folderform = ChooseFolderForm(prefix="choose_folder")
+
+    if form.submit.data and form.validate_on_submit():
         form.populate_obj(c)
         session.add(c)
         session.commit()
         return redirect(url_for('campaign.view', id=c.id))
 
-    return render_template('campaign/edit.html.jinja', form=form)
+    if folderform.choose.data and folderform.validate_on_submit():
+        print("Folder form submitted!")
+        c.folder = folderform.folder_id.data
+        session.commit()
+        return redirect(url_for('campaign.view', id=c.id))
+
+    folderform.folder_id.data = c.folder
+
+    return render_template('campaign/edit.html.jinja', form=form, folderform=folderform)
 
 
 @bp.route('/create', methods=('GET', 'POST'))
