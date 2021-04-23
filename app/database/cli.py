@@ -49,4 +49,15 @@ def upgrade(directory, sql, tag, x_arg, revision):
     command.upgrade(alembic_cfg, revision, sql, tag)
 
 
+@db.command('revision')
+@click.option('-d', '--directory', default=None,
+              help=('Migration script directory (default is "migrations")'))
+@click.option('-m', '--message', help=("Migration messasge"), required=True)
+@with_appcontext
+def revision(directory, message):
+    """Create new revision."""
+    alembic_cfg = Config(directory or "./migrations/alembic.ini")
+    command.revision(alembic_cfg, autogenerate=True, message=message)
+
+
 current_app.cli.add_command(db)
