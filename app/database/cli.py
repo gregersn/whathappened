@@ -49,6 +49,27 @@ def upgrade(directory, sql, tag, x_arg, revision):
     command.upgrade(alembic_cfg, revision, sql, tag)
 
 
+@db.command('downgrade')
+@click.option('-d', '--directory', default=None,
+              help=('Migration script directory (default is "migrations")'))
+@click.option('--sql', is_flag=True,
+              help=('Don\'t emit SQL to database - dump to standard output '
+                    'instead'))
+@click.option('--tag', default=None,
+              help=('Arbitrary "tag" name - can be used by custom env.py '
+                    'scripts'))
+@click.option('-x', '--x-arg', multiple=True,
+              help='Additional arguments consumed by custom env.py scripts')
+@click.argument('revision', default='-1')
+@with_appcontext
+def downgrade(directory, sql=False, tag=None, x_arg=None, revision='-1'):
+    """downgrade to previous revision."""
+    alembic_cfg = Config(directory or "./migrations/alembic.ini")
+    if sql and revision == '-1':
+        revision = 'head:-1'
+    command.downgrade(alembic_cfg, revision, sql, tag)
+
+
 @db.command('revision')
 @click.option('-d', '--directory', default=None,
               help=('Migration script directory (default is "migrations")'))
