@@ -1,4 +1,5 @@
 alembic==1.5.8
+cryptography==3.4.7
 email-validator==1.1.2
 Flask==1.1.2
 Flask-Assets==2.0
