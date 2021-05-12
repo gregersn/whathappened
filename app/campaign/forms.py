@@ -1,5 +1,4 @@
 from typing import List, Tuple
-from app.models import UserProfile
 from flask_wtf import FlaskForm
 from wtforms import StringField, HiddenField, SelectField, BooleanField
 from wtforms.compat import text_type
@@ -171,6 +170,6 @@ class MessagePlayerForm(FlaskForm):
                  **kwargs):
         super(MessagePlayerForm, self).__init__(*args, **kwargs)
         if hide_to_id:
-            self.to_id.widget = HiddenInput()  # Not an error
+            self.to_id.widget = HiddenInput()  # type: ignore  # Not an error
 
         self.to_id.choices += players

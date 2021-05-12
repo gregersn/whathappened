@@ -13,7 +13,8 @@ def view(id, character, editable):
         character.add_subskill(subskillform.name.data,
                                subskillform.parent.data)
         logentry = LogEntry(character,
-                            f"add subskill {subskillform.name.data} under {subskillform.parent.data}",
+                            f"add subskill {subskillform.name.data} " +
+                            f"under {subskillform.parent.data}",
                             user_id=current_user.id)
         session.add(logentry)
 
@@ -32,7 +33,9 @@ def view(id, character, editable):
         character.add_skill(skillform.name.data)
         character.store_data()
         logentry = LogEntry(
-            character, f"add skill {subskillform.name.data}", user_id=current_user.id)
+            character,
+            f"add skill {subskillform.name.data}",
+            user_id=current_user.id)
         session.add(logentry)
 
         session.commit()

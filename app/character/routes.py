@@ -228,7 +228,9 @@ def html_data_type(t: str) -> str:
     return t
 
 
-def render_general_view(schema_file: str, character: Character, editable: bool):
+def render_general_view(schema_file: str,
+                        character: Character,
+                        editable: bool):
     schema = load_schema(schema_file)
     return render_template('character/general_character.html.jinja',
                            schema=schema,
@@ -383,7 +385,7 @@ def folder(id: int):
     c = get_character(id, check_author=True)
     form = ChooseFolderForm()
     if form.validate_on_submit():
-        c.folder = form.folder_id.data
+        c.folder = form.folder_id.data  # type: ignore
         session.commit()
 
     return render_template('character/move_to_folder.html.jinja',

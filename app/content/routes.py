@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request
+from flask import render_template, redirect
 from flask_login import login_required, current_user
 
 from app.database import session

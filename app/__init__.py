@@ -17,7 +17,7 @@ from typing import Type
 from .database import init_db, session
 
 login_manager = LoginManager()
-login_manager.login_view = 'auth.login'
+login_manager.login_view = 'auth.login'  # type: ignore  # Not an error
 
 mail = Mail()
 assets = Environment()
