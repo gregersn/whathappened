@@ -34,7 +34,7 @@ def handouts(campaignid: int):
     handouts = campaign.handouts.filter_by(status=HandoutStatus.visible) \
         .filter(Handout.players.contains(current_user.profile))
 
-    handouts_dict = [handout.to_dict() for handout in handouts]
+    handouts_dict = [handout.to_dict(show=['url']) for handout in handouts]
 
     sha = hashlib.sha256()
     sha.update(json.dumps(handouts_dict).encode('utf-8'))
