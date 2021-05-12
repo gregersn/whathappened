@@ -4,7 +4,7 @@ from sqlalchemy.sql.sqltypes import Integer, String
 from app.database import init_db, db, Base
 
 
-class TestModel(Base):
+class DataModel(Base):
     __tablename__ = 'test_table'
     id = Column(Integer, primary_key=True)
     title = Column(String(256))
@@ -16,12 +16,12 @@ def test_connect_db():
     db.drop_all()
     db.create_all()
 
-    tests = TestModel.query.all()
+    tests = DataModel.query.all()
     assert len(tests) == 0
 
-    test = TestModel(title='test object')
+    test = DataModel(title='test object')
     db.session.add(test)
     db.session.commit()
 
-    tests = TestModel.query.all()
+    tests = DataModel.query.all()
     assert len(tests) == 1
