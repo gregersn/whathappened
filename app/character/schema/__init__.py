@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Any
 import yaml
 import logging
 import json
@@ -26,39 +26,45 @@ def load_schema(filename: str) -> Dict:
     return {}
 
 
-def validate(data, filename):
+SchemaValidationError = Dict[str, str]
+
+
+def validate(data: Dict, filename: str) -> List[SchemaValidationError]:
     schema = load_schema(filename)
     v = Draft7Validator(schema)
-    return [{'path': "/".join(str(x) for x in e.path),
-             "message": e.message} for e in v.iter_errors(data)]
+    return [
+        {'path': "/".join(str(x) for x in e.path),
+         "message": e.message} for e in v.iter_errors(data)
+    ]
 
 
-def build_boolean(schema: Dict) -> bool:
+def build_boolean(schema: Dict[str, bool]) -> bool:
     return schema['default']
 
 
-def build_string(schema: Dict) -> str:
+def build_string(schema: Dict[str, str]) -> str:
     return schema['default']
 
 
-def build_integer(schema: Dict) -> int:
+def build_integer(schema: Dict[str, int]) -> int:
     return schema['default']
 
 
-def build_object(schema: Dict, main_schema: Dict) -> Dict:
+def build_object(schema: Dict[str, Any],
+                 main_schema: Dict[str, Any]) -> Dict[str, Any]:
     output = {}
     for property, description in schema['properties'].items():
-        output[property] = build_from_schema(description, main_schema)
+        output[property] = build_from_schema2(description, main_schema)
     return output
 
 
-def build_array(schema: Dict) -> List:
+def build_array(schema: Dict[str, List[Any]]) -> List[Any]:
     if 'default' in schema:
         return schema['default']
     return []
 
 
-def get_sub(d: Dict, path: List) -> Dict:
+def get_sub(d: Dict[str, Any], path: List[str]) -> Dict:
     if len(path) == 1:
         return d[path[0]]
 
@@ -72,22 +78,27 @@ def sub_schema(schema: Union[List, Dict], path: str) -> \
     if parts[0] != '#':
         raise NotImplementedError(path)
 
+    assert isinstance(schema, dict)
+
     return get_sub(schema, parts[1:])
 
 
-def build_from_schema(schema: Union[List, Dict],
-                      main_schema: Union[List, Dict, None] = None) -> \
+def build_from_schema2(schema: Union[List, Dict[str, Any]],
+                       main_schema: Dict[str, Any]) -> \
         Union[Dict, List, str, int, bool]:
-    if main_schema is None:
-        main_schema = schema
+
     if isinstance(schema, Dict):
         logger.debug("Handling a dictionary")
         if '$ref' in schema:
-            return build_from_schema(sub_schema(main_schema, schema['$ref']),
-                                     main_schema)
+            sub = sub_schema(main_schema, schema['$ref'])
+
+            assert isinstance(sub, Dict) or isinstance(sub, List)
+
+            return build_from_schema2(sub,
+                                      main_schema)
         if 'const' in schema:
             return schema['const']
-        if schema.get('type') == 'object':
+        if schema.get('type') == 'object' and isinstance(main_schema, dict):
             return build_object(schema, main_schema)
         if schema.get('type') == 'string':
             return build_string(schema)
@@ -97,8 +108,11 @@ def build_from_schema(schema: Union[List, Dict],
             return build_boolean(schema)
         if schema.get('type') == 'array':
             return build_array(schema)
-
     elif isinstance(schema, List):
         logger.debug("Handling a list")
 
     return ''
+
+
+def build_from_schema(schema: Dict[str, Any]):
+    return build_from_schema2(schema, schema)
