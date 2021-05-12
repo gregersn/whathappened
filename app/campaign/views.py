@@ -51,7 +51,7 @@ class HandoutView(View):
             handout = Handout()
             handoutform.populate_obj(handout)
             if not handout.group_id:
-                handout.group_id = None
+                handout.group_id = None  # type: ignore
 
             session.add(handout)
             session.commit()

@@ -83,7 +83,7 @@ def view(id: int):
         if createinviteform.submit.data and \
                 createinviteform.validate_on_submit():
             invite = Invite(campaign)
-            invite.owner_id = campaign.user_id
+            invite.owner_id = campaign.user_id  # type: ignore
             session.add(invite)
             session.commit()
 
@@ -173,7 +173,9 @@ def edit(id: int):
 
     folderform.folder_id.data = c.folder
 
-    return render_template('campaign/edit.html.jinja', form=form, folderform=folderform)
+    return render_template('campaign/edit.html.jinja',
+                           form=form,
+                           folderform=folderform)
 
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -323,7 +325,7 @@ def message_player(campaign_id: int, player_id: int = None):
         message = Message()
         form.populate_obj(message)
         if not form.to_id.data:
-            message.to_id = None
+            message.to_id = None  # type: ignore
 
         session.add(message)
         session.commit()

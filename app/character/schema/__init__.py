@@ -66,7 +66,8 @@ def get_sub(d: Dict, path: List) -> Dict:
     return get_sub(d[p], path)
 
 
-def sub_schema(schema: Union[List, Dict], path: str) -> Union[Dict, List, str, int, bool]:
+def sub_schema(schema: Union[List, Dict], path: str) -> \
+        Union[Dict, List, str, int, bool]:
     parts = path.split("/")
     if parts[0] != '#':
         raise NotImplementedError(path)
@@ -75,7 +76,8 @@ def sub_schema(schema: Union[List, Dict], path: str) -> Union[Dict, List, str, i
 
 
 def build_from_schema(schema: Union[List, Dict],
-                      main_schema: Union[List, Dict, None] = None) -> Union[Dict, List, str, int, bool]:
+                      main_schema: Union[List, Dict, None] = None) -> \
+        Union[Dict, List, str, int, bool]:
     if main_schema is None:
         main_schema = schema
     if isinstance(schema, Dict):
