@@ -178,6 +178,13 @@ def edit(id: int):
                            folderform=folderform)
 
 
+@bp.route("/<int:id>/export", methods=("GET", ))
+@login_required
+def export(id: int):
+    c: Campaign = Campaign.query.get(id)
+    return c.to_dict(_hide=[])
+
+
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():

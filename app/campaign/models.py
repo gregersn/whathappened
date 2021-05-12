@@ -6,7 +6,7 @@ from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey, Table, Column
 from sqlalchemy.sql.sqltypes import Boolean, DateTime
 from sqlalchemy.sql.sqltypes import Enum, Integer, String, Text
-from app.database import Base
+from app.database import Base, BaseModel
 from app.content.mixins import BaseContent
 
 campaign_players = Table('campaign_players',
@@ -32,7 +32,7 @@ campaign_characters = Table('campaign_characters',
                                    primary_key=True))
 
 
-class Campaign(Base, BaseContent):
+class Campaign(BaseModel, BaseContent):
     __tablename__ = "campaign"
     id = Column(Integer, primary_key=True)
     title = Column(String(256))
@@ -84,6 +84,14 @@ class Campaign(Base, BaseContent):
     def __repr__(self):
         return '<Campaign {}>'.format(self.title)
 
+    _default_fields = [
+        "id",
+        "title",
+        "description",
+        "NPCs",
+        'handouts'
+    ]
+
 
 player_handouts = Table('campaign_handouts_to_players',
                         Base.metadata,
@@ -118,7 +126,7 @@ class HandoutGroup(Base):
         return f'<Handout Group {self.name}>'
 
 
-class Handout(Base):
+class Handout(BaseModel):
     __tablename__ = 'campaign_handout'
     id = Column(Integer, primary_key=True)
     title = Column(String(256))
@@ -142,17 +150,19 @@ class Handout(Base):
     def __repr__(self):
         return '<Handout {}>'.format(self.title)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'url': url_for('campaign.handout_view',
-                           campaign_id=self.campaign.id,
-                           handout_id=self.id)
-        }
+    _default_fields = [
+        'id',
+        'title'
+    ]
+
+    @property
+    def url(self):
+        return url_for('campaign.handout_view',
+                       campaign_id=self.campaign.id,
+                       handout_id=self.id)
 
 
-class NPC(Base):
+class NPC(BaseModel):
     __tablename__ = 'campaign_npc'
 
     id = Column(Integer, primary_key=True)
@@ -166,8 +176,13 @@ class NPC(Base):
 
     visible = Column(Boolean, default=False)
 
+    _default_fields = [
+        'character',
+        'visible'
+    ]
 
-class Message(Base):
+
+class Message(BaseModel):
     __tablename__ = 'campaign_message'
     id = Column(Integer, primary_key=True)
 
@@ -183,14 +198,13 @@ class Message(Base):
     message = Column(Text)
     timestamp = Column(DateTime, index=True, default=datetime.utcnow)
 
-    def to_dict(self):
-        return {
-            'timestamp': self.timestamp.timestamp(),
-            'sender_name': self.sender_name,
-            'to_name': self.to_name,
-            'message': self.message,
-            'id': self.id
-        }
+    _default_fields = [
+        'timestamp',
+        'sender_name',
+        'to_name',
+        'message',
+        'id'
+    ]
 
     @property
     def sender_name(self):

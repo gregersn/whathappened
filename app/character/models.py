@@ -10,7 +10,7 @@ from PIL import Image
 from sqlalchemy.sql.schema import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import DateTime, Integer, JSON, String
 
-from app.database import Base
+from app.database import BaseModel
 
 from app.character.core import CharacterMechanics, MECHANICS
 from app.content.mixins import BaseContent
@@ -29,7 +29,7 @@ def fix_image(imagedata: str) -> str:
     return base64.b64encode(buf.getvalue()).decode('utf-8')
 
 
-class Character(BaseContent, Base):
+class Character(BaseContent, BaseModel):
     __tablename__ = 'charactersheet'
     id = Column(Integer, primary_key=True)
     title = Column(String(256))
@@ -41,6 +41,14 @@ class Character(BaseContent, Base):
         'characters', lazy='dynamic'))
 
     folder = relationship('Folder', backref='characters')
+
+    _default_fields = [
+        'id',
+        'title',
+        'body',
+        'timestamp',
+        'user_id'
+    ]
 
     def __repr__(self):
         return '<Character {}>'.format(self.title)
@@ -92,15 +100,6 @@ class Character(BaseContent, Base):
 
     def validate(self):
         return self.mechanics.validate()
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'body': self.data,
-            'timestamp': self.timestamp,
-            'user_id': self.user_id
-        }
 
     def get_sheet(self):
         return self.data
