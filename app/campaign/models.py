@@ -152,7 +152,9 @@ class Handout(BaseModel):
 
     _default_fields = [
         'id',
-        'title'
+        'title',
+        'content',
+        'group'
     ]
 
     @property

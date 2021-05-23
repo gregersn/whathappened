@@ -174,6 +174,13 @@ bp.add_url_rule('/<int:campaign_id>/handouts/<int:handout_id>/',
                 methods=['GET', 'PUT', 'DELETE', 'POST'])
 
 
+@bp.route("/<int:campaign_id>/handouts/<int:handout_id>/export", methods=("GET", ))
+@login_required
+def handout_export(campaign_id: int, handout_id: int):
+    h: Handout = Handout.query.get(handout_id)
+    return h.to_dict(_hide=[])
+
+
 @bp.route('/<int:campaign_id>/handouts/<int:handout_id>/delete',
           methods=('GET', 'POST'))
 def handout_delete(campaign_id: int, handout_id: int):
