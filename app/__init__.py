@@ -8,8 +8,6 @@ from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from flask_webpackext import FlaskWebpackExt
 
-import app.logging as applogging  # noqa imported for side effects
-
 import logging
 
 from config import Config
