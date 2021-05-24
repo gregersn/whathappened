@@ -33,8 +33,9 @@ jobs:
           cd frontend; npm install; npm run test
       - name: Build assets
         run: |
-          flask assets build
-          flask main build
+          FLASK_APP=whathappened flask assets build
+          FLASK_APP=whathappened flask main build
+        continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
@@ -44,3 +45,4 @@ jobs:
       - name: Test with pytest
         run: |
           pytest -vvv
+        continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
