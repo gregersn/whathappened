@@ -1,4 +1,4 @@
-alembic==1.6.3
+alembic==1.6.5
 cryptography==3.4.7
 email-validator==1.1.2
 eventlet==0.30.2
