@@ -1,6 +1,6 @@
 alembic==1.6.5
 cryptography==3.4.7
-email-validator==1.1.2
+email-validator==1.1.3
 eventlet==0.30.2
 Flask==2.0.1
 Flask-Assets==2.0
@@ -15,11 +15,11 @@ Jinja2==3.0.1
 jsonschema==3.2.0
 markdown2==2.4.0
 packaging==20.9
-Pillow==8.2.0
+Pillow==8.3.1
 PyJWT==2.1.0
 PyMySQL==1.0.2
 git+git://github.com/gregersn/pyScss.git
-python-dotenv==0.17.1
+python-dotenv==0.18.0
 pywebpack==1.2.0
 PyYAML==5.4.1
 requests==2.25.1
