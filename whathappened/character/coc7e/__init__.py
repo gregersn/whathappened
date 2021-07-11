@@ -1,3 +1,5 @@
+from os import path
+import pathlib
 import logging
 import json
 import jinja2
@@ -14,9 +16,6 @@ from ..core import register_game
 logger = logging.getLogger(__name__)
 
 
-# This is not pretty
-GameType = Literal["Classic (1920's)", "Modern"]
-GameTypes = ["Classic (1920's)", "Modern"]
 from .forms import CreateForm  # noqa F401
 from .routes import view  # noqa F401
 

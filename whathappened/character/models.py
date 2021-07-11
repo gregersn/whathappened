@@ -60,14 +60,15 @@ class Character(BaseContent, BaseModel):
         self._data = None
         # Add a subclass or something that
         # has the mechanics of the character.
-        self.mechanics = mechanics(self)
+        self.mechanics = mechanics(self.body)
 
     @reconstructor
     def init_on_load(self):
         system = self.data.get('system', '')
         logger.debug(f"Loading character of type {system}")
         system = self.system
-        self.mechanics = MECHANICS.get(system, CharacterMechanics)(self)
+        self.mechanics = MECHANICS.get(
+            system, CharacterMechanics)(self.body)
 
     @property
     def data(self) -> Dict[str, Any]:
@@ -185,33 +186,12 @@ class Character(BaseContent, BaseModel):
         """Return a list of skills."""
         return self.data['skills']
 
-    def add_skill(self, skillname: str, value: int = 1):
-        if self.skill(skillname) is not None:
-            raise ValueError(f"Skill {skillname} already exists.")
+    def add_skill(self, *args, **kwargs):
+        return self.mechanics.add_skill(*args, **kwargs)
 
-        self.data['skills'].append({"name": skillname,
-                                    "value": value,
-                                    "start_value": value})
-        if isinstance(self.data['skills'], list):
-            self.data['skills'].sort(key=lambda x: x['name'])
+    def add_subskill(self, *args, **kwargs):
+        return self.mechanics.add_subskill(*args, **kwargs)
 
-    def add_subskill(self, name: str, parent: str):
-        value = self.skill(parent)['value']
-        start_value = self.skill(parent)['start_value']
-        logger.debug("Try to add subskill")
-        logger.debug(f"Name: {name}, parent {parent}, value {value}")
-        if self.skill(parent, name) is not None:
-            raise ValueError(f"Subskill {name} in {parent} already exists.")
-
-        skill = self.skill(parent)
-        if 'subskills' not in skill:
-            skill['subskills'] = []
-        skill['subskills'].append({
-            'name': name,
-            'value': value,
-            'start_value': start_value
-        })
-
-    @property
+    @ property
     def schema_version(self):
         return self.data['meta']['Version']

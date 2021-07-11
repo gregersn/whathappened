@@ -1,6 +1,7 @@
 """Test functions specific to Call of Cthulhu."""
 import os
 import json
+import jsonschema
 import pytest
 
 
@@ -60,10 +61,16 @@ def fixture_test_character() -> Character:
     return c
 
 
+def test_validate_schema():
+    schema = load_schema(CHARACTER_SCHEMA)
+    jsonschema.Draft7Validator.check_schema(schema)
+
+
 def test_validate(test_sheet: dict):
     nc = new_character("Test Character", "Classic (1920's)")
+    assert nc is not None, nc
     errors = validate(nc, CHARACTER_SCHEMA)
-    assert len(errors) == 0
+    assert len(errors) == 0, errors
 
 
 def test_convert_from_dholes(dholes_sheet: dict):
@@ -113,6 +120,10 @@ def test_skill(newly_created_character: Character):
 
 
 def test_subskill(newly_created_character: Character):
+    existing_subskill = newly_created_character.skill('Firearms', 'Handgun')
+    assert existing_subskill is not None
+    assert existing_subskill['start_value'] == 20, existing_subskill['start_value']
+
     skill_name = "Science"
     subskill_name = "Biology"
 

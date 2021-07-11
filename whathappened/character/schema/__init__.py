@@ -32,6 +32,16 @@ SchemaValidationError = Dict[str, str]
 def validate(data: Dict, filename: str) -> List[SchemaValidationError]:
     schema = load_schema(filename)
     v = Draft7Validator(schema)
+    assert v is not None
+    for e in v.iter_errors(data):
+        print("New error: ")
+        print(e.path)
+        for x in e.path:
+            print(x)
+        print(e.message)
+        print("----")
+
+    return []
     return [
         {'path': "/".join(str(x) for x in e.path),
          "message": e.message} for e in v.iter_errors(data)
@@ -43,6 +53,8 @@ def build_boolean(schema: Dict[str, bool]) -> bool:
 
 
 def build_string(schema: Dict[str, str]) -> str:
+    if 'default' not in schema:
+        raise KeyError(schema)
     return schema['default']
 
 
@@ -114,5 +126,7 @@ def build_from_schema2(schema: Union[List, Dict[str, Any]],
     return ''
 
 
-def build_from_schema(schema: Dict[str, Any]):
-    return build_from_schema2(schema, schema)
+def build_from_schema(schema: Dict[str, Any]) -> Dict[str, Any]:
+    nc = build_from_schema2(schema, schema)
+    assert isinstance(nc, Dict)
+    return nc

@@ -1,0 +1,227 @@
+---
+- name: Accounting
+  start_value: 5
+- name: Acting
+  start_value: 5
+  parent: Art and Craft
+- name: Animal Handling
+  start_value: 5
+  uncommon: true
+- name: Anthropology
+  start_value: 1
+- name: Appraise
+  start_value: 5
+- name: Archaeology
+  start_value: 1
+- name: Art and Craft
+  start_value: 5
+  specializations: true
+- name: Artillery
+  start_value: 1
+  uncommon: true
+- name: Astronomy
+  start_value: 1
+  parent: Science
+- name: Axe
+  start_value: 15
+  parent: Fighting
+- name: Biology
+  start_value: 1
+  parent: Science
+- name: Botany
+  start_value: 1
+  parent: Science
+- name: Bow
+  start_value: 15
+  parent: Firearms
+- name: Brawl
+  start_value: 25
+  parent: Fighting
+- name: Chainsaw
+  start_value: 10
+  parent: Fighting
+- name: Charm
+  start_value: 15
+- name: Chemistry
+  start_value: 1
+  parent: Science
+- name: Climb
+  start_value: 20
+- name: Computer Use
+  start_value: 5
+  modern: true
+- name: Credit Rating
+  start_value: 0
+  improvable: false
+- name: Cryptography
+  start_value: 1
+  parent: Science
+- name: Cthulhu Mythos
+  start_value: 0
+  improvable: false
+- name: Demolitions
+  start_value: 1
+  uncommon: true
+- name: Disguise
+  start_value: 5
+- name: Diving
+  start_value: 1
+  uncommon: true
+- name: Dodge
+  start_value: half DEX
+- name: Drive Auto
+  start_value: 20
+- name: Electrical Repair
+  start_value: 10
+- name: Electronics
+  start_value: 1
+  modern: true
+- name: Engineering
+  start_value: 1
+  parent: Science
+- name: Fast Talk
+  start_value: 5
+- name: Fighting
+  start_value: 0
+  specializations: true
+- name: Fine Art
+  start_value: 5
+  parent: Art and Craft
+- name: Firearms
+  start_value: 0
+  specializations: true
+- name: First Aid
+  start_value: 30
+- name: Flail
+  start_value: 10
+  parent: Fighting
+- name: Flamethrower
+  start_value: 10
+  parent: Firearms
+- name: Forensics
+  start_value: 5
+  parent: Science
+- name: Forgery
+  start_value: 1
+  parent: Art and Craft
+- name: Garrote
+  start_value: 15
+  parent: Fighting
+- name: Geology
+  start_value: 1
+  parent: Science
+- name: Handgun
+  start_value: 20
+  parent: Firearms
+- name: Heavy Weapons
+  start_value: 10
+  parent: Firearms
+- name: History
+  start_value: 5
+- name: Hypnosis
+  start_value: 1
+  uncommon: true
+- name: Intimidate
+  start_value: 15
+- name: Jump
+  start_value: 20
+- name: Language (Other)
+  start_value: 1
+  specializations: true
+- name: Language (Own)
+  start_value: EDU
+- name: Law
+  start_value: 5
+- name: Library Use
+  start_value: 20
+- name: Listen
+  start_value: 20
+- name: Locksmith
+  start_value: 1
+- name: Lore
+  start_value: 1
+  uncommon: true
+  specializations: true
+- name: Machine Gun
+  start_value: 10
+  parent: Firearms
+- name: Mathematics
+  start_value: 10
+  parent: Science
+- name: Mechanical Repair
+  start_value: 10
+- name: Medicine
+  start_value: 1
+- name: Meteorology
+  start_value: 1
+  parent: Science
+- name: Natural World
+  start_value: 10
+- name: Navigate
+  start_value: 10
+- name: Occult
+  start_value: 5
+- name: Operate Heavy Machinery
+  start_value: 1
+- name: Persuade
+  start_value: 10
+- name: Pharmacy
+  start_value: 1
+  parent: Science
+- name: Photography
+  start_value: 5
+  parent: Art and Craft
+- name: Physics
+  start_value: 1
+  parent: Science
+- name: Pilot
+  start_value: 1
+  specializations: true
+- name: Psychoanalysis
+  start_value: 1
+- name: Psychology
+  start_value: 10
+- name: Read Lips
+  start_value: 1
+  uncommon: true
+- name: Ride
+  start_value: 5
+- name: Rifle
+  start_value: 25
+  parent: Firearms
+- name: Science
+  start_value: 1
+  specializations: true
+- name: Shotgun
+  start_value: 25
+  parent: Firearms
+- name: Sleight of Hand
+  start_value: 10
+- name: Spear
+  start_value: 20
+  parent: Fighting
+- name: Spot Hidden
+  start_value: 25
+- name: Stealth
+  start_value: 20
+- name: Submachine Gun
+  start_value: 15
+  parent: Firearms
+- name: Survival
+  start_value: 10
+  specializations: true
+- name: Sword
+  start_value: 20
+  parent: Fighting
+- name: Swim
+  start_value: 20
+- name: Throw
+  start_value: 20
+- name: Track
+  start_value: 10
+- name: Whip
+  start_value: 5
+  parent: Fighting
+- name: Zoology
+  start_value: 1
+  parent: Science

@@ -21,22 +21,29 @@ GameSystems = []
 
 
 class CharacterMechanics():
-    def __init__(self, parent):
-        self.parent = parent
+    system: str = "Unknown"
+
+    def __init__(self, data):
+        # self.parent = parent
+        self._data = data
 
     def game(self):
         raise NotImplementedError
 
     def validate(self, *args, **kwargs):
         schema_file = os.path.join(
-            CHARACTER_SCHEMA_DIR, self.parent.system + '.yaml')
+            CHARACTER_SCHEMA_DIR, self.system + '.yaml')
 
         if not os.path.isfile(schema_file):
             logger.error(f"Could not find: {schema_file}")
             return [{"path": "/",
                     "message": "This character sheet has no known schema or validation."}]
 
-        return validate(self.parent.body, schema_file)
+        return validate(self.data, schema_file)
+
+    @property
+    def data(self):
+        return self._data
 
     @property
     def name(self):
@@ -69,7 +76,10 @@ class CharacterMechanics():
     def skill(self, skill, subskill=None):
         raise NotImplementedError
 
-    def skills(self, *args):
+    def add_skill(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def add_subskill(self, *args, **kwargs):
         raise NotImplementedError
 
     def set_portrait(self, data: str):

@@ -3,8 +3,8 @@ from flask_login import login_required, current_user
 
 from whathappened.database import session
 
-from whathappened.character.models import Character
 from whathappened.campaign import models as campaignmodels
+import whathappened.character.models as character_models
 
 from . import bp
 
@@ -43,7 +43,7 @@ def folders(folder_id=None):
         folders = current_user.profile.folders.filter(
             Folder.parent_id.__eq__(None))
         characters = current_user.profile.characters.filter(
-            Character.folder_id.__eq__(None))
+            character_models.Character.folder_id.__eq__(None))
         campaigns = current_user.profile.campaigns.filter(
             campaignmodels.Campaign.folder_id.__eq__(None))
 
