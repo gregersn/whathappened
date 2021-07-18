@@ -213,6 +213,7 @@ properties:
                   $ref: "#/definitions/skill"
               uniqueItems: true
     uniqueItems: true
+    default: []
   weapons:
     type: array
     items:
@@ -247,15 +248,6 @@ properties:
             - const: "-"
             - type: integer
           default: "-"
-      default:
-        - name: Unarmed
-          regular: 0
-          damage: "1d3 + db"
-          range: "-"
-          attacks: 1
-          ammo: "-"
-          malf: "-"
-
       required:
         - name
         - regular
@@ -264,6 +256,15 @@ properties:
         - attacks
         - ammo
         - malf
+
+    default:
+      - name: Unarmed
+        regular: 0
+        damage: "1d3 + db"
+        range: "-"
+        attacks: 1
+        ammo: "-"
+        malf: "-"
 
   combat:
     type: object
@@ -347,7 +348,7 @@ properties:
     anyOf:
       - type: array
       - type: "null"
-    default: null
+    default: []
   cash:
     type: object
     properties:

@@ -94,7 +94,7 @@ def test_personalia_and_attributes(newly_created_character: Character):
 def test_skills(newly_created_character: Character):
     skill = newly_created_character.skill('Spot Hidden')
     assert skill is not None
-    assert skill['value'] == 25
+    assert skill['start_value'] == 25
 
 
 def test_skill(newly_created_character: Character):
@@ -148,9 +148,10 @@ def test_subskill(newly_created_character: Character):
 
 
 def test_validate_migration_up(test_sheet: dict):
-    errors = validate(migrate(test_sheet,
-                              "0.0.4",
-                              migrations=migrations),
+    migrated = migrate(test_sheet,
+                       "0.0.4",
+                       migrations=migrations)
+    errors = validate(migrated,
                       CHARACTER_SCHEMA)
     assert len(errors) == 0, errors
 

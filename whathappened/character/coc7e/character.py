@@ -49,7 +49,7 @@ def new_character(title: str,
             print(f"Found a subskill: {skill['name']}")
             continue
 
-        mechanics.add_skill(skill['name'], skill['start_value'])
+        mechanics.add_skill(skill['name'], start_value=skill['start_value'])
 
     for skill, subskills in subskills.items():
         for subskill in subskills:

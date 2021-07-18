@@ -1,5 +1,6 @@
 import os
 import logging
+from typing import Union
 
 from ..core import CharacterMechanics
 from ..schema import validate
@@ -67,13 +68,14 @@ class CoCMechanics(CharacterMechanics):
     def skills(self):
         return self.data['skills']
 
-    def add_skill(self, skillname: str, value: int = 1):
+    def add_skill(self, skillname: str, value: Union[int, None] = None,
+                  start_value: Union[int, str] = 1):
         if self.skill(skillname) is not None:
             raise ValueError(f"Skill {skillname} already exists.")
 
         self.skills.append({"name": skillname,
                             "value": value,
-                            "start_value": value})
+                            "start_value": start_value})
         if isinstance(self.skills, list):
             self.skills.sort(key=lambda x: x['name'])
 
