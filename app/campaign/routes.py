@@ -17,7 +17,7 @@ from app.models import Invite
 from sqlalchemy import and_, or_
 from app.database import session
 from app.content.forms import ChooseFolderForm
-from app import socketio
+# from app import socketio
 
 from . import api  # noqa
 
@@ -357,7 +357,9 @@ def message_player(campaign_id: int, player_id: int = None):
                            messages=messages)
 
 
+"""
 @socketio.on('message')
 def handle_message(data):
     logger.debug("Notify about new messages")
     socketio.emit("update", {'message': "There are new messages"})
+"""
