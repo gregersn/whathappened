@@ -322,8 +322,9 @@ class WhisperStone {
 
 export let whisperstone: WhisperStone
 
-document.addEventListener('DOMContentLoaded', function (event) {
+/*document.addEventListener('DOMContentLoaded', function (event) {
     console.log("Initiate common stuff.");
     whisperstone = new WhisperStone();
-});
+});*/
+
 
