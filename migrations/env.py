@@ -1,5 +1,4 @@
 from __future__ import with_statement
-
 import logging
 from logging.config import fileConfig
 
@@ -18,7 +17,7 @@ fileConfig(config.config_file_name)
 logger = logging.getLogger('alembic.env')
 
 from config import Config
-from app.database import Base
+from whathappened.database import Base
 
 
 config.set_main_option(

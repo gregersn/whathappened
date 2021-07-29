@@ -7,7 +7,7 @@ Create Date: 2020-10-03 14:55:25.686154
 """
 from alembic import op
 import sqlalchemy as sa
-from app.database.fields import GUID
+from whathappened.database.fields import GUID
 
 
 # revision identifiers, used by Alembic.

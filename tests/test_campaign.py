@@ -1,5 +1,5 @@
 import json
-from app.campaign.models import Campaign
+from whathappened.campaign.models import Campaign
 
 
 def test_create_campaign(db):

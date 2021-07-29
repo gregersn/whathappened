@@ -1,16 +1,16 @@
 from .conftest import Conf as Config
-from app import create_app, assets
+from whathappened import create_app, assets
 
 
 def test_config(app):
     assets._named_bundles = {}
-    a, _ = create_app()
+    a = create_app()
 
     assert not a.testing
 
     assets._named_bundles = {}
 
-    a, _ = create_app(Config)
+    a = create_app(Config)
     assert a.testing
 
 

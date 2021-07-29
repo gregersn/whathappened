@@ -1,7 +1,7 @@
 import unittest
-from app import create_app, assets
-from app.database import db
-from app.auth.models import User
+from whathappened import create_app, assets
+from whathappened.database import db
+from whathappened.auth.models import User
 
 from .conftest import Conf as Config
 
@@ -9,7 +9,7 @@ from .conftest import Conf as Config
 class UserModelCase(unittest.TestCase):
     def setUp(self):
         assets._named_bundles = {}
-        self.app, self.socket = create_app(Config)
+        self.app = create_app(Config)
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()

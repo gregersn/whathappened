@@ -1,4 +1,3 @@
-include whathappened/schema.sql
 graft whathappened/static
 graft whathappened/templates
 global-exclude *.pyc

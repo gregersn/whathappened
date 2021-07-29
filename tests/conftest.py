@@ -1,8 +1,8 @@
 import os
 
 import pytest
-from app import create_app, assets
-from app.database import db as _db
+from whathappened import create_app, assets
+from whathappened.database import db as _db
 
 from config import Config
 
@@ -19,7 +19,7 @@ class Conf(Config):
 @pytest.fixture(scope='session')
 def app(request):
     assets._named_bundles = {}
-    app, socketio = create_app(Conf)
+    app = create_app(Conf)
 
     ctx = app.app_context()
     ctx.push()
