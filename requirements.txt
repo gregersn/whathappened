@@ -6,7 +6,6 @@ Flask==2.0.1
 Flask-Assets==2.0
 Flask-Login==0.5.0
 Flask-Mail==0.9.1
-Flask-SocketIO==5.1.0
 flask-webpackext==1.0.2
 Flask-WTF==0.15.1
 git+git://github.com/benoitc/gunicorn.git@1299ea9e967a61ae2edebe191082fd169b864c64

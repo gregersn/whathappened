@@ -12,11 +12,7 @@ logging.debug('Logger initialized')
 logging.getLogger('semver').setLevel(logging.INFO)
 logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
-app, socketio = create_app()
-
-if __name__ == '__main__':
-    print("**** Starting the flask app! *****")
-    socketio.run(app)
+app = create_app()
 
 
 @app.shell_context_processor
