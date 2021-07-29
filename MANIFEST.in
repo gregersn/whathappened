@@ -1,3 +1,5 @@
 graft whathappened/static
-graft whathappened/templates
+graft whathappened/templates 
+graft migrations/
 global-exclude *.pyc
+global-exclude whathappened/static/.webassets-cache/*

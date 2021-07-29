@@ -1,8 +1,31 @@
 ---
 - hosts: "*"
-  become: yes
   tasks:
     - name: install nginx
+      become: yes
       apt:
         name: nginx
-        state: latest
+        state: present
+
+    - name: install pip
+      become: yes
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: install venv
+      become: yes
+      apt:
+        name: python3-venv
+        state: present
+
+    - name: copy whathappened
+      copy:
+        src: ../dist/whathappened-0.0.1-py3-none-any.whl
+        dest: ~/
+
+    - name: install whathappened
+      pip:
+        name: ~/whathappened-0.0.1-py3-none-any.whl
+        virtualenv: ~/venv
+        state: forcereinstall

@@ -1,5 +1,8 @@
 MAKEFLAGS += --jobs=4
 
+VENV_PYTHON := ./venv/bin/python3
+VENV_FLASK := ./venv/bin/flask
+VENV_PIP := ./venv/bin/pip3
 VENV_RUN := . venv/bin/activate &&
 RMRF := rm -Rf
 
@@ -9,7 +12,7 @@ FRONTEND_MARKER := frontend/$(MARKER_FILENAME)
 # Default target:
 .PHONY: dev_server
 dev_server: frontend
-	@$(VENV_RUN) FLASK_APP=whathappened FLASK_ENV=development flask run
+	@FLASK_APP=whathappened FLASK_ENV=development $(VENV_FLASK) run
 
 # Install Python dependencies:
 .PHONY: setup_dependencies
@@ -17,14 +20,14 @@ setup_dependencies: venv/$(MARKER_FILENAME)
 
 venv/$(MARKER_FILENAME): requirements.txt requirements-dev.txt
 	@python3 -m venv venv
-	@$(VENV_RUN) pip3 install -r requirements.txt
-	@$(VENV_RUN) pip3 install -r requirements-dev.txt
+	@$(VENV_PIP) install -r requirements.txt
+	@$(VENV_PIP) install -r requirements-dev.txt
 	@touch $@
 
 # Initialise database:
 .PHONY: setup
 setup: setup_dependencies
-	@$(VENV_RUN) FLASK_APP=whathappened FLASK_ENV=development flask db upgrade
+	@FLASK_APP=whathappened FLASK_ENV=development $(VENV_FLASK) db upgrade
 
 # Install npm dependencies:
 $(FRONTEND_MARKER): frontend/package.json
@@ -34,12 +37,21 @@ $(FRONTEND_MARKER): frontend/package.json
 # Build the Flask frontend:
 .PHONY: frontend
 frontend: $(FRONTEND_MARKER) setup
-	@$(VENV_RUN) FLASK_APP=whathappened FLASK_ENV=development flask main build
+	@FLASK_APP=whathappened FLASK_ENV=development $(VENV_FLASK) main build
 
 .PHONY: coverage
 coverage: venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
-	@$(VENV_RUN) pytest --cov=app tests/
+	@$(VENV_PYTHON) pytest --cov=app tests/
 	@cd frontend && npm test
+
+.PHONY: dist
+dist:
+	$(RMRF) build dist
+	$(RMRF) whathappened/static/js/
+	$(RMRF) whathappened/static/css/
+	@FLASK_APP=whathappened $(VENV_FLASK) main build
+	@FLASK_APP=whathappened $(VENV_FLASK) assets build
+	@$(VENV_PYTHON) setup.py bdist_wheel
 
 # Clean out build artefacts:
 clean:
