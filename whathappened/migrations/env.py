@@ -1,4 +1,6 @@
 from __future__ import with_statement
+from whathappened.database import Base
+# from config import Config
 import logging
 from logging.config import fileConfig
 
@@ -16,13 +18,10 @@ config = context.config
 fileConfig(config.config_file_name)
 logger = logging.getLogger('alembic.env')
 
-from config import Config
-from whathappened.database import Base
 
-
-config.set_main_option(
-    'sqlalchemy.url',
-    Config.SQLALCHEMY_DATABASE_URI)
+# config.set_main_option(
+#    'sqlalchemy.url',
+#     Config.SQLALCHEMY_DATABASE_URI)
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
