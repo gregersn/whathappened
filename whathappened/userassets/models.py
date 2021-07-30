@@ -52,7 +52,7 @@ class Asset(Base):
 def before_asset_delete(mapper, connection, target):
     logger.debug("Asset is being deleted")
     logger.debug(target.filename)
-    system_folder = current_app.config['UPLOAD_PATH']
+    system_folder = current_app.config['UPLOAD_FOLDER']
     filepath = target.folder.get_path()
     assetname = secure_filename(target.filename)
     logger.debug(f"Deleting file from {filepath}, {assetname}")
@@ -94,5 +94,5 @@ class AssetFolder(Base):
 
     @property
     def system_path(self):
-        return os.path.join(current_app.config['UPLOAD_PATH'],
+        return os.path.join(current_app.config['UPLOAD_FOLDER'],
                             self.get_path())
