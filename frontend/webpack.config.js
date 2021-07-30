@@ -29,7 +29,7 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-        path: path.resolve(__dirname, '../app/static/'),
+        path: path.resolve(__dirname, '../whathappened/static/'),
         filename: 'js/[name].[contenthash].js',
         devtoolModuleFilenameTemplate: 'file:///[absolute-resource-path]'  // map to source with absolute file path not webpack:// protocol
     },

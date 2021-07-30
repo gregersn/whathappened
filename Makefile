@@ -24,7 +24,7 @@ venv/$(MARKER_FILENAME): requirements.txt requirements-dev.txt
 # Initialise database:
 .PHONY: setup
 setup: setup_dependencies
-	@$(VENV_RUN) flask db upgrade
+	@$(VENV_RUN) FLASK_APP=whathappened flask db upgrade
 
 # Install npm dependencies:
 $(FRONTEND_MARKER): frontend/package.json
@@ -34,11 +34,11 @@ $(FRONTEND_MARKER): frontend/package.json
 # Build the Flask frontend:
 .PHONY: frontend
 frontend: $(FRONTEND_MARKER) setup
-	@$(VENV_RUN) flask main build
+	@$(VENV_RUN) FLASK_APP=whathappened flask main build
 
 .PHONY: coverage
 coverage: venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
-	@$(VENV_RUN) pytest --cov=app tests/
+	@$(VENV_RUN) pytest --cov=whathappened tests/
 	@cd frontend && npm test
 
 # Clean out build artefacts:

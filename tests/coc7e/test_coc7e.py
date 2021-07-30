@@ -4,17 +4,17 @@ import json
 import pytest
 
 
-from app.auth.models import User  # noqa
-from app.campaign.models import Campaign  # noqa
+from whathappened.auth.models import User  # noqa
+from whathappened.campaign.models import Campaign  # noqa
 
-from app.character.coc7e import CoCMechanics
-from app.character.coc7e import new_character
-from app.character.coc7e import CHARACTER_SCHEMA
-from app.character.schema import validate
-from app.character.models import Character
-from app.character.coc7e.convert import fifth, half, convert_from_dholes
-from app.utils.schema import migrate
-from app.character.schema.coc7e import migrations, latest
+from whathappened.character.coc7e import CoCMechanics
+from whathappened.character.coc7e import new_character
+from whathappened.character.coc7e import CHARACTER_SCHEMA
+from whathappened.character.schema import validate
+from whathappened.character.models import Character
+from whathappened.character.coc7e.convert import fifth, half, convert_from_dholes
+from whathappened.utils.schema import migrate
+from whathappened.character.schema.coc7e import migrations, latest
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
