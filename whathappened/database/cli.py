@@ -1,9 +1,14 @@
+import os
 import click
+
 from flask import current_app
 from flask.cli import with_appcontext
 
 from alembic.config import Config
 from alembic import command
+
+
+CONFIG_FILE = os.path.join(current_app.root_path + "/migrations/alembic.ini")
 
 
 @click.group()
@@ -18,7 +23,7 @@ def db():
 @with_appcontext
 def current(directory, verbose):
     """Display the current revision for each database."""
-    alembic_cfg = Config(directory or "./whathappened/migrations/alembic.ini")
+    alembic_cfg = Config(directory or CONFIG_FILE)
     alembic_cfg.set_main_option(
         'sqlalchemy.url',
         current_app.config['SQLALCHEMY_DATABASE_URI'])
@@ -30,7 +35,7 @@ def current(directory, verbose):
 @with_appcontext
 def history():
     """Show revision history."""
-    alembic_cfg = Config("./whathappened/migrations/alembic.ini")
+    alembic_cfg = Config(CONFIG_FILE)
     alembic_cfg.set_main_option(
         'sqlalchemy.url',
         current_app.config['SQLALCHEMY_DATABASE_URI'])
@@ -53,7 +58,7 @@ def history():
 @with_appcontext
 def upgrade(directory, sql, tag, x_arg, revision):
     """Upgrade to latest revision."""
-    alembic_cfg = Config(directory or "./whathappened/migrations/alembic.ini")
+    alembic_cfg = Config(directory or CONFIG_FILE)
     alembic_cfg.set_main_option(
         'sqlalchemy.url',
         current_app.config['SQLALCHEMY_DATABASE_URI'])
@@ -75,7 +80,7 @@ def upgrade(directory, sql, tag, x_arg, revision):
 @with_appcontext
 def downgrade(directory, sql=False, tag=None, x_arg=None, revision='-1'):
     """downgrade to previous revision."""
-    alembic_cfg = Config(directory or "./whathappened/migrations/alembic.ini")
+    alembic_cfg = Config(directory or CONFIG_FILE)
     alembic_cfg.set_main_option(
         'sqlalchemy.url',
         current_app.config['SQLALCHEMY_DATABASE_URI'])
@@ -91,7 +96,7 @@ def downgrade(directory, sql=False, tag=None, x_arg=None, revision='-1'):
 @with_appcontext
 def revision(directory, message):
     """Create new revision."""
-    alembic_cfg = Config(directory or "./whathappened/migrations/alembic.ini")
+    alembic_cfg = Config(directory or CONFIG_FILE)
     alembic_cfg.set_main_option(
         'sqlalchemy.url',
         current_app.config['SQLALCHEMY_DATABASE_URI'])

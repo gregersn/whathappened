@@ -1,5 +1,9 @@
 graft whathappened/static
 graft whathappened/templates 
-graft migrations/
+graft whathappened/migrations/
+global-include *.jinja
+global-include *.json
+global-include *.yaml
+global-include *.scss
 global-exclude *.pyc
 global-exclude whathappened/static/.webassets-cache/*

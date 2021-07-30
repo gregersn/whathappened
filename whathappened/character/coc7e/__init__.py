@@ -2,6 +2,7 @@ import logging
 import json
 import jinja2
 import time
+from flask import current_app
 from typing import Literal
 
 
@@ -25,7 +26,7 @@ CREATE_TEMPLATE = 'character/coc7e/create.html.jinja'
 
 def new_character(title: str, gametype: GameType, **kwargs):
     templateloader = jinja2 \
-        .FileSystemLoader(searchpath="./whathappened/character/templates/")
+        .FileSystemLoader(searchpath=current_app.root_path + "/character/templates/")
     templateenv = jinja2.Environment(loader=templateloader)
     template = templateenv.get_template(CHARACTER_TEMPLATE)
     gtype = gametype

@@ -24,6 +24,7 @@ setup(
         'Pillow',
         'PyJWT',
         'python-dotenv',
+        'pyScss @ git+git://github.com/gregersn/pyScss.git',
         'PyYAML',
         'SQLAlchemy',
     ],

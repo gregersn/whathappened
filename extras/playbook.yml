@@ -19,13 +19,32 @@
         name: python3-venv
         state: present
 
+    - name: check for xterm-kitty file
+      stat:
+        path: ~/.terminfo/x/xterm-kitty
+      register: xterm_kitty
+
+    - name: get kitty term info
+      shell: infocmp -x xterm-kitty
+      delegate_to: localhost
+      register: kitty_term_info
+      when: not xterm_kitty.stat.exists
+
+    - name: kitty term info upload
+      shell: tic -x -o ~/.terminfo /dev/stdin
+      args:
+        stdin: "{{ kitty_term_info.stdout }}"
+      when: kitty_term_info.stdout is defined
+
     - name: copy whathappened
       copy:
         src: ../dist/whathappened-0.0.1-py3-none-any.whl
         dest: ~/
+      register: result
 
     - name: install whathappened
       pip:
         name: ~/whathappened-0.0.1-py3-none-any.whl
         virtualenv: ~/venv
         state: forcereinstall
+      when: result is changed
