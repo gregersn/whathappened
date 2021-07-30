@@ -1,9 +1,13 @@
+import os
 import click
 from flask import current_app
 from flask.cli import with_appcontext
 
 from alembic.config import Config
 from alembic import command
+
+
+CONFIG_FILE = os.path.join(current_app.root_path + "/migrations/alembic.ini")
 
 
 @click.group()
@@ -18,7 +22,10 @@ def db():
 @with_appcontext
 def current(directory, verbose):
     """Display the current revision for each database."""
-    alembic_cfg = Config(directory or "./migrations/alembic.ini")
+    alembic_cfg = Config(directory or CONFIG_FILE)
+    alembic_cfg.set_main_option(
+        'sqlalchemy.url',
+        current_app.config['SQLALCHEMY_DATABASE_URI'])
     command.current(alembic_cfg, verbose=verbose)
 
 
@@ -26,7 +33,10 @@ def current(directory, verbose):
 @with_appcontext
 def history():
     """Show revision history."""
-    alembic_cfg = Config("./migrations/alembic.ini")
+    alembic_cfg = Config(CONFIG_FILE)
+    alembic_cfg.set_main_option(
+        'sqlalchemy.url',
+        current_app.config['SQLALCHEMY_DATABASE_URI'])
     command.history(alembic_cfg)
 
 
@@ -45,7 +55,10 @@ def history():
 @with_appcontext
 def upgrade(directory, sql, tag, x_arg, revision):
     """Upgrade to latest revision."""
-    alembic_cfg = Config(directory or "./migrations/alembic.ini")
+    alembic_cfg = Config(directory or CONFIG_FILE)
+    alembic_cfg.set_main_option(
+        'sqlalchemy.url',
+        current_app.config['SQLALCHEMY_DATABASE_URI'])
     command.upgrade(alembic_cfg, revision, sql, tag)
 
 
@@ -64,7 +77,10 @@ def upgrade(directory, sql, tag, x_arg, revision):
 @with_appcontext
 def downgrade(directory, sql=False, tag=None, x_arg=None, revision='-1'):
     """downgrade to previous revision."""
-    alembic_cfg = Config(directory or "./migrations/alembic.ini")
+    alembic_cfg = Config(directory or CONFIG_FILE)
+    alembic_cfg.set_main_option(
+        'sqlalchemy.url',
+        current_app.config['SQLALCHEMY_DATABASE_URI'])
     if sql and revision == '-1':
         revision = 'head:-1'
     command.downgrade(alembic_cfg, revision, sql, tag)
@@ -77,7 +93,10 @@ def downgrade(directory, sql=False, tag=None, x_arg=None, revision='-1'):
 @with_appcontext
 def revision(directory, message):
     """Create new revision."""
-    alembic_cfg = Config(directory or "./migrations/alembic.ini")
+    alembic_cfg = Config(directory or CONFIG_FILE)
+    alembic_cfg.set_main_option(
+        'sqlalchemy.url',
+        current_app.config['SQLALCHEMY_DATABASE_URI'])
     command.revision(alembic_cfg, autogenerate=True, message=message)
 
 
