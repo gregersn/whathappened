@@ -25,18 +25,33 @@ webpackext = FlaskWebpackExt()
 logger = logging.getLogger(__name__)
 
 
-def create_app(config_class: Type[Config] = Config):
+def create_app(test_config=None) -> Flask:
     logger.info("Creating app")
     assets._named_bundles = {}
     app = Flask(__name__, instance_relative_config=True)
 
+    # Internal default settings
     app.config.from_mapping(
         SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL') or
         'sqlite:///' + os.path.join(app.instance_path,
                                     'whathappened.sqlite')
     )
 
-    app.config.from_object(config_class)
+    # Default settings from config file
+    app.config.from_object(Config)
+
+    if test_config is not None:
+        app.config.from_object(test_config)
+
+    loaded_config = False  # Track if extra settings are loaded
+
+    # Config file from environment variable
+    loaded_config = app.config.from_envvar(
+        'WHATHAPPENED_SETTINGS', silent=True) or loaded_config
+
+    # Check mandatory settings, and throw if they don't exist
+    if app.config.get("UPLOAD_FOLDER") is None:
+        raise ValueError("Missing setting for UPLOAD_FOLDER")
 
     # ensure the instance folder exists
     try:
