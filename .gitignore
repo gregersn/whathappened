@@ -18,9 +18,9 @@ build/
 
 .webassets-cache/
 
-app/static/js/
-app/static/css/
-app/static/manifest.json
+whathappened/static/js/
+whathappened/static/css/
+whathappened/static/manifest.json
 *.sqlite
 
 .noseids

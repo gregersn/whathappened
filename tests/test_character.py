@@ -1,5 +1,5 @@
-from app.character.models import Character
-from app.character.forms import ImportForm
+from whathappened.character.models import Character
+from whathappened.character.forms import ImportForm
 
 
 def test_create_character(db):

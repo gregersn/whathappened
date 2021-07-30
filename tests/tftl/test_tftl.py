@@ -4,10 +4,10 @@ import pytest
 
 from jsonschema import validate
 
-from app.character.schema import load_schema
-from app.character.tftl import CHARACTER_SCHEMA
-from app.character.tftl import new_character
-from app.character.models import Character
+from whathappened.character.schema import load_schema
+from whathappened.character.tftl import CHARACTER_SCHEMA
+from whathappened.character.tftl import new_character
+from whathappened.character.models import Character
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 

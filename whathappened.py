@@ -1,10 +1,10 @@
 import logging
 
-from app import create_app
+from whathappened import create_app
 
-from app.auth.models import User, Role, UserRoles
-from app.profile import UserProfile
-from app.character.models import Character
+from whathappened.auth.models import User, Role, UserRoles
+from whathappened.profile import UserProfile
+from whathappened.character.models import Character
 
 logging.basicConfig(format='%(asctime)s %(levelname)s: %(name)s %(message)s',
                     level=logging.DEBUG)

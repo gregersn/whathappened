@@ -1,8 +1,8 @@
 import os
 
 import pytest
-from app import create_app, assets
-from app.database import db as _db
+from whathappened import create_app, assets
+from whathappened.database import db as _db
 
 from config import Config
 
