@@ -10,7 +10,7 @@ from flask_webpackext import FlaskWebpackExt
 
 import logging
 
-from config import Config
+from whathappened.config import Config
 from typing import Type
 from .database import init_db, session
 
@@ -29,6 +29,13 @@ def create_app(config_class: Type[Config] = Config):
     logger.info("Creating app")
     assets._named_bundles = {}
     app = Flask(__name__, instance_relative_config=True)
+
+    app.config.from_mapping(
+        SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL') or
+        'sqlite:///' + os.path.join(app.instance_path,
+                                    'whathappened.sqlite')
+    )
+
     app.config.from_object(config_class)
 
     # ensure the instance folder exists

@@ -4,7 +4,7 @@ import pytest
 from whathappened import create_app, assets
 from whathappened.database import db as _db
 
-from config import Config
+from whathappened.config import Config
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
