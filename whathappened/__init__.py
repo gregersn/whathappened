@@ -30,13 +30,31 @@ def create_app(test_config=None) -> Flask:
     assets._named_bundles = {}
     app = Flask(__name__, instance_relative_config=True)
 
+    # Default settings
     app.config.from_mapping(
         SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL') or
         'sqlite:///' + os.path.join(app.instance_path, 'whathappened.sqlite')
 
     )
-
     app.config.from_object(Config)
+
+    # Load settings from environment
+    loaded_config = False
+
+    # Config file with settings used for development or in source tree mode
+    loaded_config = app.config.from_pyfile(
+        '../config.py', silent=True) or loaded_config
+
+    # Config file pointed to by environment variable
+    loaded_config = app.config.from_envvar(
+        'WHATHAPPENED_SETTINGS', silent=True) or loaded_config
+
+    if not loaded_config:
+        raise ValueError("No external configuration found")
+
+    # Throw out here if there are missing configurations
+    if app.config.get("UPLOAD_FOLDER") is None:
+        raise ValueError("Missing UPLOAD_FOLDER setting")
 
     # ensure the instance folder exists
     try:
