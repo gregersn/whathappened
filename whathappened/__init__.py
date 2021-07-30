@@ -38,19 +38,15 @@ def create_app(test_config=None) -> Flask:
     )
     app.config.from_object(Config)
 
+    if test_config is not None:
+        app.config.from_object(test_config)
+
     # Load settings from environment
     loaded_config = False
-
-    # Config file with settings used for development or in source tree mode
-    loaded_config = app.config.from_pyfile(
-        '../config.py', silent=True) or loaded_config
 
     # Config file pointed to by environment variable
     loaded_config = app.config.from_envvar(
         'WHATHAPPENED_SETTINGS', silent=True) or loaded_config
-
-    if not loaded_config:
-        raise ValueError("No external configuration found")
 
     # Throw out here if there are missing configurations
     if app.config.get("UPLOAD_FOLDER") is None:
