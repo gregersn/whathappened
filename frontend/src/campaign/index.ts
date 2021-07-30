@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
     init_npc_control();
     init_npc_refresh();
 
-    /*let last_message = 0;
+    let last_message = 0;
     whisperstone.add_recipient('update', async (...args: any[]) => {
         const message_table: HTMLTableElement = <HTMLTableElement>document.getElementById('campaign_messages');
         if (message_table) {
@@ -207,5 +207,5 @@ document.addEventListener('DOMContentLoaded', function (event) {
         } else {
             console.error("Did not find a message table");
         }
-    })*/
+    })
 })
