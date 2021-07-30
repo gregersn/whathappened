@@ -44,6 +44,15 @@ coverage: venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
 	@$(VENV_PYTHON) pytest --cov=whathappened tests/
 	@cd frontend && npm test
 
+.PHONY: dist
+dist:
+	$(RMRF) build dist
+	$(RMRF) whathappened/static/js/
+	$(RMRF) whathappened/static/css/
+	@FLASK_APP=whathappened $(VENV_FLASK) main build
+	@FLASK_APP=whathappened $(VENV_FLASK) assets build
+	@$(VENV_PYTHON) setup.py bdist_wheel
+
 # Clean out build artefacts:
 clean:
 	$(RMRF) venv
