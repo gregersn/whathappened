@@ -1,5 +1,3 @@
-import { io, Socket } from "socket.io-client";
-
 export type Datamap = {
     field: string,
     subfield?: string | undefined,
@@ -288,42 +286,3 @@ export async function http<T>(request: RequestInfo): Promise<T> {
     const body = await response.json();
     return body;
 }
-
-
-export type Recipient = (message: string, ...data: any[]) => void
-class WhisperStone {
-    socket: Socket
-
-    responders: { [message: string]: Recipient }
-    constructor() {
-        this.responders = {};
-        this.socket = io();
-        this.socket.on('connect', () => {
-            console.log("I am connected!");
-            this.socket.send('Hello');
-        });
-
-        this.socket.on("message", data => {
-            console.log("Got a response");
-            console.log(data);
-            if (data in this.responders) {
-                this.responders[data](data);
-            }
-        })
-    }
-
-    add_recipient(message: string, recipient: Recipient) {
-        //this.responders[message] = recipient;
-        this.socket.on(message, recipient);
-    }
-
-
-}
-
-export let whisperstone: WhisperStone
-
-document.addEventListener('DOMContentLoaded', function (event) {
-    console.log("Initiate common stuff.");
-    whisperstone = new WhisperStone();
-});
-
