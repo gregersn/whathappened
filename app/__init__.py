@@ -7,7 +7,6 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from flask_webpackext import FlaskWebpackExt
-from flask_socketio import SocketIO
 
 import logging
 
@@ -22,7 +21,6 @@ mail = Mail()
 assets = Environment()
 csrf = CSRFProtect()
 webpackext = FlaskWebpackExt()
-socketio = SocketIO()
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +49,6 @@ def create_app(config_class: Type[Config] = Config):
     mail.init_app(app)
     webpackext.init_app(app)
     assets.init_app(app)
-    socketio.init_app(app)
 
     # Register blueprints
     from . import auth
@@ -109,4 +106,4 @@ def create_app(config_class: Type[Config] = Config):
                              output='css/profile.css')
         assets.register('scss_profile', css_profile)
 
-    return app, socketio
+    return app
