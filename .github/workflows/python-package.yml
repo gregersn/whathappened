@@ -5,9 +5,11 @@ name: Python package
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
   pull_request:
-    branches: [master]
+    branches:
+      - master
 
 jobs:
   build:
@@ -27,6 +29,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
           cd frontend; npm install; cd ..
       - name: Test frontend
         run: |
@@ -42,7 +45,25 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=venv/,migrations/
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=venv/,migrations/
-      - name: Test with pytest
+      - name: Test with pytest and make coverage report
         run: |
-          pytest -vvv
+          pytest -vvv --cov=whathappened
+          coverage report
+          coverage html
         continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
+      - name: Archive coverage html report
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: htmlcov
+        if: ${{ matrix.python-version == '3.9' }}
+      - name: Run package creation
+        run: |
+          python3 setup.py bdist_wheel
+        if: ${{ matrix.python-version == '3.9' }}
+      - name: Archive package
+        uses: actions/upload-artifact@v2
+        with:
+          name: whathappened
+          path: dist
+        if: ${{ matrix.python-version == '3.9' }}
