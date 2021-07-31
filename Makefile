@@ -41,7 +41,7 @@ frontend: $(FRONTEND_MARKER) setup
 
 .PHONY: coverage
 coverage: venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
-	@$(VENV_PYTHON) pytest --cov=whathappened tests/
+	@$(VENV_PYTHON) -m pytest --cov=whathappened tests/
 	@cd frontend && npm test
 
 .PHONY: dist
