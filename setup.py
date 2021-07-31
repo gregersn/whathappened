@@ -22,6 +22,7 @@ setup(
         'PyJWT>=2.1.0',
         'pyScss @ git+git://github.com/gregersn/pyScss.git',
         'python-dotenv>=0.19.0',
+        'PyMysql',
         'PyYAML>=5.4.1',
         'SQLAlchemy>=1.4.22',
     ],

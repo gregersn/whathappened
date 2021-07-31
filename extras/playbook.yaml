@@ -9,6 +9,7 @@
           - nginx
           - python3-pip
           - supervisor
+          - mysql-server
         state: latest
         update_cache: yes
 
@@ -35,6 +36,31 @@
         name: virtualenv
         executable: pip3
 
+    - name: install PyMysql with pip
+      become: yes
+      pip:
+        name: PyMySQL
+        executable: pip3
+
+    - name: Create mysql database
+      become: yes
+      community.mysql.mysql_db:
+        name: whathappened
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+
+    # Todo: Set performance_schema = off under [mysqld] in the mysql config
+
+    - name: Create database user for whathappened
+      become: yes
+      community.mysql.mysql_user:
+        name: whathappened
+        password: letsroll
+        priv: "whathappened.*:ALL"
+        host: localhost
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+
     - name: copy whathappened
       copy:
         src: ../dist/whathappened-0.0.1-py3-none-any.whl
@@ -52,10 +78,11 @@
       copy:
         dest: ~/config.py
         content: |
-          UPLOAD_FOLDER=uploads
+          UPLOAD_FOLDER="uploads"
+          SQLALCHEMY_DATABASE_URI="mysql+pymysql://whathappened:letsroll@localhost:3306/whathappened"
 
     - name: update whathappened database
-      shell: FLASK_APP=whathappened ~/venv/bin/flask db upgrade
+      shell: WHATHAPPENED_SETTINGS=/home/vagrant/config.py FLASK_APP=whathappened ~/venv/bin/flask db upgrade
 
     - name: install gunicorn
       pip:
