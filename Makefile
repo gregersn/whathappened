@@ -45,7 +45,7 @@ coverage: venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
 	@cd frontend && npm test
 
 .PHONY: dist
-dist:
+dist: setup_dependencies frontend
 	$(RMRF) build dist
 	$(RMRF) whathappened/static/js/
 	$(RMRF) whathappened/static/css/
