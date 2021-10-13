@@ -1,3 +1,21 @@
+$html-background-color: #666;
+$html-background-color-dark: #333;
+
+$main-color: rgb(119, 154, 170);
+$main-color-dark: rgb(255, 255, 255);
+$main-background-color: rgb(255, 255, 255);
+$main-background-color-dark: rgb(0, 0, 0);
+$header-color: darken($main-color, 15%);
+$header-color-dark: lighten($main-color, 15%);
+
+$navbar-background-color: lightgray;
+$navbar-background-color-dark: darkgray;
+
+$flash-background-color: #cae6f6;
+$danger-color: #cc2f2e;
+
+$message-box-background: #eeeeee;
+
 html {
     box-sizing: border-box;
 }
@@ -7,35 +25,47 @@ html {
     box-sizing: inherit;
 }
 
-$main-color: rgb(119, 154, 170);
-$header-color: darken($main-color, 15%);
-
 html {
-    font-family: 'Hind Siliguri', sans-serif;
-    background: #666;
-    background-image: linear-gradient(#666, #aaa);
+    font-family: "Hind Siliguri", sans-serif;
+    background: $html-background-color;
+    background-image: linear-gradient($html-background-color, #aaa);
+
+    @media (prefers-color-scheme: dark) {
+        background: $html-background-color-dark;
+        background-image: linear-gradient($html-background-color-dark, #aaa);
+    }
     padding: 1rem;
     min-height: 100vh;
 }
 body {
     //max-width: 960px;
     margin: 0 auto;
-    background: white;
+    background: $main-background-color;
+    @media (prefers-color-scheme: dark) {
+        background: $main-background-color-dark;
+        color: $main-color-dark;
+    }
 }
 h1 {
-    font-family: 'Permanent Marker', cursive;
+    font-family: "Permanent Marker", cursive;
     color: $header-color;
     margin: 1rem 0;
 }
 a {
     color: $main-color;
+    @media (prefers-color-scheme: dark) {
+        color: $main-color-dark;
+    }
 }
 hr {
     border: none;
     border-top: 1px solid lightgray;
 }
 .navbar {
-    background: lightgray;
+    background: $navbar-background-color;
+    @media (prefers-color-scheme: dark) {
+        background: $navbar-background-color-dark;
+    }
     display: flex;
     align-items: center;
     padding: 0 0.5rem;
@@ -98,12 +128,12 @@ header .action {
 .flash {
     margin: 1em 0;
     padding: 1em;
-    background: #cae6f6;
+    background: $flash-background-color;
     border: 1px solid $main-color;
 }
 
 input.danger {
-    color: #cc2f2e;
+    color: $danger-color;
 }
 input[type="submit"] {
     align-self: start;
@@ -112,7 +142,7 @@ input[type="submit"] {
 
 .messagebox {
     padding: 1em;
-    background-color: #eeeeee;
+    background-color: $message-box-background;
     display: none;
 }
 
@@ -126,7 +156,7 @@ input[type="submit"] {
         font-weight: bold;
         margin: 0;
         padding: 0;
-          
+
         li {
             display: block;
             float: left;
@@ -136,36 +166,33 @@ input[type="submit"] {
                 display: block;
                 float: left;
                 color: #fff;
-                background: #4A6867;
+                background: #4a6867;
                 line-height: 27px;
                 text-decoration: none;
                 padding: 0 17px 0 18px;
                 height: 27px;
-                
-            a:hover {
-                background: #2E4560;
-                }
-                
-            a.current {
-                color: #2E4560;
-                background: #fff;
-                }
-                
-            a.current:hover {
-                color: #2E4560;
-                background: #fff;
+
+                a:hover {
+                    background: #2e4560;
                 }
 
+                a.current {
+                    color: #2e4560;
+                    background: #fff;
+                }
+
+                a.current:hover {
+                    color: #2e4560;
+                    background: #fff;
+                }
             }
         }
     }
-        
-        
+
     .tab-content {
         border: 1px solid black;
         padding: 2px;
     }
-
 }
 
 .page {
@@ -176,7 +203,8 @@ input[type="submit"] {
         flex-wrap: wrap;
         justify-content: center;
         align-items: stretch;
-        > div, section {
+        > div,
+        section {
             flex-grow: 1;
         }
         .portrait {
@@ -188,14 +216,14 @@ input[type="submit"] {
         border: 1px solid gray;
         padding: 2px;
         section {
-            padding-left: .5em;
-            padding-right: .5em;
+            padding-left: 0.5em;
+            padding-right: 0.5em;
         }
         h3 {
             text-align: center;
             background-color: rgb(119, 154, 170);
             margin-top: 0;
-            margin-bottom: .5em;
+            margin-bottom: 0.5em;
         }
     }
 }
