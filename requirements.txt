@@ -19,6 +19,6 @@ PyMySQL==1.0.2
 git+git://github.com/gregersn/pyScss.git
 python-dotenv==0.19.1
 pywebpack==1.2.0
-PyYAML==5.4.1
+PyYAML==6.0
 requests==2.26.0
 SQLAlchemy==1.4.25
