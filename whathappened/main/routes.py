@@ -1,7 +1,6 @@
 import logging
 
-from flask import render_template, redirect, url_for
-from flask.json import jsonify
+from flask import render_template, redirect, url_for, __version__ as flask_version
 from flask_login import current_user
 from flask_login.utils import login_required
 from werkzeug.exceptions import abort
@@ -29,6 +28,16 @@ def index():
         return redirect(url_for('profile.index'))
 
     return render_template('main/index.html.jinja')
+
+
+@bp.route('/about')
+def about():
+    package_versions = {
+        'flask': flask_version
+    }
+    return render_template('main/about.html.jinja', context={
+        'package_versions': package_versions
+    })
 
 
 @bp.route('/share/<uuid:id>/delete', methods=('GET', 'POST'))
