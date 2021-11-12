@@ -21,4 +21,4 @@ python-dotenv==0.19.1
 pywebpack==1.2.0
 PyYAML==5.4.1
 requests==2.26.0
-SQLAlchemy==1.4.25
+SQLAlchemy==1.4.27
