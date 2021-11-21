@@ -5,7 +5,7 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 
 from wtforms import SubmitField
 
-from wtforms.fields.core import StringField
+from wtforms import StringField
 from wtforms.fields.simple import HiddenField
 from wtforms.validators import DataRequired
 
