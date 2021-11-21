@@ -2,7 +2,7 @@ import logging
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, HiddenField
 from wtforms import ValidationError, SubmitField
-from wtforms.fields.core import Field
+from wtforms import Field
 from wtforms.validators import DataRequired
 import json
 

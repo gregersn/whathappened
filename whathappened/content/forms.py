@@ -1,7 +1,7 @@
 from flask_login import current_user
 from wtforms.fields.simple import HiddenField, SubmitField
 from flask_wtf.form import FlaskForm
-from wtforms.fields.core import StringField
+from wtforms import StringField
 from wtforms.validators import DataRequired, UUID, Optional
 
 from whathappened.forms.fields.alchemy import QuerySelectField
