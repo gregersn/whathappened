@@ -100,3 +100,4 @@ def new_character(title: str, system: str = None, **kwargs):
 
 
 register_game('landf', 'Lasers and feelings')
+register_game('dis', 'Death in Space')

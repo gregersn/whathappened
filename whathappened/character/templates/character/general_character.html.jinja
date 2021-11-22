@@ -1,11 +1,12 @@
 {% extends 'character/sheet.html.jinja' %}
 
 {%- macro render_object(object, path='') %}
-<div>
+    {% if 'properties' in object %}
     {% for key, value in object.properties.items() %}
-        {{ value.title if 'title' in value else key }}: {{ render_item(value, path + '.' + key) }}<br />
+        <div>{{ value.title if 'title' in value else key }}: {{ render_item(value, path + '.' + key) }}</div>
     {% endfor %}
-</div>
+    {% endif %}
+    <br />
 {%- endmacro %}
 
 {%- macro render_item(item, path='' )%}
@@ -67,11 +68,13 @@
 </div>
 
 <div class="charactersheet">
+{% if 'properties' in schema.properties.character_sheet %}
 {% for key, value in schema.properties.character_sheet.properties.items() %}
     <section id="{{ key }}">
         {{ render_section(key, value, 'character_sheet') }}
     </section>
 {% endfor %}
+{% endif %}
 </div>
 
 {% endblock %}

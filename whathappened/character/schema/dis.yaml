@@ -1,0 +1,144 @@
+type: object
+properties:
+  system:
+    const: dis
+  meta:
+    type: object
+    properties:
+      title:
+        type: string
+        default: Unknown
+      gamename:
+        const: "Death in Space"
+    required:
+      - title
+      - gamename
+  character_sheet:
+    type: object
+    properties:
+      personal_information:
+        type: object
+        title: "Section 1: Personal Information"
+        properties:
+          name:
+            type: string
+            default: Unnamed
+          nickname:
+            type: string
+            default: None
+          xp:
+            type: integer
+            default: 0
+          origin_benefit:
+            type: string
+          past_allegiance:
+            type: string
+          background:
+            type: string
+          trait:
+            type: string
+          drive:
+            type: string
+          looks:
+            type: string
+          defense_rating:
+            type: string
+            description: 12+DEX unarmored
+          hit_points:
+            type: object
+            description: "Start with 1d8, Recover 1d8+BDY"
+            properties:
+              current:
+                type: integer
+              max:
+                type: integer
+          ability:
+            type: object
+            properties:
+              body:
+                type: integer
+                minimum: -3
+                maximum: 3
+              dexterity:
+                type: integer
+                minimum: -3
+                maximum: 3
+              savvy:
+                type: integer
+                minimum: -3
+                maximum: 3
+              tech:
+                type: integer
+                minimum: -3
+                maximum: 3
+          portrait:
+            type: portrait
+      current_situation:
+        type: object
+        title: "Section 2: Current Situation"
+        properties:
+          void_points:
+            title: Void points
+            type: integer
+            minimum: 0
+            maximum: 4
+          cosmic_mutations:
+            type: string
+          life_support:
+            type: integer
+            minimum: 0
+            maximum: 7
+          void_corruption:
+            type: string
+      personal_belongings:
+        type: object
+        title: "Section 3: Personal belongings"
+        properties:
+          personal_belongings:
+            type: array
+            items:
+              type: object
+              properties:
+                description:
+                  type: string
+                condition:
+                  type: integer
+          small_items:
+            type: array
+            items:
+              type: string
+          weapon_1:
+            type: object
+            properties:
+              description:
+                type: string
+              damage:
+                type: integer
+              uses:
+                type: integer
+              condition:
+                type: integer
+          weapon_2:
+            type: object
+            properties:
+              description:
+                type: string
+              damage:
+                type: integer
+              uses:
+                type: integer
+              condition:
+                type: integer
+          armor:
+            type: object
+            properties:
+              "type":
+                type: string
+              protects_against:
+                type: string
+              dr_bonus:
+                type: integer
+
+      notes:
+        title: "Section 4: Notes"
+        type: string

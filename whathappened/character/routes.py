@@ -185,6 +185,7 @@ def view(id: int):
             current_user.profile.id == character.user_id):
         editable = True
 
+    # Check if character is in campaign owned by current user
     for campaign in character.campaigns:
         if campaign.user_id == current_user.profile.id:
             editable = True
@@ -193,6 +194,7 @@ def view(id: int):
     if (character.system is None or character.validate()) and editable:
         return redirect(url_for('character.editjson', id=id))
 
+    # Check if the character system has been customized.
     character_module = (globals()[character.system]
                         if character.system in globals()
                         else core)
