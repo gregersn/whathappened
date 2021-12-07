@@ -1,4 +1,4 @@
-from typing import Dict, List, Union, Any
+from typing import Dict, List, Mapping, Union, Any
 import yaml
 import logging
 import json
@@ -10,7 +10,7 @@ from jsonschema.validators import Draft7Validator
 logger = logging.getLogger(__name__)
 
 
-def load_schema(filename: str) -> Dict:
+def load_schema(filename: pathlib.Path) -> Dict:
     path = pathlib.Path(filename)
     with open(filename, 'r') as f:
         try:
@@ -29,9 +29,19 @@ def load_schema(filename: str) -> Dict:
 SchemaValidationError = Dict[str, str]
 
 
-def validate(data: Dict, filename: str) -> List[SchemaValidationError]:
+def validate(data: Mapping[str, Any], filename: pathlib.Path) -> List[SchemaValidationError]:
     schema = load_schema(filename)
     v = Draft7Validator(schema)
+    assert v is not None
+    for e in v.iter_errors(data):
+        print("New error: ")
+        print(e.path)
+        for x in e.path:
+            print(x)
+        print(e.message)
+        print("----")
+
+    # return []
     return [
         {'path': "/".join(str(x) for x in e.path),
          "message": e.message} for e in v.iter_errors(data)
@@ -43,6 +53,8 @@ def build_boolean(schema: Dict[str, bool]) -> bool:
 
 
 def build_string(schema: Dict[str, str]) -> str:
+    if 'default' not in schema:
+        raise KeyError(schema)
     return schema['default']
 
 
@@ -98,6 +110,8 @@ def build_from_schema2(schema: Union[List, Dict[str, Any]],
                                       main_schema)
         if 'const' in schema:
             return schema['const']
+        if 'default' in schema:
+            return schema['default']
         if schema.get('type') == 'object' and isinstance(main_schema, dict):
             return build_object(schema, main_schema)
         if schema.get('type') == 'string':
@@ -111,8 +125,10 @@ def build_from_schema2(schema: Union[List, Dict[str, Any]],
     elif isinstance(schema, List):
         logger.debug("Handling a list")
 
-    return ''
+    raise TypeError(schema)
 
 
-def build_from_schema(schema: Dict[str, Any]):
-    return build_from_schema2(schema, schema)
+def build_from_schema(schema: Dict[str, Any]) -> Dict[str, Any]:
+    nc = build_from_schema2(schema, schema)
+    assert isinstance(nc, Dict)
+    return nc

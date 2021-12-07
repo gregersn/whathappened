@@ -1,6 +1,7 @@
 """Test functions specific to Call of Cthulhu."""
 import os
 import json
+import jsonschema
 import pytest
 
 
@@ -8,13 +9,14 @@ from whathappened.auth.models import User  # noqa
 from whathappened.campaign.models import Campaign  # noqa
 
 from whathappened.character.coc7e import CoCMechanics
-from whathappened.character.coc7e import new_character
+from whathappened.character.coc7e.character import new_character
 from whathappened.character.coc7e import CHARACTER_SCHEMA
-from whathappened.character.schema import validate
+from whathappened.character.schema import validate, load_schema
 from whathappened.character.models import Character
 from whathappened.character.coc7e.convert import fifth, half, convert_from_dholes
 from whathappened.utils.schema import migrate
 from whathappened.character.schema.coc7e import migrations, latest
+
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -60,10 +62,16 @@ def fixture_test_character() -> Character:
     return c
 
 
+def test_validate_schema():
+    schema = load_schema(CHARACTER_SCHEMA)
+    jsonschema.Draft7Validator.check_schema(schema)
+
+
 def test_validate(test_sheet: dict):
     nc = new_character("Test Character", "Classic (1920's)")
+    assert nc is not None, nc
     errors = validate(nc, CHARACTER_SCHEMA)
-    assert len(errors) == 0
+    assert len(errors) == 0, errors
 
 
 def test_convert_from_dholes(dholes_sheet: dict):
@@ -87,7 +95,7 @@ def test_personalia_and_attributes(newly_created_character: Character):
 def test_skills(newly_created_character: Character):
     skill = newly_created_character.skill('Spot Hidden')
     assert skill is not None
-    assert skill['value'] == 25
+    assert skill['start_value'] == 25
 
 
 def test_skill(newly_created_character: Character):
@@ -113,6 +121,10 @@ def test_skill(newly_created_character: Character):
 
 
 def test_subskill(newly_created_character: Character):
+    existing_subskill = newly_created_character.skill('Firearms', 'Handgun')
+    assert existing_subskill is not None
+    assert existing_subskill['start_value'] == 20, existing_subskill['start_value']
+
     skill_name = "Science"
     subskill_name = "Biology"
 
@@ -137,9 +149,10 @@ def test_subskill(newly_created_character: Character):
 
 
 def test_validate_migration_up(test_sheet: dict):
-    errors = validate(migrate(test_sheet,
-                              "0.0.4",
-                              migrations=migrations),
+    migrated = migrate(test_sheet,
+                       "0.0.4",
+                       migrations=migrations)
+    errors = validate(migrated,
                       CHARACTER_SCHEMA)
     assert len(errors) == 0, errors
 

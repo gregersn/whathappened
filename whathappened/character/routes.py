@@ -13,7 +13,7 @@ from werkzeug.exceptions import abort
 
 from . import bp, api
 
-from .models import Character
+import whathappened.character.models as character_models
 from .forms import ImportForm, CreateForm
 from .forms import DeleteForm
 
@@ -32,8 +32,8 @@ from whathappened.content.forms import ChooseFolderForm
 logger = logging.getLogger(__name__)
 
 
-def get_character(id: int, check_author: bool = True) -> Character:
-    character = Character.query.get(id)
+def get_character(id: int, check_author: bool = True) -> character_models.Character:
+    character = character_models.Character.query.get(id)
 
     if character is None:
         abort(404, "Character id {0} doesn't exist.".format(id))
@@ -74,9 +74,9 @@ def create(chartype: str):
     if form.validate_on_submit():
         logger.debug(f"Creating new character specified by {form.data}")
         char_data = character_module.new_character(**form.data)
-        c = Character(title=form.title.data,
-                      body=char_data,
-                      user_id=current_user.profile.id)
+        c = character_models.Character(title=form.title.data,
+                                       body=char_data.save(),
+                                       user_id=current_user.profile.id)
         session.add(c)
         session.commit()
         return redirect(url_for('character.view', id=c.id))
@@ -192,6 +192,7 @@ def view(id: int):
 
     if (character.system is None or character.validate()) and editable:
         return redirect(url_for('character.editjson', id=id))
+    g = globals()
 
     character_module = (globals()[character.system]
                         if character.system in globals()
@@ -213,7 +214,7 @@ def view(id: int):
     character_schema = getattr(
         character_module, 'CHARACTER_SCHEMA', None)
 
-    if character_schema is None:
+    if character_schema is None and character.system is not None:
         character_schema = os.path.join(
             CHARACTER_SCHEMA_DIR, character.system + '.yaml')
 
@@ -229,7 +230,7 @@ def html_data_type(t: str) -> str:
 
 
 def render_general_view(schema_file: str,
-                        character: Character,
+                        character: character_models.Character,
                         editable: bool):
     schema = load_schema(schema_file)
     return render_template('character/general_character.html.jinja',

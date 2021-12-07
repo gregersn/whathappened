@@ -1,7 +1,8 @@
 from jsonschema import validate
 
-from whathappened.character.coc7e import CHARACTER_SCHEMA, new_character
+from whathappened.character.coc7e import CHARACTER_SCHEMA
 from whathappened.character.schema import load_schema
+from whathappened.character.coc7e.character import new_character
 
 latest = '0.0.4'
 

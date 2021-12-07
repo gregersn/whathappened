@@ -7,8 +7,9 @@ from . import bp
 from werkzeug.exceptions import abort
 
 from .models import Campaign
-from whathappened.character.models import Character
 from whathappened.models import UserProfile
+import whathappened.character.models as character_models
+
 from .forms import CreateForm, InvitePlayerForm, AddCharacterForm, AddNPCForm
 from .forms import JoinCampaignForm, EditForm, RemoveCharacterForm
 from .forms import RemovePlayerForm, NPCTransferForm, MessagePlayerForm
@@ -129,15 +130,15 @@ def view(id: int):
     added_npc_ids = [c.character_id for c in campaign.NPCs]
 
     npcform.character.query = current_user.profile.characters.filter(
-        Character.id.notin_(added_npc_ids)).\
+        character_models.Character.id.notin_(added_npc_ids)).\
         order_by(
-            Character.folder_id.__eq__(campaign.folder_id).desc()).\
+            character_models.Character.folder_id.__eq__(campaign.folder_id).desc()).\
         order_by('title')
 
     added_character_ids = [c.id for c in campaign.characters]
     characterform.character.query = current_user.profile.characters.\
-        filter(Character.id.notin_(added_character_ids)).\
-        order_by(Character.folder_id.__eq__(campaign.folder_id).desc()).\
+        filter(character_models.Character.id.notin_(added_character_ids)).\
+        order_by(character_models.Character.folder_id.__eq__(campaign.folder_id).desc()).\
         order_by('title')
 
     return render_template('campaign/campaign.html.jinja',
@@ -202,7 +203,7 @@ def create():
 @login_required
 def remove_character(id: int, characterid: int):
     c = Campaign.query.get(id)
-    char = Character.query.get(characterid)
+    char = character_models.Character.query.get(characterid)
 
     if current_user.profile.id != c.user_id \
             and char.user_id != current_user.profile.id:
@@ -266,9 +267,9 @@ def manage_npc(id: int, npcid: int):
             campaign = npc.campaign
 
             # Create a copy of the character
-            new_character = Character(title=npc.character.title,
-                                      body=npc.character.body,
-                                      user_id=player.id)
+            new_character = character_models.Character(title=npc.character.title,
+                                                       body=npc.character.body,
+                                                       user_id=player.id)
 
             session.add(new_character)
 
