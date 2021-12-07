@@ -1,15 +1,13 @@
-import os
-import pathlib
+from pathlib import Path
 import yaml
 from typing import Literal
 
-from app.character.schema import load_schema, build_from_schema, validate
+from whathappened.character.schema import load_schema, build_from_schema, validate
 from .mechanics import CoCMechanics
 
-CHARACTER_SCHEMA = os.path.join(
-    os.path.dirname(__file__), '../schema/coc7e.yaml')
+CHARACTER_SCHEMA = Path(__file__).parent / '../schema/coc7e.yaml'
 
-SKILL_LIST = pathlib.PurePath(__file__).parent / \
+SKILL_LIST = Path(__file__).parent / \
     '..' / 'schema' / 'coc7e_skills.yaml'
 
 # This is not pretty
@@ -24,7 +22,7 @@ def new_character(title: str,
     CHARACTER_SCHEMA = pathlib.PurePath(
         __file__).parent / 'schema' / 'coc7e.yaml'
     """
-    schema_data = load_schema(str(CHARACTER_SCHEMA))
+    schema_data = load_schema(CHARACTER_SCHEMA)
 
     nc = build_from_schema(schema_data)
 

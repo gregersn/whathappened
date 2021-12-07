@@ -13,7 +13,7 @@ from werkzeug.exceptions import abort
 
 from . import bp, api
 
-import app.character.models as character_models
+import whathappened.character.models as character_models
 from .forms import ImportForm, CreateForm
 from .forms import DeleteForm
 
@@ -75,7 +75,7 @@ def create(chartype: str):
         logger.debug(f"Creating new character specified by {form.data}")
         char_data = character_module.new_character(**form.data)
         c = character_models.Character(title=form.title.data,
-                                       body=char_data,
+                                       body=char_data.save(),
                                        user_id=current_user.profile.id)
         session.add(c)
         session.commit()
@@ -192,6 +192,7 @@ def view(id: int):
 
     if (character.system is None or character.validate()) and editable:
         return redirect(url_for('character.editjson', id=id))
+    g = globals()
 
     character_module = (globals()[character.system]
                         if character.system in globals()
@@ -213,7 +214,7 @@ def view(id: int):
     character_schema = getattr(
         character_module, 'CHARACTER_SCHEMA', None)
 
-    if character_schema is None:
+    if character_schema is None and character.system is not None:
         character_schema = os.path.join(
             CHARACTER_SCHEMA_DIR, character.system + '.yaml')
 

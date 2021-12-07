@@ -1,6 +1,6 @@
 import logging
 from functools import reduce
-from typing import Any, Dict, Type
+from typing import Any, Dict, MutableMapping, Optional, Type
 from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.orm import reconstructor, relationship, backref
 from datetime import datetime
@@ -42,6 +42,8 @@ class Character(BaseContent, BaseModel):
 
     folder = relationship('Folder', backref='characters')
 
+    mechanics: Optional[CharacterMechanics] = None
+
     _default_fields = [
         'id',
         'title',
@@ -60,7 +62,7 @@ class Character(BaseContent, BaseModel):
         self._data = None
         # Add a subclass or something that
         # has the mechanics of the character.
-        self.mechanics = mechanics(self.body)
+        self.mechanics = mechanics(self.body, self.system)
 
     @reconstructor
     def init_on_load(self):
@@ -68,16 +70,18 @@ class Character(BaseContent, BaseModel):
         logger.debug(f"Loading character of type {system}")
         system = self.system
         self.mechanics = MECHANICS.get(
-            system, CharacterMechanics)(self.body)
+            system, CharacterMechanics)(self.body, system)
 
     @property
-    def data(self) -> Dict[str, Any]:
+    def data(self) -> MutableMapping[str, Any]:
+        if self.mechanics is not None:
+            return self.mechanics.data
         if isinstance(self.body, dict):
             return self.body
-        raise TypeError("Body is not a dictionary")
+        raise TypeError(f"Body is not a dictionary: {type(self.body)}")
 
     @property
-    def system(self) -> str:
+    def system(self) -> Optional[str]:
         s = self.data.get('system', None)
         if s is not None:
             return s
@@ -88,7 +92,7 @@ class Character(BaseContent, BaseModel):
             logger.warning("Trying old CoC stuff.")
             return "coc7e"
 
-        return "Unknown"
+        return None
 
     @property
     def version(self):
@@ -177,6 +181,7 @@ class Character(BaseContent, BaseModel):
 
     def store_data(self):
         """Mark data as modified."""
+        self.body = self.mechanics.save()
         flag_modified(self, "body")
 
     def skill(self, *args, **kwargs):

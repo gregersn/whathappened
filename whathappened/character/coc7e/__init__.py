@@ -23,15 +23,4 @@ CHARACTER_TEMPLATE = 'character/coc7e/blank_character.json.jinja'
 CREATE_TEMPLATE = 'character/coc7e/create.html.jinja'
 
 
-def new_character(title: str, gametype: GameType, **kwargs):
-    templateloader = jinja2 \
-        .FileSystemLoader(searchpath=current_app.root_path + "/character/templates/")
-    templateenv = jinja2.Environment(loader=templateloader)
-    template = templateenv.get_template(CHARACTER_TEMPLATE)
-    gtype = gametype
-    return json.loads(template.render(title=title,
-                                      timestamp=time.time(),
-                                      gametype=gtype))
-
-
 register_game('coc7e', 'Call of Cthulhu TM', CoCMechanics)
