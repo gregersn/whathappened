@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 import pytest
 from whathappened import create_app, assets
@@ -6,13 +6,13 @@ from whathappened.database import db as _db
 
 from whathappened.config import Config
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+basedir = Path(__file__).parent.absolute()
 
 
 class Conf(Config):
     TESTING = True
-    TESTDB = os.path.join(basedir, 'testing.sqlite')
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + TESTDB
+    TESTDB = basedir / 'testing.sqlite'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(TESTDB)
     WTF_CSRF_ENABLED = False
 
 
@@ -35,13 +35,13 @@ def app(request):
 @pytest.fixture(scope='session')
 def db(app, request):
     """Session-wide test database."""
-    if os.path.exists(Conf.TESTDB):
-        os.unlink(Conf.TESTDB)
+    if Conf.TESTDB.exists():
+        Conf.TESTDB.unlink()
 
     def teardown():
         _db.drop_all()
-        if os.path.isfile(Conf.TESTDB):
-            os.unlink(Conf.TESTDB)
+        if Conf.TESTDB.exists():
+            Conf.TESTDB.unlink()
 
     _db.create_all()
 

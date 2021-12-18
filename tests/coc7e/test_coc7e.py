@@ -1,5 +1,5 @@
 """Test functions specific to Call of Cthulhu."""
-import os
+from pathlib import Path
 import json
 import pytest
 
@@ -16,7 +16,7 @@ from whathappened.character.coc7e.convert import fifth, half, convert_from_dhole
 from whathappened.utils.schema import migrate
 from whathappened.character.schema.coc7e import migrations, latest
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
+BASEDIR = Path(__file__).parent.absolute()
 
 
 def test_fifth():
@@ -33,7 +33,7 @@ def test_half():
 def fixture_dholes_sheet() -> dict:
     """Load character sheet from JSON and convert to dict."""
     sheet = None
-    filename = os.path.join(BASEDIR, 'testchar_dholes.json')
+    filename = BASEDIR / 'testchar_dholes.json'
     with open(filename, 'r') as input_file:
         sheet = json.load(input_file)
 
@@ -44,7 +44,7 @@ def fixture_dholes_sheet() -> dict:
 def fixture_test_sheet() -> dict:
     """Load character sheet from JSON and convert to dict."""
     sheet = None
-    with open(os.path.join(BASEDIR, 'testchar.json'), 'r') as input_file:
+    with open(BASEDIR / 'testchar.json', 'r') as input_file:
         sheet = json.load(input_file)
 
     return sheet

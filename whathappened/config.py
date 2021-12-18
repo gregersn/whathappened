@@ -1,10 +1,11 @@
 """App default config."""
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
+BASEDIR = Path(__file__).parent.absolute()
 
-load_dotenv(os.path.join(BASEDIR, '.env'))
+load_dotenv(BASEDIR / '.env')
 
 
 class Config():

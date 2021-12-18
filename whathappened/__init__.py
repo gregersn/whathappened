@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import os
-
+from pathlib import Path
 from flask import Flask
 from flask_assets import Environment, Bundle
 from flask_login import LoginManager
@@ -33,8 +33,7 @@ def create_app(test_config=None) -> Flask:
     # Internal default settings
     app.config.from_mapping(
         SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL') or
-        'sqlite:///' + os.path.join(app.instance_path,
-                                    'whathappened.sqlite')
+        f"sqlite:///{Path(app.instance_path) / 'whathappened.sqlite'}"
     )
 
     # Default settings from config file

@@ -1,5 +1,5 @@
 """Test functions related to Tales from the Loop."""
-import os
+from pathlib import Path
 import pytest
 
 from jsonschema import validate
@@ -9,7 +9,7 @@ from whathappened.character.tftl import CHARACTER_SCHEMA
 from whathappened.character.tftl import new_character
 from whathappened.character.models import Character
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
+BASEDIR = BASEDIR = Path(__file__).parent.absolute()
 
 
 @pytest.fixture(name="newly_created_character")

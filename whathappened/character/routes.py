@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from whathappened.character import core
 from whathappened.character.core import CHARACTER_SCHEMA_DIR, GameSystems
 from whathappened.character.schema import load_schema, sub_schema
@@ -214,8 +215,7 @@ def view(id: int):
         character_module, 'CHARACTER_SCHEMA', None)
 
     if character_schema is None:
-        character_schema = os.path.join(
-            CHARACTER_SCHEMA_DIR, character.system + '.yaml')
+        character_schema = CHARACTER_SCHEMA_DIR / f"{character.system}.yaml"
 
     return render_general_view(character_schema,
                                character=character,
@@ -228,7 +228,7 @@ def html_data_type(t: str) -> str:
     return t
 
 
-def render_general_view(schema_file: str,
+def render_general_view(schema_file: Path,
                         character: Character,
                         editable: bool):
     schema = load_schema(schema_file)

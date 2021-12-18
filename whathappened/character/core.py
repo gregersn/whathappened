@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import logging
 from typing import Type
 from whathappened.character import schema
@@ -7,8 +8,7 @@ from whathappened.character.schema import load_schema, build_from_schema, valida
 logger = logging.getLogger(__name__)
 
 
-CHARACTER_SCHEMA_DIR = os.path.join(
-    os.path.dirname(__file__), 'schema/')
+CHARACTER_SCHEMA_DIR = Path(__file__).parent / 'schema/'
 
 
 GAMES = {
@@ -28,10 +28,9 @@ class CharacterMechanics():
         raise NotImplementedError
 
     def validate(self, *args, **kwargs):
-        schema_file = os.path.join(
-            CHARACTER_SCHEMA_DIR, self.parent.system + '.yaml')
+        schema_file = CHARACTER_SCHEMA_DIR / f"{self.parent.system}.yaml"
 
-        if not os.path.isfile(schema_file):
+        if not schema_file.is_file():
             logger.error(f"Could not find: {schema_file}")
             return [{"path": "/",
                     "message": "This character sheet has no known schema or validation."}]
@@ -90,7 +89,7 @@ def register_game(tag: str,
 def new_character(title: str, system: str = None, **kwargs):
     if system is None:
         raise SyntaxError("new_character: System not specified")
-    CHARACTER_SCHEMA = os.path.join(CHARACTER_SCHEMA_DIR, system + '.yaml')
+    CHARACTER_SCHEMA = CHARACTER_SCHEMA_DIR / f"{system}.yaml"
     schema_data = load_schema(CHARACTER_SCHEMA)
 
     nc = build_from_schema(schema_data)

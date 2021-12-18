@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import click
 from flask import current_app
 from flask.cli import with_appcontext
@@ -7,7 +7,7 @@ from alembic.config import Config
 from alembic import command
 
 
-CONFIG_FILE = os.path.join(current_app.root_path + "/migrations/alembic.ini")
+CONFIG_FILE = Path(current_app.root_path) / "migrations/alembic.ini"
 
 
 @click.group()
