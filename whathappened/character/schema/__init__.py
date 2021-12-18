@@ -16,7 +16,7 @@ def load_schema(filename: Path) -> Dict:
             if filename.suffix == '.json':
                 data = json.load(f)
                 return data
-            elif filename.suffix == '.yaml':
+            elif filename.suffix == '.yml':
                 data = yaml.safe_load(f)
                 return data
         except Exception as e:

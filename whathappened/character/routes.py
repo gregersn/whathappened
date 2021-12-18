@@ -216,7 +216,7 @@ def view(id: int):
         character_module, 'CHARACTER_SCHEMA', None)
 
     if character_schema is None:
-        character_schema = CHARACTER_SCHEMA_DIR / f"{character.system}.yaml"
+        character_schema = CHARACTER_SCHEMA_DIR / f"{character.system}.yml"
 
     return render_general_view(character_schema,
                                character=character,

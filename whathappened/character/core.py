@@ -28,7 +28,7 @@ class CharacterMechanics():
         raise NotImplementedError
 
     def validate(self, *args, **kwargs):
-        schema_file = CHARACTER_SCHEMA_DIR / f"{self.parent.system}.yaml"
+        schema_file = CHARACTER_SCHEMA_DIR / f"{self.parent.system}.yml"
 
         if not schema_file.is_file():
             logger.error(f"Could not find: {schema_file}")
@@ -89,7 +89,7 @@ def register_game(tag: str,
 def new_character(title: str, system: str = None, **kwargs):
     if system is None:
         raise SyntaxError("new_character: System not specified")
-    CHARACTER_SCHEMA = CHARACTER_SCHEMA_DIR / f"{system}.yaml"
+    CHARACTER_SCHEMA = CHARACTER_SCHEMA_DIR / f"{system}.yml"
     schema_data = load_schema(CHARACTER_SCHEMA)
 
     nc = build_from_schema(schema_data)
