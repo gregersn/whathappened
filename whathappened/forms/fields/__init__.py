@@ -33,7 +33,7 @@ class YamlField(TextAreaField):
     def process_formdata(self, valuelist):
         if valuelist:
             try:
-                self.data = yaml.load(valuelist[0])
+                self.data = yaml.load(valuelist[0], yaml.SafeLoader)
             except ValueError:
                 raise ValueError('This field is not valid YAML')
         else:

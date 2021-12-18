@@ -1,6 +1,6 @@
 import logging
 from functools import reduce
-from typing import Any, Dict, Type
+from typing import Any, Dict, Type, cast
 from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.orm import reconstructor, relationship, backref
 from datetime import datetime
@@ -32,11 +32,11 @@ def fix_image(imagedata: str) -> str:
 class Character(BaseContent, BaseModel):
     __tablename__ = 'charactersheet'
     id = Column(Integer, primary_key=True)
-    title = Column(String(256))
-    body = Column(JSON)
+    title = cast(str, Column(String(256)))
+    body = cast(Dict[str, Any], Column(JSON))
     timestamp = Column(DateTime, index=True, default=datetime.utcnow,
                        onupdate=datetime.utcnow)
-    user_id = Column(Integer, ForeignKey('user_profile.id'))
+    user_id = cast(int, Column(Integer, ForeignKey('user_profile.id')))
     player = relationship('UserProfile', backref=backref(
         'characters', lazy='dynamic'))
 

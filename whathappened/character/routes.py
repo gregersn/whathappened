@@ -20,6 +20,7 @@ from .forms import DeleteForm
 
 # Imports for registering games.
 from . import coc7e
+from .coc7e.convert import convert_from_dholes
 from . import tftl  # noqa
 
 from whathappened.models import LogEntry
@@ -127,7 +128,7 @@ def update(id: int):
 
     if request.method == "POST":
         update = request.get_json()
-
+        assert update is not None
         for setting in update:
             character.set_attribute(setting)
             field = setting['field']
@@ -321,6 +322,7 @@ def editjson(id: int):
     form = ImportForm(obj=c)
 
     if form.validate_on_submit():
+        assert form.body.data is not None
         c.title = form.title.data
         c.body = form.body.data
 
@@ -333,7 +335,7 @@ def editjson(id: int):
         elif form.conversion.data:
             logger.debug("Conversion is checked")
             data = form.body.data
-            c.body = coc7e.convert_from_dholes(data)
+            c.body = convert_from_dholes(data)
 
         logentry = LogEntry(c, "JSON edited", user_id=current_user.id)
         session.add(logentry)

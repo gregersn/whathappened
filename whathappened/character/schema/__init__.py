@@ -1,4 +1,4 @@
-from typing import Dict, List, Union, Any
+from typing import Dict, List, MutableMapping, Union, Any
 import yaml
 import logging
 import json
@@ -113,5 +113,7 @@ def build_from_schema2(schema: Union[List, Dict[str, Any]],
     return ''
 
 
-def build_from_schema(schema: Dict[str, Any]):
-    return build_from_schema2(schema, schema)
+def build_from_schema(schema: Dict[str, Any]) -> Dict[str, Any]:
+    built = build_from_schema2(schema, schema)
+    assert isinstance(built, MutableMapping)
+    return built

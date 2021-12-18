@@ -1,5 +1,5 @@
-from ..forms import CreateForm
+from ..forms import CreateForm as BaseCreateForm
 
 
-class CreateForm(CreateForm):
+class CreateForm(BaseCreateForm):
     pass

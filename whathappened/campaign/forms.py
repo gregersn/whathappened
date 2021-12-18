@@ -171,4 +171,5 @@ class MessagePlayerForm(FlaskForm):
         if hide_to_id:
             self.to_id.widget = HiddenInput()  # type: ignore  # Not an error
 
+        assert self.to_id.choices is not None
         self.to_id.choices += players
