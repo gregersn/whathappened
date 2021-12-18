@@ -183,12 +183,13 @@ def move(fileid, filename):
         if asset.owner != current_user.profile:
             abort(403)
         destinationfolder = form.folder.data
-        logger.debug(f"Move {asset.system_path} "
-                     f"to {destinationfolder.system_path}")
-        os.replace(asset.system_path,
-                   destinationfolder.system_path / asset.filename)
-        asset.folder = destinationfolder
-        session.commit()
-        flash("You moved your file")
+        if destinationfolder is not None:
+            logger.debug(f"Move {asset.system_path} "
+                         f"to {destinationfolder.system_path}")
+            os.replace(asset.system_path,
+                       destinationfolder.system_path / asset.filename)
+            asset.folder = destinationfolder
+            session.commit()
+            flash("You moved your file")
 
     return redirect(url_for('userassets.index', folder_id=redirect_id))

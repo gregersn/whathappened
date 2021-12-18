@@ -85,6 +85,8 @@ def handout_players(campaignid: int, handoutid: int):
 
     if request.method == 'POST':
         data = request.get_json()
+        assert data is not None
+
         player = handout.campaign.players_by_id.get(data['player_id'], None)
         if player is not None:
             if data['state']:
@@ -144,6 +146,7 @@ def npc_visibility(npcid: int, campaignid: int):
 
     if request.method == 'POST':
         data = request.get_json()
+        assert data is not None
         logger.debug(data)
         if data['visibility']:
             logger.debug(f"Showing NPC {npc.character.title}")

@@ -113,7 +113,7 @@ class QuerySelectField(SelectFieldBase):
         if self._object_list is None:
             query = (
                 self.query if self.query is not None
-                else self.query_factory()
+                else self.query_factory() if self.query_factory else []
             )
             get_pk = self.get_pk
             self._object_list = list(

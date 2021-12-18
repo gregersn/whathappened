@@ -10,7 +10,6 @@ from .models import User
 
 from whathappened.database import session
 
-
 from . import bp, send_password_reset_email
 
 logger = logging.getLogger(__name__)
@@ -23,7 +22,7 @@ def login():
         next_page = url_for('main.index')
 
     if current_user.is_authenticated:
-        logger.debug(f"User {current_user.id} is already logged in")
+        logger.debug("User %s is already logged in", current_user.id)
         return redirect(next_page)
     form = LoginForm()
     if form.validate_on_submit():
@@ -84,7 +83,8 @@ def reset_password(token: str):
     user = User.verify_reset_password_token(token)
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        user.set_password(form.password.data)
+        if user is not None:
+            user.set_password(form.password.data)
         session.commit()
         flash('Your password has been reset.')
         return redirect(url_for('auth.login'))
