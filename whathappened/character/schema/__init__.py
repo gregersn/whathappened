@@ -2,7 +2,7 @@ from typing import Dict, List, Union, Any
 import yaml
 import logging
 import json
-import pathlib
+from pathlib import Path
 from jsonschema.exceptions import SchemaError
 
 from jsonschema.validators import Draft7Validator
@@ -10,14 +10,13 @@ from jsonschema.validators import Draft7Validator
 logger = logging.getLogger(__name__)
 
 
-def load_schema(filename: str) -> Dict:
-    path = pathlib.Path(filename)
+def load_schema(filename: Path) -> Dict:
     with open(filename, 'r') as f:
         try:
-            if path.suffix == '.json':
+            if filename.suffix == '.json':
                 data = json.load(f)
                 return data
-            elif path.suffix == '.yaml':
+            elif filename.suffix == '.yaml':
                 data = yaml.safe_load(f)
                 return data
         except Exception as e:
@@ -29,7 +28,7 @@ def load_schema(filename: str) -> Dict:
 SchemaValidationError = Dict[str, str]
 
 
-def validate(data: Dict, filename: str) -> List[SchemaValidationError]:
+def validate(data: Dict, filename: Path) -> List[SchemaValidationError]:
     schema = load_schema(filename)
     v = Draft7Validator(schema)
     return [

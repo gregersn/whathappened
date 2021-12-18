@@ -1,11 +1,10 @@
-import os
+from pathlib import Path
 import logging
 
 from ..core import CharacterMechanics
 from ..schema import validate
 
-CHARACTER_SCHEMA = os.path.join(
-    os.path.dirname(__file__), '../schema/coc7e.json')
+CHARACTER_SCHEMA = Path(__file__).parent / '../schema/coc7e.json'
 
 logger = logging.getLogger(__name__)
 

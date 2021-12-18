@@ -1,10 +1,10 @@
-import os
+from pathlib import Path
 import pytest
 from packaging.version import parse
 
 from whathappened.utils.schema import migrate, up_or_down, find_migration, find_version
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
+BASEDIR = Path(__file__).parent.absolute()
 
 
 def test_up_or_down():

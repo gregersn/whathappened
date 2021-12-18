@@ -103,7 +103,7 @@ def upload_file(folder_id=None):
     form = UploadForm(prefix='fileupload')
     if form.validate_on_submit():
         fileobject = form.uploaded.data
-        folder = AssetFolder.query.get(form.folder_id.data)
+        folder: AssetFolder = AssetFolder.query.get(form.folder_id.data)
 
         if folder.owner != current_user.profile:
             abort(403)
@@ -111,9 +111,9 @@ def upload_file(folder_id=None):
         if fileobject.filename:
             filename = secure_filename(fileobject.filename)
 
-            Path(folder.system_path).mkdir(parents=True,
-                                           exist_ok=True)
-            fileobject.save(os.path.join(folder.system_path, filename))
+            folder.system_path.mkdir(parents=True,
+                                     exist_ok=True)
+            fileobject.save(folder.system_path / filename)
 
             asset = Asset(filename=fileobject.filename,
                           folder=folder,
@@ -127,7 +127,7 @@ def upload_file(folder_id=None):
 @bp.route('/view/<uuid:fileid>/<string:filename>')
 @login_required
 def view(fileid, filename):
-    userasset = Asset.query.get(fileid)
+    userasset: Asset = Asset.query.get(fileid)
     if filename != userasset.filename:
         abort(404)
 
@@ -135,7 +135,7 @@ def view(fileid, filename):
     assetname = secure_filename(userasset.filename)
     logger.debug(f"Sending file from {filepath}, {assetname}")
 
-    full_dir = os.path.join("..", userasset.folder.system_path)
+    full_dir = Path("..") / str(userasset.folder.system_path)
     return send_from_directory(full_dir, assetname)
 
 
@@ -186,7 +186,7 @@ def move(fileid, filename):
         logger.debug(f"Move {asset.system_path} "
                      f"to {destinationfolder.system_path}")
         os.replace(asset.system_path,
-                   os.path.join(destinationfolder.system_path, asset.filename))
+                   destinationfolder.system_path / asset.filename)
         asset.folder = destinationfolder
         session.commit()
         flash("You moved your file")

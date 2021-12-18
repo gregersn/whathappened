@@ -1,9 +1,8 @@
-import os
+from pathlib import Path
 
 from ..core import CharacterMechanics
 from ..schema import validate
-CHARACTER_SCHEMA = os.path.join(
-    os.path.dirname(__file__), '../schema/tftl.json')
+CHARACTER_SCHEMA = Path(__file__).parent / '../schema/tftl.json'
 
 
 class TftlMechanics(CharacterMechanics):

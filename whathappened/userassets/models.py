@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import uuid
 import logging
 
@@ -34,7 +34,7 @@ class Asset(Base):
 
     @property
     def path(self):
-        return os.path.join(self.folder.get_path(), self.filename)
+        return self.folder.get_path() / self.filename
 
     @property
     def url(self):
@@ -44,23 +44,22 @@ class Asset(Base):
 
     @property
     def system_path(self):
-        return os.path.join(self.folder.system_path,
-                            secure_filename(self.filename))
+        return self.folder.system_path / secure_filename(self.filename)
 
 
 @event.listens_for(Asset, 'before_delete')
 def before_asset_delete(mapper, connection, target):
     logger.debug("Asset is being deleted")
     logger.debug(target.filename)
-    system_folder = current_app.config['UPLOAD_FOLDER']
-    filepath = target.folder.get_path()
+    system_folder = Path(current_app.config['UPLOAD_FOLDER'])
+    filepath: Path = target.folder.get_path()
     assetname = secure_filename(target.filename)
     logger.debug(f"Deleting file from {filepath}, {assetname}")
-    full_dir = os.path.join(system_folder, filepath)
-    full_file_path = os.path.join(full_dir, assetname)
-    if os.path.isfile(full_file_path):
+    full_dir = system_folder / filepath
+    full_file_path = full_dir / assetname
+    if full_file_path.is_file():
         logger.debug("Delete the actual file")
-        os.unlink(full_file_path)
+        full_file_path.unlink()
 
 
 class AssetFolder(Base):
@@ -77,22 +76,21 @@ class AssetFolder(Base):
     title = Column(String(128))
     files = relationship("Asset", back_populates='folder')
 
-    def get_path(self):
+    def get_path(self) -> Path:
         if self.parent:
             parent = self.parent.get_path()
-            return os.path.join(parent, secure_filename(self.title))
+            return parent / secure_filename(self.title)
         else:
-            return os.path.join(str(self.id), secure_filename(self.title))
+            return Path(str(self.id)) / secure_filename(self.title)
 
     @property
-    def path(self):
+    def path(self) -> Path:
         if self.parent:
             parent = self.parent.path
-            return os.path.join(parent, self.title)
+            return parent / self.title
         else:
-            return self.title
+            return Path(self.title)
 
     @property
-    def system_path(self):
-        return os.path.join(current_app.config['UPLOAD_FOLDER'],
-                            self.get_path())
+    def system_path(self) -> Path:
+        return Path(current_app.config['UPLOAD_FOLDER']) / self.get_path()
