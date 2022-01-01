@@ -4,11 +4,11 @@ import datetime
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql.sqltypes import DateTime, Text
 from sqlalchemy import Column, Integer, String, ForeignKey
-from .database import Base
+from .database import BaseModel
 from .database.fields import GUID
 
 
-class UserProfile(Base):
+class UserProfile(BaseModel):
     __tablename__ = "user_profile"
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user_account.id'))
@@ -18,29 +18,29 @@ class UserProfile(Base):
         return f'<UserProfile {self.user_id}>'
 
 
-class Invite(Base):
+class Invite(BaseModel):
     __tablename__ = "invite"
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     owner_id = cast(int, Column(Integer, ForeignKey('user_profile.id')))
     table = Column(String(128))
     object_id = Column(Integer)
 
-    def __init__(self, target: Base, **kwargs):
+    def __init__(self, target: BaseModel, **kwargs):
         super(Invite, self).__init__(**kwargs)
         self.table = target.__tablename__
         self.object_id = target.id
 
     @classmethod
-    def query_for(cls, target: Base):
+    def query_for(cls, target: BaseModel):
         return cls.query.filter_by(object_id=target.id) \
                         .filter_by(table=target.__tablename__)
 
-    def matches(self, target: Base):
+    def matches(self, target: BaseModel):
         return (target.__tablename__ == self.table
                 and target.id == self.object_id)
 
 
-class LogEntry(Base):
+class LogEntry(BaseModel):
     __tablename__ = 'eventlog'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user_account.id'))
@@ -50,7 +50,7 @@ class LogEntry(Base):
     created_date = Column(DateTime, default=datetime.datetime.utcnow)
     user = relationship("User")
 
-    def __init__(self, target: Base, entry: str, user_id=None, **kwargs):
+    def __init__(self, target: BaseModel, entry: str, user_id=None, **kwargs):
         super(LogEntry, self).__init__(**kwargs)
         self.table = target.__tablename__
         self.object_id = target.id
@@ -59,7 +59,7 @@ class LogEntry(Base):
             self.user_id = user_id
 
     @classmethod
-    def query_for(cls, target: Base):
+    def query_for(cls, target: BaseModel):
         return cls.query.filter_by(object_id=target.id) \
                         .filter_by(table=target.__tablename__) \
                         .order_by(LogEntry.created_date.desc())

@@ -1,10 +1,14 @@
 from pathlib import Path
 import click
 from flask import current_app
+from flask import Flask
 from flask.cli import with_appcontext
 
 from alembic.config import Config
 from alembic import command
+from sqlalchemy.sql.schema import MetaData
+
+from whathappened.database import init_db, db
 
 
 CONFIG_FILE = Path(current_app.root_path) / "migrations/alembic.ini"
@@ -98,6 +102,33 @@ def revision(directory, message):
         'sqlalchemy.url',
         current_app.config['SQLALCHEMY_DATABASE_URI'])
     command.revision(alembic_cfg, autogenerate=True, message=message)
+
+
+@db.command('dump')
+@with_appcontext
+def dump():
+    print("Dumping all objects")
+    """
+    app = Flask(__name__, instance_relative_config=True)
+
+    # Internal default settings
+    app.config.from_mapping(
+        SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL') or
+        f"sqlite:///{Path(app.instance_path) / 'whathappened.sqlite'}"
+    )
+    init_db(app.config['SQLALCHEMY_DATABASE_URI'])
+    """
+
+    from whathappened.database import session
+    engine = session.get_bind()
+    meta = MetaData()
+    meta.reflect(bind=engine)
+    result = {}
+    for table in meta.sorted_tables:
+        result[table.name] = [dict(row)
+                              for row in engine.execute(table.select())]
+
+    print(result)
 
 
 current_app.cli.add_command(db)
