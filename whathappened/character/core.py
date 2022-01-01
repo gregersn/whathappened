@@ -1,9 +1,12 @@
 import os
 from pathlib import Path
 import logging
-from typing import Type
+from typing import Type, TYPE_CHECKING
 from whathappened.character import schema
 from whathappened.character.schema import load_schema, build_from_schema, validate
+
+if TYPE_CHECKING:
+    from whathappened.character.models import Character
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +24,9 @@ GameSystems = []
 
 
 class CharacterMechanics():
-    def __init__(self, parent):
+    parent: 'Character'
+
+    def __init__(self, parent: 'Character'):
         self.parent = parent
 
     def game(self):

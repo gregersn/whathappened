@@ -1,0 +1,374 @@
+---
+$schema: http://json-schema.org/draft-07/schema#
+definitions:
+  skill:
+    $id: "#skill"
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        anyOf:
+          - type: integer
+          - type: "null"
+      start_value:
+        anyOf:
+          - type: string
+          - type: integer
+      occupation:
+        type: boolean
+      checked:
+        type: boolean
+    required:
+      - name
+      - value
+      - start_value
+
+type: object
+required:
+  - version
+  - system
+  - meta
+  - personalia
+  - characteristics
+properties:
+  version:
+    const: 0.0.4
+  system:
+    const: coc7e
+  meta:
+    type: object
+    properties:
+      Title:
+        type: string
+        default: Untitled CoC character sheet
+      Creator:
+        type: string
+        default: What Happened? A TTRPG utility
+      CreateDate:
+        type: string
+        fromat: date-time
+        default: now
+      GameName:
+        const: Call of Cthulhu TM
+      GameVersion:
+        const: 7th Edition
+      GameType:
+        type: string
+        enum:
+          - "Classic (1920's)"
+          - Modern
+        default: "Classic (1920's)"
+      Disclaimer:
+        type: string
+        default: "The developer has not rolled for sanity"
+
+    required:
+      - Title
+      - GameName
+      - GameVersion
+      - GameType
+
+  personalia:
+    type: object
+    properties:
+      Name:
+        type: string
+        default: Unknown
+      Occupation:
+        type: string
+        default: Unknown
+      Gender:
+        type: string
+        default: Unknown
+      Age:
+        type: string
+        default: "18"
+      Birthplace:
+        type: string
+        default: Unknown
+      Residence:
+        type: string
+        default: Unknown
+      Portrait:
+        anyOf:
+          - type: string
+          - type: "null"
+        default: null
+
+  characteristics:
+    type: object
+    properties:
+      STR:
+        type: integer
+        minimum: 0
+        default: 0
+      DEX:
+        type: integer
+        minimum: 0
+        default: 0
+      INT:
+        type: integer
+        minimum: 0
+        default: 0
+      CON:
+        type: integer
+        minimum: 0
+        default: 0
+      APP:
+        type: integer
+        minimum: 0
+        default: 0
+      POW:
+        type: integer
+        minimum: 0
+        default: 0
+      SIZ:
+        type: integer
+        minimum: 0
+        default: 0
+      EDU:
+        type: integer
+        minimum: 0
+        default: 0
+      Move:
+        type: integer
+        minimum: 0
+        default: 8
+      Luck:
+        type: integer
+        minimum: 0
+        maximum: 99
+        default: 0
+      Sanity:
+        type: integer
+        minimum: 0
+        maximum: 99
+        default: 0
+      SanityStart:
+        type: integer
+        maximum: 99
+        minimum: 0
+        default: 0
+      SanityMax:
+        type: integer
+        minimum: 0
+        default: 99
+        maximum: 99
+      MagicPts:
+        type: integer
+        minimum: 0
+        maximum: 24
+        default: 0
+      MagicPtsMax:
+        type: integer
+        minimum: 0
+        maximum: 24
+        default: 0
+      HitPts:
+        type: integer
+        minimum: 0
+        maximum: 20
+        default: 0
+      HitPtsMax:
+        type: integer
+        minimum: 0
+        maximum: 20
+        default: 0
+    required:
+      - STR
+      - DEX
+      - INT
+      - CON
+      - APP
+      - POW
+      - SIZ
+      - EDU
+      - Move
+      - Luck
+      - Sanity
+      - SanityMax
+      - MagicPts
+      - MagicPtsMax
+      - HitPts
+      - HitPtsMax
+
+  skills:
+    type: array
+    items:
+      allOf:
+        - $ref: "#/definitions/skill"
+        - properties:
+            specializations:
+              type: boolean
+          if:
+            properties:
+              specialization:
+                const: true
+          then:
+            properties:
+              subskills:
+                type: array
+                items:
+                  $ref: "#/definitions/skill"
+              uniqueItems: true
+    uniqueItems: true
+    default: []
+  weapons:
+    type: array
+    items:
+      type: object
+      properties:
+        name:
+          type: string
+          default: Unnamed
+        regular:
+          anyOf:
+            - type: integer
+            - type: "null"
+          default: 0
+        damage:
+          type: string
+          default: "-"
+        range:
+          type: string
+          default: "-"
+        attacks:
+          anyOf:
+            - type: string
+            - type: integer
+          default: 1
+        ammo:
+          anyOf:
+            - const: "-"
+            - type: integer
+          default: "-"
+        malf:
+          anyOf:
+            - const: "-"
+            - type: integer
+          default: "-"
+      required:
+        - name
+        - regular
+        - damage
+        - range
+        - attacks
+        - ammo
+        - malf
+
+    default:
+      - name: Unarmed
+        regular: 0
+        damage: "1d3 + db"
+        range: "-"
+        attacks: 1
+        ammo: "-"
+        malf: "-"
+
+  combat:
+    type: object
+    properties:
+      DamageBonus:
+        anyOf:
+          - type: string
+          - type: integer
+        default: 0
+      Build:
+        anyOf:
+          - type: string
+          - type: integer
+        default: 0
+      Dodge:
+        anyOf:
+          - type: string
+          - type: integer
+        default: 0
+
+    required:
+      - DamageBonus
+      - Build
+      - Dodge
+
+  backstory:
+    type: object
+    properties:
+      description:
+        anyOf:
+          - type: string
+          - type: "null"
+        default: null
+      traits:
+        anyOf:
+          - type: string
+          - type: "null"
+        default: null
+      ideology:
+        anyOf:
+          - type: string
+          - type: "null"
+        default: null
+      injuries:
+        anyOf:
+          - type: string
+          - type: "null"
+        default: null
+      people:
+        anyOf:
+          - type: string
+          - type: "null"
+        default: null
+      phobias:
+        anyOf:
+          - type: string
+          - type: "null"
+        default: null
+      locations:
+        anyOf:
+          - type: string
+          - type: "null"
+        default: null
+      tomes:
+        anyOf:
+          - type: string
+          - type: "null"
+        default: null
+      possessions:
+        anyOf:
+          - type: string
+          - type: "null"
+        default: null
+      encounters:
+        anyOf:
+          - type: string
+          - type: "null"
+        default: null
+
+  possessions:
+    anyOf:
+      - type: array
+      - type: "null"
+    default: []
+  cash:
+    type: object
+    properties:
+      spending:
+        anyOf:
+          - type: string
+          - type: integer
+        default: 0
+      cash:
+        anyOf:
+          - type: string
+          - type: integer
+        default: 0
+      assets:
+        anyOf:
+          - type: string
+          - type: integer
+        default: 0
+  assets:
+    anyOf:
+      - type: string
+      - type: "null"
+    default: null

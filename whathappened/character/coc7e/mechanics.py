@@ -1,5 +1,6 @@
 from pathlib import Path
 import logging
+from typing import Union
 
 from ..core import CharacterMechanics
 from ..schema import validate
@@ -10,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 class CoCMechanics(CharacterMechanics):
+    system = 'coc7e'
+
     def game(self):
         try:
             return (self.parent.body['meta']['GameName'],
@@ -59,6 +62,46 @@ class CoCMechanics(CharacterMechanics):
 
         logger.debug(f"Did not find {skill}, {subskill}")
         return None
+
+    @property
+    def skills(self):
+        return self.parent.body['skills']
+
+    def add_skill(self, skillname: str, value: Union[int, None] = None,
+                  start_value: Union[int, str] = 1):
+        if self.skill(skillname) is not None:
+            raise ValueError(f"Skill {skillname} already exists.")
+
+        self.skills.append({"name": skillname,
+                            "value": value,
+                            "start_value": start_value})
+        if isinstance(self.skills, list):
+            self.skills.sort(key=lambda x: x['name'])
+
+    def add_subskill(self, name: str,
+                     parent: str,
+                     start_value: int = None,
+                     value: int = None):
+        parent_skill = self.skill(parent)
+
+        if parent_skill is None:
+            raise KeyError
+
+        value = value or parent_skill['value']
+        start_value = start_value or parent_skill['start_value']
+        logger.debug("Try to add subskill")
+        logger.debug(f"Name: {name}, parent {parent}, value {value}")
+        if self.skill(parent, name) is not None:
+            raise ValueError(f"Subskill {name} in {parent} already exists.")
+
+        skill = parent_skill
+        if 'subskills' not in skill:
+            skill['subskills'] = []
+        skill['subskills'].append({
+            'name': name,
+            'value': value,
+            'start_value': start_value
+        })
 
     def set_portrait(self, data):
         self.parent.body['personalia']['Portrait'] = data
