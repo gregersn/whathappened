@@ -23,7 +23,7 @@
     "webpack-manifest-plugin": "^4.0.2"
   },
   "dependencies": {
-    "showdown": "^1.9.1"
+    "showdown": "^2.0.2"
   },
   "jest": {
     "transform": {
