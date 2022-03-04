@@ -31,7 +31,6 @@ Come back later.
 
 *Cthulhu fhtagn.*
 
-
 ## Development and testing
 
 To get started, clone the project with git.
@@ -59,12 +58,11 @@ This creates a Python virtual environment for you. All the make targets will
 activate it as needed, but feel free to activate it in your shell if you want or
 need to:
 
-`$ . venv/bin/activate`
+`$ . .venv/bin/activate`
 
 or if you're running Fish:
 
-`$ . venv/bin/activate.fish`
-
+`$ . .venv/bin/activate.fish`
 
 #### Cleaning
 

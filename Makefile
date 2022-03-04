@@ -1,9 +1,9 @@
 MAKEFLAGS += --jobs=4
 
-VENV_PYTHON := ./venv/bin/python3
-VENV_FLASK := ./venv/bin/flask
-VENV_PIP := ./venv/bin/pip3
-VENV_RUN := . venv/bin/activate &&
+VENV_PYTHON := ./.venv/bin/python3
+VENV_FLASK := ./.venv/bin/flask
+VENV_PIP := ./.venv/bin/pip3
+VENV_RUN := . .venv/bin/activate &&
 RMRF := rm -Rf
 
 MARKER_FILENAME := .buildmarker
@@ -16,10 +16,10 @@ dev_server: frontend
 
 # Install Python dependencies:
 .PHONY: setup_dependencies
-setup_dependencies: venv/$(MARKER_FILENAME)
+setup_dependencies: .venv/$(MARKER_FILENAME)
 
 venv/$(MARKER_FILENAME): requirements.txt requirements-dev.txt
-	@python3 -m venv venv
+	@python3 -m venv .venv
 	@$(VENV_PIP) install -r requirements.txt
 	@$(VENV_PIP) install -r requirements-dev.txt
 	@touch $@
@@ -40,7 +40,7 @@ frontend: $(FRONTEND_MARKER) setup
 	@FLASK_APP=whathappened FLASK_ENV=development $(VENV_FLASK) main build
 
 .PHONY: coverage
-coverage: venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
+coverage: .venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
 	@$(VENV_PYTHON) -m pytest --cov=whathappened tests/
 	@cd frontend && npm test
 
@@ -55,5 +55,5 @@ dist: setup_dependencies frontend
 
 # Clean out build artefacts:
 clean:
-	$(RMRF) venv
+	$(RMRF) .venv
 	$(RMRF) $(FRONTEND_MARKER)
