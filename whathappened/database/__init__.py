@@ -1,5 +1,6 @@
 import math
 import json
+from sqlmodel import Field, SQLModel, create_engine
 
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -7,8 +8,6 @@ from sqlalchemy.orm.attributes import QueryableAttribute
 from sqlalchemy.ext.declarative import declarative_base
 
 from typing import KeysView, List, Dict, Any
-
-from sqlalchemy.sql.elements import not_
 
 Session = sessionmaker(autocommit=False, autoflush=True)
 session = scoped_session(Session)
@@ -25,8 +24,6 @@ sql_alchemy_metadata = MetaData(naming_convention=convention)
 
 Base = declarative_base(metadata=sql_alchemy_metadata)
 Base.query = session.query_property()
-
-
 """
 Serialization code from
 https://medium.com/@alanhamlett/part-1-sqlalchemy-models-to-json-de398bc2ef47
@@ -34,7 +31,7 @@ https://medium.com/@alanhamlett/part-1-sqlalchemy-models-to-json-de398bc2ef47
 """
 
 
-class BaseModel(Base):
+class BaseModel(SQLModel, table=False):
     __abstract__ = True
 
     def to_dict(self,
@@ -101,20 +98,21 @@ class BaseModel(Base):
                 is_list = self.__mapper__.relationships[key].uselist
                 if is_list:
                     items = getattr(self, key)
-                    if self.__mapper__.relationships[key].query_class is not None:
+                    if self.__mapper__.relationships[
+                            key].query_class is not None:
                         if hasattr(items, "all"):
                             items = items.all()
                     ret_data[key] = []
                     for item in items:
                         ret_data[key].append(
-                            item.to_dict(
-                                show=list(show),
-                                _hide=list(_hide),
-                                _path=f"{_path}.{key.lower()}"
-                            )
-                        )
+                            item.to_dict(show=list(show),
+                                         _hide=list(_hide),
+                                         _path=f"{_path}.{key.lower()}"))
                 else:
-                    if (self.__mapper__.relationships[key].query_class is not None or self.__mapper__.relationships[key].instrument_class is not None):
+                    if (self.__mapper__.relationships[key].query_class
+                            is not None or
+                            self.__mapper__.relationships[key].instrument_class
+                            is not None):
                         item = getattr(self, key)
                         if item is not None:
                             ret_data[key] = item.to_dict(
@@ -200,8 +198,8 @@ class BaseModel(Base):
                     query = getattr(self, rel)
                     cls = self.__mapper__.relationships[rel].argument()
                     for item in kwargs[rel]:
-                        if ("id" in item and
-                                query.filter_by(id=item["id"]).limit(1).count() == 1):
+                        if ("id" in item and query.filter_by(
+                                id=item["id"]).limit(1).count() == 1):
                             obj = cls.query.filter_by(id=item["id"]).first()
                             col_changes = obj.from_dict(**item)
                             if col_changes:
@@ -224,7 +222,8 @@ class BaseModel(Base):
                                     changes.update({rel: [col_changes]})
                             valid_ids.append(str(col.id))
                     # delete rwos from relationship that were not in kwargs[rel]
-                    for item in query.filter(not_(cls.id.in_(valid_ids))).all():
+                    for item in query.filter(not_(
+                            cls.id.in_(valid_ids))).all():
                         col_changes = {"id": str(item.id), "deleted": True}
                         if rel in changes:
                             changes[rel].append(col_changes)
@@ -233,7 +232,8 @@ class BaseModel(Base):
                         session.delete(item)
                 else:
                     val = getattr(self, rel)
-                    if self.__mapper__.relationships[rel].query_class is not None:
+                    if self.__mapper__.relationships[
+                            rel].query_class is not None:
                         if val is not None:
                             col_changes = val.from_dict(**kwargs[rel])
 
@@ -267,6 +267,7 @@ def init_db(db_uri):
 
 
 class db():
+
     @staticmethod
     def drop_all():
         Base.metadata.drop_all(Base.metadata.bind)
@@ -279,6 +280,7 @@ class db():
 
 
 class Page():
+
     def __init__(self, items, page: int, page_size: int, total: int):
         self.items = items
         self.prev_page = None

@@ -1,14 +1,11 @@
 import logging
 from functools import reduce
-from typing import Any, Dict, Type, cast
-from sqlalchemy.orm.attributes import flag_modified
-from sqlalchemy.orm import reconstructor, relationship, backref
+from typing import Any, Dict, Type, cast, Optional
+from sqlmodel import Field, Column, JSON
 from datetime import datetime
 import base64
 import io
 from PIL import Image
-from sqlalchemy.sql.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import DateTime, Integer, JSON, String
 
 from whathappened.database import BaseModel
 
@@ -31,31 +28,25 @@ def fix_image(imagedata: str) -> str:
 
 class Character(BaseContent, BaseModel):
     __tablename__ = 'charactersheet'
-    id = Column(Integer, primary_key=True)
-    title = cast(str, Column(String(256)))
-    body = cast(Dict[str, Any], Column(JSON))
-    timestamp = Column(DateTime, index=True, default=datetime.utcnow,
-                       onupdate=datetime.utcnow)
+    id = Optional[int] = Field(default=None, primary_key=True)
+    title = str
+    body: Dict[str, Any] = Field(default={}, sa_column=Column(JSON))
+    timestamp = Field(default_factory=datetime.utcnow, index=True)
     user_id = cast(int, Column(Integer, ForeignKey('user_profile.id')))
-    player = relationship('UserProfile', backref=backref(
-        'characters', lazy='dynamic'))
+    player = relationship('UserProfile',
+                          backref=backref('characters', lazy='dynamic'))
 
     folder = relationship('Folder', backref='characters')
 
-    _default_fields = [
-        'id',
-        'title',
-        'body',
-        'timestamp',
-        'user_id'
-    ]
+    _default_fields = ['id', 'title', 'body', 'timestamp', 'user_id']
 
     def __repr__(self):
         return '<Character {}>'.format(self.title)
 
     def __init__(self,
                  mechanics: Type[CharacterMechanics] = CharacterMechanics,
-                 *args, **kwargs):
+                 *args,
+                 **kwargs):
         super(Character, self).__init__(*args, **kwargs)
         self._data = None
         # Add a subclass or something that
@@ -125,8 +116,7 @@ class Character(BaseContent, BaseModel):
         path = args[0]
 
         val = reduce(lambda x, y: x.get(y, None) if x is not None else None,
-                     path.split("."),
-                     self.data)
+                     path.split("."), self.data)
 
         return val
 
@@ -189,9 +179,11 @@ class Character(BaseContent, BaseModel):
         if self.skill(skillname) is not None:
             raise ValueError(f"Skill {skillname} already exists.")
 
-        self.data['skills'].append({"name": skillname,
-                                    "value": value,
-                                    "start_value": value})
+        self.data['skills'].append({
+            "name": skillname,
+            "value": value,
+            "start_value": value
+        })
         if isinstance(self.data['skills'], list):
             self.data['skills'].sort(key=lambda x: x['name'])
 
