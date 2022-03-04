@@ -39,6 +39,16 @@
             "justMyCode": false
         },
         {
+            "name": "FastAPI",
+            "type": "python",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "app.main:app",
+                "--reload"
+            ]
+        }
+        {
             "name": "Init db",
             "type": "python",
             "request": "launch",
