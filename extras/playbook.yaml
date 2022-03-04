@@ -70,7 +70,7 @@
     - name: install whathappened
       pip:
         name: ~/whathappened-0.0.1-py3-none-any.whl
-        virtualenv: ~/venv
+        virtualenv: ~/.venv
         state: forcereinstall
       when: result is changed
 
@@ -82,12 +82,12 @@
           SQLALCHEMY_DATABASE_URI="mysql+pymysql://whathappened:letsroll@localhost:3306/whathappened"
 
     - name: update whathappened database
-      shell: WHATHAPPENED_SETTINGS=/home/vagrant/config.py FLASK_APP=whathappened ~/venv/bin/flask db upgrade
+      shell: WHATHAPPENED_SETTINGS=/home/vagrant/config.py FLASK_APP=whathappened ~/.venv/bin/flask db upgrade
 
     - name: install gunicorn
       pip:
         name: gunicorn
-        virtualenv: ~/venv
+        virtualenv: ~/.venv
         state: latest
 
     - name: configure supervisor
@@ -96,7 +96,7 @@
         dest: /etc/supervisor/conf.d/whatappened.conf
         content: |
           [program:whathappened]
-          command=/home/vagrant/venv/bin/gunicorn -b localhost:9631 -w 4 "whathappened:create_app()"
+          command=/home/vagrant/.venv/bin/gunicorn -b localhost:9631 -w 4 "whathappened:create_app()"
           directory=/home/vagrant
           user=vagrant
           autostart=true
@@ -129,7 +129,7 @@
             }
 
             location /static {
-                    alias /home/vagrant/venv/lib/python3.8/site-packages/whathappened/static;
+                    alias /home/vagrant/.venv/lib/python3.8/site-packages/whathappened/static;
                     expires 30d;
             }
           }
