@@ -24,13 +24,35 @@ html {
     box-sizing: inherit;
 }
 
+
+$html-background-color: #666;
+$html-background-color-dark: #333;
+
 $main-color: rgb(119, 154, 170);
+$main-color-dark: rgb(255, 255, 255);
+$main-background-color: rgb(255, 255, 255);
+$main-background-color-dark: rgb(0, 0, 0);
 $header-color: darken($main-color, 15%);
+$header-color-dark: lighten($main-color, 15%);
+
+$navbar-background-color: lightgray;
+$navbar-background-color-dark: darkgray;
+
+
+$flash-background-color: #cae6f6;
+$danger-color: #cc2f2e;
+
+$message-box-background: #eeeeee;
 
 html {
     font-family: 'Hind Siliguri', sans-serif;
-    background: #666;
+    background: $html-background-color;
     background-image: linear-gradient(#666, #aaa);
+
+    @media (prefers-color-scheme: dark) {
+        background: $html-background-color-dark;
+        color: white;
+    }
     padding: 1rem;
     min-height: 100vh;
 }
@@ -38,12 +60,19 @@ html {
 body {
     //max-width: 960px;
     margin: 0 auto;
-    background: white;
+    background: $main-background-color;
+    @media (prefers-color-scheme: dark) {
+        background: $main-background-color-dark;
+    }
+    
 }
 
 h1 {
     font-family: 'Permanent Marker', cursive;
     color: $header-color;
+    @media (prefers-color-scheme: dark) {
+        color: $header-color-dark;
+    }
     margin: 1rem 0;
 }
 
@@ -57,7 +86,10 @@ hr {
 }
 
 .navbar {
-    background: lightgray;
+    background: $navbar-background-color    ;
+    @media (prefers-color-scheme: dark) {
+        background: $navbar-background-color-dark;
+    }
     display: flex;
     align-items: center;
     padding: 0 0.5rem;
@@ -131,12 +163,12 @@ header .action {
 .flash {
     margin: 1em 0;
     padding: 1em;
-    background: #cae6f6;
+    background: $flash-background-color;
     border: 1px solid $main-color;
 }
 
 input.danger {
-    color: #cc2f2e;
+    color: $danger-color;
 }
 
 input[type="submit"] {
@@ -146,7 +178,7 @@ input[type="submit"] {
 
 .messagebox {
     padding: 1em;
-    background-color: #eeeeee;
+    background-color: $message-box-background;
     display: none;
 }
 
