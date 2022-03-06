@@ -26,3 +26,4 @@ uvicorn
 starlette
 fastapi
 fastapi-login
+python-multipart

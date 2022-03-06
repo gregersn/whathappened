@@ -1,4 +1,5 @@
 from os import path
+from fastapi import Request
 from webassets import Bundle
 from webassets.loaders import PythonLoader, YAMLLoader
 from webassets.env import (BaseEnvironment, ConfigStorage, Resolver,
@@ -170,7 +171,8 @@ class FlaskResolver(Resolver):
     def resolve_source_to_url(self, ctx, filepath, item):
         # If a load path is set, use it instead of the Flask static system.
         if self.use_webassets_system_for_sources(ctx):
-            return super(FlaskResolver, self).resolve_source_to_url(ctx, filepath, item)
+            return super(FlaskResolver,
+                         self).resolve_source_to_url(ctx, filepath, item)
 
         return self.convert_item_to_flask_url(ctx, item, filepath)
 
@@ -205,20 +207,24 @@ class FlaskResolver(Resolver):
             try:
                 from flask_s3 import url_for
             except ImportError as e:
-                print("You must have Flask S3 to use FLASK_ASSETS_USE_S3 option")
+                print(
+                    "You must have Flask S3 to use FLASK_ASSETS_USE_S3 option")
                 raise e
         elif ctx.environment._app.config.get("FLASK_ASSETS_USE_CDN"):
             try:
                 from flask_cdn import url_for
             except ImportError as e:
-                print("You must have Flask CDN to use FLASK_ASSETS_USE_CDN option")
+                print(
+                    "You must have Flask CDN to use FLASK_ASSETS_USE_CDN option"
+                )
                 raise e
         elif ctx.environment._app.config.get("FLASK_ASSETS_USE_AZURE"):
             try:
                 from flask_azure_storage import url_for
             except ImportError as e:
                 print(
-                    "You must have Flask Azure Storage to use FLASK_ASSETS_USE_AZURE option")
+                    "You must have Flask Azure Storage to use FLASK_ASSETS_USE_AZURE option"
+                )
                 raise e
         else:
             from flask import url_for
@@ -226,7 +232,7 @@ class FlaskResolver(Resolver):
         directory, rel_path, endpoint = self.split_prefix(ctx, item)
 
         if filepath is not None:
-            filename = filepath[len(directory)+1:]
+            filename = filepath[len(directory) + 1:]
         else:
             filename = rel_path
 
@@ -304,7 +310,11 @@ class Environment(BaseEnvironment):
         if self.config.get('directory') is not None:
             return self.config['directory']
         return get_static_folder(self._app)
-    directory = property(get_directory, set_directory, doc="""The base directory to which all paths will be relative to.
+
+    directory = property(
+        get_directory,
+        set_directory,
+        doc="""The base directory to which all paths will be relative to.
     """)
 
     def set_url(self, url):
@@ -314,8 +324,11 @@ class Environment(BaseEnvironment):
         if self.config.get('url') is not None:
             return self.config['url']
         return self._app.static_url_path
+
     url = property(
-        get_url, set_url, doc="""The base url to which all static urls will be relative to.""")
+        get_url,
+        set_url,
+        doc="""The base url to which all static urls will be relative to.""")
 
     def init_env(self, env):
         env.add_extension('webassets.ext.jinja2.AssetsExtension')

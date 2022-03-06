@@ -21,39 +21,34 @@ from app.recipe_data import RECIPES
 from app import crud
 from app import deps
 
-from app.utils.assets import Environment, Bundle
+from webassets import Environment as AssetsEnvironment, Bundle
+from webassets.ext.jinja2 import AssetsExtension
 
 BASE_PATH = Path(__file__).resolve().parent
 TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
-app = FastAPI(
-    title="WhatHappened? API", openapi_url="/openapi.json"
-)
+app = FastAPI(title="WhatHappened? API", openapi_url="/openapi.json")
 
-app.mount("/static", StaticFiles(directory="whathappened/static"), name="static")
+app.mount("/static",
+          StaticFiles(directory="whathappened/static"),
+          name="static")
 
-assets = Environment()
-assets._named_bundles = {}
-assets.init_env(TEMPLATES.env)
+assets = AssetsEnvironment('templates', 'static')
+TEMPLATES.env.directory = "foo"
+TEMPLATES.env.url = "bar"
+TEMPLATES.env.add_extension(AssetsExtension)
+TEMPLATES.env.assets_environment = assets
+# assets._named_bundles = {}
+# assets.init_env(TEMPLATES.env)
 
-scss = Bundle('scss/main.scss',
-              filters='pyscss',
-              output='css/all.css')
+scss = Bundle('scss/main.scss', filters='pyscss', output='css/all.css')
 assets.register('scss_all', scss)
-
 
 SECRET = "super-secret-key"
 manager = LoginManager(SECRET, '/login', use_cookie=True)
 
 api_router = APIRouter()
 
-DB = {
-    'users': {
-        'gregersn@gmail.com': {
-            'name': "Greger",
-            'password': 'test'
-        }
-    }
-}
+DB = {'users': {'gregersn@gmail.com': {'name': "Greger", 'password': 'test'}}}
 
 
 @app.get('/', status_code=200)
@@ -105,21 +100,21 @@ def fetch_recipe(*, recipe_id: int, db: Session = Depends(deps.get_db)) -> Any:
     # 4
     result = crud.recipe.get(db=db, id=recipe_id)
     if not result:
-        raise HTTPException(
-            status_code=404, detail=f"Recipe with ID {recipe_id} not found"
-        )
+        raise HTTPException(status_code=404,
+                            detail=f"Recipe with ID {recipe_id} not found")
 
     return result
 
 
 # 3
-@api_router.get("/search/", status_code=200, response_model=RecipeSearchResults)
-def search_recipes(*,
-                   keyword: Optional[str] = Query(
-                       None, min_length=3, example='chicken'),
-                   max_results: int = 10,
-                   db: Session = Depends(deps.get_db)
-                   ) -> dict:
+@api_router.get("/search/",
+                status_code=200,
+                response_model=RecipeSearchResults)
+def search_recipes(
+    *,
+    keyword: Optional[str] = Query(None, min_length=3, example='chicken'),
+    max_results: int = 10,
+    db: Session = Depends(deps.get_db)) -> dict:
     """
     Search for recipes based on label keyword
     """
@@ -129,13 +124,14 @@ def search_recipes(*,
         # based on the max_results query parameter
         return {"results": recipes}  # 6
 
-    results = filter(lambda recipe: keyword.lower()
-                     in recipe["label"].lower(), recipes)  # 7
+    results = filter(lambda recipe: keyword.lower() in recipe["label"].lower(),
+                     recipes)  # 7
     return {"results": list(results)[:max_results]}
 
 
 @api_router.post("/recipe/", status_code=201, response_model=Recipe)
-def create_recipe(*, recipe_in: RecipeCreate, db: Session = Depends(deps.get_db)) -> dict:
+def create_recipe(
+    *, recipe_in: RecipeCreate, db: Session = Depends(deps.get_db)) -> dict:
     recipe = crud.recipe.create(db=db, obj_in=recipe_in)
     return recipe
 

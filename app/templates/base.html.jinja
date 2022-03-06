@@ -9,9 +9,6 @@
     </script>
     #}
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300&family=Permanent+Marker&display=swap" rel="stylesheet"> 
-    {% assets "scss_all" %}
-    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
-    {% endassets %}
 {% endblock %}
 
 {% block body %}
@@ -20,13 +17,13 @@
     <h1>What Happened?</h1>
         <nav>
             <ul>
-            {% if current_user.is_anonymous %}
+            {#% if current_user.is_anonymous %}
                 <li><a href="{{ url_for('auth.register') }}">Register</a></li>
                 <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
             {% else %}
                 <li><a href="{{ url_for('profile.index') }}">{{ current_user.username }}</a></li>
                 <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
-            {% endif %}
+            {% endif %#}
             </ul>
             </div>
             {% if self.menu() %}
@@ -46,9 +43,9 @@
         <header>
             {% block header %}{% endblock %}
         </header>
-        {%- for message in get_flashed_messages() %}
+        {#%- for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>
-        {%- endfor %}
+        {%- endfor %#}
         {% block content %}{% endblock %}
     </section>
 </body>
