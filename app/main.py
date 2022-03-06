@@ -26,15 +26,16 @@ from webassets.ext.jinja2 import AssetsExtension
 
 BASE_PATH = Path(__file__).resolve().parent
 TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
-app = FastAPI(title="WhatHappened? API", openapi_url="/openapi.json")
+
+# Create the App
+app = FastAPI(title="WhatHappened?", openapi_url="/openapi.json")
 
 app.mount("/static",
           StaticFiles(directory="whathappened/static"),
           name="static")
 
-assets = AssetsEnvironment('templates', 'static')
-TEMPLATES.env.directory = "foo"
-TEMPLATES.env.url = "bar"
+assets = AssetsEnvironment(directory=str(BASE_PATH / "templates"),
+                           url='static')
 TEMPLATES.env.add_extension(AssetsExtension)
 TEMPLATES.env.assets_environment = assets
 # assets._named_bundles = {}
@@ -43,14 +44,10 @@ TEMPLATES.env.assets_environment = assets
 scss = Bundle('scss/main.scss', filters='pyscss', output='css/all.css')
 assets.register('scss_all', scss)
 
-SECRET = "super-secret-key"
-manager = LoginManager(SECRET, '/login', use_cookie=True)
-
 api_router = APIRouter()
 
-DB = {'users': {'gregersn@gmail.com': {'name': "Greger", 'password': 'test'}}}
 
-
+# Define a root entry point
 @app.get('/', status_code=200)
 def root(request: Request, db: Session = Depends(deps.get_db)) -> Any:
     # if current user is authenticated
@@ -60,8 +57,19 @@ def root(request: Request, db: Session = Depends(deps.get_db)) -> Any:
                                       {'request': request})
 
 
+# ## Authentication
+
+DB = {'users': {'gregersn@gmail.com': {'name': "Greger", 'password': 'test'}}}
+SECRET = "super-secret-key"
+manager = LoginManager(SECRET, '/login', use_cookie=True)
+
+
 @manager.user_loader()
 def query_user(user_id: str):
+    """Get a user from the database.
+    :param user_id: E-mail of the user.
+    :return None or the user object.
+    """
     return DB['users'].get(user_id)
 
 
@@ -81,6 +89,7 @@ def login(response: Response, data: OAuth2PasswordRequestForm = Depends()):
     return {'token': access_token}
 
 
+# ## /Authentication
 """
 @api_router.get("/", status_code=200)
 def root(request: Request, db: Session = Depends(deps.get_db), user=Depends(manager)) -> Any:
