@@ -6,7 +6,7 @@ from flask import (
 from flask_login import login_required, current_user
 from whathappened.database import session
 
-bp = Blueprint('profile', __name__, template_folder='templates')
+bp = Blueprint('profile', __name__ )
 
 # from whathappened.character.models import Character  # noqa F401
 from .models import UserProfile  # noqa F401
