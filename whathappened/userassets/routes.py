@@ -40,7 +40,7 @@ def index(folder_id=None):
     deletefolderform = DeleteAssetFolderForm(id=folder.id,
                                              prefix="deletefolderform")
 
-    return render_template('assets.html.jinja',
+    return render_template('userassets/assets.html.jinja',
                            form=form,
                            folderform=folderform,
                            deletefolderform=deletefolderform,
@@ -151,7 +151,7 @@ def edit(fileid, filename):
                              prefix="moveasset",
                              folder=userasset.folder)
 
-    return render_template('edit.html.jinja',
+    return render_template('userassets/edit.html.jinja',
                            asset=userasset,
                            deleteform=deleteform,
                            moveform=moveform)
