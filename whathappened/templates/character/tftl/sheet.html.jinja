@@ -8,7 +8,7 @@
     {% endassets %}
 
     {% if editable %}
-    {{ webpack['tftl.js']}}
+    <script src="{{ 'tftl.js' | webpack}}"></script>
     {% endif %}
 
 {% endblock %}

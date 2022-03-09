@@ -3,7 +3,7 @@
 {% block head %}
     {{ super() }}
     {% if editable %}
-    {{ webpack['coc7e.js']}}
+    <script src="{{ 'coc7e.js' | webpack}}"></script>
     {% endif %}
 
     {% assets "scss_character_coc7e" %}
