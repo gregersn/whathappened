@@ -48,7 +48,7 @@
     {% endassets %}
 
     {% if editable %}
-    {{ webpack['general.js']}}
+    <script src="{{ 'general.js' | webpack}}"></script>
     {% endif %}
 
 {% endblock %}

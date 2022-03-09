@@ -5,10 +5,11 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
-from flask_webpackext import FlaskWebpackExt
 
 from webassets import Environment as AssetsEnvironment
 from webassets.bundle import Bundle
+from jinja2_webpack import Environment as WebpackEnvironment
+from jinja2_webpack.filter import WebpackFilter
 
 import logging
 
@@ -20,9 +21,9 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'  # type: ignore  # Not an error
 
 mail = Mail()
-assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent / 'static')
+assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent /
+                               'static')
 csrf = CSRFProtect()
-webpackext = FlaskWebpackExt()
 
 logger = logging.getLogger(__name__)
 
@@ -34,9 +35,8 @@ def create_app(test_config=None) -> Flask:
 
     # Internal default settings
     app.config.from_mapping(
-        SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL') or
-        f"sqlite:///{Path(app.instance_path) / 'whathappened.sqlite'}"
-    )
+        SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL')
+        or f"sqlite:///{Path(app.instance_path) / 'whathappened.sqlite'}")
 
     # Default settings from config file
     app.config.from_object(Config)
@@ -47,8 +47,8 @@ def create_app(test_config=None) -> Flask:
     loaded_config = False  # Track if extra settings are loaded
 
     # Config file from environment variable
-    loaded_config = app.config.from_envvar(
-        'WHATHAPPENED_SETTINGS', silent=True) or loaded_config
+    loaded_config = app.config.from_envvar('WHATHAPPENED_SETTINGS',
+                                           silent=True) or loaded_config
 
     # Check mandatory settings, and throw if they don't exist
     if app.config.get("UPLOAD_FOLDER") is None:
@@ -70,8 +70,17 @@ def create_app(test_config=None) -> Flask:
     login_manager.init_app(app)
     csrf.init_app(app)
     mail.init_app(app)
-    webpackext.init_app(app)
     app.jinja_env.add_extension('webassets.ext.jinja2.AssetsExtension')
+
+    webpack_manifest = Path(
+        __file__).absolute().parent / 'static' / 'manifest.json'
+
+    if webpack_manifest.exists():
+        webpack_env = WebpackEnvironment(manifest=webpack_manifest,
+                                         publicRoot="")
+
+        app.jinja_env.filters['webpack'] = WebpackFilter(webpack_env)
+
     app.jinja_env.assets_environment = assets_env
 
     # Register blueprints
@@ -123,9 +132,7 @@ def create_app(test_config=None) -> Flask:
         assets_env.url = app.static_url_path
         assets_env.config['TYPESCRIPT_CONFIG'] = '--target ES6'
 
-        scss = Bundle('scss/main.scss',
-                      filters='pyscss',
-                      output='css/all.css')
+        scss = Bundle('scss/main.scss', filters='pyscss', output='css/all.css')
         assets_env.register('scss_all', scss)
 
         css_profile = Bundle('scss/profile.scss',
