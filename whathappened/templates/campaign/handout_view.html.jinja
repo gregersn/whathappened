@@ -7,7 +7,7 @@
     <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
     {% endassets %}
 
-    {{ webpack['handout.js'] }}
+    <script src="{{ 'handout.js' | webpack }}"></script>
 {% endblock head %}
 {% block header %}
     <h2>Handout '{{ handout.title }}'</h2>

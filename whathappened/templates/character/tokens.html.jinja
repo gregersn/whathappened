@@ -3,7 +3,7 @@
 {% block head %}
     {{ super() }}
     
-    {{ webpack['tokens.js'] }}
+    <script src="{{ 'tokens.js' | webpack }}"></script>
 {% endblock %}
 
 {% block content %}

@@ -45,7 +45,7 @@
             id: {{ campaign.id }}
         }
     </script>
-    {{ webpack['campaign.js'] }}
+    <script src="{{ 'campaign.js' | webpack }}"></script>
 {% endblock %}
 
 {% block header %}

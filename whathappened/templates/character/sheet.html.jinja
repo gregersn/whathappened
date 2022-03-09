@@ -7,7 +7,7 @@
     <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
     {% endassets %}
 
-    {{ webpack['sheet.js']}}
+    <script src="{{ 'sheet.js' | webpack}}"></script>
 
 {% endblock %}
 
