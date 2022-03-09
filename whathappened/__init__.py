@@ -2,11 +2,13 @@
 import os
 from pathlib import Path
 from flask import Flask
-from flask_assets import Environment, Bundle
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from flask_webpackext import FlaskWebpackExt
+
+from webassets import Environment as AssetsEnvironment
+from webassets.bundle import Bundle
 
 import logging
 
@@ -18,7 +20,7 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'  # type: ignore  # Not an error
 
 mail = Mail()
-assets = Environment()
+assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent / 'static')
 csrf = CSRFProtect()
 webpackext = FlaskWebpackExt()
 
@@ -27,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 def create_app(test_config=None) -> Flask:
     logger.info("Creating app")
-    assets._named_bundles = {}
+    assets_env._named_bundles = {}
     app = Flask(__name__, instance_relative_config=True)
 
     # Internal default settings
@@ -69,7 +71,8 @@ def create_app(test_config=None) -> Flask:
     csrf.init_app(app)
     mail.init_app(app)
     webpackext.init_app(app)
-    assets.init_app(app)
+    app.jinja_env.add_extension('webassets.ext.jinja2.AssetsExtension')
+    app.jinja_env.assets_environment = assets_env
 
     # Register blueprints
     from . import auth
@@ -79,6 +82,9 @@ def create_app(test_config=None) -> Flask:
     from . import main
     logger.debug("Registering blueprint main")
     app.register_blueprint(main.bp)
+
+    from . import assets
+    app.register_blueprint(assets.bp)
 
     from . import profile
     logger.debug("Registering blueprint profile")
@@ -97,12 +103,12 @@ def create_app(test_config=None) -> Flask:
     logger.debug("Registering blueprint character")
     app.register_blueprint(character.bp, url_prefix='/character')
     app.register_blueprint(character.api, url_prefix='/api/character')
-    character.register_assets(assets)
+    character.register_assets(assets_env)
 
     from . import campaign
     app.register_blueprint(campaign.bp, url_prefix='/campaign')
     app.register_blueprint(campaign.apibp, url_prefix='/api/campaign')
-    campaign.register_assets(assets)
+    campaign.register_assets(assets_env)
 
     app.add_url_rule('/', endpoint='profile.index')
 
@@ -114,17 +120,17 @@ def create_app(test_config=None) -> Flask:
         from .database import cli  # noqa, Add some commands for database handling.
 
         logger.debug("Registering assets")
-        assets.url = app.static_url_path
-        assets.config['TYPESCRIPT_CONFIG'] = '--target ES6'
+        assets_env.url = app.static_url_path
+        assets_env.config['TYPESCRIPT_CONFIG'] = '--target ES6'
 
         scss = Bundle('scss/main.scss',
                       filters='pyscss',
                       output='css/all.css')
-        assets.register('scss_all', scss)
+        assets_env.register('scss_all', scss)
 
         css_profile = Bundle('scss/profile.scss',
                              filters='pyscss',
                              output='css/profile.css')
-        assets.register('scss_profile', css_profile)
+        assets_env.register('scss_profile', css_profile)
 
     return app
