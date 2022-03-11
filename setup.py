@@ -9,10 +9,8 @@ setup(
     install_requires=[
         'alembic>=1.6.5',
         'email-validator>=1.1.3',
-        'Flask-Assets>=2.0',
         'Flask-Login>=0.5.0',
         'Flask-Mail>=0.9.1',
-        'flask-webpackext>=1.0.2',
         'Flask-WTF>=0.15.1',
         'flask>=2.0.1',
         'jsonschema>=3.2.0',
@@ -25,5 +23,9 @@ setup(
         'PyMysql',
         'PyYAML>=5.4.1',
         'SQLAlchemy>=1.4.22',
+        'webassets==2.0',
+        'jinja2-webpack==0.2.0',
+        'pydantic==1.9.0',
+        'pywebpack==1.2.0',
     ],
 )

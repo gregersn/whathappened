@@ -1,25 +1,34 @@
 """App default config."""
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-
-BASEDIR = Path(__file__).parent.absolute()
-
-load_dotenv(BASEDIR / '.env')
+from typing import List, Optional
+from pydantic import BaseSettings
 
 
-class Config():
+class Settings(BaseSettings):
     """Settings to be overridden with env variables."""
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'development'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    MAIL_SERVER = os.environ.get('MAIL_SERVER') or "localhost"
-    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 8025)
-    ADMINS = [os.environ.get('ADMIN_EMAIL') or 'your-email@example.com']
-    ASSETS_DEBUG = False
-    ASSETS_AUTO_BUILD = False if os.environ.get('FLASK_ENV') != 'development' \
-        else True
-    MAX_CONTENT_LENGTH = 1024 * 1024  # Max upload size
-    UPLOAD_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.gif']
-    UPLOAD_FOLDER = 'uploads'
-    WTF_CSRF_TIME_LIMIT = None
-    WEBPACKEXT_MANIFEST_PATH = 'manifest.json'
+    ADMINS: List[str] = ['your-email@example.com']
+    ASSETS_DEBUG: bool = False
+    FLASK_ENV: str = 'development'
+    MAIL_PORT: int = 8025
+    MAIL_SERVER: str = "localhost"
+    MAX_CONTENT_LENGTH: int = 1024 * 1024  # Max upload size
+    SECRET_KEY: str = "development"
+    SQLALCHEMY_DATABASE_URI: Optional[str] = os.environ.get(
+        'DATABASE_URL'
+    ) or f"sqlite:///{Path(__file__).parent.parent / 'instance' / 'whathappened.sqlite'}"
+
+    SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
+    UPLOAD_EXTENSIONS: List[str] = ['.jpg', '.png', '.jpeg', '.gif']
+    UPLOAD_FOLDER: str = 'uploads'
+    WEBPACKEXT_MANIFEST_PATH: str = 'manifest.json'
+    WTF_CSRF_TIME_LIMIT: Optional[int] = None
+
+    class Config:
+        _env_file_encoding = 'utf-8'
+
+
+Config = Settings(_env_file=os.environ.get('WHATHAPPENED_SETTINGS'))
+
+if __name__ == '__main__':
+    print(Config)
