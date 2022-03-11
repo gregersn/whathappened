@@ -33,22 +33,11 @@ def create_app(test_config=None) -> Flask:
     assets_env._named_bundles = {}
     app = Flask(__name__, instance_relative_config=True)
 
-    # Internal default settings
-    app.config.from_mapping(
-        SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL')
-        or f"sqlite:///{Path(app.instance_path) / 'whathappened.sqlite'}")
-
     # Default settings from config file
     app.config.from_object(Config)
 
     if test_config is not None:
         app.config.from_object(test_config)
-
-    loaded_config = False  # Track if extra settings are loaded
-
-    # Config file from environment variable
-    loaded_config = app.config.from_envvar('WHATHAPPENED_SETTINGS',
-                                           silent=True) or loaded_config
 
     # Check mandatory settings, and throw if they don't exist
     if app.config.get("UPLOAD_FOLDER") is None:

@@ -4,22 +4,25 @@ import pytest
 from whathappened import create_app, assets
 from whathappened.database import db as _db
 
-from whathappened.config import Config
+from whathappened.config import Settings
 
 basedir = Path(__file__).parent.absolute()
 
 
-class Conf(Config):
-    TESTING = True
-    TESTDB = basedir / 'testing.sqlite'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(TESTDB)
-    WTF_CSRF_ENABLED = False
+class Conf(Settings):
+    TESTING: bool = True
+    TESTDB: Path = basedir / 'testing.sqlite'
+    SQLALCHEMY_DATABASE_URI: str = 'sqlite:///' + str(TESTDB)
+    WTF_CSRF_ENABLED: bool = False
+
+
+Config = Conf()
 
 
 @pytest.fixture(scope='session')
 def app(request):
     assets._named_bundles = {}
-    app = create_app(Conf)
+    app = create_app(Config)
 
     ctx = app.app_context()
     ctx.push()
@@ -35,13 +38,13 @@ def app(request):
 @pytest.fixture(scope='session')
 def db(app, request):
     """Session-wide test database."""
-    if Conf.TESTDB.exists():
-        Conf.TESTDB.unlink()
+    if Config.TESTDB.exists():
+        Config.TESTDB.unlink()
 
     def teardown():
         _db.drop_all()
-        if Conf.TESTDB.exists():
-            Conf.TESTDB.unlink()
+        if Config.TESTDB.exists():
+            Config.TESTDB.unlink()
 
     _db.create_all()
 
@@ -76,14 +79,16 @@ def client(app, request):
 
 
 class AuthActions(object):
+
     def __init__(self, client):
         self._client = client
 
     def login(self, username='test', password='test'):
-        return self._client.post(
-            '/auth/login',
-            data={'username': username, 'password': password}
-        )
+        return self._client.post('/auth/login',
+                                 data={
+                                     'username': username,
+                                     'password': password
+                                 })
 
     def logout(self):
         return self._client.get('/auth/logout')
