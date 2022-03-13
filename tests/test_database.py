@@ -1,6 +1,7 @@
 from sqlalchemy.sql.schema import Column
 from sqlalchemy.sql.sqltypes import Integer, String
-from whathappened.database import init_db, db, Base, BaseModel
+from whathappened.database import init_db, db
+from whathappened.database.base import Base, BaseModel
 
 
 class DataModel(Base):
@@ -32,11 +33,7 @@ class SerializeModel(BaseModel):
     title = Column(String(256))
     action = Column(String(256))
 
-    _default_fields = [
-        "id",
-        "title",
-        "action"
-    ]
+    _default_fields = ["id", "title", "action"]
 
 
 def test_serialize():

@@ -3,7 +3,6 @@ import os
 from pathlib import Path
 from flask import Flask
 from flask_login import LoginManager
-from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 
 from webassets import Environment as AssetsEnvironment
@@ -16,7 +15,6 @@ import logging
 from whathappened.config import Config
 from whathappened.email import mail
 
-from typing import Type
 from .database import init_db, session
 
 login_manager = LoginManager()

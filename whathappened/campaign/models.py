@@ -1,35 +1,33 @@
 import enum
-from flask import url_for
 from datetime import datetime
-from sqlalchemy.orm import backref, relationship
 
+from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey, Table, Column
 from sqlalchemy.sql.sqltypes import Boolean, DateTime
 from sqlalchemy.sql.sqltypes import Enum, Integer, String, Text
-from whathappened.database import Base, BaseModel
+
+from flask import url_for
+
+from whathappened.database.base import Base, BaseModel
 from whathappened.content.mixins import BaseContent
 
-campaign_players = Table('campaign_players',
-                         Base.metadata,
-                         Column('player_id',
-                                Integer,
-                                ForeignKey('user_profile.id'),
-                                primary_key=True),
-                         Column('campaign_id',
-                                Integer,
-                                ForeignKey('campaign.id'),
-                                primary_key=True))
+campaign_players = Table(
+    'campaign_players', Base.metadata,
+    Column('player_id',
+           Integer,
+           ForeignKey('user_profile.id'),
+           primary_key=True),
+    Column('campaign_id', Integer, ForeignKey('campaign.id'),
+           primary_key=True))
 
-campaign_characters = Table('campaign_characters',
-                            Base.metadata,
-                            Column('character_id',
-                                   Integer,
-                                   ForeignKey('charactersheet.id'),
-                                   primary_key=True),
-                            Column('campaign_id',
-                                   Integer,
-                                   ForeignKey('campaign.id'),
-                                   primary_key=True))
+campaign_characters = Table(
+    'campaign_characters', Base.metadata,
+    Column('character_id',
+           Integer,
+           ForeignKey('charactersheet.id'),
+           primary_key=True),
+    Column('campaign_id', Integer, ForeignKey('campaign.id'),
+           primary_key=True))
 
 
 class Campaign(BaseModel, BaseContent):
@@ -40,15 +38,14 @@ class Campaign(BaseModel, BaseContent):
 
     # Owner of the campaign (GM)
     user_id = Column(Integer, ForeignKey('user_profile.id'))
-    user = relationship('UserProfile', backref=backref(
-        'campaigns', lazy='dynamic'))
+    user = relationship('UserProfile',
+                        backref=backref('campaigns', lazy='dynamic'))
 
     # The players in a campaign
     players = relationship('UserProfile',
                            secondary=campaign_players,
                            lazy='dynamic',
-                           backref=backref('campaigns_as_player',
-                                           lazy=True))
+                           backref=backref('campaigns_as_player', lazy=True))
     # Characters added to the campaign
     characters = relationship('Character',
                               secondary=campaign_characters,
@@ -56,8 +53,7 @@ class Campaign(BaseModel, BaseContent):
                               backref=backref('campaigns', lazy=True))
 
     # NPCs added to campaign
-    NPCs = relationship(
-        "NPC", back_populates='campaign', lazy='dynamic')
+    NPCs = relationship("NPC", back_populates='campaign', lazy='dynamic')
 
     # Handouts added to campaign
     handouts = relationship("Handout",
@@ -84,25 +80,19 @@ class Campaign(BaseModel, BaseContent):
     def __repr__(self):
         return '<Campaign {}>'.format(self.title)
 
-    _default_fields = [
-        "id",
-        "title",
-        "description",
-        "NPCs",
-        'handouts'
-    ]
+    _default_fields = ["id", "title", "description", "NPCs", 'handouts']
 
 
-player_handouts = Table('campaign_handouts_to_players',
-                        Base.metadata,
-                        Column('handout_id',
-                               Integer,
-                               ForeignKey('campaign_handout.id'),
-                               primary_key=True),
-                        Column('player_id',
-                               Integer,
-                               ForeignKey('user_profile.id'),
-                               primary_key=True))
+player_handouts = Table(
+    'campaign_handouts_to_players', Base.metadata,
+    Column('handout_id',
+           Integer,
+           ForeignKey('campaign_handout.id'),
+           primary_key=True),
+    Column('player_id',
+           Integer,
+           ForeignKey('user_profile.id'),
+           primary_key=True))
 
 
 class HandoutStatus(enum.Enum):
@@ -118,9 +108,7 @@ class HandoutGroup(Base):
     name = Column(String(256))
     campaign_id = Column(Integer, ForeignKey('campaign.id'))
     campaign = relationship("Campaign", back_populates='handout_groups')
-    handouts = relationship('Handout',
-                            lazy='dynamic',
-                            back_populates='group')
+    handouts = relationship('Handout', lazy='dynamic', back_populates='group')
 
     def __repr__(self):
         return f'<Handout Group {self.name}>'
@@ -133,27 +121,20 @@ class Handout(BaseModel):
     content = Column(Text)
     campaign_id = Column(Integer, ForeignKey('campaign.id'))
     campaign = relationship("Campaign", back_populates='handouts')
-    status = Column('status',
-                    Enum(HandoutStatus),
-                    default=HandoutStatus.draft)
+    status = Column('status', Enum(HandoutStatus), default=HandoutStatus.draft)
 
     players = relationship('UserProfile',
                            secondary=player_handouts,
                            lazy='dynamic',
-                           backref=backref('campaign_handouts',
-                                           lazy=True))
-    group_id = Column(Integer,
-                      ForeignKey('campaign_handout_group.id'))
+                           backref=backref('campaign_handouts', lazy=True))
+    group_id = Column(Integer, ForeignKey('campaign_handout_group.id'))
 
     group = relationship('HandoutGroup')
 
     def __repr__(self):
         return '<Handout {}>'.format(self.title)
 
-    _default_fields = [
-        'id',
-        'title'
-    ]
+    _default_fields = ['id', 'title']
 
     @property
     def url(self):
@@ -170,16 +151,14 @@ class NPC(BaseModel):
     campaign_id = Column(Integer, ForeignKey('campaign.id'), nullable=False)
     campaign = relationship('Campaign', back_populates='NPCs')
 
-    character_id = Column(Integer, ForeignKey('charactersheet.id'),
+    character_id = Column(Integer,
+                          ForeignKey('charactersheet.id'),
                           nullable=False)
     character = relationship('Character')
 
     visible = Column(Boolean, default=False)
 
-    _default_fields = [
-        'character',
-        'visible'
-    ]
+    _default_fields = ['character', 'visible']
 
 
 class Message(BaseModel):
@@ -198,13 +177,7 @@ class Message(BaseModel):
     message = Column(Text)
     timestamp = Column(DateTime, index=True, default=datetime.utcnow)
 
-    _default_fields = [
-        'timestamp',
-        'sender_name',
-        'to_name',
-        'message',
-        'id'
-    ]
+    _default_fields = ['timestamp', 'sender_name', 'to_name', 'message', 'id']
 
     @property
     def sender_name(self):

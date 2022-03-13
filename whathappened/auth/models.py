@@ -1,12 +1,14 @@
 import logging
 from time import time
 import jwt
-from flask_login import UserMixin
-from flask import current_app
+
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import Integer, String
 from werkzeug.security import check_password_hash, generate_password_hash
+
+from flask_login import UserMixin
+from flask import current_app
 
 from whathappened.database import Base, session
 
@@ -20,8 +22,7 @@ class User(UserMixin, Base):
     email = Column(String(128), index=True, unique=True)
     password_hash = Column(String(128))
 
-    profile = relationship('UserProfile', uselist=False,
-                           back_populates="user")
+    profile = relationship('UserProfile', uselist=False, back_populates="user")
 
     roles = relationship('Role', secondary='user_roles')
 
@@ -43,7 +44,8 @@ class User(UserMixin, Base):
     @staticmethod
     def verify_reset_password_token(token: str):
         try:
-            id = jwt.decode(token, current_app.config['SECRET_KEY'],
+            id = jwt.decode(token,
+                            current_app.config['SECRET_KEY'],
                             algorithms=['HS256'])['reset_password']
         except Exception:
             logger.error("Exception occurent while trying to reset password.",
@@ -69,8 +71,7 @@ class UserRoles(Base):
     id = Column(Integer(), primary_key=True)
     user_id = Column(Integer(),
                      ForeignKey('user_account.id', ondelete='CASCADE'))
-    role_id = Column(Integer(),
-                     ForeignKey('roles.id', ondelete='CASCADE'))
+    role_id = Column(Integer(), ForeignKey('roles.id', ondelete='CASCADE'))
 
 
 def create_core_roles(*args, **kwargs):
@@ -88,6 +89,7 @@ def create_core_roles(*args, **kwargs):
 def add_first_admin(*args, **kwargs):
     session.add(UserRoles(user_id=1, role_id=1))
     session.commit()
+
 
 # See above comment.
 # listen(UserRoles.__table__, 'after_create', add_first_admin)

@@ -1,14 +1,14 @@
-import os
 from pathlib import Path
-from whathappened.character import core
-from whathappened.character.core import CHARACTER_SCHEMA_DIR, GameSystems
-from whathappened.character.schema import load_schema, sub_schema
 import logging
 
 from flask import render_template, request
 from flask import redirect, url_for, jsonify
 
 from werkzeug.exceptions import abort
+
+from whathappened.character import core
+from whathappened.character.core import CHARACTER_SCHEMA_DIR, GameSystems
+from whathappened.character.schema import load_schema, sub_schema
 
 from . import bp, api
 
@@ -25,7 +25,8 @@ from whathappened.models import LogEntry
 from whathappened.utils.schema import migrate
 from whathappened.models import Invite
 from whathappened.character.schema.coc7e import migrations, latest
-from whathappened.database import session, paginate
+from whathappened.database import session
+from whathappened.database.pagination import paginate
 from whathappened.auth import login_required, current_user
 from whathappened.content.forms import ChooseFolderForm
 
