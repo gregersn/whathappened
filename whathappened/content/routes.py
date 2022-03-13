@@ -1,10 +1,10 @@
 from flask import render_template, redirect
-from flask_login import login_required, current_user
 
 from whathappened.database import session
 
 from whathappened.character.models import Character
 from whathappened.campaign import models as campaignmodels
+from whathappened.auth import login_required, current_user
 
 from . import bp
 

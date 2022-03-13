@@ -1,5 +1,4 @@
 import logging
-from flask_login import login_required, current_user
 from flask import render_template, redirect, url_for, flash, request
 from whathappened.main.forms import CreateInviteForm
 from whathappened.auth.models import User
@@ -17,6 +16,7 @@ from whathappened.models import Invite
 from sqlalchemy import and_, or_
 from whathappened.database import session
 from whathappened.content.forms import ChooseFolderForm
+from whathappened.auth import login_required, current_user
 
 from . import api  # noqa
 
@@ -63,9 +63,9 @@ def view(id: int):
     characterform = AddCharacterForm(prefix="characterform")
     npcform = AddNPCForm(prefix="npcform")
 
-    messageform = MessagePlayerForm(players=[(campaign.user_id, "GM"), ] +
-                                            [(p.id, p.user.username)
-                                             for p in campaign.players],
+    messageform = MessagePlayerForm(players=[
+        (campaign.user_id, "GM"),
+    ] + [(p.id, p.user.username) for p in campaign.players],
                                     campaign_id=campaign.id,
                                     from_id=current_user.profile.id)
 
@@ -88,9 +88,8 @@ def view(id: int):
             session.commit()
 
         if inviteform.submit.data and inviteform.validate_on_submit():
-            player = (User.query
-                      .filter_by(email=inviteform.email.data)
-                      .first().profile)
+            player = (User.query.filter_by(
+                email=inviteform.email.data).first().profile)
             campaign.players.append(player)
             session.commit()
             return redirect(url_for('campaign.view', id=id))
@@ -121,10 +120,9 @@ def view(id: int):
     createinviteform.submit.label.text = "Create share link."
 
     handouts = campaign.handouts.filter_by(status=HandoutStatus.visible)
-    messages = campaign.messages.filter(or_(
-        Message.from_id == current_user.profile.id,
-        Message.to_id == current_user.profile.id,
-        Message.to_id.is_(None)))
+    messages = campaign.messages.filter(
+        or_(Message.from_id == current_user.profile.id,
+            Message.to_id == current_user.profile.id, Message.to_id.is_(None)))
 
     added_npc_ids = [c.character_id for c in campaign.NPCs]
 
@@ -291,8 +289,7 @@ def manage_npc(id: int, npcid: int):
                            transferform=transferform)
 
 
-@bp.route('/<int:id>/removeplayer/<int:playerid>',
-          methods=('GET', 'POST'))
+@bp.route('/<int:id>/removeplayer/<int:playerid>', methods=('GET', 'POST'))
 @login_required
 def remove_player(id: int, playerid: int):
     form = RemovePlayerForm()
@@ -314,8 +311,7 @@ def remove_player(id: int, playerid: int):
 
 @bp.route('/<int:campaign_id>/player/<int:player_id>/message',
           methods=('GET', 'POST'))
-@bp.route('/<int:campaign_id>/message/',
-          methods=('GET', 'POST'))
+@bp.route('/<int:campaign_id>/message/', methods=('GET', 'POST'))
 @login_required
 def message_player(campaign_id: int, player_id: int = None):
     c = Campaign.query.get(campaign_id)
@@ -343,12 +339,12 @@ def message_player(campaign_id: int, player_id: int = None):
     form.to_id.data = player_id
     form.from_id.data = c.user_id
 
-    messages = c.messages.filter(or_(
-                                 and_(Message.to_id == player_id,
-                                      Message.from_id ==
-                                      current_user.profile.id),
-                                 and_(Message.to_id == current_user.profile.id,
-                                      Message.from_id == player_id)))
+    messages = c.messages.filter(
+        or_(
+            and_(Message.to_id == player_id,
+                 Message.from_id == current_user.profile.id),
+            and_(Message.to_id == current_user.profile.id,
+                 Message.from_id == player_id)))
     return render_template('campaign/message_player.html.jinja',
                            player=player,
                            campaign=c,

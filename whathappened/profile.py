@@ -1,12 +1,10 @@
 from whathappened.content.models import Folder
 import logging
-from flask import (
-    Blueprint, render_template
-)
-from flask_login import login_required, current_user
+from flask import (Blueprint, render_template)
+from whathappened.auth import login_required, current_user
 from whathappened.database import session
 
-bp = Blueprint('profile', __name__ )
+bp = Blueprint('profile', __name__)
 
 # from whathappened.character.models import Character  # noqa F401
 from .models import UserProfile  # noqa F401

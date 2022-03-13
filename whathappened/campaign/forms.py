@@ -6,10 +6,10 @@ from wtforms import SubmitField
 from wtforms import widgets
 from wtforms import IntegerField, SelectMultipleField
 from wtforms.validators import DataRequired, Email
-from flask_login import current_user
 from wtforms.widgets.core import HiddenInput, TextArea
 
 from whathappened.forms.fields import QuerySelectField, QuerySelectMultipleField
+from whathappened.auth import current_user
 
 from .models import HandoutStatus
 
@@ -30,7 +30,7 @@ class EditForm(CreateForm):
 
 
 class InvitePlayerForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(),  Email()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Invite')
 
 
@@ -66,6 +66,7 @@ class JoinCampaignForm(FlaskForm):
 
 
 class EnumField(SelectField):
+
     def process_data(self, value):
         if value is not None:
             value = value.name
@@ -94,7 +95,9 @@ class HandoutForm(FlaskForm):
                        default=HandoutStatus.draft)
 
     group_id = SelectField('Group',
-                           choices=[('', '(none)'), ],
+                           choices=[
+                               ('', '(none)'),
+                           ],
                            default='',
                            validate_choice=False)
 
@@ -104,12 +107,12 @@ class HandoutForm(FlaskForm):
 class DeleteHandoutForm(FlaskForm):
     campaign_id = IntegerField(widget=HiddenInput(),
                                validators=[DataRequired()])
-    id = IntegerField(widget=HiddenInput(),
-                      validators=[DataRequired()])
+    id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     submit = SubmitField('Delete handout')
 
 
 class TableRowWidget(object):
+
     def __init__(self, with_tr_tag: bool = True):
         self.with_tr_tag = with_tr_tag
 
@@ -141,8 +144,7 @@ class PlayerField(SelectMultipleField):
 class RevealHandout(FlaskForm):
     campaign_id = IntegerField(widget=HiddenInput(),
                                validators=[DataRequired()])
-    id = IntegerField(widget=HiddenInput(),
-                      validators=[DataRequired()])
+    id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     players = QuerySelectMultipleField('Show to',
                                        get_label=lambda x: x.user.username)
 
@@ -154,13 +156,15 @@ class NPCTransferForm(FlaskForm):
 
 
 class MessagePlayerForm(FlaskForm):
-    campaign_id = IntegerField(
-        widget=HiddenInput(), validators=[DataRequired()])
+    campaign_id = IntegerField(widget=HiddenInput(),
+                               validators=[DataRequired()])
     from_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     message = StringField()
     submit = SubmitField('Send...')
 
-    to_id = SelectField('To', choices=[('', 'All'), ], validate_choice=False)
+    to_id = SelectField('To', choices=[
+        ('', 'All'),
+    ], validate_choice=False)
 
     def __init__(self,
                  hide_to_id: bool = False,

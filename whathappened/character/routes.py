@@ -7,10 +7,8 @@ import logging
 
 from flask import render_template, request
 from flask import redirect, url_for, jsonify
-from flask_login import login_required, current_user
 
 from werkzeug.exceptions import abort
-
 
 from . import bp, api
 
@@ -28,7 +26,7 @@ from whathappened.utils.schema import migrate
 from whathappened.models import Invite
 from whathappened.character.schema.coc7e import migrations, latest
 from whathappened.database import session, paginate
-
+from whathappened.auth import login_required, current_user
 from whathappened.content.forms import ChooseFolderForm
 
 logger = logging.getLogger(__name__)
@@ -121,7 +119,7 @@ def import_character(type=None, id: int = None, code: str = None):
     return render_template('character/import.html.jinja', form=form, type=None)
 
 
-@bp.route('/<int:id>/update', methods=('POST',))
+@bp.route('/<int:id>/update', methods=('POST', ))
 @login_required
 def update(id: int):
     character = get_character(id, check_author=True)
@@ -183,8 +181,8 @@ def view(id: int):
 
     editable = False
 
-    if (current_user.is_authenticated and
-            current_user.profile.id == character.user_id):
+    if (current_user.is_authenticated
+            and current_user.profile.id == character.user_id):
         editable = True
 
     for campaign in character.campaigns:
@@ -196,24 +194,22 @@ def view(id: int):
         return redirect(url_for('character.editjson', id=id))
 
     character_module = (globals()[character.system]
-                        if character.system in globals()
-                        else core)
+                        if character.system in globals() else core)
 
     system_view = getattr(character_module, 'view', None)
 
     if system_view is not None:
         return system_view(id, character, editable)
 
-    system_template = getattr(
-        character_module, 'CHARACTER_SHEET_TEMPLATE', None)
+    system_template = getattr(character_module, 'CHARACTER_SHEET_TEMPLATE',
+                              None)
 
     if system_template:
         return render_template(character_module.CHARACTER_SHEET_TEMPLATE,
                                character=character,
                                editable=editable)
 
-    character_schema = getattr(
-        character_module, 'CHARACTER_SCHEMA', None)
+    character_schema = getattr(character_module, 'CHARACTER_SCHEMA', None)
 
     if character_schema is None:
         character_schema = CHARACTER_SCHEMA_DIR / f"{character.system}.yaml"
@@ -229,8 +225,7 @@ def html_data_type(t: str) -> str:
     return t
 
 
-def render_general_view(schema_file: Path,
-                        character: Character,
+def render_general_view(schema_file: Path, character: Character,
                         editable: bool):
     schema = load_schema(schema_file)
     return render_template('character/general_character.html.jinja',
@@ -257,8 +252,14 @@ def get(id: int):
     return jsonify(data.to_dict())
 
 
-@bp.route('/<int:id>/delete', methods=('GET', 'POST', ))
-@api.route('/<int:id>/delete', methods=('GET', 'POST', ))
+@bp.route('/<int:id>/delete', methods=(
+    'GET',
+    'POST',
+))
+@api.route('/<int:id>/delete', methods=(
+    'GET',
+    'POST',
+))
 @login_required
 def delete(id: int):
     """Delete a character."""
@@ -304,8 +305,7 @@ def share(id: int):
                                     url=share_url,
                                     code=invite.id)
 
-    return jsonify({'url': share_url,
-                    'html': html_response})
+    return jsonify({'url': share_url, 'html': html_response})
 
 
 @bp.route('/<int:id>/export', methods=('GET', ))
@@ -329,9 +329,7 @@ def editjson(id: int):
         if form.migration.data:
             logger.debug("Trying to migrate data")
             data = form.body.data
-            c.body = migrate(data,
-                             latest,
-                             migrations=migrations)
+            c.body = migrate(data, latest, migrations=migrations)
         elif form.conversion.data:
             logger.debug("Conversion is checked")
             data = form.body.data
