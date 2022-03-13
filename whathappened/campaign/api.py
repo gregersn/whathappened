@@ -2,8 +2,6 @@ import json
 import hashlib
 from datetime import datetime
 from flask import request, jsonify
-from flask_login import current_user
-from flask_login.utils import login_required
 from sqlalchemy import or_
 
 from werkzeug.exceptions import abort
@@ -11,6 +9,7 @@ import logging
 
 from . import apibp
 from .models import Handout, Campaign, HandoutStatus, NPC, Message
+from whathappened.auth import login_required, current_user
 from whathappened.database import session
 
 logger = logging.getLogger(__name__)
@@ -104,7 +103,8 @@ def handout_players(campaignid: int, handoutid: int):
 
     response = {
         'players': {
-            p.user.username: p in handout.players for p in handout.campaign.players
+            p.user.username: p in handout.players
+            for p in handout.campaign.players
         }
     }
     return jsonify(response)
@@ -118,17 +118,17 @@ def npcs(campaignid: int):
     if campaign is None:
         abort(404)
 
-    npcs = [{'name': npc.character.name,
-             'age': npc.character.age,
-             'description': npc.character.description,
-             'portrait': "data:image/jpg;base64, " + npc.character.portrait}
-            for npc in campaign.NPCs.filter(NPC.visible).all()]
+    npcs = [{
+        'name': npc.character.name,
+        'age': npc.character.age,
+        'description': npc.character.description,
+        'portrait': "data:image/jpg;base64, " + npc.character.portrait
+    } for npc in campaign.NPCs.filter(NPC.visible).all()]
     response = {'npcs': npcs}
     return jsonify(response)
 
 
-@apibp.route('<int:campaignid>/npc/<int:npcid>',
-             methods=('GET', 'POST'))
+@apibp.route('<int:campaignid>/npc/<int:npcid>', methods=('GET', 'POST'))
 @login_required
 def npc_visibility(npcid: int, campaignid: int):
     if not current_user.is_authenticated:
@@ -160,6 +160,8 @@ def npc_visibility(npcid: int, campaignid: int):
         logger.debug(data)
 
     response = {
-        'npc': npcid, 'campaign': campaignid, 'visibility': npc.visible
+        'npc': npcid,
+        'campaign': campaignid,
+        'visibility': npc.visible
     }
     return jsonify(response)

@@ -4,7 +4,6 @@ import logging
 from flask import render_template, flash
 from flask import redirect, url_for
 from flask.helpers import send_from_directory
-from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import abort
 
@@ -15,6 +14,7 @@ from .forms import UploadForm, NewFolderForm, MoveAssetForm
 from .models import Asset, AssetFolder
 
 from whathappened.database import session
+from whathappened.auth import login_required, current_user
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +47,12 @@ def index(folder_id=None):
                            folder=folder)
 
 
-@bp.route('/folder/<uuid:folder_id>/', methods=['POST', ])
-@bp.route('/folder/', methods=['POST', ])
+@bp.route('/folder/<uuid:folder_id>/', methods=[
+    'POST',
+])
+@bp.route('/folder/', methods=[
+    'POST',
+])
 @login_required
 def create_folder(folder_id=None):
     folderform = NewFolderForm(prefix="newfolderform")
@@ -62,7 +66,9 @@ def create_folder(folder_id=None):
     return redirect(url_for('userassets.index', folder_id=folder_id))
 
 
-@bp.route('/folder/<uuid:id>/delete', methods=['POST', ])
+@bp.route('/folder/<uuid:id>/delete', methods=[
+    'POST',
+])
 @login_required
 def delete_folder(id=None):
     deletefolderform = DeleteAssetFolderForm(prefix="deletefolderform")
@@ -96,8 +102,12 @@ def delete_folder(id=None):
     return redirect(url_for('userassets.index', folder_id=id))
 
 
-@bp.route('/<uuid:folder_id>/', methods=['POST', ])
-@bp.route('/', methods=['POST', ])
+@bp.route('/<uuid:folder_id>/', methods=[
+    'POST',
+])
+@bp.route('/', methods=[
+    'POST',
+])
 @login_required
 def upload_file(folder_id=None):
     form = UploadForm(prefix='fileupload')
@@ -111,8 +121,7 @@ def upload_file(folder_id=None):
         if fileobject.filename:
             filename = secure_filename(fileobject.filename)
 
-            folder.system_path.mkdir(parents=True,
-                                     exist_ok=True)
+            folder.system_path.mkdir(parents=True, exist_ok=True)
             fileobject.save(folder.system_path / filename)
 
             asset = Asset(filename=fileobject.filename,
@@ -157,7 +166,9 @@ def edit(fileid, filename):
                            moveform=moveform)
 
 
-@bp.route('/edit/<uuid:fileid>/<string:filename>/delete', methods=['POST', ])
+@bp.route('/edit/<uuid:fileid>/<string:filename>/delete', methods=[
+    'POST',
+])
 @login_required
 def delete(fileid, filename):
     logger.debug("Delete asset")
@@ -173,7 +184,9 @@ def delete(fileid, filename):
     return redirect(url_for('userassets.index', folder_id=asset.folder_id))
 
 
-@bp.route('/edit/<uuid:fileid>/<string:filename>/move', methods=['POST', ])
+@bp.route('/edit/<uuid:fileid>/<string:filename>/move', methods=[
+    'POST',
+])
 @login_required
 def move(fileid, filename):
     asset = Asset.query.get(fileid)

@@ -2,12 +2,11 @@ import logging
 
 from flask import render_template, redirect, url_for
 from flask.json import jsonify
-from flask_login import current_user
-from flask_login.utils import login_required
 from werkzeug.exceptions import abort
 
 from whathappened.models import Invite
 from whathappened.database import session, Base
+from whathappened.auth import login_required, current_user
 
 from . import bp
 from . import api

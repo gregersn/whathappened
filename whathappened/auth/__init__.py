@@ -1,5 +1,6 @@
 import logging
 from flask import Blueprint, render_template, current_app
+from flask_login import login_required, current_user, LoginManager
 
 from whathappened import login_manager
 from whathappened.email import send_mail
@@ -8,7 +9,6 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 from .models import User  # noqa E402
 from .forms import LoginForm, RegistrationForm  # noqa E402
-
 
 logger = logging.getLogger(__name__)
 

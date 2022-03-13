@@ -14,13 +14,13 @@ from jinja2_webpack.filter import WebpackFilter
 import logging
 
 from whathappened.config import Config
+from whathappened.email import mail
+
 from typing import Type
 from .database import init_db, session
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'  # type: ignore  # Not an error
-
-mail = Mail()
 assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent /
                                'static')
 csrf = CSRFProtect()
