@@ -1,4 +1,5 @@
-from flask import Blueprint
+
+
 from webassets.env import Environment
 
 bp = Blueprint('campaign', __name__,

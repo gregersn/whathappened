@@ -2,7 +2,8 @@ from pathlib import Path
 import uuid
 import logging
 
-from flask import url_for, current_app
+
+
 from sqlalchemy import event
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import Column, ForeignKey

@@ -1,3 +1,4 @@
+"""Authentication models."""
 import logging
 from time import time
 import jwt
@@ -7,15 +8,13 @@ from sqlalchemy.sql.schema import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import Integer, String
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from flask_login import UserMixin
-from flask import current_app
-
-from whathappened.database import Base, session
+from whathappened.database.base import BaseModel
 
 logger = logging.getLogger(__name__)
 
 
-class User(UserMixin, Base):
+class User(BaseModel):
+    """Handle a user account."""
     __tablename__ = "user_account"
     id = Column(Integer, primary_key=True)
     username = Column(String(64), index=True, unique=True)
@@ -27,7 +26,7 @@ class User(UserMixin, Base):
     roles = relationship('Role', secondary='user_roles')
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return f'<User {self.username}>'
 
     def set_password(self, password: str):
         self.password_hash = generate_password_hash(password)
@@ -44,14 +43,11 @@ class User(UserMixin, Base):
     @staticmethod
     def verify_reset_password_token(token: str):
         try:
-            id = jwt.decode(token,
-                            current_app.config['SECRET_KEY'],
-                            algorithms=['HS256'])['reset_password']
+            _id = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
         except Exception:
-            logger.error("Exception occurent while trying to reset password.",
-                         exc_info=True)
+            logger.error("Exception occurent while trying to reset password.", exc_info=True)
             return
-        return User.query.get(id)
+        return User.query.get(_id)
 
     def has_role(self, role: str):
         for r in self.roles:
@@ -60,17 +56,16 @@ class User(UserMixin, Base):
         return False
 
 
-class Role(Base):
+class Role(BaseModel):
     __tablename__ = 'roles'
     id = Column(Integer(), primary_key=True)
     name = Column(String(50), unique=True)
 
 
-class UserRoles(Base):
+class UserRoles(BaseModel):
     __tablename__ = 'user_roles'
     id = Column(Integer(), primary_key=True)
-    user_id = Column(Integer(),
-                     ForeignKey('user_account.id', ondelete='CASCADE'))
+    user_id = Column(Integer(), ForeignKey('user_account.id', ondelete='CASCADE'))
     role_id = Column(Integer(), ForeignKey('roles.id', ondelete='CASCADE'))
 
 

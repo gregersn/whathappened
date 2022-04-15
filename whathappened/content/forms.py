@@ -1,5 +1,6 @@
 from wtforms.fields.simple import HiddenField, SubmitField
-from flask_wtf.form import FlaskForm
+
+
 from wtforms import StringField
 from wtforms.validators import DataRequired, UUID, Optional
 

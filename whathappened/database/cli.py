@@ -1,7 +1,9 @@
 from pathlib import Path
 import click
-from flask import current_app
-from flask.cli import with_appcontext
+
+
+
+
 
 from alembic.config import Config
 from alembic import command

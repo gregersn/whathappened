@@ -1,85 +1,76 @@
 import logging
-from flask import flash, redirect, render_template, request, url_for
+from fastapi import APIRouter, Request, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
 
-from flask_login import current_user, login_user, logout_user
-from werkzeug.urls import url_parse
+from whathappened.utils import flash
+from whathappened.environment import templates
 
-from .forms import LoginForm, RegistrationForm
-from .forms import ResetPasswordRequestForm, ResetPasswordForm
-from .models import User
+from .forms import LoginForm, RegistrationForm, ResetPasswordForm, ResetPasswordRequestForm
 
-from whathappened.database import session
-
-from . import bp, send_password_reset_email
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 logger = logging.getLogger(__name__)
 
 
-@bp.route('/login', methods=['GET', 'POST'])
-def login():
-    next_page = request.args.get('next')
-    if not next_page or url_parse(next_page).netloc != '':
-        next_page = url_for('main.index')
-
-    if current_user.is_authenticated:
-        logger.debug("User %s is already logged in", current_user.id)
-        return redirect(next_page)
-    form = LoginForm()
-    if form.validate_on_submit():
-        logger.debug("Login form was validated")
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
-            return redirect(url_for('auth.login'))
-        login_user(user, remember=form.remember_me.data)
-        return redirect(next_page)
-    return render_template('auth/login.html.jinja', title='Sign In', form=form)
+@router.get("/register", response_class=HTMLResponse)
+def register_page(request: Request):
+    return templates.TemplateResponse("auth/register.html.jinja", {"request": request, "form": RegistrationForm()})
 
 
-@bp.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('main.index'))
+@router.post("/register")
+def register_post(request: Request, username: str = Form(...), email: str = Form(...), password: str = Form(...)):
+    """Register a new user."""
+
+    error = None
+
+    # Try to get the user by username, to check if it is already registered.
+
+    if error is None:
+        # Hash the password
+        # Create the user
+        # Return redirect to login.
+        return RedirectResponse("/auth/login", status_code=302)
+    else:
+        # Error - redirect back to register page.
+        flash(request, error)
+        return RedirectResponse("/auth/register", status_code=302)
 
 
-@bp.route('/register', methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        session.add(user)
-        session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('auth.login'))
-    return render_template('auth/register.html.jinja',
-                           title='Register', form=form)
+@router.get("/login", response_class=HTMLResponse)
+def login_page(request: Request):
+    return templates.TemplateResponse("auth/login.html.jinja", {"request": request, "form": LoginForm()})
 
 
-@bp.route('/reset_password_request', methods=['GET', 'POST'])
-def reset_password_request():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+@router.post("/login")
+def login_post(request: Request, username: str = Form(...), password: str = Form(...)):
+    """Login user."""
 
+    # Find user
+
+    return RedirectResponse("/hello", status_code=302)
+
+
+@router.get('/reset_password_request')
+def reset_password_request(request: Request):
     form = ResetPasswordRequestForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user:
-            send_password_reset_email(user)
-        flash('Check your email for reset instructions.')
-        return redirect(url_for('auth.login'))
-
-    return render_template('/auth/reset_password_request.html.jinja',
-                           title='Reset password', form=form)
+    return templates.TemplateResponse('auth/reset_password_request.html.jinja', {
+        'request': request,
+        'title': 'Reset password',
+        'form': form
+    })
 
 
-@bp.route('/reset_password/<token>', methods=['GET', 'POST'])
-def reset_password(token: str):
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+@router.post('/reset_password_request')
+def reset_password(request: Request, email: str = Form(...)):
+    user = User.query.filter_by(email=form.email.data).first()
+    if user:
+        send_password_reset_email(user)
+    flash('Check your email for reset instructions.')
+    return redirect(url_for('auth.login'))
 
+
+@router.get('/reset_password/<token>')
+def reset_password_form():
     user = User.verify_reset_password_token(token)
     form = ResetPasswordForm()
     if form.validate_on_submit():
@@ -89,3 +80,8 @@ def reset_password(token: str):
         flash('Your password has been reset.')
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html.jinja', form=form)
+
+
+@router.post("/reset_password/<token>")
+def reset_password(token: str = Form(...)):
+    pass
