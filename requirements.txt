@@ -1,4 +1,4 @@
-alembic==1.7.5
+alembic==1.8.1
 cryptography==37.0.4
 email-validator==1.2.1
 Flask==2.0.2
