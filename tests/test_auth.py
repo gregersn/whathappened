@@ -12,7 +12,7 @@ def test_register(app, db):
                                 'password': 'b',
                                 'password2': 'b'}
     )
-    assert 'http://localhost/auth/login' == response.headers['Location']
+    assert '/auth/login' == response.headers['Location']
 
     user = User.query.get(1)
     assert user.username == 'a'
