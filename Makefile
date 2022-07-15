@@ -18,7 +18,7 @@ dev_server: frontend
 .PHONY: setup_dependencies
 setup_dependencies: .venv/$(MARKER_FILENAME)
 
-venv/$(MARKER_FILENAME): requirements.txt requirements-dev.txt
+.venv/$(MARKER_FILENAME): requirements.txt requirements-dev.txt
 	@python3 -m venv .venv
 	@$(VENV_PIP) install -r requirements.txt
 	@$(VENV_PIP) install -r requirements-dev.txt
