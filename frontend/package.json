@@ -13,7 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^27.0.2",
-    "@types/showdown": "^1.9.4",
+    "@types/showdown": "^2.0.0",
     "jest": "^27.5.1",
     "ts-jest": "^27.0.7",
     "ts-loader": "^9.2.6",
@@ -23,7 +23,7 @@
     "webpack-manifest-plugin": "^4.0.2"
   },
   "dependencies": {
-    "showdown": "^2.0.2"
+    "showdown": "^2.1.0"
   },
   "jest": {
     "transform": {
