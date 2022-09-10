@@ -1,18 +1,11 @@
 from pathlib import Path
 import logging
 
-
-
-
-
-
 from werkzeug.exceptions import abort
 
 from whathappened.character import core
 from whathappened.character.core import CHARACTER_SCHEMA_DIR, GameSystems
 from whathappened.character.schema import load_schema, sub_schema
-
-from . import bp, api
 
 from .models import Character
 from .forms import ImportForm, CreateForm
@@ -49,9 +42,7 @@ def get_character(id: int, check_author: bool = True) -> Character:
         for campaign in character.campaigns:
             if current_user.profile in campaign.players \
                     or campaign in current_user.profile.campaigns:
-                logger.debug(f"Character '{character.title}' " +
-                             f"is in '{campaign.title}' " +
-                             f"with '{current_user.username}''")
+                logger.debug(f"Character '{character.title}' " + f"is in '{campaign.title}' " + f"with '{current_user.username}''")
                 return character
 
     if check_author and character.user_id != current_user.profile.id:
@@ -71,15 +62,12 @@ def create(chartype: str):
     character_module = globals()[chartype] if chartype in globals() else core
 
     form = getattr(character_module, 'CreateForm', CreateForm)()
-    template = getattr(character_module, 'CREATE_TEMPLATE',
-                       'character/create.html.jinja')
+    template = getattr(character_module, 'CREATE_TEMPLATE', 'character/create.html.jinja')
 
     if form.validate_on_submit():
         logger.debug(f"Creating new character specified by {form.data}")
         char_data = character_module.new_character(**form.data)
-        c = Character(title=form.title.data,
-                      body=char_data,
-                      user_id=current_user.profile.id)
+        c = Character(title=form.title.data, body=char_data, user_id=current_user.profile.id)
         session.add(c)
         session.commit()
         return redirect(url_for('character.view', id=c.id))
@@ -91,8 +79,7 @@ def create(chartype: str):
 @bp.route('/create/', methods=('GET', ))
 @login_required
 def system_select(chartype=None):
-    return render_template('character/system_select.html.jinja',
-                           systems=GameSystems)
+    return render_template('character/system_select.html.jinja', systems=GameSystems)
 
 
 @bp.route('/import/<string:type>', methods=('GET', 'POST'))
@@ -113,9 +100,7 @@ def import_character(type=None, id: int = None, code: str = None):
 
     form = ImportForm(obj=character)
     if form.validate_on_submit():
-        c = Character(title=form.title.data,
-                      body=form.body.data,
-                      user_id=current_user.profile.id)
+        c = Character(title=form.title.data, body=form.body.data, user_id=current_user.profile.id)
         session.add(c)
         session.commit()
         return redirect(url_for('character.view', id=c.id))
@@ -144,9 +129,7 @@ def update(id: int):
                 log_subfield = ' ' + subfield
             log_message = (f"set {type} on {field}{log_subfield}: {value}")
 
-            logentry = LogEntry(character,
-                                log_message,
-                                user_id=current_user.id)
+            logentry = LogEntry(character, log_message, user_id=current_user.id)
             session.add(logentry)
 
         character.store_data()
@@ -184,8 +167,7 @@ def view(id: int):
 
     editable = False
 
-    if (current_user.is_authenticated
-            and current_user.profile.id == character.user_id):
+    if (current_user.is_authenticated and current_user.profile.id == character.user_id):
         editable = True
 
     for campaign in character.campaigns:
@@ -196,30 +178,24 @@ def view(id: int):
     if (character.system is None or character.validate()) and editable:
         return redirect(url_for('character.editjson', id=id))
 
-    character_module = (globals()[character.system]
-                        if character.system in globals() else core)
+    character_module = (globals()[character.system] if character.system in globals() else core)
 
     system_view = getattr(character_module, 'view', None)
 
     if system_view is not None:
         return system_view(id, character, editable)
 
-    system_template = getattr(character_module, 'CHARACTER_SHEET_TEMPLATE',
-                              None)
+    system_template = getattr(character_module, 'CHARACTER_SHEET_TEMPLATE', None)
 
     if system_template:
-        return render_template(character_module.CHARACTER_SHEET_TEMPLATE,
-                               character=character,
-                               editable=editable)
+        return render_template(character_module.CHARACTER_SHEET_TEMPLATE, character=character, editable=editable)
 
     character_schema = getattr(character_module, 'CHARACTER_SCHEMA', None)
 
     if character_schema is None:
         character_schema = CHARACTER_SCHEMA_DIR / f"{character.system}.yaml"
 
-    return render_general_view(character_schema,
-                               character=character,
-                               editable=editable)
+    return render_general_view(character_schema, character=character, editable=editable)
 
 
 def html_data_type(t: str) -> str:
@@ -228,8 +204,7 @@ def html_data_type(t: str) -> str:
     return t
 
 
-def render_general_view(schema_file: Path, character: Character,
-                        editable: bool):
+def render_general_view(schema_file: Path, character: Character, editable: bool):
     schema = load_schema(schema_file)
     return render_template('character/general_character.html.jinja',
                            schema=schema,
@@ -244,8 +219,7 @@ def render_general_view(schema_file: Path, character: Character,
 def tokens(id: int):
     character = get_character(id, check_author=False)
 
-    return render_template('character/tokens.html.jinja',
-                           picture=character.portrait)
+    return render_template('character/tokens.html.jinja', picture=character.portrait)
 
 
 @api.route('/<int:id>/', methods=('GET', ))
@@ -279,9 +253,7 @@ def delete(id: int):
 
     form.character_id.data = character.id
 
-    return render_template('character/delete_character.html.jinja',
-                           form=form,
-                           character=character)
+    return render_template('character/delete_character.html.jinja', form=form, character=character)
 
 
 @api.route('/<int:id>/share', methods=('GET', ))
@@ -303,10 +275,7 @@ def share(id: int):
 
     form = None
 
-    html_response = render_template('character/api_share.html.jinja',
-                                    form=form,
-                                    url=share_url,
-                                    code=invite.id)
+    html_response = render_template('character/api_share.html.jinja', form=form, url=share_url, code=invite.id)
 
     return jsonify({'url': share_url, 'html': html_response})
 
@@ -348,11 +317,7 @@ def editjson(id: int):
 
     validation_errors = c.validate()
 
-    return render_template('character/import.html.jinja',
-                           title="Edit JSON",
-                           validation_errors=validation_errors,
-                           form=form,
-                           type=None)
+    return render_template('character/import.html.jinja', title="Edit JSON", validation_errors=validation_errors, form=form, type=None)
 
 
 @bp.route('/<int:id>/eventlog', methods=('GET', ))
@@ -375,11 +340,7 @@ def eventlog(id: int):
     prev_url = None
     logger.debug(next_url)
     log_entries = entries_page.items
-    return render_template('character/eventlog.html.jinja',
-                           character=c,
-                           entries=log_entries,
-                           next_url=next_url,
-                           prev_url=prev_url)
+    return render_template('character/eventlog.html.jinja', character=c, entries=log_entries, next_url=next_url, prev_url=prev_url)
 
 
 @bp.route('/<int:id>/folder', methods=('GET', 'POST'))
@@ -391,6 +352,4 @@ def folder(id: int):
         c.folder = form.folder_id.data  # type: ignore
         session.commit()
 
-    return render_template('character/move_to_folder.html.jinja',
-                           form=form,
-                           character=c)
+    return render_template('character/move_to_folder.html.jinja', form=form, character=c)

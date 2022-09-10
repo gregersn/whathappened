@@ -1,17 +1,13 @@
-
-
-
-
-
-bp = Blueprint('userassets', __name__ )
-apibp = Blueprint('userassetsapi', __name__ )
+# bp = Blueprint('userassets', __name__ )
+# apibp = Blueprint('userassetsapi', __name__ )
 
 from . import routes  # noqa: F401,E402 isort:skip
+
 # from . import views  # noqa: F401, E402 isort:skip
 # from . import api  # noqa: F401, E402 isort:skip
 
 
-@bp.app_template_filter('clickpath')
+# @bp.app_template_filter('clickpath')
 def clickpath(folder):
     path = ""
     if folder.parent:

@@ -247,7 +247,7 @@ class BaseModel(Base):
 
 def init_db(db_uri):
     engine = create_engine(db_uri, pool_recycle=3600)
-    Session.configure(bind=engine)
+    SessionLocal.configure(bind=engine)
     Base.metadata.bind = engine
     Base.metadata.create_all(bind=engine)
 
@@ -262,4 +262,4 @@ class db():
     def create_all():
         Base.metadata.create_all(Base.metadata.bind)
 
-    session = session
+    session = SessionLocal
