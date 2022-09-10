@@ -1,8 +1,8 @@
 from pathlib import Path
-
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 import pytest
-from whathappened import create_app, assets
-from whathappened.database import db as _db
+from whathappened.database.base import db as _db
 
 from whathappened.config import Settings
 
@@ -21,16 +21,7 @@ Config = Conf()
 
 @pytest.fixture(scope='session')
 def app(request):
-    assets._named_bundles = {}
-    app = create_app(Config)
-
-    ctx = app.app_context()
-    ctx.push()
-
-    def teardown():
-        ctx.pop()
-
-    request.addfinalizer(teardown)
+    app = FastAPI(title="Test app")
 
     return app
 
@@ -74,7 +65,7 @@ def session(db, request):
 
 @pytest.fixture(scope='function')
 def client(app, request):
-    client = app.test_client()
+    client = TestClient(app)
     return client
 
 
@@ -84,11 +75,7 @@ class AuthActions(object):
         self._client = client
 
     def login(self, username='test', password='test'):
-        return self._client.post('/auth/login',
-                                 data={
-                                     'username': username,
-                                     'password': password
-                                 })
+        return self._client.post('/auth/login', data={'username': username, 'password': password})
 
     def logout(self):
         return self._client.get('/auth/logout')

@@ -15,8 +15,7 @@ class Settings(BaseSettings):
     MAX_CONTENT_LENGTH: int = 1024 * 1024  # Max upload size
     SECRET_KEY: str = "development"
     SQLALCHEMY_DATABASE_URI: Optional[str] = os.environ.get(
-        'DATABASE_URL'
-    ) or f"sqlite:///{Path(__file__).parent.parent / 'instance' / 'whathappened.sqlite'}"
+        'DATABASE_URL') or f"sqlite:///{Path(__file__).parent.parent / 'instance' / 'whathappened.sqlite'}"
 
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
     UPLOAD_EXTENSIONS: List[str] = ['.jpg', '.png', '.jpeg', '.gif']

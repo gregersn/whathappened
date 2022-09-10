@@ -1,14 +1,21 @@
 import json
 from typing import KeysView, List, Dict, Any, Optional
 
-from sqlalchemy import MetaData
+from sqlalchemy import MetaData, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm.attributes import QueryableAttribute
 from sqlalchemy.sql.elements import not_
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-Session = sessionmaker(autocommit=False, autoflush=True)
-session = scoped_session(Session)
+from whathappened.config import Config
+
+SQL_ALCHEMY_DATABASE_URL = Config.SQLALCHEMY_DATABASE_URI
+
+assert isinstance(SQL_ALCHEMY_DATABASE_URL, str)
+
+engine = create_engine(SQL_ALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=True, bind=engine)
 
 convention = {
     "ix": 'ix_%(column_0_label)s',
@@ -21,28 +28,26 @@ convention = {
 sql_alchemy_metadata = MetaData(naming_convention=convention)
 
 Base = declarative_base(metadata=sql_alchemy_metadata)
-Base.query = session.query_property()
-"""
-Serialization code from
-https://medium.com/@alanhamlett/part-1-sqlalchemy-models-to-json-de398bc2ef47
-"""
+# Base.query = session.query_property()
 
 
 class BaseModel(Base):
+    """Base database model for WhatHappened.
+    
+    Adds dictionary serialization.
+
+    Serialization code from
+    https://medium.com/@alanhamlett/part-1-sqlalchemy-models-to-json-de398bc2ef47
+    """
     __abstract__ = True
 
-    def to_dict(self,
-                show: Optional[List[str]] = None,
-                _hide: List[str] = [],
-                _path: Optional[str] = None) -> Dict[str, Any]:
+    def to_dict(self, show: Optional[List[str]] = None, _hide: List[str] = [], _path: Optional[str] = None) -> Dict[str, Any]:
         """Return a dictionary representation of model."""
 
         show = show or []
 
-        hidden: List[str] = self._hidden_fields if hasattr(
-            self, "_hidden_fields") else []
-        default: List[str] = self._default_fields if hasattr(
-            self, "_default_fields") else []
+        hidden: List[str] = self._hidden_fields if hasattr(self, "_hidden_fields") else []
+        default: List[str] = self._default_fields if hasattr(self, "_default_fields") else []
 
         default.extend(['id', 'modified_at', 'created_at'])
 
@@ -95,27 +100,18 @@ class BaseModel(Base):
                 is_list = self.__mapper__.relationships[key].uselist
                 if is_list:
                     items = getattr(self, key)
-                    if self.__mapper__.relationships[
-                            key].query_class is not None:
+                    if self.__mapper__.relationships[key].query_class is not None:
                         if hasattr(items, "all"):
                             items = items.all()
                     ret_data[key] = []
                     for item in items:
-                        ret_data[key].append(
-                            item.to_dict(show=list(show),
-                                         _hide=list(_hide),
-                                         _path=f"{_path}.{key.lower()}"))
+                        ret_data[key].append(item.to_dict(show=list(show), _hide=list(_hide), _path=f"{_path}.{key.lower()}"))
                 else:
-                    if (self.__mapper__.relationships[key].query_class
-                            is not None or
-                            self.__mapper__.relationships[key].instrument_class
-                            is not None):
+                    if (self.__mapper__.relationships[key].query_class is not None
+                            or self.__mapper__.relationships[key].instrument_class is not None):
                         item = getattr(self, key)
                         if item is not None:
-                            ret_data[key] = item.to_dict(
-                                show=list(show),
-                                _hide=list(_hide),
-                                _path=f"{_path}.{key.lower()}")
+                            ret_data[key] = item.to_dict(show=list(show), _hide=list(_hide), _path=f"{_path}.{key.lower()}")
                         else:
                             ret_data[key] = None
                     else:
@@ -130,8 +126,7 @@ class BaseModel(Base):
 
             attr = getattr(self.__class__, key)
 
-            if not (isinstance(attr, property)
-                    or isinstance(attr, QueryableAttribute)):
+            if not (isinstance(attr, property) or isinstance(attr, QueryableAttribute)):
                 continue
 
             check = f"{_path}.{key}"
@@ -141,9 +136,7 @@ class BaseModel(Base):
             if check in show or key in default:
                 val = getattr(self, key)
                 if hasattr(val, "to_dict"):
-                    ret_data[key] = val.to_dict(show=list(show),
-                                                _hide=list(_hide),
-                                                _path=f"{_path}.{key.lower()}")
+                    ret_data[key] = val.to_dict(show=list(show), _hide=list(_hide), _path=f"{_path}.{key.lower()}")
                 else:
                     try:
                         ret_data[key] = json.loads(json.dumps(val))
@@ -157,8 +150,7 @@ class BaseModel(Base):
 
         _force = kwargs.pop("_force", False)
 
-        readonly = self._readonly_fields if hasattr(
-            self, "_readonly_fields") else []
+        readonly = self._readonly_fields if hasattr(self, "_readonly_fields") else []
 
         if hasattr(self, "_hidden_fields"):
             readonly += self._hidden_fields
@@ -195,8 +187,7 @@ class BaseModel(Base):
                     query = getattr(self, rel)
                     cls = self.__mapper__.relationships[rel].argument()
                     for item in kwargs[rel]:
-                        if ("id" in item and query.filter_by(
-                                id=item["id"]).limit(1).count() == 1):
+                        if ("id" in item and query.filter_by(id=item["id"]).limit(1).count() == 1):
                             obj = cls.query.filter_by(id=item["id"]).first()
                             col_changes = obj.from_dict(**item)
                             if col_changes:
@@ -219,8 +210,7 @@ class BaseModel(Base):
                                     changes.update({rel: [col_changes]})
                             valid_ids.append(str(col.id))
                     # delete rows from relationship not in kwargs[rel]
-                    for item in query.filter(not_(
-                            cls.id.in_(valid_ids))).all():
+                    for item in query.filter(not_(cls.id.in_(valid_ids))).all():
                         col_changes = {"id": str(item.id), "deleted": True}
                         if rel in changes:
                             changes[rel].append(col_changes)
@@ -229,8 +219,7 @@ class BaseModel(Base):
                         session.delete(item)
                 else:
                     val = getattr(self, rel)
-                    if self.__mapper__.relationships[
-                            rel].query_class is not None:
+                    if self.__mapper__.relationships[rel].query_class is not None:
                         if val is not None:
                             col_changes = val.from_dict(**kwargs[rel])
 
@@ -254,3 +243,23 @@ class BaseModel(Base):
                 setattr(self, key, kwargs[key])
 
         return changes
+
+
+def init_db(db_uri):
+    engine = create_engine(db_uri, pool_recycle=3600)
+    SessionLocal.configure(bind=engine)
+    Base.metadata.bind = engine
+    Base.metadata.create_all(bind=engine)
+
+
+class db():
+
+    @staticmethod
+    def drop_all():
+        Base.metadata.drop_all(Base.metadata.bind)
+
+    @staticmethod
+    def create_all():
+        Base.metadata.create_all(Base.metadata.bind)
+
+    session = SessionLocal

@@ -6,7 +6,6 @@
 
 {% block content %}
     <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
         <p>
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br />
@@ -23,7 +22,7 @@
         </p>
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
         <p>{{ form.submit() }}</p>
-        <p>Forgot password? <a href="{{ url_for('auth.reset_password_request') }}">Click to reset</a></p>
+        <p>Forgot password? <a href="{{ request.url_for('reset_password_request') }}">Click to reset</a></p>
         
     </form>
 {% endblock %}

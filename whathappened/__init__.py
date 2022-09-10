@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 import os
 from pathlib import Path
-from flask import Flask
-from flask_login import LoginManager
-from flask_wtf.csrf import CSRFProtect
 
 from webassets import Environment as AssetsEnvironment
 from webassets.bundle import Bundle
@@ -13,17 +10,16 @@ from jinja2_webpack.filter import WebpackFilter
 import logging
 
 from whathappened.config import Config
-from whathappened.email import mail
+# from whathappened.email import mail
 
-from .database import init_db, session
-
+logger = logging.getLogger(__name__)
+"""
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'  # type: ignore  # Not an error
 assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent /
                                'static')
 csrf = CSRFProtect()
 
-logger = logging.getLogger(__name__)
 
 
 def create_app(test_config=None) -> Flask:
@@ -128,3 +124,4 @@ def create_app(test_config=None) -> Flask:
         assets_env.register('scss_profile', css_profile)
 
     return app
+"""

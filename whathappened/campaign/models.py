@@ -6,7 +6,8 @@ from sqlalchemy.sql.schema import ForeignKey, Table, Column
 from sqlalchemy.sql.sqltypes import Boolean, DateTime
 from sqlalchemy.sql.sqltypes import Enum, Integer, String, Text
 
-from flask import url_for
+
+
 
 from whathappened.database.base import Base, BaseModel
 from whathappened.content.mixins import BaseContent

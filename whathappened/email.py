@@ -1,6 +1,8 @@
 from threading import Thread
-from flask_mail import Message, Mail
-from flask import current_app, Flask
+
+
+
+
 from typing import List
 
 mail = Mail()

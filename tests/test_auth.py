@@ -1,4 +1,5 @@
-from flask import session
+
+
 from whathappened.auth.models import User
 
 

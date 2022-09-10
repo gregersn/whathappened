@@ -26,14 +26,14 @@
             "name": "What Happened?",
             "type": "python",
             "request": "launch",
-            "module": "flask",
+            "module": "uvicorn",
             "env": {
                 "FLASK_APP": "whathappened",
                 "FLASK_ENV": "development",
                 "FLASK_DEBUG": "1"
             },
             "args": [
-                "run"
+                "whathappened.app:app"
             ],
             "jinja": true,
             "justMyCode": false

@@ -1,5 +1,6 @@
 from typing import List, Tuple
-from flask_wtf import FlaskForm
+
+
 from wtforms import StringField, HiddenField, SelectField, BooleanField
 from markupsafe import Markup
 from wtforms import SubmitField

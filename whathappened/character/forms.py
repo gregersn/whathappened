@@ -1,5 +1,6 @@
 import logging
-from flask_wtf import FlaskForm
+
+
 from wtforms import StringField, BooleanField, HiddenField
 from wtforms import ValidationError, SubmitField
 from wtforms import Field
