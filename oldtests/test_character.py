@@ -1,4 +1,4 @@
-from whathappened.character.models import Character
+from whathappened.database.models import Character
 from whathappened.character.forms import ImportForm
 
 

@@ -1,7 +1,8 @@
 from sqlalchemy.sql.schema import Column
 from sqlalchemy.sql.sqltypes import Integer, String
-from whathappened.database import init_db, db
+
 from whathappened.database.base import Base, BaseModel
+from whathappened.database import init_db, db
 
 
 class DataModel(Base):

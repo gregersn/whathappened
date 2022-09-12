@@ -1,6 +1,5 @@
 {
     "python.testing.pytestArgs": [
-        "-vv",
         "tests"
     ],
     "python.testing.unittestEnabled": false,

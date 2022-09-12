@@ -1,26 +1,23 @@
 import os
 from pathlib import Path
 import logging
-from typing import Type
+from typing import Dict, Type
 from whathappened.character import schema
 from whathappened.character.schema import load_schema, build_from_schema, validate
 
 logger = logging.getLogger(__name__)
 
-
 CHARACTER_SCHEMA_DIR = Path(__file__).parent / 'schema/'
 
+GAMES = {}
 
-GAMES = {
-}
-
-MECHANICS = {
-}
+MECHANICS: Dict[str, Type['CharacterMechanics']] = {}
 
 GameSystems = []
 
 
 class CharacterMechanics():
+
     def __init__(self, parent):
         self.parent = parent
 
@@ -32,8 +29,7 @@ class CharacterMechanics():
 
         if not schema_file.is_file():
             logger.error(f"Could not find: {schema_file}")
-            return [{"path": "/",
-                    "message": "This character sheet has no known schema or validation."}]
+            return [{"path": "/", "message": "This character sheet has no known schema or validation."}]
 
         return validate(self.parent.body, schema_file)
 
@@ -75,9 +71,7 @@ class CharacterMechanics():
         raise NotImplementedError
 
 
-def register_game(tag: str,
-                  name: str,
-                  mechanics: Type[CharacterMechanics] = CharacterMechanics):
+def register_game(tag: str, name: str, mechanics: Type[CharacterMechanics] = CharacterMechanics):
     global GameSystems
     GAMES[tag] = name
     MECHANICS[tag] = mechanics

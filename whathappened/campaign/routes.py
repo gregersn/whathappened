@@ -6,7 +6,7 @@ from . import bp
 from werkzeug.exceptions import abort
 
 from .models import Campaign
-from whathappened.character.models import Character
+from whathappened.database.models import Character
 from whathappened.models import UserProfile
 from .forms import CreateForm, InvitePlayerForm, AddCharacterForm, AddNPCForm
 from .forms import JoinCampaignForm, EditForm, RemoveCharacterForm
@@ -46,9 +46,7 @@ def join(code: str):
     campaign = Campaign.query.get(inv.object_id)
     joinform = JoinCampaignForm(invite_code=code)
 
-    return render_template('campaign/joincampaign.html.jinja',
-                           campaign=campaign,
-                           joinform=joinform)
+    return render_template('campaign/joincampaign.html.jinja', campaign=campaign, joinform=joinform)
 
 
 @bp.route('/<int:id>', methods=('GET', 'POST'))
@@ -88,8 +86,7 @@ def view(id: int):
             session.commit()
 
         if inviteform.submit.data and inviteform.validate_on_submit():
-            player = (User.query.filter_by(
-                email=inviteform.email.data).first().profile)
+            player = (User.query.filter_by(email=inviteform.email.data).first().profile)
             campaign.players.append(player)
             session.commit()
             return redirect(url_for('campaign.view', id=id))
@@ -108,8 +105,7 @@ def view(id: int):
     if characterform.submit.data and characterform.validate_on_submit():
         print("Adding character")
         character = characterform.character.data
-        if (character not in campaign.characters
-                and character.user_id == current_user.profile.id):
+        if (character not in campaign.characters and character.user_id == current_user.profile.id):
             campaign.characters.append(character)
             session.commit()
         else:
@@ -121,8 +117,7 @@ def view(id: int):
 
     handouts = campaign.handouts.filter_by(status=HandoutStatus.visible)
     messages = campaign.messages.filter(
-        or_(Message.from_id == current_user.profile.id,
-            Message.to_id == current_user.profile.id, Message.to_id.is_(None)))
+        or_(Message.from_id == current_user.profile.id, Message.to_id == current_user.profile.id, Message.to_id.is_(None)))
 
     added_npc_ids = [c.character_id for c in campaign.NPCs]
 
@@ -171,9 +166,7 @@ def edit(id: int):
 
     folderform.folder_id.data = c.folder
 
-    return render_template('campaign/edit.html.jinja',
-                           form=form,
-                           folderform=folderform)
+    return render_template('campaign/edit.html.jinja', form=form, folderform=folderform)
 
 
 @bp.route("/<int:id>/export", methods=("GET", ))
@@ -195,8 +188,7 @@ def create():
     return render_template('campaign/create.html.jinja', form=form)
 
 
-@bp.route('/<int:id>/removecharacter/<int:characterid>',
-          methods=('GET', 'POST'))
+@bp.route('/<int:id>/removecharacter/<int:characterid>', methods=('GET', 'POST'))
 @login_required
 def remove_character(id: int, characterid: int):
     c = Campaign.query.get(id)
@@ -214,10 +206,7 @@ def remove_character(id: int, characterid: int):
 
     form.id.data = c.id
     form.character.data = char.id
-    return render_template('campaign/removecharacter.html.jinja',
-                           character=char,
-                           campaign=c,
-                           form=form)
+    return render_template('campaign/removecharacter.html.jinja', character=char, campaign=c, form=form)
 
 
 @bp.route('/<int:id>/removenpc/<int:characterid>', methods=('GET', 'POST'))
@@ -236,10 +225,7 @@ def remove_npc(id: int, characterid: int):
     form.id.data = npc.campaign.id
     form.character.data = npc.character.id
 
-    return render_template('campaign/removecharacter.html.jinja',
-                           character=npc.character,
-                           campaign=npc.campaign,
-                           form=form)
+    return render_template('campaign/removecharacter.html.jinja', character=npc.character, campaign=npc.campaign, form=form)
 
 
 @bp.route('/<int:id>/npc/<int:npcid>', methods=('GET', 'POST'))
@@ -264,9 +250,7 @@ def manage_npc(id: int, npcid: int):
             campaign = npc.campaign
 
             # Create a copy of the character
-            new_character = Character(title=npc.character.title,
-                                      body=npc.character.body,
-                                      user_id=player.id)
+            new_character = Character(title=npc.character.title, body=npc.character.body, user_id=player.id)
 
             session.add(new_character)
 
@@ -281,12 +265,9 @@ def manage_npc(id: int, npcid: int):
 
             return redirect(url_for('campaign.view', id=campaign.id))
 
-    transferform.player.choices = [(p.id, p.user.username)
-                                   for p in npc.campaign.players]
+    transferform.player.choices = [(p.id, p.user.username) for p in npc.campaign.players]
 
-    return render_template('campaign/managenpc.html.jinja',
-                           npc=npc,
-                           transferform=transferform)
+    return render_template('campaign/managenpc.html.jinja', npc=npc, transferform=transferform)
 
 
 @bp.route('/<int:id>/removeplayer/<int:playerid>', methods=('GET', 'POST'))
@@ -303,14 +284,10 @@ def remove_player(id: int, playerid: int):
 
     form.id.data = c.id
     form.player.data = player.id
-    return render_template('campaign/removeplayer.html.jinja',
-                           player=player,
-                           campaign=c,
-                           form=form)
+    return render_template('campaign/removeplayer.html.jinja', player=player, campaign=c, form=form)
 
 
-@bp.route('/<int:campaign_id>/player/<int:player_id>/message',
-          methods=('GET', 'POST'))
+@bp.route('/<int:campaign_id>/player/<int:player_id>/message', methods=('GET', 'POST'))
 @bp.route('/<int:campaign_id>/message/', methods=('GET', 'POST'))
 @login_required
 def message_player(campaign_id: int, player_id: int = None):
@@ -340,13 +317,6 @@ def message_player(campaign_id: int, player_id: int = None):
     form.from_id.data = c.user_id
 
     messages = c.messages.filter(
-        or_(
-            and_(Message.to_id == player_id,
-                 Message.from_id == current_user.profile.id),
-            and_(Message.to_id == current_user.profile.id,
-                 Message.from_id == player_id)))
-    return render_template('campaign/message_player.html.jinja',
-                           player=player,
-                           campaign=c,
-                           form=form,
-                           messages=messages)
+        or_(and_(Message.to_id == player_id, Message.from_id == current_user.profile.id),
+            and_(Message.to_id == current_user.profile.id, Message.from_id == player_id)))
+    return render_template('campaign/message_player.html.jinja', player=player, campaign=c, form=form, messages=messages)

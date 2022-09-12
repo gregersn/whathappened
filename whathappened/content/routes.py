@@ -2,7 +2,7 @@ from flask import render_template, redirect
 
 from whathappened.database import session
 
-from whathappened.character.models import Character
+from whathappened.database.models import Character
 from whathappened.campaign import models as campaignmodels
 from whathappened.auth import login_required, current_user
 
@@ -40,12 +40,9 @@ def folders(folder_id=None):
     tree = []
 
     if current_folder is None:
-        folders = current_user.profile.folders.filter(
-            Folder.parent_id.__eq__(None))
-        characters = current_user.profile.characters.filter(
-            Character.folder_id.__eq__(None))
-        campaigns = current_user.profile.campaigns.filter(
-            campaignmodels.Campaign.folder_id.__eq__(None))
+        folders = current_user.profile.folders.filter(Folder.parent_id.__eq__(None))
+        characters = current_user.profile.characters.filter(Character.folder_id.__eq__(None))
+        campaigns = current_user.profile.campaigns.filter(campaignmodels.Campaign.folder_id.__eq__(None))
 
     else:
         folders = current_folder.subfolders
@@ -57,13 +54,5 @@ def folders(folder_id=None):
             f = f.parent
             tree.reverse()
 
-    data = {
-        'current_folder': current_folder,
-        'tree': tree,
-        'folders': folders,
-        'characters': characters,
-        'campaigns': campaigns
-    }
-    return render_template('content/folders.html.jinja',
-                           new_folder_form=new_folder_form,
-                           data=data)
+    data = {'current_folder': current_folder, 'tree': tree, 'folders': folders, 'characters': characters, 'campaigns': campaigns}
+    return render_template('content/folders.html.jinja', new_folder_form=new_folder_form, data=data)
