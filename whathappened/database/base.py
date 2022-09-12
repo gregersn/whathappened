@@ -5,7 +5,7 @@ from sqlalchemy import MetaData, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm.attributes import QueryableAttribute
 from sqlalchemy.sql.elements import not_
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
 from whathappened.config import Config
 
@@ -33,7 +33,7 @@ Base = declarative_base(metadata=sql_alchemy_metadata)
 
 class BaseModel(Base):
     """Base database model for WhatHappened.
-    
+
     Adds dictionary serialization.
 
     Serialization code from
