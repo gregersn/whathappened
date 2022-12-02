@@ -1,6 +1,6 @@
 alembic==1.8.1
-cryptography==38.0.1
-email-validator==1.2.1
+cryptography==38.0.4
+email-validator==1.3.0
 Flask==2.2.2
 Flask-Login==0.6.2
 Flask-Mail==0.9.1
@@ -9,10 +9,10 @@ gunicorn==20.1.0
 itsdangerous==2.1.2
 Jinja2==3.1.2
 jsonschema==4.16.0
-markdown2==2.4.3
+markdown2==2.4.6
 packaging==21.3
 Pillow==9.2.0
-PyJWT==2.4.0
+PyJWT==2.6.0
 PyMySQL==1.0.2
 git+https://github.com/gregersn/pyScss.git
 python-dotenv==0.21.0
