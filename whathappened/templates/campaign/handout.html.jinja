@@ -1,59 +1,62 @@
 {% extends 'base.html.jinja' %}
 
 {% block head %}
-    {{ super() }}
+{{ super() }}
 
-    {% assets "scss_handout" %}
-    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
-    {% endassets %}
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
-    <script src="{{ 'handout.js' | webpack }}"></script>
+{% assets "scss_handout" %}
+<link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+{% endassets %}
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+<script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+<script src="{{ 'handout.js' | webpack }}"></script>
 {% endblock head %}
 
 
 {% block menu %}
-    {% if editable %}
-        <a href="{{ url_for('userassets.index') }}">Assets</a>
-    {% endif %}
+{% if editable %}
+<a href="{{ url_for('userassets.index') }}">Assets</a>
+{% endif %}
 {% endblock %}
 
 
 
 {% block header %}
-    <h2><a href="{{ url_for('campaign.handout_view', campaign_id=handout.campaign.id) }}">Handout</a>: '{{ handout.title }}' in <a href="{{url_for('campaign.view', id=handout.campaign.id)}}">{{ handout.campaign.title }}</a></h2>
+<h2><a href="{{ url_for('campaign.handout_view', campaign_id=handout.campaign.id) }}">Handout</a>: '{{ handout.title }}'
+    in <a href="{{url_for('campaign.view', id=handout.campaign.id)}}">{{ handout.campaign.title }}</a></h2>
 {% endblock %}
 
 
 {% block content %}
-    <section class="handout">
-        <div class="tabs">
-            <div class="tab-content" id="tab_content_view" data-name="View">
-                <div id="view" class="container tab-pane active">
-                    <div class="markdown">
-                        {{ handout.content|markdown }}
-                    </div>
+<section class="handout">
+    <div class="tabs">
+        <div class="tab-content" id="tab_content_view" data-name="View">
+            <div id="view" class="container tab-pane active">
+                <div class="markdown">
+                    {% if handout.content %}
+                    {{ handout.content|markdown }}
+                    {% endif %}
                 </div>
             </div>
-            {% if editable %}
-            <div class="tab-content" id="tab_content_edit" data-name="Edit">
-                <div id="edit" class="container tab-pane fade">
-                    <form action="" method="POST">
-                        {{ form.hidden_tag() }}
-                        {{ form.title.label }}{{ form.title }}
-                        {{ form.content.label }}
-                        {{ form.content(class_="markdown-editor") }}
-                        <div>{{ assetsform.asset(class_="asset-selector") }}</div>
-                        {{ form.status.label }}
-                        {{ form.status }}
-                        {{ form.group_id.label }}
-                        {{ form.group_id }}
-
-                        {{ form.submit }}
-                    </form>
-                </div>
-            </div>
-            {% endif %}
         </div>
-    </section>
+        {% if editable %}
+        <div class="tab-content" id="tab_content_edit" data-name="Edit">
+            <div id="edit" class="container tab-pane fade">
+                <form action="" method="POST">
+                    {{ form.hidden_tag() }}
+                    {{ form.title.label }}{{ form.title }}
+                    {{ form.content.label }}
+                    {{ form.content(class_="markdown-editor") }}
+                    <div>{{ assetsform.asset(class_="asset-selector") }}</div>
+                    {{ form.status.label }}
+                    {{ form.status }}
+                    {{ form.group_id.label }}
+                    {{ form.group_id }}
+
+                    {{ form.submit }}
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

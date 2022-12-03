@@ -47,7 +47,7 @@
                 "FLASK_DEBUG": "1"
             },
             "args": [
-                "init-db"
+                "upgrade"
             ],
             "jinja": true
         }
