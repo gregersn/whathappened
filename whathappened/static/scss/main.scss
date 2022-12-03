@@ -1,6 +1,23 @@
+@font-face {
+    font-family: 'Hind Siliguri';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Hind Siliguri Regular'), url('/static/fonts/hind_siliguri/HindSiliguri-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Permanent Marker';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Permanent Marker'), url('/static/fonts/permanent_marker/PermanentMarker-webfont.woff') format('woff');
+}
+
+
+
 html {
     box-sizing: border-box;
 }
+
 *,
 *:before,
 *:after {
@@ -17,36 +34,44 @@ html {
     padding: 1rem;
     min-height: 100vh;
 }
+
 body {
     //max-width: 960px;
     margin: 0 auto;
     background: white;
 }
+
 h1 {
     font-family: 'Permanent Marker', cursive;
     color: $header-color;
     margin: 1rem 0;
 }
+
 a {
     color: $main-color;
 }
+
 hr {
     border: none;
     border-top: 1px solid lightgray;
 }
+
 .navbar {
     background: lightgray;
     display: flex;
     align-items: center;
     padding: 0 0.5rem;
+
     h1 {
         flex: auto;
         margin: 0;
+
         a {
             text-decoration: none;
             padding: 0.25rem 0.5rem;
         }
     }
+
     ul {
         display: flex;
         list-style: none;
@@ -54,6 +79,7 @@ hr {
         padding: 0;
     }
 }
+
 nav ul li a,
 nav ul li span,
 header .action {
@@ -64,24 +90,29 @@ header .action {
 .content {
     padding: 0 1rem 1rem;
     min-height: 80vh;
-    > header {
+
+    >header {
         //border-bottom: 1px solid lightgray;
         display: flex;
         align-items: flex-end;
     }
-    > header h1 {
+
+    >header h1 {
         flex: auto;
         //margin: 1rem 0 0.25rem 0;
     }
+
     form {
         //margin: 1em 0;
         display: flex;
         flex-direction: column;
     }
+
     label {
         font-weight: bold;
         margin-bottom: 0.5em;
     }
+
     /*input,
     textarea {
         margin-bottom: 1em;
@@ -91,10 +122,12 @@ header .action {
         resize: vertical;
         width: 100%;
     }
+
     &:last-child {
         margin-bottom: 0;
     }
 }
+
 .flash {
     margin: 1em 0;
     padding: 1em;
@@ -105,6 +138,7 @@ header .action {
 input.danger {
     color: #cc2f2e;
 }
+
 input[type="submit"] {
     align-self: start;
     min-width: 10em;
@@ -126,12 +160,13 @@ input[type="submit"] {
         font-weight: bold;
         margin: 0;
         padding: 0;
-          
+
         li {
             display: block;
             float: left;
             margin: 0 0 0 4px;
             height: 27px;
+
             a {
                 display: block;
                 float: left;
@@ -141,26 +176,26 @@ input[type="submit"] {
                 text-decoration: none;
                 padding: 0 17px 0 18px;
                 height: 27px;
-                
-            a:hover {
-                background: #2E4560;
+
+                a:hover {
+                    background: #2E4560;
                 }
-                
-            a.current {
-                color: #2E4560;
-                background: #fff;
+
+                a.current {
+                    color: #2E4560;
+                    background: #fff;
                 }
-                
-            a.current:hover {
-                color: #2E4560;
-                background: #fff;
+
+                a.current:hover {
+                    color: #2E4560;
+                    background: #fff;
                 }
 
             }
         }
     }
-        
-        
+
+
     .tab-content {
         border: 1px solid black;
         padding: 2px;
@@ -176,21 +211,27 @@ input[type="submit"] {
         flex-wrap: wrap;
         justify-content: center;
         align-items: stretch;
-        > div, section {
+
+        >div,
+        section {
             flex-grow: 1;
         }
+
         .portrait {
             flex-grow: 0;
             align-items: center;
         }
     }
+
     .box {
         border: 1px solid gray;
         padding: 2px;
+
         section {
             padding-left: .5em;
             padding-right: .5em;
         }
+
         h3 {
             text-align: center;
             background-color: rgb(119, 154, 170);
