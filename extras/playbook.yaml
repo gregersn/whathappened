@@ -63,13 +63,13 @@
 
     - name: copy whathappened
       copy:
-        src: ../dist/whathappened-0.0.1-py3-none-any.whl
+        src: ../dist/whathappened-0.0.2-py3-none-any.whl
         dest: ~/
       register: result
 
     - name: install whathappened
       pip:
-        name: ~/whathappened-0.0.1-py3-none-any.whl
+        name: ~/whathappened-0.0.2-py3-none-any.whl
         virtualenv: ~/.venv
         state: forcereinstall
       when: result is changed
@@ -130,7 +130,7 @@
             }
 
             location /static {
-                    alias /home/vagrant/.venv/lib/python3.8/site-packages/whathappened/static;
+                    alias /home/vagrant/.venv/lib/python3.10/site-packages/whathappened/static;
                     expires 30d;
             }
           }

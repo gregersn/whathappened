@@ -29,7 +29,6 @@
             "module": "flask",
             "env": {
                 "FLASK_APP": "whathappened",
-                "FLASK_ENV": "development",
                 "FLASK_DEBUG": "1"
             },
             "args": [
@@ -45,7 +44,6 @@
             "module": "flask",
             "env": {
                 "FLASK_APP": "whathappened",
-                "FLASK_ENV": "development",
                 "FLASK_DEBUG": "1"
             },
             "args": [
