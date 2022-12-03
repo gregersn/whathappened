@@ -12,7 +12,7 @@ FRONTEND_MARKER := frontend/$(MARKER_FILENAME)
 # Default target:
 .PHONY: dev_server
 dev_server: frontend
-	@FLASK_APP=whathappened FLASK_ENV=development $(VENV_FLASK) run
+	@FLASK_APP=whathappened FLASK_DEBUG=1 $(VENV_FLASK) run
 
 # Install Python dependencies:
 .PHONY: setup_dependencies
@@ -27,7 +27,7 @@ setup_dependencies: .venv/$(MARKER_FILENAME)
 # Initialise database:
 .PHONY: setup
 setup: setup_dependencies
-	@FLASK_APP=whathappened FLASK_ENV=development $(VENV_FLASK) db upgrade
+	@FLASK_APP=whathappened FLASK_DEBUG=1 $(VENV_FLASK) db upgrade
 
 # Install npm dependencies:
 $(FRONTEND_MARKER): frontend/package.json
@@ -37,7 +37,7 @@ $(FRONTEND_MARKER): frontend/package.json
 # Build the Flask frontend:
 .PHONY: frontend
 frontend: $(FRONTEND_MARKER) setup
-	@FLASK_APP=whathappened FLASK_ENV=development $(VENV_FLASK) main build
+	@FLASK_APP=whathappened FLASK_DEBUG=1 $(VENV_FLASK) main build
 
 .PHONY: coverage
 coverage: .venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
