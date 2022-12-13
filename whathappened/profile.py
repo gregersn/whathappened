@@ -15,11 +15,11 @@ logger = logging.getLogger(__name__)
 @bp.route('/')
 @login_required
 def index():
-
-    user_profile = UserProfile.query.get(current_user.id)
+    assert current_user is not None
+    user_profile = UserProfile.query.get(current_user.id)  # type: ignore
 
     if user_profile is None:
-        user_profile = UserProfile(user_id=current_user.id)
+        user_profile = UserProfile(user_id=current_user.id)  # type: ignore
         session.add(user_profile)
         session.commit()
 
@@ -27,7 +27,4 @@ def index():
 
     characters = user_profile.characters
     folders = user_profile.folders  # .filter(Folder.parent_id.__eq__(None))
-    return render_template('profile/profile.html.jinja',
-                           profile=user_profile,
-                           characters=characters,
-                           folders=folders)
+    return render_template('profile/profile.html.jinja', profile=user_profile, characters=characters, folders=folders)

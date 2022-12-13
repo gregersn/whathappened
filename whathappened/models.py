@@ -1,7 +1,7 @@
 from typing import cast
 import uuid
 import datetime
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import DateTime, Text
 from sqlalchemy import Column, Integer, String, ForeignKey
 from .database import Base
@@ -36,8 +36,7 @@ class Invite(Base):
                         .filter_by(table=target.__tablename__)
 
     def matches(self, target: Base):
-        return (target.__tablename__ == self.table
-                and target.id == self.object_id)
+        return (target.__tablename__ == self.table and target.id == self.object_id)
 
 
 class LogEntry(Base):
