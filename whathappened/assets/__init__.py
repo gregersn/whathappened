@@ -4,9 +4,11 @@ from flask.cli import with_appcontext
 import logging
 from webassets.script import CommandLineEnvironment
 
-bp = Blueprint('assets', __name__ )
+bp = Blueprint('assets', __name__)
 
 logger = logging.getLogger(__name__)
+
+_named_bundles = {}
 
 
 @bp.cli.command('build')
@@ -15,6 +17,7 @@ def build():
     """Build bundles."""
     cmdenv = CommandLineEnvironment(current_app.jinja_env.assets_environment, logger)
     cmdenv.build()
+
 
 @bp.cli.command('watch')
 @with_appcontext

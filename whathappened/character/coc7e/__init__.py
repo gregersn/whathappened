@@ -5,14 +5,12 @@ import time
 from flask import current_app
 from typing import Literal
 
+from ...sheets.mechanics.coc7e.mechanics import CoCMechanics
+from ...sheets.mechanics.coc7e.mechanics import CHARACTER_SCHEMA  # noqa F401
 
-from .mechanics import CoCMechanics
-from .mechanics import CHARACTER_SCHEMA  # noqa F401
-
-from ..core import register_game
+from ...sheets.mechanics.core import register_game
 
 logger = logging.getLogger(__name__)
-
 
 # This is not pretty
 GameType = Literal["Classic (1920's)", "Modern"]
@@ -30,9 +28,7 @@ def new_character(title: str, gametype: GameType, **kwargs):
     templateenv = jinja2.Environment(loader=templateloader)
     template = templateenv.get_template(CHARACTER_TEMPLATE)
     gtype = gametype
-    return json.loads(template.render(title=title,
-                                      timestamp=time.time(),
-                                      gametype=gtype))
+    return json.loads(template.render(title=title, timestamp=time.time(), gametype=gtype))
 
 
 register_game('coc7e', 'Call of Cthulhu TM', CoCMechanics)

@@ -2,7 +2,6 @@ import copy
 from typing import Union
 from packaging.version import Version, LegacyVersion, parse
 
-
 SheetVersion = Union[Version, LegacyVersion]
 
 

@@ -1,14 +1,14 @@
 {% extends 'character/sheet.html.jinja' %}
 
 {% block head %}
-    {{ super() }}
-    {% if editable %}
-    <script src="{{ 'coc7e.js' | webpack}}"></script>
-    {% endif %}
+{{ super() }}
+{% if editable %}
+<script src="{{ 'coc7e.js' | webpack}}"></script>
+{% endif %}
 
-    {% assets "scss_character_coc7e" %}
-    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
-    {% endassets %}
+{% assets "scss_character_coc7e" %}
+<link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+{% endassets %}
 
 {% endblock %}
 
@@ -27,16 +27,17 @@
 
 </div>
 <div class="extrainfo">
-  {% if editable and character.campaigns %}
-    In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{ character.campaigns.0.title }}</a>
-  {% endif %}
+    {% if editable and character.campaigns %}
+    In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{ character.campaigns.0.title
+        }}</a>
+    {% endif %}
 
 </div>
 
 <div class="charactersheet">
     <div class="splitcontainer">
         <div class="box personalia">
-        <h3>{{ typeheader }}</h3>
+            <h3>{{ typeheader }}</h3>
             <section>
                 <label>Name: </label>{{ editable_field("personalia.Name", "Unknown") }}<br />
                 <label>Occupation: </label><span>{{ editable_field("personalia.Occupation", "Unknown") }}</span><br />
@@ -49,27 +50,37 @@
         <div class="box characteristics">
             <h3>Characteristics</h3>
             <section>
-            <table>
-                <tr>
-                    <td><label>STR:</label></td><td><span class="stat">{{ editable_stat('characteristics.STR', type="number") }}</span></td>
-                    <td><label>DEX:</label></td><td><span class="stat">{{ editable_stat('characteristics.DEX', type="number") }}</span></td>
-                    <td><label>POW:</label></td><td><span class="stat">{{ editable_stat('characteristics.POW', type="number") }}</span></td>
-                </tr>
-                <tr>
-                    <td><label>CON:</label></td><td><span class="stat">{{ editable_stat('characteristics.CON', type="number") }}</span></td>
-                    <td><label>APP:</label></td><td><span class="stat">{{ editable_stat('characteristics.APP', type="number") }}</span></td>
-                    <td><label>EDU:</label></td><td><span class="stat">{{ editable_stat('characteristics.EDU', type="number") }}</span></td>
-                </tr>
-                <tr>
-                    <td><label>SIZ:</label></td><td><span class="stat">{{ editable_stat('characteristics.SIZ', type="number") }}</span></td>
-                    <td><label>INT:</label></td><td><span class="stat">{{ editable_stat('characteristics.INT', type="number") }}</span></td>
-                    <td><label>Move:</label></td><td>{{ editable_field('characteristics.Move', type="number") }}</td>
-                </tr>
-            </table>
+                <table>
+                    <tr>
+                        <td><label>STR:</label></td>
+                        <td><span class="stat">{{ editable_stat('characteristics.STR', type="number") }}</span></td>
+                        <td><label>DEX:</label></td>
+                        <td><span class="stat">{{ editable_stat('characteristics.DEX', type="number") }}</span></td>
+                        <td><label>POW:</label></td>
+                        <td><span class="stat">{{ editable_stat('characteristics.POW', type="number") }}</span></td>
+                    </tr>
+                    <tr>
+                        <td><label>CON:</label></td>
+                        <td><span class="stat">{{ editable_stat('characteristics.CON', type="number") }}</span></td>
+                        <td><label>APP:</label></td>
+                        <td><span class="stat">{{ editable_stat('characteristics.APP', type="number") }}</span></td>
+                        <td><label>EDU:</label></td>
+                        <td><span class="stat">{{ editable_stat('characteristics.EDU', type="number") }}</span></td>
+                    </tr>
+                    <tr>
+                        <td><label>SIZ:</label></td>
+                        <td><span class="stat">{{ editable_stat('characteristics.SIZ', type="number") }}</span></td>
+                        <td><label>INT:</label></td>
+                        <td><span class="stat">{{ editable_stat('characteristics.INT', type="number") }}</span></td>
+                        <td><label>Move:</label></td>
+                        <td>{{ editable_field('characteristics.Move', type="number") }}</td>
+                    </tr>
+                </table>
             </section>
         </div>
         <div class="box portrait {%- if editable %} editable{%- endif %}" data-type="picture">
-            {% if character.portrait %}<img src="data:image/jpg;base64, {{ character.portrait }}" />{% else %}<img src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
+            {% if character.portrait %}<img src="data:image/jpg;base64, {{ character.portrait }}" />{% else %}<img
+                src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
         </div>
     </div>
     <div class="splitcontainer">
@@ -86,7 +97,8 @@
             <section>
                 <label>Current:</label> {{ editable_field('characteristics.Sanity', 0, type="number") }}<br />
                 <label>Start:</label> {{ editable_field('characteristics.SanityStart', 0, type="number") }}<br />
-                <label>Threshold:</label> <span>{{ (character.attribute('characteristics.SanityStart') - (character.attribute('characteristics.SanityStart'))*0.2)|int }}</span><br />
+                <label>Threshold:</label> <span>{{ (character.mechanics.attribute('characteristics.SanityStart') -
+                    (character.mechanics.attribute('characteristics.SanityStart'))*0.2)|int }}</span><br />
                 <label>Max:</label> {{ editable_field('characteristics.SanityMax', 99, type="number") }} <br />
                 <label>Temp insane:</label> {{ editable_binary("characteristics.SanityTemp") }}<br />
                 <label>Indefinitely insane:</label> {{ editable_binary("characteristics.SanityIndef") }}
@@ -112,18 +124,23 @@
             {% for skill in character.skills() %}
             <div class="skill">
                 <span class="skillcheckmark">{{skill_checkmark(skill['name']) }}</span>
-                <span class="skillname {% if skill['occupation'] %}occupation{% endif %}" data-field="{{ skill['name'] }}" data-specializations="{{skill['specializations']}}">{{ skill['name'] }} <span class="initial_value">({{ skill['start_value'] }}%)</span>: </span>
+                <span class="skillname {% if skill['occupation'] %}occupation{% endif %}"
+                    data-field="{{ skill['name'] }}" data-specializations="{{skill['specializations']}}">{{
+                    skill['name'] }} <span class="initial_value">({{ skill['start_value'] }}%)</span>: </span>
                 <span class="value stat">{{ editable_skill(skill['name'], None, 0, type="number")}}</span>
             </div>
             {% if skill.specializations and skill.subskills %}
-                {% for subskill in skill.subskills %}
+            {% for subskill in skill.subskills %}
             <div class="skill">
                 <span class="skillcheckmark">{{skill_checkmark(skill['name'], subskill.name ) }}</span>
-                <span class="skillname {% if subskill['occupation'] %}occupation{% endif %}" data-field="{{ skill['name'] }}" data-subfield="{{ subskill['name'] }}">{{ skill['name'] }}: {{ subskill['name'] }} <span class="initial_value">({{ subskill['start_value'] }}%)</span>: </span>
-                <span class="value stat">{{ editable_skill(skill['name'], subskill.name or None, 0, type="number")}}</span>
+                <span class="skillname {% if subskill['occupation'] %}occupation{% endif %}"
+                    data-field="{{ skill['name'] }}" data-subfield="{{ subskill['name'] }}">{{ skill['name'] }}: {{
+                    subskill['name'] }} <span class="initial_value">({{ subskill['start_value'] }}%)</span>: </span>
+                <span class="value stat">{{ editable_skill(skill['name'], subskill.name or None, 0,
+                    type="number")}}</span>
             </div>
-                {% endfor %}
-            {% endif %}     
+            {% endfor %}
+            {% endif %}
             {% endfor %}
             {% if editable and skillform%}
             <div class="skill newskill">
@@ -153,7 +170,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for weapon in character.attribute('weapons') %}
+                        {% for weapon in character.mechanics.attribute('weapons') %}
                         <tr data-row="{{ loop.index }}">
                             <td>{{ weapon['name'] }}</td>
                             <td data-type="number">{{ weapon['regular'] }}</td>
@@ -165,7 +182,7 @@
                             <td data-type="number" data-blank="-">{{ weapon['ammo'] }}</td>
                             <td data-type="number" data-blank="-">{{ weapon['malf'] }}</td>
                         </tr>
-                    {% endfor %}
+                        {% endfor %}
                     </tbody>
                 </table>
             </section>
@@ -231,9 +248,9 @@
             <h3>Gear &amp; Possessions</h3>
             <section>
                 <ul class="{%- if editable %} editable_list{%- endif %}" data-field="possessions">
-                {% for item in character.attribute('possessions') or [] %}
+                    {% for item in character.mechanics.attribute('possessions') or [] %}
                     <li>{{ item }}</li>
-                {% endfor %}
+                    {% endfor %}
                 </ul>
             </section>
         </div>
@@ -249,10 +266,10 @@
     {% if editable %}
     <section>
         <div class="notes box">
-        <h3>Notes</h3>
-        <div class="notes">
-            {{ editable_area("notes", "None") }}
-        </div>
+            <h3>Notes</h3>
+            <div class="notes">
+                {{ editable_area("notes", "None") }}
+            </div>
         </div>
     </section>
     {% endif %}
