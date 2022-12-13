@@ -1,19 +1,20 @@
 from pathlib import Path
 import logging
 
-from ..core import CharacterMechanics
-from ..schema import validate
+from whathappened.sheets.mechanics.core import CharacterMechanics
+from whathappened.sheets.schema.build import validate
 
-CHARACTER_SCHEMA = Path(__file__).parent / '../schema/coc7e.json'
+CHARACTER_SCHEMA = Path(__file__).parent / '../../schema/coc7e.json'
+assert CHARACTER_SCHEMA.is_file()
 
 logger = logging.getLogger(__name__)
 
 
 class CoCMechanics(CharacterMechanics):
+
     def game(self):
         try:
-            return (self.parent.body['meta']['GameName'],
-                    self.parent.body['meta']['GameType'])
+            return (self.parent.body['meta']['GameName'], self.parent.body['meta']['GameType'])
         except Exception as e:
             logger.warning(e)
             return None

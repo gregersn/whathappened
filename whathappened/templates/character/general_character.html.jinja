@@ -3,53 +3,53 @@
 {%- macro render_object(object, path='') %}
 <div>
     {% for key, value in object.properties.items() %}
-        {{ value.title if 'title' in value else key }}: {{ render_item(value, path + '.' + key) }}<br />
+    {{ value.title if 'title' in value else key }}: {{ render_item(value, path + '.' + key) }}<br />
     {% endfor %}
 </div>
 {%- endmacro %}
 
 {%- macro render_item(item, path='' )%}
-    {% if 'type' in item and item.type == 'object' %}
-        {{ render_object(item, path)}}
-    {% elif 'type' in item and item.type == 'array' %}
-        <ul class="{%- if editable %} editable_list{%- endif %}" data-field="{{path}}">
-        {% for litem in character.attribute(path) or [] %}
-            <li>{{ litem }}</li>
-        {% endfor %}
-        </ul>
-    {% elif 'type' in item and (item.type == 'integer' or item.type == 'string') %}
-        {% if 'enum' in item %}
-            {{ editable_choice(path, type=html_data_type(item.type), choices=item.enum) }}
-        {% else %}
-            {{ editable_field(path, type=html_data_type(item.type)) }}
-        {% endif %}
-    {% elif 'type' in item and item.type == 'boolean'%}
-        {{ editable_binary(path) }}
-    {%  elif '$ref' in item %}
-        {{ render_item(get_ref(schema, item['$ref']), path)}}
-    {% else %}
-        {{ item }}
-    {% endif %}
+{% if 'type' in item and item.type == 'object' %}
+{{ render_object(item, path)}}
+{% elif 'type' in item and item.type == 'array' %}
+<ul class="{%- if editable %} editable_list{%- endif %}" data-field="{{path}}">
+    {% for litem in character.mechanics.attribute(path) or [] %}
+    <li>{{ litem }}</li>
+    {% endfor %}
+</ul>
+{% elif 'type' in item and (item.type == 'integer' or item.type == 'string') %}
+{% if 'enum' in item %}
+{{ editable_choice(path, type=html_data_type(item.type), choices=item.enum) }}
+{% else %}
+{{ editable_field(path, type=html_data_type(item.type)) }}
+{% endif %}
+{% elif 'type' in item and item.type == 'boolean'%}
+{{ editable_binary(path) }}
+{% elif '$ref' in item %}
+{{ render_item(get_ref(schema, item['$ref']), path)}}
+{% else %}
+{{ item }}
+{% endif %}
 {%- endmacro %}
 
 {%- macro render_section(name, section, path='') %}
-    <div class="box">
+<div class="box">
     <h3>{{ section.title if 'title' in section else name }}</h3>
-    {{ render_item(section, path + "." + name)}}    
-    </div>
+    {{ render_item(section, path + "." + name)}}
+</div>
 {%- endmacro %}
 
 
 {% block head %}
-    {{ super() }}
+{{ super() }}
 
-    {% assets "scss_character_tftl" %}
-    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
-    {% endassets %}
+{% assets "scss_character_tftl" %}
+<link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+{% endassets %}
 
-    {% if editable %}
-    <script src="{{ 'general.js' | webpack}}"></script>
-    {% endif %}
+{% if editable %}
+<script src="{{ 'general.js' | webpack}}"></script>
+{% endif %}
 
 {% endblock %}
 
@@ -60,18 +60,19 @@
 </div>
 
 <div class="extrainfo">
-  {% if editable and character.campaigns %}
-    In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{ character.campaigns.0.title }}</a>
-  {% endif %}
+    {% if editable and character.campaigns %}
+    In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{ character.campaigns.0.title
+        }}</a>
+    {% endif %}
 
 </div>
 
 <div class="charactersheet">
-{% for key, value in schema.properties.character_sheet.properties.items() %}
+    {% for key, value in schema.properties.character_sheet.properties.items() %}
     <section id="{{ key }}">
         {{ render_section(key, value, 'character_sheet') }}
     </section>
-{% endfor %}
+    {% endfor %}
 </div>
 
 {% endblock %}

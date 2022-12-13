@@ -3,18 +3,17 @@ from pathlib import Path
 import json
 import pytest
 
-
 from whathappened.auth.models import User  # noqa
 from whathappened.campaign.models import Campaign  # noqa
 
 from whathappened.character.coc7e import CoCMechanics
 from whathappened.character.coc7e import new_character
 from whathappened.character.coc7e import CHARACTER_SCHEMA
-from whathappened.character.schema import validate
+from whathappened.sheets.schema.build import validate
 from whathappened.character.models import Character
-from whathappened.character.coc7e.convert import fifth, half, convert_from_dholes
-from whathappened.utils.schema import migrate
-from whathappened.character.schema.coc7e import migrations, latest
+from whathappened.sheets.mechanics.coc7e.convert import fifth, half, convert_from_dholes
+from whathappened.sheets.schema.utils import migrate
+from whathappened.sheets.schema.coc7e import migrations, latest
 
 BASEDIR = Path(__file__).parent.absolute()
 
@@ -53,9 +52,7 @@ def fixture_test_sheet() -> dict:
 @pytest.fixture(name="newly_created_character")
 def fixture_test_character() -> Character:
     nc = new_character("Test Character", "Classic (1920's)")
-    c = Character(title="Test Character",
-                  body=nc,
-                  mechanics=CoCMechanics)
+    c = Character(title="Test Character", body=nc, mechanics=CoCMechanics)
 
     return c
 
@@ -95,17 +92,15 @@ def test_skill(newly_created_character: Character):
     skill = newly_created_character.skill(skill_name)
     assert skill is None
 
-    newly_created_character.add_skill(skillname=skill_name, value=13)
+    newly_created_character.mechanics.add_skill(skillname=skill_name, value=13)
     skill = newly_created_character.skill(skill_name)
     assert skill is not None
     assert skill['value'] == 13
 
     with pytest.raises(ValueError):
-        newly_created_character.add_skill(skillname=skill_name, value=154)
+        newly_created_character.mechanics.add_skill(skillname=skill_name, value=154)
 
-    newly_created_character.set_attribute({'category': 'skill',
-                                           'field': skill_name,
-                                           'value': 21})
+    newly_created_character.set_attribute({'category': 'skill', 'field': skill_name, 'value': 21})
 
     skill = newly_created_character.skill(skill_name)
     assert skill is not None
@@ -117,19 +112,21 @@ def test_subskill(newly_created_character: Character):
     subskill_name = "Biology"
 
     skill = newly_created_character.skill(skill_name)
-    newly_created_character.add_subskill(subskill_name, skill_name)
+    newly_created_character.mechanics.add_subskill(subskill_name, skill_name)
     subskill = newly_created_character.skill(skill_name, subskill_name)
 
     assert subskill is not None
     assert subskill['value'] == skill['value']
 
     with pytest.raises(ValueError):
-        newly_created_character.add_subskill(subskill_name, skill_name)
+        newly_created_character.mechanics.add_subskill(subskill_name, skill_name)
 
-    newly_created_character.set_attribute({'category': 'skill',
-                                           'field': skill_name,
-                                           'subfield': subskill_name,
-                                           'value': 21})
+    newly_created_character.set_attribute({
+        'category': 'skill',
+        'field': skill_name,
+        'subfield': subskill_name,
+        'value': 21
+    })
 
     subskill = newly_created_character.skill(skill_name, subskill_name)
     assert subskill is not None
@@ -137,26 +134,18 @@ def test_subskill(newly_created_character: Character):
 
 
 def test_validate_migration_up(test_sheet: dict):
-    errors = validate(migrate(test_sheet,
-                              "0.0.4",
-                              migrations=migrations),
-                      CHARACTER_SCHEMA)
+    errors = validate(migrate(test_sheet, "0.0.4", migrations=migrations), CHARACTER_SCHEMA)
     assert len(errors) == 0, errors
 
 
 def test_validate_migration_latest(test_sheet: dict):
-    errors = validate(migrate(test_sheet,
-                              latest,
-                              migrations=migrations),
-                      CHARACTER_SCHEMA)
+    errors = validate(migrate(test_sheet, latest, migrations=migrations), CHARACTER_SCHEMA)
 
     assert len(errors) == 0, errors
 
 
 def test_validate_migration_up_and_down(test_sheet: dict):
-    migrated = migrate(test_sheet.copy(),
-                       "0.0.4",
-                       migrations=migrations)
+    migrated = migrate(test_sheet.copy(), "0.0.4", migrations=migrations)
 
     back_down = migrate(migrated, "0.0.1", migrations=migrations)
 

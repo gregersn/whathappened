@@ -1,5 +1,6 @@
 import logging
 from flask import Blueprint, render_template, current_app
+
 from flask_login import login_required, current_user, LoginManager
 
 from whathappened import login_manager
@@ -23,10 +24,8 @@ def send_password_reset_email(user: User):
     token = user.get_reset_password_token()
     send_mail('[What Happened?] Reset your password',
               sender=current_app.config['ADMINS'][0],
-              recipients=[user.email],
-              text_body=render_template('/auth/reset_password.txt',
-                                        user=user,
-                                        token=token))
+              recipients=[str(user.email)],
+              text_body=render_template('/auth/reset_password.txt', user=user, token=token))
 
 
 from . import routes  # noqa: E402, F401 isort:skip

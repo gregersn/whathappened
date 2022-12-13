@@ -1,7 +1,7 @@
 from jsonschema import validate
 
 from whathappened.character.coc7e import CHARACTER_SCHEMA, new_character
-from whathappened.character.schema import load_schema
+from whathappened.sheets.schema.build import load_schema
 
 latest = '0.0.4'
 
@@ -103,14 +103,12 @@ def v001_to_002(data):
     schema = load_schema(CHARACTER_SCHEMA)
     validate(nc, schema=schema)
 
-    start_values = {skill['name']: str(skill['start_value'])
-                    for skill in nc['skills']}
+    start_values = {skill['name']: str(skill['start_value']) for skill in nc['skills']}
 
     for skill in nc['skills']:
         if 'subskills' in skill and skill['subskills']:
             for subskill in skill['subskills']:
-                start_values[": ".join((skill['name'], subskill['name']))] = str(
-                    subskill['start_value'])
+                start_values[": ".join((skill['name'], subskill['name']))] = str(subskill['start_value'])
 
     outskills = []
     skill_index = {}
@@ -122,8 +120,7 @@ def v001_to_002(data):
             skill['start_value'] = '0'
 
         if 'specializations' in skill:
-            skill['specializations'] = (skill['specializations'] == "true"
-                                        or skill['specializations'] == "True"
+            skill['specializations'] = (skill['specializations'] == "true" or skill['specializations'] == "True"
                                         or skill['specializations'] is True)
 
         if skill['name'] not in skill_index:
@@ -164,23 +161,19 @@ def v002_to_001(data):
     return data
 
 
-migrations = [
-    {
-        'from': '0.0.1',
-        'to': '0.0.2',
-        'up': v001_to_002,
-        'down': v002_to_001
-    },
-    {
-        'from': '0.0.2',
-        'to': '0.0.3',
-        'up': v002_to_v003,
-        'down': v003_to_v002
-    },
-    {
-        'from': '0.0.3',
-        'to': '0.0.4',
-        'up': v003_to_v004,
-        'down': v004_to_v003
-    }
-]
+migrations = [{
+    'from': '0.0.1',
+    'to': '0.0.2',
+    'up': v001_to_002,
+    'down': v002_to_001
+}, {
+    'from': '0.0.2',
+    'to': '0.0.3',
+    'up': v002_to_v003,
+    'down': v003_to_v002
+}, {
+    'from': '0.0.3',
+    'to': '0.0.4',
+    'up': v003_to_v004,
+    'down': v004_to_v003
+}]

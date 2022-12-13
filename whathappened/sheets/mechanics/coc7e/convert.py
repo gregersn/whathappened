@@ -1,4 +1,26 @@
-from .utils import half, fifth
+import math
+
+
+def half(value):
+    if not value:
+        return 0
+    if type(value) == str:
+        try:
+            value = int(value, 10)
+        except ValueError:
+            return 0
+    return math.floor(value / 2)
+
+
+def fifth(value):
+    if not value:
+        return 0
+    if type(value) == str:
+        try:
+            value = int(value, 10)
+        except ValueError:
+            return 0
+    return math.floor(value / 5)
 
 
 def convert_from_dholes(indata):
@@ -51,13 +73,11 @@ def convert_from_dholes(indata):
                         'name': subskill['name'],
                         'value': subskill['value'],
                         'start_value': subskill['value'],
-                        'subskills': [
-                            {
-                                'name': subskill['subskill'],
-                                'value': subskill['value'],
-                                'start_value': subskill['value']
-                            }
-                        ]
+                        'subskills': [{
+                            'name': subskill['subskill'],
+                            'value': subskill['value'],
+                            'start_value': subskill['value']
+                        }]
                     }
                     outskills.append(parent_skill)
                     skill_index[parent_skill['name']] = parent_skill
@@ -67,7 +87,9 @@ def convert_from_dholes(indata):
     def convert_weapons(weapons):
         inweapons = weapons['weapon']
         if not isinstance(inweapons, list):
-            inweapons = [inweapons, ]
+            inweapons = [
+                inweapons,
+            ]
         outweapons = []
         for weapon in inweapons:
             weapon.pop('hard', None)
@@ -100,11 +122,7 @@ def convert_from_dholes(indata):
         return outpossessions
 
     def convert_combat(combat):
-        return {
-            'DamageBonus': combat['DamageBonus'],
-            'Build': combat['Build'],
-            'Dodge': combat['Dodge']['value']
-        }
+        return {'DamageBonus': combat['DamageBonus'], 'Build': combat['Build'], 'Dodge': combat['Dodge']['value']}
 
     def convert_characteristics(characteristics):
         for k, v in characteristics.items():
@@ -143,22 +161,18 @@ def convert_from_dholes(indata):
 
 
 def convert_to_dholes(indata):
+
     def convert_skills(skills):
         outskills = []
         for skill in skills:
             skill['half'] = half(skill['value'])
             skill['fifth'] = fifth(skill['value'])
             if 'occupation' in skill:
-                skill['occupation'] = ("true" if skill['occupation']
-                                       else "false")
+                skill['occupation'] = ("true" if skill['occupation'] else "false")
 
-            outskills.append(
-                skill
-            )
+            outskills.append(skill)
 
-        return {
-            'Skill': skills
-        }
+        return {'Skill': skills}
 
     def convert_weapons(weapons):
         outweapons = []
@@ -171,9 +185,7 @@ def convert_to_dholes(indata):
     def convert_possessions(possessions):
         outpossessions = []
         for possession in possessions:
-            outpossessions.append(
-                {'description': possession}
-            )
+            outpossessions.append({'description': possession})
         return {'item': outpossessions}
 
     def convert_combat(combat):

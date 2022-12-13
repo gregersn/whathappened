@@ -9,6 +9,8 @@ from jsonschema.validators import Draft7Validator
 
 logger = logging.getLogger(__name__)
 
+SCHEMA_DIR = Path(__file__).parent
+
 
 def load_schema(filename: Path) -> Dict:
     with open(filename, 'r') as f:
@@ -31,10 +33,7 @@ SchemaValidationError = Dict[str, str]
 def validate(data: Dict, filename: Path) -> List[SchemaValidationError]:
     schema = load_schema(filename)
     v = Draft7Validator(schema)
-    return [
-        {'path': "/".join(str(x) for x in e.path),
-         "message": e.message} for e in v.iter_errors(data)
-    ]
+    return [{'path': "/".join(str(x) for x in e.path), "message": e.message} for e in v.iter_errors(data)]
 
 
 def build_boolean(schema: Dict[str, bool]) -> bool:
@@ -49,8 +48,7 @@ def build_integer(schema: Dict[str, int]) -> int:
     return schema['default']
 
 
-def build_object(schema: Dict[str, Any],
-                 main_schema: Dict[str, Any]) -> Dict[str, Any]:
+def build_object(schema: Dict[str, Any], main_schema: Dict[str, Any]) -> Dict[str, Any]:
     output = {}
     for property, description in schema['properties'].items():
         output[property] = build_from_schema2(description, main_schema)
@@ -93,8 +91,7 @@ def build_from_schema2(schema: Union[List, Dict[str, Any]],
 
             assert isinstance(sub, Dict) or isinstance(sub, List)
 
-            return build_from_schema2(sub,
-                                      main_schema)
+            return build_from_schema2(sub, main_schema)
         if 'const' in schema:
             return schema['const']
         if schema.get('type') == 'object' and isinstance(main_schema, dict):

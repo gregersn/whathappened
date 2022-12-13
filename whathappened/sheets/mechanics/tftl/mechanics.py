@@ -1,11 +1,14 @@
 from pathlib import Path
 
 from ..core import CharacterMechanics
-from ..schema import validate
-CHARACTER_SCHEMA = Path(__file__).parent / '../schema/tftl.json'
+from whathappened.sheets.schema.build import validate
+
+CHARACTER_SCHEMA = Path(__file__).parent.parent.parent / 'schema' / 'tftl.json'
+assert CHARACTER_SCHEMA.is_file(), CHARACTER_SCHEMA
 
 
 class TftlMechanics(CharacterMechanics):
+
     def validate(self):
         return validate(self.parent.body, CHARACTER_SCHEMA)
 
