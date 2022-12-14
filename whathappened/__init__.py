@@ -19,15 +19,21 @@ from .database import init_db, session
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'  # type: ignore  # Not an error
-assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent /
-                               'static')
+assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent / 'static')
 csrf = CSRFProtect()
+
+logging.basicConfig(format='%(asctime)s %(levelname)s: %(name)s %(message)s', level=logging.DEBUG)
+logging.debug('Logger initialized')
+
+logging.getLogger('semver').setLevel(logging.INFO)
+logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
 
 def create_app(test_config=None) -> Flask:
     logger.info("Creating app")
+
     assets_env._named_bundles = {}
     app = Flask(__name__, instance_relative_config=True)
 
@@ -59,12 +65,10 @@ def create_app(test_config=None) -> Flask:
     mail.init_app(app)
     app.jinja_env.add_extension('webassets.ext.jinja2.AssetsExtension')
 
-    webpack_manifest = Path(
-        __file__).absolute().parent / 'static' / 'manifest.json'
+    webpack_manifest = Path(__file__).absolute().parent / 'static' / 'manifest.json'
 
     if webpack_manifest.exists():
-        webpack_env = WebpackEnvironment(manifest=webpack_manifest,
-                                         publicRoot="")
+        webpack_env = WebpackEnvironment(manifest=webpack_manifest, publicRoot="")
 
         app.jinja_env.filters['webpack'] = WebpackFilter(webpack_env)
 
@@ -122,9 +126,7 @@ def create_app(test_config=None) -> Flask:
         scss = Bundle('scss/main.scss', filters='pyscss', output='css/all.css')
         assets_env.register('scss_all', scss)
 
-        css_profile = Bundle('scss/profile.scss',
-                             filters='pyscss',
-                             output='css/profile.css')
+        css_profile = Bundle('scss/profile.scss', filters='pyscss', output='css/profile.css')
         assets_env.register('scss_profile', css_profile)
 
     return app

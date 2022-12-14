@@ -29,7 +29,8 @@
             "module": "flask",
             "env": {
                 "FLASK_APP": "whathappened",
-                "FLASK_DEBUG": "1"
+                "FLASK_DEBUG": "1",
+                "LOGLEVEL": "DEBUG"
             },
             "args": [
                 "run"
