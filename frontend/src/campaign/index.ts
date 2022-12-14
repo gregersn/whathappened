@@ -8,7 +8,7 @@ function set_handout_state(player_id: number, campaign_id: number, handout_id: n
     xhr.setRequestHeader("X-CSRFToken", get_meta_tag('_token'));
     xhr.setRequestHeader('x-csrf-token', get_meta_tag('_token'));
 
-    xhr.send(JSON.stringify({"player_id": player_id, "state": state}));
+    xhr.send(JSON.stringify({ "player_id": player_id, "state": state }));
 }
 
 function set_npc_visibility(npc_id: number, campaign_id: number, state: boolean) {
@@ -19,13 +19,13 @@ function set_npc_visibility(npc_id: number, campaign_id: number, state: boolean)
     xhr.setRequestHeader("X-CSRFToken", get_meta_tag('_token'));
     xhr.setRequestHeader('x-csrf-token', get_meta_tag('_token'));
 
-    xhr.send(JSON.stringify({"npc_id": npc_id, "visibility": state}));
+    xhr.send(JSON.stringify({ "npc_id": npc_id, "visibility": state }));
 }
 
 function update_handouts(handouts, handout_list: HTMLUListElement) {
     console.log("Update handouts");
     const sha = handout_list.getAttribute('data-sha');
-    if(sha === handouts['sha']) return;
+    if (sha === handouts['sha']) return;
 
     handout_list.innerHTML = "";
     handouts['handouts'].forEach(handout => {
@@ -45,14 +45,14 @@ function update_npcs(npcs, npc_container: HTMLElement) {
         div.classList.add("characterinfo");
         div.classList.add("splitcontainer");
 
-        div.innerHTML = 
-                '<div class="personalia npc">' + 
-                    `${npc.name} (${npc.age})<br />${npc.description}` +
-                '</div>' +
-                '<div class="portrait">' +
-                     `<img src="${npc.portrait}" />`+
-                '</div>';
-        
+        div.innerHTML =
+            '<div class="personalia npc">' +
+            `${npc.name} (${npc.age})<br />${npc.description}` +
+            '</div>' +
+            '<div class="portrait">' +
+            `<img src="${npc.portrait}" />` +
+            '</div>';
+
         return div;
     })
 
@@ -69,7 +69,7 @@ function get_handouts(campaign_id: number, handout_list: HTMLUListElement) {
     xhr.open('GET', url);
     xhr.setRequestHeader('Content-Type', "application/json;charset=UTF-8");
     xhr.onload = () => {
-        if(xhr.status >= 200 && xhr.status < 300) {
+        if (xhr.status >= 200 && xhr.status < 300) {
             const handouts = JSON.parse(xhr.responseText)
             update_handouts(handouts, handout_list);
         }
@@ -81,12 +81,12 @@ function get_handouts(campaign_id: number, handout_list: HTMLUListElement) {
 function update_messages(messages: Message[], message_table: HTMLTableElement) {
     messages.forEach(element => {
         const r = document.createElement('tr');
-        const t = new Date(element.timestamp * 1000);
+        const t = element.timestamp;
 
-        r.innerHTML = `<td>${t.toLocaleString()}</td>` + 
-                      `<td>${element.sender_name}</td>` +
-                      `<td>${element.to_name}</td>` +
-                      `<td>${element.message}</td>`;
+        r.innerHTML = `<td>${t.toLocaleString()}</td>` +
+            `<td>${element.sender_name}</td>` +
+            `<td>${element.to_name}</td>` +
+            `<td>${element.message}</td>`;
         message_table.appendChild(r);
     });
 }
@@ -94,7 +94,7 @@ function update_messages(messages: Message[], message_table: HTMLTableElement) {
 
 interface Message {
     id: number;
-    timestamp: number,
+    timestamp: string,
     message: string,
     sender_name: string,
     to_name: string
@@ -105,19 +105,10 @@ async function get_messages(campaign_id: number, last_message: number, message_t
     const url = `/api/campaign/${campaign_id}/messages?after=${last_message}`;
     const messages = await http<Message[]>(url);
     update_messages(messages, message_table);
-    if(messages.length > 0)
-        last_message = messages[messages.length - 1].timestamp;
-    return last_message;
-    /*const xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.setRequestHeader('Content-Type', "application/json;charset=UTF-8");
-    xhr.onload = () => {
-        if(xhr.status >= 200 && xhr.status < 300) {
-            const messages = JSON.parse(xhr.responseText)
-            update_messages(messages['messages'], message_table);
-        }
+    if (messages.length > 0) {
+        last_message = Math.floor(new Date(messages[messages.length - 1].timestamp).getTime() / 1000.0);
     }
-    xhr.send();*/
+    return last_message;
 }
 
 function get_npcs(campaign_id: number, npc_container: HTMLElement) {
@@ -127,7 +118,7 @@ function get_npcs(campaign_id: number, npc_container: HTMLElement) {
     xhr.open('GET', url);
     xhr.setRequestHeader('Content-Type', "application/json;charset=UTF-8");
     xhr.onload = () => {
-        if(xhr.status >= 200 && xhr.status < 300) {
+        if (xhr.status >= 200 && xhr.status < 300) {
             const npcs = JSON.parse(xhr.responseText)
             update_npcs(npcs, npc_container);
         }
@@ -139,7 +130,7 @@ function get_npcs(campaign_id: number, npc_container: HTMLElement) {
 
 function init_handout_share() {
     const table: HTMLTableElement = <HTMLTableElement>document.getElementsByClassName('handoutshares')[0];
-    if(!table) return;
+    if (!table) return;
     const checkboxes: HTMLInputElement[] = <HTMLInputElement[]>Array.from(table.getElementsByTagName('input'));
 
     checkboxes.forEach(cb => {
@@ -158,7 +149,7 @@ function init_handout_share() {
 const init_handout_watch = () => {
     console.log("Init handout watch")
     const handout_list = <HTMLUListElement>document.getElementsByClassName('player_handouts')[0];
-    if(!handout_list) return false;
+    if (!handout_list) return false;
     const campaign_id = Number.parseInt(handout_list.getAttribute('data-campaign'), 10);
     const handout_section = document.getElementById('handout_section');
     handout_section.getElementsByTagName('h3')[0].onclick = () => get_handouts(campaign_id, handout_list);
@@ -174,14 +165,14 @@ function init_npc_control() {
 
     npcs.forEach(npc => {
         const visibility: HTMLInputElement = <HTMLInputElement>npc.getElementsByClassName('visibility')[0];
-        if(visibility)
-        visibility.onchange = () => {
-            const npc_id = Number.parseInt(visibility.getAttribute('data-npc'));
-            const campaign_id = Number.parseInt(visibility.getAttribute('data-campaign'));
-            const state = visibility.checked;
-            console.log(`Visibility toggled on ${npc_id} to ${state}`);
-            set_npc_visibility(npc_id, campaign_id, state);
-        }
+        if (visibility)
+            visibility.onchange = () => {
+                const npc_id = Number.parseInt(visibility.getAttribute('data-npc'));
+                const campaign_id = Number.parseInt(visibility.getAttribute('data-campaign'));
+                const state = visibility.checked;
+                console.log(`Visibility toggled on ${npc_id} to ${state}`);
+                set_npc_visibility(npc_id, campaign_id, state);
+            }
     })
 
 }
@@ -189,7 +180,7 @@ function init_npc_control() {
 function init_npc_refresh() {
     console.log("Init NPC refresh")
     const npc_container: HTMLElement = document.getElementById('npc_section');
-    if(!npc_container || npc_container.classList.contains("editable")) return;
+    if (!npc_container || npc_container.classList.contains("editable")) return;
     const campaign_id = Number.parseInt(npc_container.getAttribute('data-campaign'));
     npc_container.getElementsByTagName('h3')[0].onclick = () => get_npcs(campaign_id, npc_container);
 }
@@ -198,7 +189,7 @@ function init_npc_refresh() {
 function init_message_refresh(campaign_id: number) {
     console.log("Init message refresh")
     const message_table: HTMLTableElement = <HTMLTableElement>document.getElementById('campaign_messages');
-    if(message_table) {
+    if (message_table) {
         let last_message = 0;
         const refresh_messages = async () => {
             last_message = await get_messages(campaign_id, last_message, message_table);
@@ -214,11 +205,12 @@ declare global {
 
 window.wh_campaign = window.wh_campaign || {};
 
-document.addEventListener('DOMContentLoaded', function(event) {
+document.addEventListener('DOMContentLoaded', function (event) {
     console.log("Initiate the campaign functions.");
     init_handout_share();
     init_handout_watch();
     init_npc_control();
     init_npc_refresh();
     init_message_refresh(window.wh_campaign.id);
+    console.log("Done");
 })
