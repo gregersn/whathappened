@@ -21,5 +21,10 @@
     "python.linting.enabled": true,
     "python.analysis.stubPath": "typings",
     "python.analysis.typeCheckingMode": "basic",
-    "python.analysis.diagnosticMode": "workspace"
+    "python.analysis.diagnosticMode": "workspace",
+    "python.linting.ignorePatterns": [
+        "**/site-packages/**/*.py",
+        ".vscode/*.py",
+        "whathappened/migrations/**/*.py"
+    ]
 }

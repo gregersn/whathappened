@@ -24,7 +24,7 @@ def get_class_by_tablename(tablename):
 
 @bp.route('/')
 def index():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
         return redirect(url_for('profile.index'))
 
     return render_template('main/index.html.jinja')
@@ -34,7 +34,7 @@ def index():
 @login_required
 def invite_delete(id):
     invite = Invite.query.get(id)
-    if current_user.profile.id != invite.owner_id:
+    if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
         logger.debug("Wrong user")
         abort(403)
     form = DeleteInviteForm()
@@ -51,17 +51,14 @@ def invite_delete(id):
 
     form.id.data = invite.id
 
-    return render_template('main/invite_delete.html.jinja',
-                           obj=obj,
-                           invite=invite,
-                           form=form)
+    return render_template('main/invite_delete.html.jinja', obj=obj, invite=invite, form=form)
 
 
 @api.route('/invite/<int:id>/delete', methods=('POST', ))
 @login_required
 def api_invite_delete(id):
     invite = Invite.query.get(id)
-    if current_user.profile.id != invite.owner_id:
+    if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
     session.delete(invite)
     session.commit()

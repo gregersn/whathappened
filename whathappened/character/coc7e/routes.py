@@ -10,12 +10,10 @@ from . import utils  # noqa # import to register filters
 def view(id, character, editable):
     subskillform = SubskillForm(prefix="subskillform")
     if editable and subskillform.data and subskillform.validate_on_submit():
-        character.add_subskill(subskillform.name.data,
-                               subskillform.parent.data)
+        character.add_subskill(subskillform.name.data, subskillform.parent.data)
         logentry = LogEntry(character,
-                            f"add subskill {subskillform.name.data} " +
-                            f"under {subskillform.parent.data}",
-                            user_id=current_user.id)
+                            f"add subskill {subskillform.name.data} " + f"under {subskillform.parent.data}",
+                            user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
         session.add(logentry)
 
         character.store_data()
@@ -32,9 +30,8 @@ def view(id, character, editable):
 
         character.add_skill(skillform.name.data)
         character.store_data()
-        logentry = LogEntry(character,
-                            f"add skill {subskillform.name.data}",
-                            user_id=current_user.id)
+        logentry = LogEntry(character, f"add skill {subskillform.name.data}",
+                            user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
         session.add(logentry)
 
         session.commit()

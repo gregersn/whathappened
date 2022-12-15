@@ -33,23 +33,22 @@ class User(UserMixin, Base):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password: str):
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(str(self.password_hash), password)
 
     def get_reset_password_token(self, expires_in: int = 600):
-        return jwt.encode(
-            {'reset_password': self.id, 'exp': time() + expires_in},
-            current_app.config['SECRET_KEY'], algorithm='HS256') \
-            .decode('utf-8')
+        return jwt.encode({
+            'reset_password': self.id,
+            'exp': time() + expires_in
+        },
+                          current_app.config['SECRET_KEY'],
+                          algorithm='HS256')
 
     @staticmethod
     def verify_reset_password_token(token: str):
         try:
-            id = jwt.decode(token,
-                            current_app.config['SECRET_KEY'],
-                            algorithms=['HS256'])['reset_password']
+            id = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
         except Exception:
-            logger.error("Exception occurent while trying to reset password.",
-                         exc_info=True)
+            logger.error("Exception occurent while trying to reset password.", exc_info=True)
             return
         return User.query.get(id)
 
@@ -69,8 +68,7 @@ class Role(Base):
 class UserRoles(Base):
     __tablename__ = 'user_roles'
     id = Column(Integer(), primary_key=True)
-    user_id = Column(Integer(),
-                     ForeignKey('user_account.id', ondelete='CASCADE'))
+    user_id = Column(Integer(), ForeignKey('user_account.id', ondelete='CASCADE'))
     role_id = Column(Integer(), ForeignKey('roles.id', ondelete='CASCADE'))
 
 

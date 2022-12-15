@@ -35,12 +35,11 @@ class InvitePlayerForm(FlaskForm):
 
 
 def available_characters():
-    return current_user.profile.characters
+    return current_user.profile.characters  # pyright: ignore[reportGeneralTypeIssues]
 
 
 class AddCharacterForm(FlaskForm):
-    character = QuerySelectField(query_factory=available_characters,
-                                 get_label=lambda x: x.title)
+    character = QuerySelectField(query_factory=available_characters, get_label=lambda x: x.title)
     submit = SubmitField('Add character')
 
 
@@ -79,34 +78,26 @@ class PlayerListField(QuerySelectMultipleField):
 
 
 class HandoutGroupForm(FlaskForm):
-    campaign_id = IntegerField(widget=HiddenInput(),
-                               validators=[DataRequired()])
+    campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
     submit = SubmitField('Add group')
 
 
 class HandoutForm(FlaskForm):
-    campaign_id = IntegerField(widget=HiddenInput(),
-                               validators=[DataRequired()])
+    campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     title = StringField('Title', validators=[DataRequired()])
     content = StringField('Content', widget=TextArea())
-    status = EnumField('Status',
-                       choices=[(e.name, e.value) for e in HandoutStatus],
-                       default=HandoutStatus.draft)
+    status = EnumField('Status', choices=[(e.name, e.value) for e in HandoutStatus], default=HandoutStatus.draft)
 
-    group_id = SelectField('Group',
-                           choices=[
-                               ('', '(none)'),
-                           ],
-                           default='',
-                           validate_choice=False)
+    group_id = SelectField('Group', choices=[
+        ('', '(none)'),
+    ], default='', validate_choice=False)
 
     submit = SubmitField('Save handout')
 
 
 class DeleteHandoutForm(FlaskForm):
-    campaign_id = IntegerField(widget=HiddenInput(),
-                               validators=[DataRequired()])
+    campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     submit = SubmitField('Delete handout')
 
@@ -142,11 +133,9 @@ class PlayerField(SelectMultipleField):
 
 
 class RevealHandout(FlaskForm):
-    campaign_id = IntegerField(widget=HiddenInput(),
-                               validators=[DataRequired()])
+    campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
-    players = QuerySelectMultipleField('Show to',
-                                       get_label=lambda x: x.user.username)
+    players = QuerySelectMultipleField('Show to', get_label=lambda x: x.user.username)
 
 
 class NPCTransferForm(FlaskForm):
@@ -156,8 +145,7 @@ class NPCTransferForm(FlaskForm):
 
 
 class MessagePlayerForm(FlaskForm):
-    campaign_id = IntegerField(widget=HiddenInput(),
-                               validators=[DataRequired()])
+    campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     from_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     message = StringField()
     submit = SubmitField('Send...')
@@ -166,14 +154,13 @@ class MessagePlayerForm(FlaskForm):
         ('', 'All'),
     ], validate_choice=False)
 
-    def __init__(self,
-                 hide_to_id: bool = False,
-                 players: List[Tuple[int, str]] = [],
-                 *args,
-                 **kwargs):
+    def __init__(self, hide_to_id: bool = False, players: List[Tuple[int, str]] = [], *args, **kwargs):
         super(MessagePlayerForm, self).__init__(*args, **kwargs)
         if hide_to_id:
             self.to_id.widget = HiddenInput()  # type: ignore  # Not an error
 
+        player_choices: List[Tuple[int | str, str]] = [('', 'All')]
+        player_choices += players
+        self.to_id.choices = player_choices
+
         assert self.to_id.choices is not None
-        self.to_id.choices += players

@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 from flask import render_template, redirect, url_for, flash, request
 from whathappened.main.forms import CreateInviteForm
 from whathappened.auth.models import User
@@ -13,7 +14,7 @@ from .forms import JoinCampaignForm, EditForm, RemoveCharacterForm
 from .forms import RemovePlayerForm, NPCTransferForm, MessagePlayerForm
 from .models import HandoutStatus, NPC, Message
 from whathappened.models import Invite
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, desc
 from whathappened.database import session
 from whathappened.content.forms import ChooseFolderForm
 from whathappened.auth import login_required, current_user
@@ -34,7 +35,7 @@ def join(code: str):
     joinform = JoinCampaignForm()
     if joinform.validate_on_submit():
         campaign = Campaign.query.get(inv.object_id)
-        player = current_user.profile
+        player = current_user.profile  # pyright: ignore[reportGeneralTypeIssues]
         if player not in campaign.players:
             campaign.players.append(player)
             session.commit()
@@ -46,9 +47,7 @@ def join(code: str):
     campaign = Campaign.query.get(inv.object_id)
     joinform = JoinCampaignForm(invite_code=code)
 
-    return render_template('campaign/joincampaign.html.jinja',
-                           campaign=campaign,
-                           joinform=joinform)
+    return render_template('campaign/joincampaign.html.jinja', campaign=campaign, joinform=joinform)
 
 
 @bp.route('/<int:id>', methods=('GET', 'POST'))
@@ -63,14 +62,15 @@ def view(id: int):
     characterform = AddCharacterForm(prefix="characterform")
     npcform = AddNPCForm(prefix="npcform")
 
-    messageform = MessagePlayerForm(players=[
-        (campaign.user_id, "GM"),
-    ] + [(p.id, p.user.username) for p in campaign.players],
-                                    campaign_id=campaign.id,
-                                    from_id=current_user.profile.id)
+    messageform = MessagePlayerForm(
+        players=[
+            (campaign.user_id, "GM"),  # pyright: ignore[reportGeneralTypeIssues]
+        ] + [(p.id, p.user.username) for p in campaign.players],
+        campaign_id=campaign.id,
+        from_id=current_user.profile.id)  # pyright: ignore[reportGeneralTypeIssues]
 
-    is_player = current_user.profile in campaign.players
-    is_owner = current_user and current_user.profile.id == campaign.user_id
+    is_player = current_user.profile in campaign.players  # pyright: ignore[reportGeneralTypeIssues]
+    is_owner = current_user and current_user.profile.id == campaign.user_id  # pyright: ignore[reportGeneralTypeIssues]
 
     logger.debug(f"Viewing campagin {campaign.title}")
     logger.debug(f"There are {campaign.players.count()} players")
@@ -88,8 +88,7 @@ def view(id: int):
             session.commit()
 
         if inviteform.submit.data and inviteform.validate_on_submit():
-            player = (User.query.filter_by(
-                email=inviteform.email.data).first().profile)
+            player = (User.query.filter_by(email=inviteform.email.data).first().profile)
             campaign.players.append(player)
             session.commit()
             return redirect(url_for('campaign.view', id=id))
@@ -108,8 +107,8 @@ def view(id: int):
     if characterform.submit.data and characterform.validate_on_submit():
         print("Adding character")
         character = characterform.character.data
-        if (character not in campaign.characters
-                and character.user_id == current_user.profile.id):
+        if (character not in campaign.characters and character
+                and character.user_id == current_user.profile.id):  # pyright: ignore[reportGeneralTypeIssues]
             campaign.characters.append(character)
             session.commit()
         else:
@@ -121,21 +120,23 @@ def view(id: int):
 
     handouts = campaign.handouts.filter_by(status=HandoutStatus.visible)
     messages = campaign.messages.filter(
-        or_(Message.from_id == current_user.profile.id,
-            Message.to_id == current_user.profile.id, Message.to_id.is_(None)))
+        or_(
+            Message.from_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
+            Message.to_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
+            Message.to_id.is_(None)))
 
     added_npc_ids = [c.character_id for c in campaign.NPCs]
 
-    npcform.character.query = current_user.profile.characters.filter(
+    npcform.character.query = current_user.profile.characters.filter(  # pyright: ignore[reportGeneralTypeIssues]
         Character.id.notin_(added_npc_ids)).\
         order_by(
-            Character.folder_id.__eq__(campaign.folder_id).desc()).\
+            desc(Character.folder_id.__eq__(campaign.folder_id))).\
         order_by('title')
 
     added_character_ids = [c.id for c in campaign.characters]
     characterform.character.query = current_user.profile.characters.\
         filter(Character.id.notin_(added_character_ids)).\
-        order_by(Character.folder_id.__eq__(campaign.folder_id).desc()).\
+        order_by(desc(Character.folder_id.__eq__(campaign.folder_id))).\
         order_by('title')
 
     return render_template('campaign/campaign.html.jinja',
@@ -171,9 +172,7 @@ def edit(id: int):
 
     folderform.folder_id.data = c.folder
 
-    return render_template('campaign/edit.html.jinja',
-                           form=form,
-                           folderform=folderform)
+    return render_template('campaign/edit.html.jinja', form=form, folderform=folderform)
 
 
 @bp.route("/<int:id>/export", methods=("GET", ))
@@ -188,22 +187,21 @@ def export(id: int):
 def create():
     form = CreateForm()
     if form.validate_on_submit():
-        c = Campaign(title=form.title.data, user_id=current_user.profile.id)
+        c = Campaign(title=form.title.data, user_id=current_user.profile.id)  # pyright: ignore[reportGeneralTypeIssues]
         session.add(c)
         session.commit()
         return redirect(url_for('campaign.view', id=c.id))
     return render_template('campaign/create.html.jinja', form=form)
 
 
-@bp.route('/<int:id>/removecharacter/<int:characterid>',
-          methods=('GET', 'POST'))
+@bp.route('/<int:id>/removecharacter/<int:characterid>', methods=('GET', 'POST'))
 @login_required
 def remove_character(id: int, characterid: int):
     c = Campaign.query.get(id)
     char = Character.query.get(characterid)
 
     if current_user.profile.id != c.user_id \
-            and char.user_id != current_user.profile.id:
+            and char.user_id != current_user.profile.id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(404)
     form = RemoveCharacterForm()
 
@@ -214,10 +212,7 @@ def remove_character(id: int, characterid: int):
 
     form.id.data = c.id
     form.character.data = char.id
-    return render_template('campaign/removecharacter.html.jinja',
-                           character=char,
-                           campaign=c,
-                           form=form)
+    return render_template('campaign/removecharacter.html.jinja', character=char, campaign=c, form=form)
 
 
 @bp.route('/<int:id>/removenpc/<int:characterid>', methods=('GET', 'POST'))
@@ -255,7 +250,7 @@ def manage_npc(id: int, npcid: int):
     if npc.campaign_id != id:
         return abort(404)
 
-    if current_user.profile != npc.campaign.user:
+    if current_user.profile != npc.campaign.user:  # pyright: ignore[reportGeneralTypeIssues]
         return abort(404)
 
     if transferform.submit.data:
@@ -264,9 +259,7 @@ def manage_npc(id: int, npcid: int):
             campaign = npc.campaign
 
             # Create a copy of the character
-            new_character = Character(title=npc.character.title,
-                                      body=npc.character.body,
-                                      user_id=player.id)
+            new_character = Character(title=npc.character.title, body=npc.character.body, user_id=player.id)
 
             session.add(new_character)
 
@@ -281,12 +274,9 @@ def manage_npc(id: int, npcid: int):
 
             return redirect(url_for('campaign.view', id=campaign.id))
 
-    transferform.player.choices = [(p.id, p.user.username)
-                                   for p in npc.campaign.players]
+    transferform.player.choices = [(p.id, p.user.username) for p in npc.campaign.players]
 
-    return render_template('campaign/managenpc.html.jinja',
-                           npc=npc,
-                           transferform=transferform)
+    return render_template('campaign/managenpc.html.jinja', npc=npc, transferform=transferform)
 
 
 @bp.route('/<int:id>/removeplayer/<int:playerid>', methods=('GET', 'POST'))
@@ -303,17 +293,13 @@ def remove_player(id: int, playerid: int):
 
     form.id.data = c.id
     form.player.data = player.id
-    return render_template('campaign/removeplayer.html.jinja',
-                           player=player,
-                           campaign=c,
-                           form=form)
+    return render_template('campaign/removeplayer.html.jinja', player=player, campaign=c, form=form)
 
 
-@bp.route('/<int:campaign_id>/player/<int:player_id>/message',
-          methods=('GET', 'POST'))
+@bp.route('/<int:campaign_id>/player/<int:player_id>/message', methods=('GET', 'POST'))
 @bp.route('/<int:campaign_id>/message/', methods=('GET', 'POST'))
 @login_required
-def message_player(campaign_id: int, player_id: int = None):
+def message_player(campaign_id: int, player_id: Optional[int] = None):
     c = Campaign.query.get(campaign_id)
     player = None
     if player_id:
@@ -342,9 +328,10 @@ def message_player(campaign_id: int, player_id: int = None):
     messages = c.messages.filter(
         or_(
             and_(Message.to_id == player_id,
-                 Message.from_id == current_user.profile.id),
-            and_(Message.to_id == current_user.profile.id,
-                 Message.from_id == player_id)))
+                 Message.from_id == current_user.profile.id),  # pyright: ignore[reportGeneralTypeIssues]
+            and_(
+                Message.to_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
+                Message.from_id == player_id)))
     return render_template('campaign/message_player.html.jinja',
                            player=player,
                            campaign=c,

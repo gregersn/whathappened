@@ -1,5 +1,6 @@
 from pathlib import Path
 import logging
+from typing import Optional
 
 from flask import render_template, request
 from flask import redirect, url_for, jsonify
@@ -17,7 +18,7 @@ from .forms import ImportForm, CreateForm
 from .forms import DeleteForm
 
 # Imports for registering games.
-from . import coc7e
+from . import coc7e  # noqa
 from ..sheets.mechanics.coc7e.convert import convert_from_dholes
 from . import tftl  # noqa
 
@@ -39,18 +40,19 @@ def get_character(id: int, check_author: bool = True) -> Character:
     if character is None:
         abort(404, "Character id {0} doesn't exist.".format(id))
 
-    if current_user.has_role('admin'):
+    if current_user.has_role('admin'):  # pyright: ignore[reportGeneralTypeIssues]
         return character
 
     if character.campaigns:
         logger.debug("Checking if character is in same campaign as user")
         for campaign in character.campaigns:
             if current_user.profile in campaign.players \
-                    or campaign in current_user.profile.campaigns:
-                logger.debug(f"Character '{character.title}' " + f"is in '{campaign.title}' " + f"with '{current_user.username}''")
+                    or campaign in current_user.profile.campaigns:  # pyright: ignore[reportGeneralTypeIssues]
+                logger.debug(f"Character '{character.title}' " + f"is in '{campaign.title}' " +
+                             f"with '{current_user.username}''")  # pyright: ignore[reportGeneralTypeIssues]
                 return character
 
-    if check_author and character.user_id != current_user.profile.id:
+    if check_author and character.user_id != current_user.profile.id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
     return character
@@ -72,7 +74,8 @@ def create(chartype: str):
     if form.validate_on_submit():
         logger.debug(f"Creating new character specified by {form.data}")
         char_data = character_module.new_character(**form.data)
-        c = Character(title=form.title.data, body=char_data, user_id=current_user.profile.id)
+        c = Character(title=form.title.data, body=char_data,
+                      user_id=current_user.profile.id)  # pyright: ignore[reportGeneralTypeIssues]
         session.add(c)
         session.commit()
         return redirect(url_for('character.view', id=c.id))
@@ -92,7 +95,7 @@ def system_select(chartype=None):
 @bp.route('/import/<uuid:code>', methods=('GET', 'POST'))
 @bp.route('/import', methods=('GET', 'POST'))
 @login_required
-def import_character(type=None, id: int = None, code: str = None):
+def import_character(type: Optional[str] = None, id: Optional[int] = None, code: Optional[str] = None):
     logger.debug(f"{type}, {code}, {id}")
     character = None
     if id:
@@ -105,7 +108,8 @@ def import_character(type=None, id: int = None, code: str = None):
 
     form = ImportForm(obj=character)
     if form.validate_on_submit():
-        c = Character(title=form.title.data, body=form.body.data, user_id=current_user.profile.id)
+        c = Character(title=form.title.data, body=form.body.data,
+                      user_id=current_user.profile.id)  # pyright: ignore[reportGeneralTypeIssues]
         session.add(c)
         session.commit()
         return redirect(url_for('character.view', id=c.id))
@@ -134,7 +138,8 @@ def update(id: int):
                 log_subfield = ' ' + subfield
             log_message = (f"set {type} on {field}{log_subfield}: {value}")
 
-            logentry = LogEntry(character, log_message, user_id=current_user.id)
+            logentry = LogEntry(character, log_message,
+                                user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
             session.add(logentry)
 
         character.store_data()
@@ -172,11 +177,12 @@ def view(id: int):
 
     editable = False
 
-    if (current_user.is_authenticated and current_user.profile.id == character.user_id):
+    if (current_user.is_authenticated  # pyright: ignore[reportGeneralTypeIssues]
+            and current_user.profile.id == character.user_id):  # pyright: ignore[reportGeneralTypeIssues]
         editable = True
 
     for campaign in character.campaigns:
-        if campaign.user_id == current_user.profile.id:
+        if campaign.user_id == current_user.profile.id:  # pyright: ignore[reportGeneralTypeIssues]
             editable = True
             break
 
@@ -247,7 +253,7 @@ def delete(id: int):
     """Delete a character."""
     character = get_character(id, check_author=True)
 
-    if current_user.profile.id != character.user_id:
+    if current_user.profile.id != character.user_id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(404)
 
     form = DeleteForm()
@@ -312,7 +318,7 @@ def editjson(id: int):
             data = form.body.data
             c.body = convert_from_dholes(data)
 
-        logentry = LogEntry(c, "JSON edited", user_id=current_user.id)
+        logentry = LogEntry(c, "JSON edited", user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
         session.add(logentry)
 
         session.commit()
@@ -322,7 +328,11 @@ def editjson(id: int):
 
     validation_errors = c.validate()
 
-    return render_template('character/import.html.jinja', title="Edit JSON", validation_errors=validation_errors, form=form, type=None)
+    return render_template('character/import.html.jinja',
+                           title="Edit JSON",
+                           validation_errors=validation_errors,
+                           form=form,
+                           type=None)
 
 
 @bp.route('/<int:id>/eventlog', methods=('GET', ))
@@ -345,7 +355,11 @@ def eventlog(id: int):
     prev_url = None
     logger.debug(next_url)
     log_entries = entries_page.items
-    return render_template('character/eventlog.html.jinja', character=c, entries=log_entries, next_url=next_url, prev_url=prev_url)
+    return render_template('character/eventlog.html.jinja',
+                           character=c,
+                           entries=log_entries,
+                           next_url=next_url,
+                           prev_url=prev_url)
 
 
 @bp.route('/<int:id>/folder', methods=('GET', 'POST'))

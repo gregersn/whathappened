@@ -20,10 +20,7 @@ class Asset(Base):
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     filename = Column(String(128))
     owner_id = Column(Integer, ForeignKey('user_profile.id'))
-    owner = relationship('UserProfile',
-                         backref=backref('assets',
-                                         lazy='dynamic',
-                                         order_by=ASSET_ORDER))
+    owner = relationship('UserProfile', backref=backref('assets', lazy='dynamic', order_by=ASSET_ORDER))
     folder_id = Column(GUID(), ForeignKey('asset_folder.id'))
     folder = relationship('AssetFolder', back_populates='files')
 
@@ -38,13 +35,11 @@ class Asset(Base):
 
     @property
     def url(self):
-        return url_for('userassets.view',
-                       fileid=self.id,
-                       filename=self.filename)
+        return url_for('userassets.view', fileid=self.id, filename=self.filename)
 
     @property
     def system_path(self):
-        return self.folder.system_path / secure_filename(self.filename)
+        return self.folder.system_path / secure_filename(str(self.filename))
 
 
 @event.listens_for(Asset, 'before_delete')
@@ -66,22 +61,18 @@ class AssetFolder(Base):
     __tablename__ = 'asset_folder'
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     owner_id = Column(Integer, ForeignKey('user_profile.id'))
-    owner = relationship("UserProfile", backref=backref('assetfolders',
-                                                        lazy='dynamic'))
-    parent_id = Column(GUID(),
-                       ForeignKey('asset_folder.id'),
-                       default=None)
-    subfolders = relationship('AssetFolder', backref=backref('parent',
-                                                             remote_side=[id]))
+    owner = relationship("UserProfile", backref=backref('assetfolders', lazy='dynamic'))
+    parent_id = Column(GUID(), ForeignKey('asset_folder.id'), default=None)
+    subfolders = relationship('AssetFolder', backref=backref('parent', remote_side=[id]))
     title = Column(String(128))
     files = relationship("Asset", back_populates='folder')
 
     def get_path(self) -> Path:
         if self.parent:
             parent = self.parent.get_path()
-            return parent / secure_filename(self.title)
+            return parent / secure_filename(str(self.title))
         else:
-            return Path(str(self.id)) / secure_filename(self.title)
+            return Path(str(self.id)) / secure_filename(str(self.title))
 
     @property
     def path(self) -> Path:
@@ -89,7 +80,7 @@ class AssetFolder(Base):
             parent = self.parent.path
             return parent / self.title
         else:
-            return Path(self.title)
+            return Path(str(self.title))
 
     @property
     def system_path(self) -> Path:

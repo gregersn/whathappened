@@ -23,22 +23,21 @@ logger = logging.getLogger(__name__)
 @bp.route('/')
 @login_required
 def index(folder_id=None):
-    if current_user.profile.assetfolders.count() < 1:
+    if current_user.profile.assetfolders.count() < 1:  # pyright: ignore[reportGeneralTypeIssues]
         logger.debug("Creating initial folder")
-        rootfolder = AssetFolder(title='assets', owner=current_user.profile)
+        rootfolder = AssetFolder(title='assets', owner=current_user.profile)  # pyright: ignore[reportGeneralTypeIssues]
         session.add(rootfolder)
         session.commit()
 
     if folder_id is not None:
         folder = AssetFolder.query.get(folder_id)
     else:
-        folder = current_user.profile.assetfolders \
-            .filter(AssetFolder.parent_id.__eq__(None)).first()
+        folder = current_user.profile.assetfolders  # pyright: ignore[reportGeneralTypeIssues]
+        folder = folder.filter(AssetFolder.parent_id.__eq__(None)).first()
 
     form = UploadForm(folder_id=folder.id, prefix="fileupload")
     folderform = NewFolderForm(parent_id=folder.id, prefix="newfolderform")
-    deletefolderform = DeleteAssetFolderForm(id=folder.id,
-                                             prefix="deletefolderform")
+    deletefolderform = DeleteAssetFolderForm(id=folder.id, prefix="deletefolderform")
 
     return render_template('userassets/assets.html.jinja',
                            form=form,
@@ -60,7 +59,7 @@ def create_folder(folder_id=None):
         logger.debug("Create a new folder")
         folder = AssetFolder(parent_id=folderform.parent_id.data,
                              title=folderform.title.data,
-                             owner=current_user.profile)
+                             owner=current_user.profile)  # pyright: ignore[reportGeneralTypeIssues]
         session.add(folder)
         session.commit()
     return redirect(url_for('userassets.index', folder_id=folder_id))
@@ -74,7 +73,7 @@ def delete_folder(id=None):
     deletefolderform = DeleteAssetFolderForm(prefix="deletefolderform")
     folder = AssetFolder.query.get(id)
 
-    if not folder.owner == current_user.profile:
+    if not folder.owner == current_user.profile:  # pyright: ignore[reportGeneralTypeIssues]
         logger.debug("Not deleting folder for other person")
         abort(403)
 
@@ -115,7 +114,7 @@ def upload_file(folder_id=None):
         fileobject = form.uploaded.data
         folder: AssetFolder = AssetFolder.query.get(form.folder_id.data)
 
-        if folder.owner != current_user.profile:
+        if folder.owner != current_user.profile:  # pyright: ignore[reportGeneralTypeIssues]
             abort(403)
 
         if fileobject.filename:
@@ -124,9 +123,8 @@ def upload_file(folder_id=None):
             folder.system_path.mkdir(parents=True, exist_ok=True)
             fileobject.save(folder.system_path / filename)
 
-            asset = Asset(filename=fileobject.filename,
-                          folder=folder,
-                          owner=current_user.profile)
+            asset = Asset(filename=fileobject.filename, folder=folder,
+                          owner=current_user.profile)  # pyright: ignore[reportGeneralTypeIssues]
             session.add(asset)
             session.commit()
 
@@ -141,7 +139,7 @@ def view(fileid, filename):
         abort(404)
 
     filepath = userasset.folder.get_path()
-    assetname = secure_filename(userasset.filename)
+    assetname = secure_filename(str(userasset.filename))
     logger.debug(f"Sending file from {filepath}, {assetname}")
 
     full_dir = Path("..") / str(userasset.folder.system_path)
@@ -156,14 +154,9 @@ def edit(fileid, filename):
         abort(404)
 
     deleteform = DeleteAssetForm(id=userasset.id, prefix="deleteasset")
-    moveform = MoveAssetForm(id=userasset.id,
-                             prefix="moveasset",
-                             folder=userasset.folder)
+    moveform = MoveAssetForm(id=userasset.id, prefix="moveasset", folder=userasset.folder)
 
-    return render_template('userassets/edit.html.jinja',
-                           asset=userasset,
-                           deleteform=deleteform,
-                           moveform=moveform)
+    return render_template('userassets/edit.html.jinja', asset=userasset, deleteform=deleteform, moveform=moveform)
 
 
 @bp.route('/edit/<uuid:fileid>/<string:filename>/delete', methods=[
@@ -175,7 +168,7 @@ def delete(fileid, filename):
     asset = Asset.query.get(fileid)
     form = DeleteAssetForm(prefix="deleteasset")
     if form.validate_on_submit():
-        if asset.owner != current_user.profile:
+        if asset.owner != current_user.profile:  # pyright: ignore[reportGeneralTypeIssues]
             abort(403)
         flash("You just deleted an asset")
         session.delete(asset)
@@ -193,14 +186,13 @@ def move(fileid, filename):
     redirect_id = asset.folder.id
     form = MoveAssetForm(prefix="moveasset")
     if form.validate_on_submit():
-        if asset.owner != current_user.profile:
+        if asset.owner != current_user.profile:  # pyright: ignore[reportGeneralTypeIssues]
             abort(403)
         destinationfolder = form.folder.data
         if destinationfolder is not None:
             logger.debug(f"Move {asset.system_path} "
                          f"to {destinationfolder.system_path}")
-            os.replace(asset.system_path,
-                       destinationfolder.system_path / asset.filename)
+            os.replace(asset.system_path, destinationfolder.system_path / asset.filename)
             asset.folder = destinationfolder
             session.commit()
             flash("You moved your file")

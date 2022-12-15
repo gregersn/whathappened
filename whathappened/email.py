@@ -16,4 +16,5 @@ def send_mail(subject: str, sender: str, recipients: List[str], text_body: str, 
     msg.body = text_body
     if html_body is not None:
         msg.html = html_body
-    Thread(target=send_async_email, args=(current_app._get_current_object(), msg)).start()
+    Thread(target=send_async_email,
+           args=(current_app._get_current_object(), msg)).start()  # pyright: ignore[reportGeneralTypeIssues]

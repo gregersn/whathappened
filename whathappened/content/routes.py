@@ -29,7 +29,7 @@ def folders(folder_id=None):
         print("Form did not validate")
         # return redirect(request.url)
 
-    new_folder_form.owner_id.data = current_user.profile.id
+    new_folder_form.owner_id.data = current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
     new_folder_form.parent_id.data = folder_id
 
     current_folder = Folder.query.get(folder_id)
@@ -40,11 +40,11 @@ def folders(folder_id=None):
     tree = []
 
     if current_folder is None:
-        folders = current_user.profile.folders.filter(
+        folders = current_user.profile.folders.filter(  # pyright: ignore[reportGeneralTypeIssues]
             Folder.parent_id.__eq__(None))
-        characters = current_user.profile.characters.filter(
+        characters = current_user.profile.characters.filter(  # pyright: ignore[reportGeneralTypeIssues]
             Character.folder_id.__eq__(None))
-        campaigns = current_user.profile.campaigns.filter(
+        campaigns = current_user.profile.campaigns.filter(  # pyright: ignore[reportGeneralTypeIssues]
             campaignmodels.Campaign.folder_id.__eq__(None))
 
     else:
@@ -64,6 +64,4 @@ def folders(folder_id=None):
         'characters': characters,
         'campaigns': campaigns
     }
-    return render_template('content/folders.html.jinja',
-                           new_folder_form=new_folder_form,
-                           data=data)
+    return render_template('content/folders.html.jinja', new_folder_form=new_folder_form, data=data)

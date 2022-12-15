@@ -14,7 +14,7 @@ from .models import Asset
 
 
 def available_folders():
-    return current_user.profile.assetfolders
+    return current_user.profile.assetfolders  # pyright: ignore[reportGeneralTypeIssues]
 
 
 def available_assets():

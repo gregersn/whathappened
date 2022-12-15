@@ -15,7 +15,9 @@ _named_bundles = {}
 @with_appcontext
 def build():
     """Build bundles."""
-    cmdenv = CommandLineEnvironment(current_app.jinja_env.assets_environment, logger)
+    cmdenv = CommandLineEnvironment(
+        current_app.jinja_env.assets_environment,  # pyright: ignore[reportGeneralTypeIssues]
+        logger)
     cmdenv.build()
 
 
@@ -23,7 +25,9 @@ def build():
 @with_appcontext
 def watch():
     """Watch bundles for file changes."""
-    cmdenv = CommandLineEnvironment(current_app.jinja_env.assets_environment, logger)
+    cmdenv = CommandLineEnvironment(
+        current_app.jinja_env.assets_environment,  # pyright: ignore[reportGeneralTypeIssues]
+        logger)
     cmdenv.watch()
 
 
@@ -31,5 +35,7 @@ def watch():
 @with_appcontext
 def clean():
     """Clean bundles."""
-    cmdenv = CommandLineEnvironment(current_app.jinja_env.assets_environment, logger)
+    cmdenv = CommandLineEnvironment(
+        current_app.jinja_env.assets_environment,  # pyright: ignore[reportGeneralTypeIssues]
+        logger)
     cmdenv.clean()

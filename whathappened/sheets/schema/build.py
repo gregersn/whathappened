@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 SCHEMA_DIR = Path(__file__).parent
 
 
-def load_schema(filename: Path) -> Dict:
+def load_schema(filename: Path) -> Dict[str, Any]:
     with open(filename, 'r') as f:
         try:
             if filename.suffix == '.json':

@@ -23,15 +23,15 @@ def hello(name: str):
 
 @apibp.route('<int:campaignid>/handouts/', methods=('GET', ))
 def handouts(campaignid: int):
-    if not current_user.is_authenticated:
+    if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
     campaign = Campaign.query.get(campaignid)
-    if current_user.profile not in campaign.players:
+    if current_user.profile not in campaign.players:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
     handouts = campaign.handouts.filter_by(status=HandoutStatus.visible) \
-        .filter(Handout.players.contains(current_user.profile))
+        .filter(Handout.players.contains(current_user.profile))  # pyright: ignore[reportGeneralTypeIssues]
 
     handouts_dict = [handout.to_dict(show=['url']) for handout in handouts]
 
@@ -41,8 +41,7 @@ def handouts(campaignid: int):
     return jsonify({'sha': sha.hexdigest(), 'handouts': handouts_dict})
 
 
-@apibp.route('<int:campaignid>/player/<int:playerid>/message',
-             methods=('GET', 'POST'))
+@apibp.route('<int:campaignid>/player/<int:playerid>/message', methods=('GET', 'POST'))
 def message_player(campaignid: int, playerid: int):
     logger.debug("Got a message in the post")
     logger.debug(request.form)
@@ -56,8 +55,8 @@ def messages(campaignid: int):
     logger.debug(f"Get all messages for campaign {campaignid} after {after}")
     campaign = Campaign.query.get(campaignid)
     messages = campaign.messages.filter(or_(
-        Message.from_id == current_user.profile.id,
-        Message.to_id == current_user.profile.id,
+        Message.from_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
+        Message.to_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
         Message.to_id.is_(None))) \
         .filter(Message.timestamp > datetime.fromtimestamp(after)) \
         .order_by('timestamp')
@@ -66,10 +65,9 @@ def messages(campaignid: int):
     return jsonify(message_list)
 
 
-@apibp.route('<int:campaignid>/handout/<int:handoutid>/players',
-             methods=('GET', 'POST'))
+@apibp.route('<int:campaignid>/handout/<int:handoutid>/players', methods=('GET', 'POST'))
 def handout_players(campaignid: int, handoutid: int):
-    if not current_user.is_authenticated:
+    if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
     handout = Handout.query.get(handoutid)
@@ -79,7 +77,7 @@ def handout_players(campaignid: int, handoutid: int):
     if handout.campaign.id != campaignid:
         abort(404)
 
-    if current_user.profile != handout.campaign.user:
+    if current_user.profile != handout.campaign.user:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
     if request.method == 'POST':
@@ -101,12 +99,7 @@ def handout_players(campaignid: int, handoutid: int):
 
         logger.debug(data)
 
-    response = {
-        'players': {
-            p.user.username: p in handout.players
-            for p in handout.campaign.players
-        }
-    }
+    response = {'players': {p.user.username: p in handout.players for p in handout.campaign.players}}
     return jsonify(response)
 
 
@@ -131,7 +124,7 @@ def npcs(campaignid: int):
 @apibp.route('<int:campaignid>/npc/<int:npcid>', methods=('GET', 'POST'))
 @login_required
 def npc_visibility(npcid: int, campaignid: int):
-    if not current_user.is_authenticated:
+    if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
     npc = NPC.query.get(npcid)
@@ -141,7 +134,7 @@ def npc_visibility(npcid: int, campaignid: int):
     if npc.campaign.id != campaignid:
         abort(404)
 
-    if current_user.profile != npc.campaign.user:
+    if current_user.profile != npc.campaign.user:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
     if request.method == 'POST':
@@ -159,9 +152,5 @@ def npc_visibility(npcid: int, campaignid: int):
 
         logger.debug(data)
 
-    response = {
-        'npc': npcid,
-        'campaign': campaignid,
-        'visibility': npc.visible
-    }
+    response = {'npc': npcid, 'campaign': campaignid, 'visibility': npc.visible}
     return jsonify(response)

@@ -20,6 +20,8 @@ MECHANICS = {}
 
 GameSystems = []
 
+CHARACTER_SHEET_TEMPLATE = ""
+
 
 def fix_image(imagedata: str) -> str:
     imagetype, imagedata = imagedata.split(',')
