@@ -1,0 +1,17 @@
+---
+type: object
+properties:
+  system:
+    const: testsheet
+  meta:
+    type: object
+    properties:
+      gamename:
+        const: "Test sheet"
+  character_sheet:
+    type: object
+    properties:
+      name:
+        title: Character name
+        type: string
+        default: Unnamed
