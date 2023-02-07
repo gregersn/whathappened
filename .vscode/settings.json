@@ -4,22 +4,16 @@
         "tests"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
-    "python.testing.nosetestArgs": [
-        "test"
-    ],
     "python.linting.pylintArgs": [
         "--load-plugins",
         "pyling_flask_sqlalchemy",
         "pylint_flask"
     ],
-    "python.pythonPath": ".venv/bin/python",
     "python.linting.pylintEnabled": false,
     "python.linting.pycodestyleEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true,
-    "python.analysis.stubPath": "typings",
     "python.analysis.typeCheckingMode": "basic",
     "python.analysis.diagnosticMode": "workspace",
     "python.linting.ignorePatterns": [
