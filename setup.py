@@ -25,7 +25,7 @@ setup(
         'SQLAlchemy>=1.4.41',
         'webassets==2.0',
         'jinja2-webpack==0.2.0',
-        'pydantic==1.10.2',
+        'pydantic==1.10.6',
         'pywebpack==1.2.0',
     ],
 )
