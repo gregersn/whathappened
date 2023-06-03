@@ -1,8 +1,7 @@
 import copy
-from typing import Union
-from packaging.version import Version, LegacyVersion, parse
+from packaging.version import Version, parse
 
-SheetVersion = Union[Version, LegacyVersion]
+SheetVersion = Version
 
 
 def up_or_down(from_version: SheetVersion, to_version: SheetVersion) -> int:
