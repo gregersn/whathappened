@@ -18,7 +18,7 @@ git+https://github.com/gregersn/pyScss.git
 python-dotenv==0.21.0
 git+https://github.com/inveniosoftware/pywebpack.git@8f5b574a3bb3b841cb107b40982923027ad8e654
 PyYAML==6.0
-requests==2.28.1
+requests==2.31.0
 SQLAlchemy==1.4.45
 werkzeug==2.2.2
 webassets==2.0
