@@ -26,7 +26,7 @@ def handouts(campaignid: int):
     if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
-    campaign = Campaign.query.get(campaignid)
+    campaign = session.get(Campaign, campaignid)
     if current_user.profile not in campaign.players:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
@@ -53,7 +53,7 @@ def message_player(campaignid: int, playerid: int):
 def messages(campaignid: int):
     after = int(request.args.get('after', '0'), 10)
     logger.debug(f"Get all messages for campaign {campaignid} after {after}")
-    campaign = Campaign.query.get(campaignid)
+    campaign = session.get(Campaign, campaignid)
     messages = campaign.messages.filter(or_(
         Message.from_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
         Message.to_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
@@ -70,7 +70,7 @@ def handout_players(campaignid: int, handoutid: int):
     if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
-    handout = Handout.query.get(handoutid)
+    handout = session.get(Handout, handoutid)
     if handout is None:
         abort(404)
 
@@ -106,7 +106,7 @@ def handout_players(campaignid: int, handoutid: int):
 @apibp.route('<int:campaignid>/npcs/', methods=('GET', 'POST'))
 @login_required
 def npcs(campaignid: int):
-    campaign = Campaign.query.get(campaignid)
+    campaign = session.get(Campaign, campaignid)
 
     if campaign is None:
         abort(404)
@@ -127,7 +127,7 @@ def npc_visibility(npcid: int, campaignid: int):
     if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
-    npc = NPC.query.get(npcid)
+    npc = session.get(NPC, npcid)
     if npc is None:
         abort(404)
 

@@ -25,12 +25,16 @@
         {
             "name": "What Happened?",
             "type": "python",
+            "pythonArgs": [
+                "-W always::DeprecationWarning"
+            ],
             "request": "launch",
             "module": "flask",
             "env": {
                 "FLASK_APP": "whathappened",
                 "FLASK_DEBUG": "1",
-                "LOGLEVEL": "DEBUG"
+                "LOGLEVEL": "DEBUG",
+                "SQLALCHEMY_WARN_20": "1"
             },
             "args": [
                 "run"

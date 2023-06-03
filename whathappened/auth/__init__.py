@@ -10,6 +10,7 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 from .models import User  # noqa E402
 from .forms import LoginForm, RegistrationForm  # noqa E402
+from whathappened.database import session
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 @login_manager.user_loader
 def load_user(id: str):
     logger.info(f"Loading user {id}")
-    return User.query.get(int(id))
+    return session.get(User, id)
 
 
 def send_password_reset_email(user: User):

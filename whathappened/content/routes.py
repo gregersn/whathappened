@@ -32,7 +32,7 @@ def folders(folder_id=None):
     new_folder_form.owner_id.data = current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
     new_folder_form.parent_id.data = folder_id
 
-    current_folder = Folder.query.get(folder_id)
+    current_folder = session.get(Folder, folder_id)
 
     folders = None
     characters = None

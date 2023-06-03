@@ -2,12 +2,12 @@ import json
 from typing import KeysView, List, Dict, Any, Optional
 
 from sqlalchemy import MetaData
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm.attributes import QueryableAttribute
-from sqlalchemy.sql.elements import not_
+from sqlalchemy.sql.expression import not_
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-Session = sessionmaker(autocommit=False, autoflush=True)
+Session = sessionmaker(autocommit=False, autoflush=True, future=True)
 session = scoped_session(Session)
 
 convention = {

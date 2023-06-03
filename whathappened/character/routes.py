@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_character(id: int, check_author: bool = True) -> Character:
-    character = Character.query.get(id)
+    character = session.get(Character, id)
 
     if character is None:
         abort(404, "Character id {0} doesn't exist.".format(id))
@@ -101,10 +101,10 @@ def import_character(type: Optional[str] = None, id: Optional[int] = None, code:
     if id:
         character = get_character(id, check_author=True)
     elif code is not None:
-        invite = Invite.query.get(code)
+        invite = session.get(Invite, code)
         if invite is None or invite.table != Character.__tablename__:
             return "Invalid code"
-        character = Character.query.get(invite.object_id)
+        character = session.get(Character, invite.object_id)
 
     form = ImportForm(obj=character)
     if form.validate_on_submit():
@@ -150,11 +150,11 @@ def update(id: int):
 
 @bp.route('/<uuid:code>', methods=('GET', ))
 def shared(code: str):
-    invite = Invite.query.get(code)
+    invite = session.get(Invite, code)
     if invite is None or invite.table != Character.__tablename__:
         return "Invalid code"
 
-    character = Character.query.get(invite.object_id)
+    character = session.get(Character, invite.object_id)
     editable = False
 
     typeheader = "1920s Era Investigator"

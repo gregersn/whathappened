@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 @login_required
 def index():
     assert current_user is not None
-    user_profile = UserProfile.query.get(current_user.id)  # type: ignore
+    user_profile = session.get(UserProfile, current_user.id)  # type: ignore
 
     if user_profile is None:
         user_profile = UserProfile(user_id=current_user.id)  # type: ignore
