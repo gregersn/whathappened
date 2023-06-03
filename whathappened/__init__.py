@@ -54,7 +54,7 @@ def create_app(test_config=None) -> Flask:
         logger.info(f"Exception occured: {e} ")
 
     # Init addons
-    init_db(app.config['SQLALCHEMY_DATABASE_URI'])
+    init_db(app.config['SQLALCHEMY_DATABASE_URI'], nullpool=test_config is not None)
 
     @app.teardown_appcontext
     def cleanup(resp_or_exc):

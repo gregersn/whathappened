@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm import declared_attr
 
 from whathappened.database.fields import GUID
 

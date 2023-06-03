@@ -1,4 +1,4 @@
-from typing import Text, Union
+from typing import Optional, Text, Union
 from flask import render_template, request, redirect, url_for
 from flask.views import View
 from werkzeug.exceptions import abort
@@ -25,7 +25,7 @@ def markdown(value: str):
 
 class HandoutView(View):
 
-    def dispatch_request(self, campaign_id: int, handout_id: int) -> Union[Text, Response]:
+    def dispatch_request(self, campaign_id: int, handout_id: Optional[int] = None) -> Union[Text, Response]:
         logger.debug(f"dispatch_request({campaign_id}, {handout_id})")
 
         if request.method == 'GET' and handout_id is None:
@@ -70,7 +70,7 @@ class HandoutView(View):
 
     def update(self, campaign_id: int, handout_id: int):
         logger.debug("Put to handout")
-        handout = Handout.query.get(handout_id)
+        handout = session.get(Handout, handout_id)
         form = HandoutForm(prefix="handout")
         form.group_id.choices = [('', '(none)'), ] \
             + [(g.id, g.name)
@@ -93,7 +93,7 @@ class HandoutView(View):
 
     def view(self, campaign_id: int, handout_id: int) -> Text:
         logger.debug(f"view({campaign_id}, {handout_id})")
-        handout: Handout = Handout.query.get(handout_id)
+        handout: Handout = session.get(Handout, handout_id)
 
         if not handout:
             abort(404)
@@ -129,7 +129,7 @@ class HandoutView(View):
 
     @login_required
     def list_view(self, campaign_id: int) -> Text:
-        campaign = Campaign.query.get(campaign_id)
+        campaign = session.get(Campaign, campaign_id)
         is_owner = current_user and current_user.profile.id == campaign.user_id  # pyright: ignore[reportGeneralTypeIssues]
         handouts = campaign.handouts.filter(~Handout.group.has()) \
             .filter(is_owner or Handout.players.contains(current_user.profile))  # pyright: ignore[reportGeneralTypeIssues]
@@ -173,7 +173,7 @@ bp.add_url_rule('/<int:campaign_id>/handouts/<int:handout_id>/',
 @bp.route('/<int:campaign_id>/handouts/<int:handout_id>/delete', methods=('GET', 'POST'))
 def handout_delete(campaign_id: int, handout_id: int):
     """Delete a handout."""
-    handout = Handout.query.get(handout_id)
+    handout = session.get(Handout, handout_id)
 
     if current_user.profile.id != handout.campaign.user_id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(404)

@@ -33,7 +33,7 @@ def index():
 @bp.route('/share/<uuid:id>/delete', methods=('GET', 'POST'))
 @login_required
 def invite_delete(id):
-    invite = Invite.query.get(id)
+    invite = session.get(Invite, id)
     if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
         logger.debug("Wrong user")
         abort(403)
@@ -47,7 +47,7 @@ def invite_delete(id):
     objclass = get_class_by_tablename(invite.table)
     obj = None
     if objclass is not None:
-        obj = objclass.query.get(invite.object_id)
+        obj = session.get(objclass, invite.object_id)
 
     form.id.data = invite.id
 
@@ -57,7 +57,7 @@ def invite_delete(id):
 @api.route('/invite/<int:id>/delete', methods=('POST', ))
 @login_required
 def api_invite_delete(id):
-    invite = Invite.query.get(id)
+    invite = session.get(Invite, id)
     if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
     session.delete(invite)

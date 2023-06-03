@@ -50,7 +50,7 @@ class User(UserMixin, Base):
         except Exception:
             logger.error("Exception occurent while trying to reset password.", exc_info=True)
             return
-        return User.query.get(id)
+        return session.get(User, id)
 
     def has_role(self, role: str):
         for r in self.roles:

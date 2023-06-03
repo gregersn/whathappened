@@ -27,14 +27,14 @@ logger = logging.getLogger(__name__)
 @bp.route('/<code>', methods=('GET', 'POST'))
 @login_required
 def join(code: str):
-    inv = Invite.query.get(code)
+    inv = session.get(Invite, code)
 
     if inv is None or inv.table != Campaign.__tablename__:
         return "Invalid code"
 
     joinform = JoinCampaignForm()
     if joinform.validate_on_submit():
-        campaign = Campaign.query.get(inv.object_id)
+        campaign = session.get(Campaign, inv.object_id)
         player = current_user.profile  # pyright: ignore[reportGeneralTypeIssues]
         if player not in campaign.players:
             campaign.players.append(player)
@@ -44,7 +44,7 @@ def join(code: str):
 
     flash("Valid code")
 
-    campaign = Campaign.query.get(inv.object_id)
+    campaign = session.get(Campaign, inv.object_id)
     joinform = JoinCampaignForm(invite_code=code)
 
     return render_template('campaign/joincampaign.html.jinja', campaign=campaign, joinform=joinform)
@@ -54,7 +54,7 @@ def join(code: str):
 @login_required
 def view(id: int):
     invites = None
-    campaign: Campaign = Campaign.query.get(id)
+    campaign: Campaign = session.get(Campaign, id)
 
     # Set up forms
     inviteform = InvitePlayerForm(prefix="inviteform")
@@ -154,7 +154,7 @@ def view(id: int):
 
 @bp.route('/<int:id>/edit', methods=('GET', 'POST'))
 def edit(id: int):
-    c = Campaign.query.get(id)
+    c = session.get(Campaign, id)
     form = EditForm(obj=c, prefix="campaign_edit")
     folderform = ChooseFolderForm(prefix="choose_folder")
 
@@ -178,7 +178,7 @@ def edit(id: int):
 @bp.route("/<int:id>/export", methods=("GET", ))
 @login_required
 def export(id: int):
-    c: Campaign = Campaign.query.get(id)
+    c: Campaign = session.get(Campaign, id)
     return c.to_dict(_hide=[])
 
 
@@ -197,8 +197,8 @@ def create():
 @bp.route('/<int:id>/removecharacter/<int:characterid>', methods=('GET', 'POST'))
 @login_required
 def remove_character(id: int, characterid: int):
-    c = Campaign.query.get(id)
-    char = Character.query.get(characterid)
+    c = session.get(Campaign, id)
+    char = session.get(Character, characterid)
 
     if current_user.profile.id != c.user_id \
             and char.user_id != current_user.profile.id:  # pyright: ignore[reportGeneralTypeIssues]
@@ -218,7 +218,7 @@ def remove_character(id: int, characterid: int):
 @bp.route('/<int:id>/removenpc/<int:characterid>', methods=('GET', 'POST'))
 @login_required
 def remove_npc(id: int, characterid: int):
-    npc = NPC.query.get(characterid)
+    npc = session.get(NPC, characterid)
 
     form = RemoveCharacterForm()
 
@@ -240,7 +240,7 @@ def remove_npc(id: int, characterid: int):
 @bp.route('/<int:id>/npc/<int:npcid>', methods=('GET', 'POST'))
 @login_required
 def manage_npc(id: int, npcid: int):
-    npc = NPC.query.get(npcid)
+    npc = session.get(NPC, npcid)
 
     transferform = NPCTransferForm(prefix="npctransfer", npc_id=npcid)
 
@@ -255,7 +255,7 @@ def manage_npc(id: int, npcid: int):
 
     if transferform.submit.data:
         if transferform.validate_on_submit():
-            player = UserProfile.query.get(transferform.player.data)
+            player = session.get(UserProfile, transferform.player.data)
             campaign = npc.campaign
 
             # Create a copy of the character
@@ -283,8 +283,8 @@ def manage_npc(id: int, npcid: int):
 @login_required
 def remove_player(id: int, playerid: int):
     form = RemovePlayerForm()
-    c = Campaign.query.get(id)
-    player = UserProfile.query.get(playerid)
+    c = session.get(Campaign, id)
+    player = session.get(UserProfile, playerid)
 
     if form.validate_on_submit():
         c.players.remove(player)
@@ -300,10 +300,10 @@ def remove_player(id: int, playerid: int):
 @bp.route('/<int:campaign_id>/message/', methods=('GET', 'POST'))
 @login_required
 def message_player(campaign_id: int, player_id: Optional[int] = None):
-    c = Campaign.query.get(campaign_id)
+    c = session.get(Campaign, campaign_id)
     player = None
     if player_id:
-        player = UserProfile.query.get(player_id)
+        player = session.get(UserProfile, player_id)
 
     form = MessagePlayerForm()
 

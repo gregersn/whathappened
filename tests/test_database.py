@@ -12,7 +12,7 @@ class DataModel(Base):
 
 def test_connect_db():
     db_uri = 'sqlite:///whathappened_test_db.sqlite'
-    init_db(db_uri)
+    init_db(db_uri, nullpool=True)
     db.drop_all()
     db.create_all()
 
