@@ -25,7 +25,7 @@ setup(
         'SQLAlchemy>=1.4.41',
         'webassets==2.0',
         'jinja2-webpack==0.2.0',
-        'pydantic==1.10.2',
+        'pydantic==1.10.8',
         'pywebpack @ git+https://github.com/inveniosoftware/pywebpack.git@8f5b574a3bb3b841cb107b40982923027ad8e654',
     ],
 )
