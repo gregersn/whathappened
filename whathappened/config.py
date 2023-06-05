@@ -29,5 +29,5 @@ class Settings(BaseSettings):
 
 Config = Settings(_env_file=os.environ.get('WHATHAPPENED_SETTINGS'))
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     print(Config)

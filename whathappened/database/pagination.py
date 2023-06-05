@@ -1,7 +1,16 @@
 import math
+from typing import Any, List, Optional
 
 
 class Page():
+    items: List[Any]
+    prev_page: Optional[int]
+    next_page: Optional[int]
+    has_prev: bool
+    prev_items: int
+    has_next: bool
+    total: int
+    pages: int
 
     def __init__(self, items, page: int, page_size: int, total: int):
         self.items = items

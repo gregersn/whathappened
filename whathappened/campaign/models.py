@@ -6,8 +6,6 @@ from sqlalchemy.sql.schema import ForeignKey, Table, Column
 from sqlalchemy.sql.sqltypes import Boolean, DateTime
 from sqlalchemy.sql.sqltypes import Enum, Integer, String, Text
 
-from flask import url_for
-
 from whathappened.database.base import Base, BaseModel
 from whathappened.content.mixins import BaseContent
 
@@ -135,12 +133,6 @@ class Handout(BaseModel):
         return '<Handout {}>'.format(self.title)
 
     _default_fields = ['id', 'title']
-
-    @property
-    def url(self):
-        return url_for('campaign.handout_view',
-                       campaign_id=self.campaign.id,
-                       handout_id=self.id)
 
 
 class NPC(BaseModel):

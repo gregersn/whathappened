@@ -1,10 +1,12 @@
 from pathlib import Path
 
 import pytest
+from sqlalchemy import NullPool, create_engine, event
 from whathappened import create_app, assets
 from whathappened.database import db as _db
 
 from whathappened.config import Settings
+from whathappened.database.base import Base, Session
 
 basedir = Path(__file__).parent.absolute()
 
@@ -78,13 +80,14 @@ def client(app, request):
     return client
 
 
-class AuthActions(object):
+class AuthActions:
 
     def __init__(self, client):
         self._client = client
 
     def login(self, username='test', password='test'):
-        return self._client.post('/auth/login', data={'username': username, 'password': password})
+        return self._client.post('/auth/login',
+                                 data={'username': username, 'password': password})
 
     def logout(self):
         return self._client.get('/auth/logout')
@@ -93,3 +96,44 @@ class AuthActions(object):
 @pytest.fixture
 def auth(client):
     return AuthActions(client)
+
+
+@pytest.fixture(scope="session")
+def connection(request):
+    engine = create_engine('sqlite:///test_db_2.sqlite', poolclass=NullPool, future=True)
+    connection = engine.connect()
+
+    def teardown():
+        print("TEARDOWN")
+
+    request.addfinalizer(teardown)
+    return connection
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_db(connection, request):
+    Base.metadata.create_all(bind=connection)
+
+    def teardown():
+        Base.metadata.drop_all(bind=connection)
+
+    request.addfinalizer(teardown)
+
+
+@pytest.fixture(autouse=True)
+def new_session(connection, request):
+    # transaction = connection.begin()
+    session = Session(bind=connection)
+    session.begin_nested()
+
+    # @event.listens_for(session, "after_transaction_end")
+    def restart_savepoint(db_session, transaction):
+        raise NotImplementedError
+
+    def teardown():
+        # Session.remove()
+        # transaction.rollback()
+        ...
+
+    request.addfinalizer(teardown)
+    return session

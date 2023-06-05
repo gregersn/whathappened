@@ -1,11 +1,14 @@
 {% extends 'base.html.jinja' %}
 
 {% block content %}
-    {{ asset.folder|clickpath }}/{{ asset.filename }}
-    <form action="{{ url_for('userassets.delete', fileid=asset.id, filename=asset.filename) }}" method="post">{{ deleteform.hidden_tag() }}{{ deleteform.delete }}</form>
-    <form action="{{ url_for('userassets.move', fileid=asset.id, filename=asset.filename) }}" method="post">{{ moveform.hidden_tag() }}{{ moveform.folder }}{{ moveform.move }}</form>
+{{ asset.folder|clickpath }}/{{ asset.filename }}
+<form action="{{ url_for('userassets.delete', fileid=asset.id, filename=asset.filename) }}" method="post">{{
+    deleteform.hidden_tag() }}{{ deleteform.delete }}</form>
+<form action="{{ url_for('userassets.move', fileid=asset.id, filename=asset.filename) }}" method="post">{{
+    moveform.hidden_tag() }}{{ moveform.folder }}{{ moveform.move }}</form>
 
-    <div>
-        <img src="{{ asset.url }}" style="display: block; width: auto; height: auto; max-width: 50vw; max-height: 50vh; padding: 20px; border: 1px dotted black;" />
-    </div>
+<div>
+    <img src="{{ url_for('campaign.handout_view', campaign_id=asset.campaign.id, handout_id=asset.id) }}"
+        style="display: block; width: auto; height: auto; max-width: 50vw; max-height: 50vh; padding: 20px; border: 1px dotted black;" />
+</div>
 {% endblock %}

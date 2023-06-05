@@ -1,8 +1,8 @@
 from flask import Blueprint
 from flask import url_for
 
-bp = Blueprint('userassets', __name__ )
-apibp = Blueprint('userassetsapi', __name__ )
+bp = Blueprint('userassets', __name__)
+apibp = Blueprint('userassetsapi', __name__)
 
 from . import routes  # noqa: F401,E402 isort:skip
 # from . import views  # noqa: F401, E402 isort:skip
