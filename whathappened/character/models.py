@@ -19,7 +19,8 @@ class Character(BaseContent, BaseModel):
     id = Column(Integer, primary_key=True)
     title = cast(str, Column(String(256)))
     body = cast(Dict[str, Any], Column(JSON))
-    timestamp = Column(DateTime, index=True, default=datetime.utcnow, onupdate=datetime.utcnow)
+    timestamp = Column(DateTime, index=True, default=datetime.utcnow,
+                       onupdate=datetime.utcnow)
     user_id = cast(int, Column(Integer, ForeignKey('user_profile.id')))
     player = relationship('UserProfile', backref=backref('characters', lazy='dynamic'))
 
@@ -30,7 +31,8 @@ class Character(BaseContent, BaseModel):
     def __repr__(self):
         return '<Character {}>'.format(self.title)
 
-    def __init__(self, mechanics: Type[CharacterMechanics] = CharacterMechanics, *args, **kwargs):
+    def __init__(self, mechanics: Type[CharacterMechanics] = CharacterMechanics,
+                 *args, **kwargs):
         super(Character, self).__init__(*args, **kwargs)
         self._data = None
         # Add a subclass or something that

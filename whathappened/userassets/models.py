@@ -65,9 +65,14 @@ class AssetFolder(Base):
     __tablename__ = 'asset_folder'
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     owner_id = Column(Integer, ForeignKey('user_profile.id'))
-    owner = relationship("UserProfile", backref=backref('assetfolders', lazy='dynamic', cascade_backrefs=False))
+    owner = relationship("UserProfile",
+                         backref=backref('assetfolders',
+                                         lazy='dynamic',
+                                         cascade_backrefs=False))
     parent_id = Column(GUID(), ForeignKey('asset_folder.id'), default=None)
-    subfolders = relationship('AssetFolder', backref=backref('parent', remote_side=[id]))
+    subfolders = relationship('AssetFolder',
+                              backref=backref('parent',
+                                              remote_side=[id]))
     title = Column(String(128))
     files = relationship("Asset", back_populates='folder')
 

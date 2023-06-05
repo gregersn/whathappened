@@ -21,8 +21,8 @@ def login():
     if not next_page or url_parse(next_page).netloc != '':
         next_page = url_for('main.index')
 
-    if current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
-        logger.debug("User %s is already logged in", current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.is_authenticated:
+        logger.debug("User %s is already logged in", current_user.id)
         return redirect(next_page)
     form = LoginForm()
     if form.validate_on_submit():
@@ -44,7 +44,7 @@ def logout():
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -59,7 +59,7 @@ def register():
 
 @bp.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
-    if current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.is_authenticated:
         return redirect(url_for('main.index'))
 
     form = ResetPasswordRequestForm()
@@ -70,12 +70,14 @@ def reset_password_request():
         flash('Check your email for reset instructions.')
         return redirect(url_for('auth.login'))
 
-    return render_template('/auth/reset_password_request.html.jinja', title='Reset password', form=form)
+    return render_template('/auth/reset_password_request.html.jinja',
+                           title='Reset password',
+                           form=form)
 
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token: str):
-    if current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.is_authenticated:
         return redirect(url_for('main.index'))
 
     user = User.verify_reset_password_token(token)
