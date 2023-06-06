@@ -13,7 +13,7 @@ markdown2==2.4.6
 packaging==23.1
 Pillow==9.4.0
 PyJWT==2.6.0
-PyMySQL==1.0.2
+PyMySQL==1.0.3
 git+https://github.com/gregersn/pyScss.git
 python-dotenv==1.0.0
 git+https://github.com/inveniosoftware/pywebpack.git@8f5b574a3bb3b841cb107b40982923027ad8e654
