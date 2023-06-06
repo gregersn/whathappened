@@ -18,7 +18,7 @@ setup(
         'packaging>=21.3',
         'Pillow>=9.3.0',
         'PyJWT>=2.6.0',
-        'pyScss @ git+https://github.com/gregersn/pyScss.git',
+        'pyScss @ git+https://github.com/Kronuz/pyScss.git',
         'python-dotenv>=0.21.0',
         'PyMysql>=1.0.2',
         'PyYAML>=6.0.0',
