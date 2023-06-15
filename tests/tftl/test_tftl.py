@@ -9,7 +9,7 @@ from whathappened.character.tftl import CHARACTER_SCHEMA
 from whathappened.character.tftl import new_character
 from whathappened.character.models import Character
 
-BASEDIR = BASEDIR = Path(__file__).parent.absolute()
+BASEDIR = Path(__file__).parent.absolute()
 
 
 @pytest.fixture(name="newly_created_character")
