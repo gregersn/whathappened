@@ -1,11 +1,11 @@
 import logging
 from typing import Optional
-from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, HiddenField
 from wtforms import ValidationError, SubmitField
 from wtforms import Field
 from wtforms.validators import DataRequired
 import json
+from whathappened.forms.base import BaseForm
 
 from whathappened.forms.fields import JsonField
 
@@ -19,7 +19,7 @@ class JsonString(object):
             message = u'Field must be a valid JSON string'
         self.message = message
 
-    def __call__(self, form: FlaskForm, field: Field):
+    def __call__(self, form: BaseForm, field: Field):
         try:
             _ = json.loads(field.data)
         except Exception:
@@ -27,7 +27,7 @@ class JsonString(object):
             raise ValidationError(self.message)
 
 
-class ImportForm(FlaskForm):
+class ImportForm(BaseForm):
     title = StringField('Title', validators=[DataRequired()])
     body = JsonField('Body', validators=[DataRequired()])
     conversion = BooleanField('Convert')
@@ -35,24 +35,24 @@ class ImportForm(FlaskForm):
     submit = SubmitField('Import')
 
 
-class CreateForm(FlaskForm):
+class CreateForm(BaseForm):
     title = StringField('Title', validators=[DataRequired()])
     system = HiddenField('System', validators=[DataRequired()])
     submit = SubmitField('Create')
 
 
-class SkillForm(FlaskForm):
+class SkillForm(BaseForm):
     name = StringField('Name', validators=[DataRequired()])
     # value = IntegerField('Value', validators=[DataRequired()])
     submit = SubmitField('Add')
 
 
-class SubskillForm(FlaskForm):
+class SubskillForm(BaseForm):
     name = StringField('Name', validators=[DataRequired()])
     parent = HiddenField('Parent', validators=[DataRequired()])
     submit = SubmitField('Add')
 
 
-class DeleteForm(FlaskForm):
+class DeleteForm(BaseForm):
     character_id = HiddenField('CharacterId', validators=[DataRequired()])
     submit = SubmitField('Delete')
