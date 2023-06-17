@@ -3,7 +3,8 @@ from setuptools import find_packages, setup
 setup(
     name="whathappened",
     version='0.0.2',
-    packages=find_packages(),
+    packages=find_packages('src'),
+    package_dir={"": "src"},
     include_package_data=True,
     zip_safe=False,
     install_requires=[
