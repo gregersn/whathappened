@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "whathappened"
+version = "0.0.2"
+
+
+authors = [
+    { name="Greger Stolt Nilsen", email="gregersn@gmail.com" }
+]
+description = "A minimalistic TTRPG package."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    "alembic",
+    "email-validator",
+    "Flask-Login",
+    "Flask-Mail",
+    "Flask-WTF",
+    "flask",
+    "gunicorn",
+    "itsdangerous",
+    "Jinja2",
+    "jsonschema",
+    "markdown2",
+    "packaging",
+    "Pillow",
+    "PyJWT",
+    "pyScss @ git+https://github.com/Kronuz/pyScss.git",
+    "python-dotenv",
+    "PyMysql",
+    "PyYAML",
+    "SQLAlchemy",
+    "werkzeug",
+    "webassets",
+    "jinja2-webpack",
+    "pydantic",
+    "pywebpack @ git+https://github.com/inveniosoftware/pywebpack.git@8f5b574a3bb3b841cb107b40982923027ad8e654",    
+]
+
+
+
+[project.optional-dependencies]
+development = [
+    "flake8",
+    "pytest",
+    "pytest-cov",
+    "wheel",
+    "yapf",
+    "pylint",
+    "autopep8"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/gregersn/whathappened"
+"Bug Tracker" = "https://github.com/gregersn/whathappened/issues"
+
+[tool.pytest]
+testpaths = "tests"
+
+[tool.pytest.ini_options]
+pythonpath = ['src']
+
+[coverage.run]
+branch = true
+source = "whathappened"
+
+[tool.flake8]
+max-line-length = 120
+
+[tool.yapf]
+column_limit = 120
+
+

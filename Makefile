@@ -51,7 +51,7 @@ dist: setup_dependencies frontend
 	$(RMRF) src/whathappened/static/css/
 	@FLASK_APP=src/whathappened $(VENV_FLASK) main build
 	@FLASK_APP=src/whathappened $(VENV_FLASK) assets build
-	@$(VENV_PYTHON) setup.py bdist_wheel
+	@$(VENV_PYTHON) -m build
 
 # Clean out build artefacts:
 clean:
