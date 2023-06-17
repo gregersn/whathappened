@@ -59,7 +59,7 @@ jobs:
         if: ${{ matrix.python-version == '3.9' }}
       - name: Run package creation
         run: |
-          python3 setup.py bdist_wheel
+          make dist
         if: ${{ matrix.python-version == '3.9' }}
       - name: Archive package
         uses: actions/upload-artifact@v2
