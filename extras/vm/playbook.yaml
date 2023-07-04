@@ -15,6 +15,8 @@
       become: yes
       package:
         name:
+          - acl
+          - git
           - nginx
           - python3-pip
           - supervisor
@@ -63,11 +65,24 @@
         name: virtualenv
         executable: pip3
     
+    - name: install Psycopg2 with pip globally
+      become: yes
+      pip:
+        name: psycopg2-binary
+        executable: pip3
+
     - name: "Install Psycopg2 with pip"
       pip: "name={{ item }} state=present"
       with_items:
         - psycopg2-binary
       when: db_engine == "postgresql"
+
+
+    - name: install PyMysql with pip globally
+      become: yes
+      pip:
+        name: PyMySQL
+        executable: pip3
 
     - name: install PyMysql with pip
       pip: "name={{ item }} state=present"
@@ -85,10 +100,9 @@
       when: db_engine == "postgresql"
     
     - name: "Initialize PostgreSQL"
-      shell: "postgresql-setup initdb"
-      when: not postgres_data.stat.exists
+      shell: "postgresql-setup --initdb --unit postgresql"
+      when: (db_engine == "postgresql") and (not postgres_data.stat.exists)
       become: yes
-      when: db_engine == "postgresql"
     
     - name: "Start and enable services"
       service: "name={{ item }} state=started enabled=yes"
@@ -125,6 +139,19 @@
       become_user: postgres
       when: db_engine == "postgresql"
     
+    - name: Grant schema public access
+      postgresql_privs:
+        type: schema
+        database: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        grant_option: no
+        privs: all
+        objs: public
+      become: true
+      become_user: postgres
+      when: db_engine == "postgresql"
+
+
 
     # Mysql
 
@@ -154,7 +181,7 @@
     
     - name: copy whathappened
       copy:
-        src: ../dist/whathappened-0.0.2-py3-none-any.whl
+        src: ../../dist/whathappened-0.0.2-py3-none-any.whl
         dest: ~/
       register: result
 
@@ -165,12 +192,21 @@
         state: forcereinstall
       when: result is changed
 
-    - name: create whathappened config file
+    - name: create whathappened config file for postgresql
+      copy:
+        dest: ~/whathappened_config.env
+        content: |
+          UPLOAD_FOLDER="uploads"
+          SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://{{ db_user }}:{{ db_password }}@localhost:5432/{{ db_name }}"
+      when: db_engine == "postgresql"
+
+    - name: create whathappened config file for mysql
       copy:
         dest: ~/whathappened_config.env
         content: |
           UPLOAD_FOLDER="uploads"
           SQLALCHEMY_DATABASE_URI="mysql+pymysql://{{ db_user }}:{{ db_password }}@localhost:3306/{{ db_name }}"
+      when: db_engine == "mysql"
 
     - name: update whathappened database
       shell: WHATHAPPENED_SETTINGS=/home/vagrant/whathappened_config.env FLASK_APP=whathappened ~/.venv/bin/flask db upgrade

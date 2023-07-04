@@ -1,4 +1,5 @@
 ---
+db_engine: postgresql
 db_user: whathappened
 db_password: letsroll
 db_name: whathappened
