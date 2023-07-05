@@ -19,10 +19,12 @@ from .database import init_db, session
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'  # type: ignore  # Not an error
-assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent / 'static')
+assets_env = AssetsEnvironment(directory=Path(
+    __file__).absolute().parent / 'static')
 csrf = CSRFProtect()
 
-logging.basicConfig(format='%(asctime)s %(levelname)s: %(name)s %(message)s', level=logging.DEBUG)
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s: %(name)s %(message)s', level=logging.DEBUG)
 logging.debug('Logger initialized')
 
 logging.getLogger('semver').setLevel(logging.INFO)
@@ -54,7 +56,8 @@ def create_app(test_config=None) -> Flask:
         logger.info(f"Exception occured: {e} ")
 
     # Init addons
-    init_db(app.config['SQLALCHEMY_DATABASE_URI'], nullpool=test_config is not None)
+    init_db(app.config['SQLALCHEMY_DATABASE_URI'],
+            nullpool=test_config is not None)
 
     @app.teardown_appcontext
     def cleanup(resp_or_exc):
@@ -65,14 +68,17 @@ def create_app(test_config=None) -> Flask:
     mail.init_app(app)
     app.jinja_env.add_extension('webassets.ext.jinja2.AssetsExtension')
 
-    webpack_manifest = Path(__file__).absolute().parent / 'static' / 'manifest.json'
+    webpack_manifest = Path(__file__).absolute().parent / \
+        'static' / 'manifest.json'
 
     if webpack_manifest.exists():
-        webpack_env = WebpackEnvironment(manifest=webpack_manifest, publicRoot="")
+        webpack_env = WebpackEnvironment(
+            manifest=webpack_manifest, publicRoot="")
 
         app.jinja_env.filters['webpack'] = WebpackFilter(webpack_env)
 
-    app.jinja_env.assets_environment = assets_env  # pyright: ignore[reportGeneralTypeIssues]
+    # pyright: ignore[reportGeneralTypeIssues]
+    app.jinja_env.assets_environment = assets_env
 
     # Register blueprints
     from . import auth
@@ -126,7 +132,12 @@ def create_app(test_config=None) -> Flask:
         scss = Bundle('scss/main.scss', filters='pyscss', output='css/all.css')
         assets_env.register('scss_all', scss)
 
-        css_profile = Bundle('scss/profile.scss', filters='pyscss', output='css/profile.css')
+        css_profile = Bundle('scss/profile.scss',
+                             filters='pyscss', output='css/profile.css')
         assets_env.register('scss_profile', css_profile)
 
     return app
+
+
+def application(*args, **kwargs):
+    return create_app()

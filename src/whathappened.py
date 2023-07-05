@@ -6,13 +6,18 @@ from whathappened.auth.models import User, Role, UserRoles
 from whathappened.profile import UserProfile
 from whathappened.character.models import Character
 
-logging.basicConfig(format='%(asctime)s %(levelname)s: %(name)s %(message)s', level=logging.DEBUG)
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s: %(name)s %(message)s', level=logging.DEBUG)
 logging.debug('Logger initialized')
 
 logging.getLogger('semver').setLevel(logging.INFO)
 logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
 app = create_app()
+
+
+def application():
+    return create_app()
 
 
 @app.shell_context_processor

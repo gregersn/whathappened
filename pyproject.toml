@@ -19,12 +19,12 @@ classifiers = [
 ]
 dependencies = [
     "alembic",
+    "cheroot",
     "email-validator",
     "Flask-Login",
     "Flask-Mail",
     "Flask-WTF",
     "flask",
-    "gunicorn",
     "itsdangerous",
     "Jinja2",
     "jsonschema",
