@@ -14,7 +14,7 @@
     PyJWT==2.7.0
     pyScss @ git+https://github.com/Kronuz/pyScss.git
     python-dotenv==1.0.0
-    PyMysql==1.0.3
+    PyMysql==1.1.0
     PyYAML==6.0.0
     SQLAlchemy==2.0.16
     werkzeug==2.3.6
