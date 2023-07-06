@@ -18,10 +18,11 @@
           - acl
           - git
           - nginx
-          - python3-pip
-          - supervisor
+          - kitty-terminfo
           - postgresql
           - postgresql-server
+          - python3-pip
+          - supervisor
         state: latest
         update_cache: yes
     
@@ -220,7 +221,7 @@
     - name: configure supervisor
       become: yes
       copy:
-        dest: /etc/supervisor/conf.d/whatappened.conf
+        dest: /etc/supervisord.d/whathappened.ini # /etc/supervisor/conf.d/whatappened.conf
         content: |
           [program:whathappened]
           environment=WHATHAPPENED_SETTINGS=/home/vagrant/whathappened_config.env
@@ -239,6 +240,9 @@
         name: whathappened
         state: restarted
       when: result is changed
+
+    - name: Set firewall rules
+      when: ansible_os_family == "RedHat"
 
     - name: add site settings to nginx
       become: yes
