@@ -1,0 +1,317 @@
+---
+- name: Setup whathappened on a blank server
+  hosts: "*"
+  gather_facts: yes
+  vars_files:
+    - vars.yml
+  
+  vars_prompt:
+    - name: db_engine
+      prompt: postgresql or mysql?
+      private: false
+
+  pre_tasks:
+    - name: install packages
+      become: yes
+      package:
+        name:
+          - acl
+          - git
+          - nginx
+          - kitty-terminfo
+          - postgresql
+          - postgresql-server
+          - python3-pip
+          - supervisor
+          - vim
+        state: latest
+        update_cache: yes
+    
+    - name: install mysql
+      become: yes
+      package:
+        name:
+        - mysql-server
+        state: latest
+      when: db_engine == "mysql"
+    
+    - name: install postgresql
+      become: yes
+      package:
+        name:
+          - postgresql
+          - postgresql-server
+        state: latest
+      when: db_engine == "postgresql"
+
+    - name: install venv with pip
+      become: yes
+      pip:
+        name: virtualenv
+        executable: pip3
+    
+    - name: install Psycopg2-binary with pip globally
+      become: yes
+      pip:
+        name: psycopg2-binary
+        executable: pip3
+      when: db_engine == "postgresql"
+
+    - name: install PyMysql with pip globally
+      become: yes
+      pip:
+        name: PyMySQL
+        executable: pip3
+
+#     - name: install PyMysql with pip
+#      pip: "name={{ item }} state=present"
+#      with_items:
+#        - PyMySQL
+#      when: db_engine == "mysql"
+
+    - name: create whathappened user
+      become: yes
+      ansible.builtin.user:
+        name: "{{ db_user }}"
+        comment: "What Happened"
+
+
+  tasks:   
+    # PostgreSQL
+    - name: "Find out if PostgreSQL is initialized"
+      ansible.builtin.stat:
+        path: "/var/lib/pgsql/data/pg_hba.conf"
+      register: postgres_data
+      become: yes
+      when: db_engine == "postgresql"
+    
+    - name: "Initialize PostgreSQL"
+      shell: "postgresql-setup --initdb --unit postgresql"
+      when: (db_engine == "postgresql") and (not postgres_data.stat.exists)
+      become: yes
+    
+    - name: Add password auth to posgress for user, ipv6
+      postgresql_pg_hba:
+        dest: /var/lib/pgsql/data/pg_hba.conf
+        contype: host
+        users: "{{ db_user }}"
+        databases: "{{ db_name }}"
+        address: ::1/128
+        method: md5
+      become: true
+      when: db_engine == "postgresql"
+
+    - name: Add password auth to posgress for user, ipv4
+      postgresql_pg_hba:
+        dest: /var/lib/pgsql/data/pg_hba.conf
+        contype: host
+        users: "{{ db_user }}"
+        databases: "{{ db_name }}"
+        address: 127.0.0.1/32
+        method: md5
+      become: true
+      when: db_engine == "postgresql"
+
+    - name: "Start and enable services"
+      service: "name={{ item }} state=started enabled=yes"
+      with_items:
+        - postgresql
+      become: yes
+      when: db_engine == "postgresql"
+      
+    - name: Create postgresSQL database
+      postgresql_db: 
+        state: present
+        name: "{{ db_name }}"
+      become: yes
+      become_user: postgres
+      when: db_engine == "postgresql"
+    
+    - name: User access
+      postgresql_user:
+        state: present
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+      become: yes
+      become_user: postgres
+      when: db_engine == "postgresql"
+
+    - name: Grant db access
+      postgresql_privs:
+        type: database
+        database: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        grant_option: no
+        privs: all
+      become: true
+      become_user: postgres
+      when: db_engine == "postgresql"
+    
+    - name: Grant schema public access
+      postgresql_privs:
+        type: schema
+        database: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        grant_option: no
+        privs: all
+        objs: public
+      become: true
+      become_user: postgres
+      when: db_engine == "postgresql"
+    
+
+    # Mysql
+
+    - name: Create mysql database
+      become: yes
+      community.mysql.mysql_db:
+        name: whathappened
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+      when: db_engine == "mysql"
+
+    # Todo: Set performance_schema = off under [mysqld] in the mysql config
+
+    - name: Create database user for whathappened
+      become: yes
+      community.mysql.mysql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        priv: "whathappened.*:ALL"
+        host: localhost
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+      when: db_engine == "mysql"
+
+
+    # WhatHappened
+
+
+    - name: copy whathappened
+      become: yes
+      become_user: "{{ db_user }}"
+      copy:
+        src: ../../dist/whathappened-0.0.2-py3-none-any.whl
+        dest: ~/
+      register: result
+
+    - name: install whathappened
+      become: yes
+      become_user: "{{ db_user }}"
+      pip:
+        name: ~/whathappened-0.0.2-py3-none-any.whl
+        virtualenv: ~/.venv
+        state: forcereinstall
+      when: result is changed
+
+    - name: install psycopg3 in venv
+      become: yes
+      become_user: "{{ db_user }}"
+      pip:
+        name: "psycopg[binary]"
+        virtualenv: ~/.venv
+        state: present
+
+    - name: create whathappened config file for postgresql
+      become: yes
+      become_user: "{{ db_user }}"
+      copy:
+        dest: ~/whathappened_config.env
+        content: |
+          UPLOAD_FOLDER="uploads"
+          SQLALCHEMY_DATABASE_URI="postgresql+psycopg://{{ db_user }}:{{ db_password }}@localhost:5432/{{ db_name }}"
+      when: db_engine == "postgresql"
+
+    - name: create whathappened config file for mysql
+      become: yes
+      become_user: "{{ db_user }}"
+      copy:
+        dest: ~/whathappened_config.env
+        content: |
+          UPLOAD_FOLDER="uploads"
+          SQLALCHEMY_DATABASE_URI="mysql+pymysql://{{ db_user }}:{{ db_password }}@localhost:3306/{{ db_name }}"
+      when: db_engine == "mysql"
+
+    - name: update whathappened database
+      become: yes
+      become_user: "{{ db_user }}"
+      shell: WHATHAPPENED_SETTINGS=/home/{{ db_user }}/whathappened_config.env FLASK_APP=whathappened ~/.venv/bin/flask db upgrade
+
+    - name: install gunicorn
+      become: yes
+      become_user: "{{ db_user }}"
+      pip:
+        name: gunicorn
+        virtualenv: ~/.venv
+        state: latest
+
+    - name: configure supervisor
+      become: yes
+      copy:
+        dest: /etc/supervisord.d/whathappened.ini # /etc/supervisor/conf.d/whatappened.conf
+        content: |
+          [program:whathappened]
+          environment=WHATHAPPENED_SETTINGS=/home/{{ db_user }}/whathappened_config.env
+          command=/home/{{ db_user }}/.venv/bin/gunicorn -b localhost:9631 -w 4 "whathappened:create_app()"
+          directory=/home/{{ db_user }}
+          user={{ db_user }}
+          autostart=true
+          autorestart=true
+          stopasgroup=true
+          killasgroup=true
+      register: result
+
+    - name: reload supervisor
+      become: yes
+      supervisorctl:
+        name: whathappened
+        state: restarted
+      when: result is changed
+
+    # - name: add site settings to nginx
+    #   become: yes
+    #   copy:
+    #     dest: /etc/nginx/sites-available/whathappened
+    #     content: |
+    #       server {
+    #         listen 80;
+    #         server_name _;
+    #         location / {
+    #                 proxy_pass http://localhost:9631;
+    #                 proxy_redirect off;
+    #                 proxy_set_header Host $host;
+    #                 proxy_set_header X-Real-IP $remote_addr;
+    #                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #         }
+
+    #         location /static {
+    #                 alias /home/{{ db_user }}/.venv/lib/python3.10/site-packages/whathappened/static;
+    #                 expires 30d;
+    #         }
+    #       }
+    #   register: result
+
+    # - name: disable default nginx site
+    #   become: yes
+    #   ansible.builtin.file:
+    #     path: /etc/nginx/sites-enabled/default
+    #     state: absent
+
+    # - name: enable whathappened as nginx site
+    #   become: yes
+    #   ansible.builtin.file:
+    #     dest: /etc/nginx/sites-enabled/whathappened
+    #     src: /etc/nginx/sites-available/whathappened
+    #     state: link
+    #   notify: restart nginx
+
+  handlers:
+    - name: restart postgres
+      service: name=postgresql state=restarted
+      when: db_engine == "postgresql"
+
+    - name: restart nginx
+      become: yes
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
