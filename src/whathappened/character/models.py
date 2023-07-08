@@ -22,7 +22,8 @@ class Character(BaseContent, BaseModel):
     timestamp = Column(DateTime, index=True, default=datetime.utcnow,
                        onupdate=datetime.utcnow)
     user_id = cast(int, Column(Integer, ForeignKey('user_profile.id')))
-    player = relationship('UserProfile', backref=backref('characters', lazy='dynamic'))
+    player = relationship('UserProfile', backref=backref(
+        'characters', lazy='dynamic'))
 
     folder = relationship('Folder', backref='characters')
 
@@ -50,7 +51,8 @@ class Character(BaseContent, BaseModel):
     def data(self) -> Dict[str, Any]:
         if isinstance(self.body, dict):
             return self.body
-        raise TypeError("Body is not a dictionary")
+        logger.error("Body is not a dictionary")
+        return {}
 
     @property
     def system(self) -> str:

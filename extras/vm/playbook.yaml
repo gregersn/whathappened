@@ -50,18 +50,12 @@
         name: virtualenv
         executable: pip3
     
-    - name: install Psycopg3 with pip globally
+    - name: install Psycopg2-binary with pip globally
       become: yes
       pip:
-        name: psycopg[binary]
+        name: psycopg2-binary
         executable: pip3
-
-#    - name: "Install Psycopg3 with pip"
-#      pip: "name={{ item }} state=present"
-#      with_items:
-#        - psycopg3-binary
-#      when: db_engine == "postgresql"
-
+      when: db_engine == "postgresql"
 
     - name: install PyMysql with pip globally
       become: yes
@@ -96,6 +90,28 @@
       when: (db_engine == "postgresql") and (not postgres_data.stat.exists)
       become: yes
     
+    - name: Add password auth to posgress for user, ipv6
+      postgresql_pg_hba:
+        dest: /var/lib/pgsql/data/pg_hba.conf
+        contype: host
+        users: "{{ db_user }}"
+        databases: "{{ db_name }}"
+        address: ::1/128
+        method: md5
+      become: true
+      when: db_engine == "postgresql"
+
+    - name: Add password auth to posgress for user, ipv4
+      postgresql_pg_hba:
+        dest: /var/lib/pgsql/data/pg_hba.conf
+        contype: host
+        users: "{{ db_user }}"
+        databases: "{{ db_name }}"
+        address: 127.0.0.1/32
+        method: md5
+      become: true
+      when: db_engine == "postgresql"
+
     - name: "Start and enable services"
       service: "name={{ item }} state=started enabled=yes"
       with_items:
@@ -143,29 +159,6 @@
       become_user: postgres
       when: db_engine == "postgresql"
     
-    - name: Add password auth to posgress for user, ipv6
-      postgresql_pg_hba:
-        dest: /var/lib/pgsql/data/pg_hba.conf
-        contype: host
-        users: "{{ db_user }}"
-        databases: "{{ db_name }}"
-        address: ::1/128
-        method: md5
-      become: true
-      when: db_engine == "postgresql"
-
-    - name: Add password auth to posgress for user, ipv4
-      postgresql_pg_hba:
-        dest: /var/lib/pgsql/data/pg_hba.conf
-        contype: host
-        users: "{{ db_user }}"
-        databases: "{{ db_name }}"
-        address: 127.0.0.1/32
-        method: md5
-      become: true
-      when: db_engine == "postgresql"
-
-
 
     # Mysql
 
@@ -261,7 +254,7 @@
           environment=WHATHAPPENED_SETTINGS=/home/{{ db_user }}/whathappened_config.env
           command=/home/{{ db_user }}/.venv/bin/gunicorn -b localhost:9631 -w 4 "whathappened:create_app()"
           directory=/home/{{ db_user }}
-          user=vagrant
+          user={{ db_user }}
           autostart=true
           autorestart=true
           stopasgroup=true
@@ -275,42 +268,42 @@
         state: restarted
       when: result is changed
 
-    - name: add site settings to nginx
-      become: yes
-      copy:
-        dest: /etc/nginx/sites-available/whathappened
-        content: |
-          server {
-            listen 80;
-            server_name _;
-            location / {
-                    proxy_pass http://localhost:9631;
-                    proxy_redirect off;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            }
+    # - name: add site settings to nginx
+    #   become: yes
+    #   copy:
+    #     dest: /etc/nginx/sites-available/whathappened
+    #     content: |
+    #       server {
+    #         listen 80;
+    #         server_name _;
+    #         location / {
+    #                 proxy_pass http://localhost:9631;
+    #                 proxy_redirect off;
+    #                 proxy_set_header Host $host;
+    #                 proxy_set_header X-Real-IP $remote_addr;
+    #                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #         }
 
-            location /static {
-                    alias /home/{{ db_user }}/.venv/lib/python3.10/site-packages/whathappened/static;
-                    expires 30d;
-            }
-          }
-      register: result
+    #         location /static {
+    #                 alias /home/{{ db_user }}/.venv/lib/python3.10/site-packages/whathappened/static;
+    #                 expires 30d;
+    #         }
+    #       }
+    #   register: result
 
-    - name: disable default nginx site
-      become: yes
-      ansible.builtin.file:
-        path: /etc/nginx/sites-enabled/default
-        state: absent
+    # - name: disable default nginx site
+    #   become: yes
+    #   ansible.builtin.file:
+    #     path: /etc/nginx/sites-enabled/default
+    #     state: absent
 
-    - name: enable whathappened as nginx site
-      become: yes
-      ansible.builtin.file:
-        dest: /etc/nginx/sites-enabled/whathappened
-        src: /etc/nginx/sites-available/whathappened
-        state: link
-      notify: restart nginx
+    # - name: enable whathappened as nginx site
+    #   become: yes
+    #   ansible.builtin.file:
+    #     dest: /etc/nginx/sites-enabled/whathappened
+    #     src: /etc/nginx/sites-available/whathappened
+    #     state: link
+    #   notify: restart nginx
 
   handlers:
     - name: restart postgres
