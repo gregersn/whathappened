@@ -1,5 +1,6 @@
+import json
 import logging
-from typing import Any, Dict, Type, cast
+from typing import Any, Dict, Type
 from datetime import datetime
 
 from sqlalchemy.orm.attributes import flag_modified
@@ -17,12 +18,12 @@ logger = logging.getLogger(__name__)
 class Character(BaseContent, BaseModel):
     __tablename__ = "charactersheet"
     id = Column(Integer, primary_key=True)
-    title = cast(str, Column(String(256)))
-    body = cast(Dict[str, Any], Column(JSON))
+    title = Column(String(256))
+    body = Column(JSON)
     timestamp = Column(
         DateTime, index=True, default=datetime.utcnow, onupdate=datetime.utcnow
     )
-    user_id = cast(int, Column(Integer, ForeignKey("user_profile.id")))
+    user_id = Column(Integer, ForeignKey("user_profile.id"))
     player = relationship("UserProfile", backref=backref("characters", lazy="dynamic"))
 
     folder = relationship("Folder", backref="characters")
@@ -51,8 +52,13 @@ class Character(BaseContent, BaseModel):
     @property
     def data(self) -> Dict[str, Any]:
         if isinstance(self.body, dict):
+            logger.debug("%s: Character data is dict", self.id)
             return self.body
-        raise TypeError("Body is not a dictionary")
+        if isinstance(self.body, str):
+            logger.warning(f"Character, id {self.id} body is string, not dictionary")
+            return json.loads(self.body)
+        logger.error("Body is not a dictionary")
+        return {}
 
     @property
     def system(self) -> str:
