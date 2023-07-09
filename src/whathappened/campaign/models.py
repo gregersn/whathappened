@@ -105,6 +105,15 @@ class HandoutGroup(Base):
         return f"<Handout Group {self.name}>"
 
 
+HandoutStatusType: Enum = Enum(
+    HandoutStatus,
+    name="handoutstatus",
+    create_constraint=True,
+    metadata=Base.metadata,
+    validate_strings=True
+)
+
+
 class Handout(BaseModel):
     __tablename__ = "campaign_handout"
     id = Column(Integer, primary_key=True)

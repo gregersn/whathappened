@@ -1,4 +1,3 @@
-from typing import cast
 import uuid
 import datetime
 from sqlalchemy.orm import relationship
@@ -21,7 +20,7 @@ class UserProfile(Base):
 class Invite(Base):
     __tablename__ = "invite"
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
-    owner_id = cast(int, Column(Integer, ForeignKey("user_profile.id")))
+    owner_id = Column(Integer, ForeignKey("user_profile.id"))
     table = Column(String(128))
     object_id = Column(Integer)
 

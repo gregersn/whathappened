@@ -81,6 +81,7 @@ def create(chartype: str):
     if form.validate_on_submit():
         logger.debug(f"Creating new character specified by {form.data}")
         char_data = character_module.new_character(**form.data)
+        assert isinstance(char_data, dict)
         c = Character(
             title=form.title.data, body=char_data, user_id=current_user.profile.id
         )  # pyright: ignore[reportGeneralTypeIssues]

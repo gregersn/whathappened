@@ -6,14 +6,14 @@ from .alchemy import QuerySelectField, QuerySelectMultipleField  # noqa
 
 class JsonField(TextAreaField):
     def _value(self):
-        return json.dumps(self.data, indent=4) if self.data else ""
+        return self.data or {}
 
     def process_formdata(self, valuelist):
         if valuelist:
             try:
                 self.data = json.loads(valuelist[0])
-            except ValueError:
-                raise ValueError("This field is not valid JSON")
+            except ValueError as exc:
+                raise ValueError("This field is not valid JSON") from exc
         else:
             self.data = None
 
