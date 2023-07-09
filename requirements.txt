@@ -8,15 +8,15 @@
     itsdangerous==2.1.2
     Jinja2==3.1.2
     jsonschema==4.17.3
-    markdown2==2.4.8
+    markdown2==2.4.9
     packaging==23.1
     Pillow==9.5.0
     PyJWT==2.7.0
     pyScss @ git+https://github.com/Kronuz/pyScss.git
     python-dotenv==1.0.0
-    PyMysql==1.0.3
+    PyMysql==1.1.0
     PyYAML==6.0.0
-    SQLAlchemy==2.0.16
+    SQLAlchemy==2.0.18
     werkzeug==2.3.6
     webassets==2.0
     jinja2-webpack==0.2.0
