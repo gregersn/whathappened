@@ -20,6 +20,6 @@
     werkzeug==2.3.6
     webassets==2.0
     jinja2-webpack==0.2.0
-    pydantic==1.10.9
+    pydantic==2.0.2
     pywebpack @ git+https://github.com/inveniosoftware/pywebpack.git@8f5b574a3bb3b841cb107b40982923027ad8e654
     
