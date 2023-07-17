@@ -16,7 +16,7 @@
     python-dotenv==1.0.0
     PyMysql==1.1.0
     PyYAML==6.0.0
-    SQLAlchemy==2.0.18
+    SQLAlchemy==2.0.19
     werkzeug==2.3.6
     webassets==2.0
     jinja2-webpack==0.2.0
