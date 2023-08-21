@@ -40,7 +40,7 @@ dependencies = [
     "werkzeug",
     "webassets",
     "jinja2-webpack",
-    "pydantic==1.10.9",
+    "pydantic==2.2.1",
     "pywebpack @ git+https://github.com/inveniosoftware/pywebpack.git@8f5b574a3bb3b841cb107b40982923027ad8e654",    
 ]
 
