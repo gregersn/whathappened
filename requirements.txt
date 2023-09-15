@@ -10,7 +10,7 @@
     jsonschema==4.17.3
     markdown2==2.4.9
     packaging==23.1
-    Pillow==9.5.0
+    Pillow==10.0.1
     PyJWT==2.7.0
     pyScss @ git+https://github.com/Kronuz/pyScss.git
     python-dotenv==1.0.0
