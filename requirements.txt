@@ -1,5 +1,5 @@
     alembic==1.11.1
-    email-validator==1.3.0
+    email-validator==2.0.0.post2
     Flask-Login==0.6.2
     Flask-Mail==0.9.1
     Flask-WTF==1.1.1
