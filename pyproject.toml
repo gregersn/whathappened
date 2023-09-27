@@ -7,15 +7,13 @@ name = "whathappened"
 version = "0.0.3"
 
 
-authors = [
-    { name="Greger Stolt Nilsen", email="gregersn@gmail.com" }
-]
+authors = [{ name = "Greger Stolt Nilsen", email = "gregersn@gmail.com" }]
 description = "A minimalistic TTRPG package."
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent"
+    "Operating System :: OS Independent",
 ]
 dependencies = [
     "alembic",
@@ -42,20 +40,19 @@ dependencies = [
     "jinja2-webpack",
     "pydantic",
     "pydantic-settings",
-    "pywebpack @ git+https://github.com/inveniosoftware/pywebpack.git@8f5b574a3bb3b841cb107b40982923027ad8e654",    
+    "pywebpack @ git+https://github.com/inveniosoftware/pywebpack.git@8f5b574a3bb3b841cb107b40982923027ad8e654",
 ]
-
 
 
 [project.optional-dependencies]
 development = [
-    "flake8",
     "pytest",
     "pytest-cov",
     "wheel",
-    "yapf",
     "pylint",
-    "autopep8"
+    "black",
+    "ruff",
+    "mypy",
 ]
 
 [project.urls]
@@ -72,10 +69,32 @@ pythonpath = ['src']
 branch = true
 source = "whathappened"
 
-[tool.flake8]
-max-line-length = 300
 
-[tool.yapf]
-column_limit = 300
+[tool.pylint.main]
 
+# Files or directories to be skipped. They should be base names, not paths.
+ignore = ["CVS", "migrations"]
 
+# Add files or directories matching the regular expressions patterns to the
+# ignore-list. The regex matches against paths and can be in Posix or Windows
+# format. Because '\\' represents the directory delimiter on Windows systems, it
+# can't be used as an escape character.
+# ignore-paths =
+
+# Files or directories matching the regular expression patterns are skipped. The
+# regex matches against base names, not paths. The default value ignores Emacs
+# file locks
+ignore-patterns = ["^\\.#"]
+
+# List of module names for which member attributes should not be checked (useful
+# for modules/projects where namespaces are manipulated during runtime and thus
+# existing member attributes cannot be deduced by static analysis). It supports
+# qualified module names, as well as Unix pattern matching.
+# ignored-modules =
+
+# Pickle collected data for later comparisons.
+persistent = true
+
+# Minimum Python version to use for version dependent checks. Will default to the
+# version used to run pylint.
+py-version = "3.11"
