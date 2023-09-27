@@ -13,10 +13,9 @@ logger = logging.getLogger(__name__)
 
 
 class JsonString(object):
-
     def __init__(self, message: Optional[str] = None):
         if not message:
-            message = u'Field must be a valid JSON string'
+            message = "Field must be a valid JSON string"
         self.message = message
 
     def __call__(self, form: FlaskForm, field: Field):
@@ -28,31 +27,31 @@ class JsonString(object):
 
 
 class ImportForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    body = JsonField('Body', validators=[DataRequired()])
-    conversion = BooleanField('Convert')
-    migration = BooleanField('Migrate')
-    submit = SubmitField('Import')
+    title = StringField("Title", validators=[DataRequired()])
+    body = JsonField("Body", validators=[DataRequired()])
+    conversion = BooleanField("Convert")
+    migration = BooleanField("Migrate")
+    submit = SubmitField("Import")
 
 
 class CreateForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    system = HiddenField('System', validators=[DataRequired()])
-    submit = SubmitField('Create')
+    title = StringField("Title", validators=[DataRequired()])
+    system = HiddenField("System", validators=[DataRequired()])
+    submit = SubmitField("Create")
 
 
 class SkillForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
+    name = StringField("Name", validators=[DataRequired()])
     # value = IntegerField('Value', validators=[DataRequired()])
-    submit = SubmitField('Add')
+    submit = SubmitField("Add")
 
 
 class SubskillForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-    parent = HiddenField('Parent', validators=[DataRequired()])
-    submit = SubmitField('Add')
+    name = StringField("Name", validators=[DataRequired()])
+    parent = HiddenField("Parent", validators=[DataRequired()])
+    submit = SubmitField("Add")
 
 
 class DeleteForm(FlaskForm):
-    character_id = HiddenField('CharacterId', validators=[DataRequired()])
-    submit = SubmitField('Delete')
+    character_id = HiddenField("CharacterId", validators=[DataRequired()])
+    submit = SubmitField("Delete")

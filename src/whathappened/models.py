@@ -11,17 +11,17 @@ from .database.fields import GUID
 class UserProfile(Base):
     __tablename__ = "user_profile"
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user_account.id'))
+    user_id = Column(Integer, ForeignKey("user_account.id"))
     user = relationship("User", back_populates="profile")
 
     def __repr__(self):
-        return f'<UserProfile {self.user_id}>'
+        return f"<UserProfile {self.user_id}>"
 
 
 class Invite(Base):
     __tablename__ = "invite"
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
-    owner_id = cast(int, Column(Integer, ForeignKey('user_profile.id')))
+    owner_id = cast(int, Column(Integer, ForeignKey("user_profile.id")))
     table = Column(String(128))
     object_id = Column(Integer)
 
@@ -32,17 +32,18 @@ class Invite(Base):
 
     @classmethod
     def query_for(cls, target: Base):
-        return cls.query.filter_by(object_id=target.id) \
-                        .filter_by(table=target.__tablename__)
+        return cls.query.filter_by(object_id=target.id).filter_by(
+            table=target.__tablename__
+        )
 
     def matches(self, target: Base):
-        return (target.__tablename__ == self.table and target.id == self.object_id)
+        return target.__tablename__ == self.table and target.id == self.object_id
 
 
 class LogEntry(Base):
-    __tablename__ = 'eventlog'
+    __tablename__ = "eventlog"
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user_account.id'))
+    user_id = Column(Integer, ForeignKey("user_account.id"))
     table = Column(String(128))
     object_id = Column(Integer)
     entry = Column(Text)
@@ -59,6 +60,8 @@ class LogEntry(Base):
 
     @classmethod
     def query_for(cls, target: Base):
-        return cls.query.filter_by(object_id=target.id) \
-                        .filter_by(table=target.__tablename__) \
-                        .order_by(LogEntry.created_date.desc())
+        return (
+            cls.query.filter_by(object_id=target.id)
+            .filter_by(table=target.__tablename__)
+            .order_by(LogEntry.created_date.desc())
+        )

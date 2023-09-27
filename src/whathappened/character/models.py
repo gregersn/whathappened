@@ -15,24 +15,26 @@ logger = logging.getLogger(__name__)
 
 
 class Character(BaseContent, BaseModel):
-    __tablename__ = 'charactersheet'
+    __tablename__ = "charactersheet"
     id = Column(Integer, primary_key=True)
     title = cast(str, Column(String(256)))
     body = cast(Dict[str, Any], Column(JSON))
-    timestamp = Column(DateTime, index=True, default=datetime.utcnow,
-                       onupdate=datetime.utcnow)
-    user_id = cast(int, Column(Integer, ForeignKey('user_profile.id')))
-    player = relationship('UserProfile', backref=backref('characters', lazy='dynamic'))
+    timestamp = Column(
+        DateTime, index=True, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+    user_id = cast(int, Column(Integer, ForeignKey("user_profile.id")))
+    player = relationship("UserProfile", backref=backref("characters", lazy="dynamic"))
 
-    folder = relationship('Folder', backref='characters')
+    folder = relationship("Folder", backref="characters")
 
-    _default_fields = ['id', 'title', 'body', 'timestamp', 'user_id']
+    _default_fields = ["id", "title", "body", "timestamp", "user_id"]
 
     def __repr__(self):
-        return '<Character {}>'.format(self.title)
+        return "<Character {}>".format(self.title)
 
-    def __init__(self, mechanics: Type[CharacterMechanics] = CharacterMechanics,
-                 *args, **kwargs):
+    def __init__(
+        self, mechanics: Type[CharacterMechanics] = CharacterMechanics, *args, **kwargs
+    ):
         super(Character, self).__init__(*args, **kwargs)
         self._data = None
         # Add a subclass or something that
@@ -41,7 +43,7 @@ class Character(BaseContent, BaseModel):
 
     @reconstructor
     def init_on_load(self):
-        system = self.data.get('system', '')
+        system = self.data.get("system", "")
         logger.debug(f"Loading character of type {system}")
         system = self.system
         self.mechanics = MECHANICS.get(system, CharacterMechanics)(self)
@@ -54,13 +56,13 @@ class Character(BaseContent, BaseModel):
 
     @property
     def system(self) -> str:
-        s = self.data.get('system', None)
+        s = self.data.get("system", None)
         if s is not None:
             return s
 
         logger.warning("Deprecation: Outdated character data")
         default = "Call of Cthulhu TM"
-        if self.data.get('meta', {}).get('GameName') == default:
+        if self.data.get("meta", {}).get("GameName") == default:
             logger.warning("Trying old CoC stuff.")
             return "coc7e"
 
@@ -68,7 +70,7 @@ class Character(BaseContent, BaseModel):
 
     @property
     def version(self):
-        v = self.data.get('version', None)
+        v = self.data.get("version", None)
         return v
 
     @property
@@ -110,8 +112,8 @@ class Character(BaseContent, BaseModel):
 
     def skills(self, *args):
         """Return a list of skills."""
-        return self.data['skills']
+        return self.data["skills"]
 
     @property
     def schema_version(self):
-        return self.data['meta']['Version']
+        return self.data["meta"]["Version"]

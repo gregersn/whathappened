@@ -24,7 +24,7 @@ from . import api  # noqa
 logger = logging.getLogger(__name__)
 
 
-@bp.route('/<code>', methods=('GET', 'POST'))
+@bp.route("/<code>", methods=("GET", "POST"))
 @login_required
 def join(code: str):
     inv = session.get(Invite, code)
@@ -41,19 +41,19 @@ def join(code: str):
             campaign.players.append(player)
             session.commit()
 
-        return redirect(url_for('campaign.view', id=campaign.id))
+        return redirect(url_for("campaign.view", id=campaign.id))
 
     flash("Valid code")
 
     campaign = session.get(Campaign, inv.object_id)
     joinform = JoinCampaignForm(invite_code=code)
 
-    return render_template('campaign/joincampaign.html.jinja',
-                           campaign=campaign,
-                           joinform=joinform)
+    return render_template(
+        "campaign/joincampaign.html.jinja", campaign=campaign, joinform=joinform
+    )
 
 
-@bp.route('/<int:id>', methods=('GET', 'POST'))
+@bp.route("/<int:id>", methods=("GET", "POST"))
 @login_required
 def view(id: int):
     invites = None
@@ -69,9 +69,11 @@ def view(id: int):
     messageform = MessagePlayerForm(
         players=[
             (campaign.user_id, "GM"),
-        ] + [(p.id, p.user.username) for p in campaign.players],
+        ]
+        + [(p.id, p.user.username) for p in campaign.players],
         campaign_id=campaign.id,
-        from_id=current_user.profile.id)
+        from_id=current_user.profile.id,
+    )
 
     is_player = current_user.profile in campaign.players
     is_owner = current_user and current_user.profile.id == campaign.user_id
@@ -84,18 +86,17 @@ def view(id: int):
         abort(404, "This is not the campaign your are looking for.")
 
     if is_owner:
-        if createinviteform.submit.data and \
-                createinviteform.validate_on_submit():
+        if createinviteform.submit.data and createinviteform.validate_on_submit():
             invite = Invite(campaign)
             invite.owner_id = campaign.user_id  # type: ignore
             session.add(invite)
             session.commit()
 
         if inviteform.submit.data and inviteform.validate_on_submit():
-            player = (User.query.filter_by(email=inviteform.email.data).first().profile)
+            player = User.query.filter_by(email=inviteform.email.data).first().profile
             campaign.players.append(player)
             session.commit()
-            return redirect(url_for('campaign.view', id=id))
+            return redirect(url_for("campaign.view", id=id))
 
         invites = Invite.query_for(campaign)
 
@@ -106,19 +107,22 @@ def view(id: int):
             session.add(npc)
             session.commit()
 
-            return redirect(url_for('campaign.view', id=id))
+            return redirect(url_for("campaign.view", id=id))
 
     if characterform.submit.data and characterform.validate_on_submit():
         print("Adding character")
         character = characterform.character.data
-        if (character not in campaign.characters and character
-                and character.user_id == current_user.profile.id):
+        if (
+            character not in campaign.characters
+            and character
+            and character.user_id == current_user.profile.id
+        ):
             campaign.characters.append(character)
             session.commit()
         else:
             flash("Character is already added to campaign")
 
-        return redirect(url_for('campaign.view', id=id))
+        return redirect(url_for("campaign.view", id=id))
 
     createinviteform.submit.label.text = "Create share link."
 
@@ -127,36 +131,41 @@ def view(id: int):
         or_(
             Message.from_id == current_user.profile.id,
             Message.to_id == current_user.profile.id,
-            Message.to_id.is_(None)))
+            Message.to_id.is_(None),
+        )
+    )
 
     added_npc_ids = [c.character_id for c in campaign.NPCs]
 
-    npcform.character.query = current_user.profile.characters.filter(
-        Character.id.notin_(added_npc_ids)).\
-        order_by(
-            desc(Character.folder_id.__eq__(campaign.folder_id))).\
-        order_by('title')
+    npcform.character.query = (
+        current_user.profile.characters.filter(Character.id.notin_(added_npc_ids))
+        .order_by(desc(Character.folder_id.__eq__(campaign.folder_id)))
+        .order_by("title")
+    )
 
     added_character_ids = [c.id for c in campaign.characters]
-    characterform.character.query = current_user.profile.characters.\
-        filter(Character.id.notin_(added_character_ids)).\
-        order_by(desc(Character.folder_id.__eq__(campaign.folder_id))).\
-        order_by('title')
+    characterform.character.query = (
+        current_user.profile.characters.filter(Character.id.notin_(added_character_ids))
+        .order_by(desc(Character.folder_id.__eq__(campaign.folder_id)))
+        .order_by("title")
+    )
 
-    return render_template('campaign/campaign.html.jinja',
-                           campaign=campaign,
-                           handouts=handouts,
-                           invites=invites,
-                           inviteform=inviteform,
-                           createinviteform=createinviteform,
-                           characterform=characterform,
-                           messages=messages,
-                           npcform=npcform,
-                           editable=is_owner,
-                           messageform=messageform)
+    return render_template(
+        "campaign/campaign.html.jinja",
+        campaign=campaign,
+        handouts=handouts,
+        invites=invites,
+        inviteform=inviteform,
+        createinviteform=createinviteform,
+        characterform=characterform,
+        messages=messages,
+        npcform=npcform,
+        editable=is_owner,
+        messageform=messageform,
+    )
 
 
-@bp.route('/<int:id>/edit', methods=('GET', 'POST'))
+@bp.route("/<int:id>/edit", methods=("GET", "POST"))
 def edit(id: int):
     campaign = session.get(Campaign, id)
     assert campaign
@@ -167,20 +176,20 @@ def edit(id: int):
         form.populate_obj(campaign)
         session.add(campaign)
         session.commit()
-        return redirect(url_for('campaign.view', id=campaign.id))
+        return redirect(url_for("campaign.view", id=campaign.id))
 
     if folderform.choose.data and folderform.validate_on_submit():
         print("Folder form submitted!")
         campaign.folder = folderform.folder_id.data
         session.commit()
-        return redirect(url_for('campaign.view', id=campaign.id))
+        return redirect(url_for("campaign.view", id=campaign.id))
 
     folderform.folder_id.data = campaign.folder
 
-    return render_template('campaign/edit.html.jinja', form=form, folderform=folderform)
+    return render_template("campaign/edit.html.jinja", form=form, folderform=folderform)
 
 
-@bp.route("/<int:id>/export", methods=("GET", ))
+@bp.route("/<int:id>/export", methods=("GET",))
 @login_required
 def export(id: int):
     campaign: Campaign = session.get(Campaign, id)
@@ -188,7 +197,7 @@ def export(id: int):
     return campaign.to_dict(_hide=[])
 
 
-@bp.route('/create', methods=('GET', 'POST'))
+@bp.route("/create", methods=("GET", "POST"))
 @login_required
 def create():
     form = CreateForm()
@@ -196,11 +205,11 @@ def create():
         c = Campaign(title=form.title.data, user_id=current_user.profile.id)
         session.add(c)
         session.commit()
-        return redirect(url_for('campaign.view', id=c.id))
-    return render_template('campaign/create.html.jinja', form=form)
+        return redirect(url_for("campaign.view", id=c.id))
+    return render_template("campaign/create.html.jinja", form=form)
 
 
-@bp.route('/<int:id>/removecharacter/<int:characterid>', methods=('GET', 'POST'))
+@bp.route("/<int:id>/removecharacter/<int:characterid>", methods=("GET", "POST"))
 @login_required
 def remove_character(id: int, characterid: int):
     campaign = session.get(Campaign, id)
@@ -208,25 +217,29 @@ def remove_character(id: int, characterid: int):
     char = session.get(Character, characterid)
     assert char
 
-    if current_user.profile.id != campaign.user_id \
-            and char.user_id != current_user.profile.id:
+    if (
+        current_user.profile.id != campaign.user_id
+        and char.user_id != current_user.profile.id
+    ):
         abort(404)
     form = RemoveCharacterForm()
 
     if form.validate_on_submit():
         campaign.characters.remove(char)
         session.commit()
-        return redirect(url_for('campaign.view', id=campaign.id))
+        return redirect(url_for("campaign.view", id=campaign.id))
 
     form.id.data = campaign.id
     form.character.data = char.id
-    return render_template('campaign/removecharacter.html.jinja',
-                           character=char,
-                           campaign=campaign,
-                           form=form)
+    return render_template(
+        "campaign/removecharacter.html.jinja",
+        character=char,
+        campaign=campaign,
+        form=form,
+    )
 
 
-@bp.route('/<int:id>/removenpc/<int:characterid>', methods=('GET', 'POST'))
+@bp.route("/<int:id>/removenpc/<int:characterid>", methods=("GET", "POST"))
 @login_required
 def remove_npc(id: int, characterid: int):
     npc = session.get(NPC, characterid)
@@ -237,18 +250,20 @@ def remove_npc(id: int, characterid: int):
         if npc.campaign.id == id:
             session.delete(npc)
             session.commit()
-        return redirect(url_for('campaign.view', id=id))
+        return redirect(url_for("campaign.view", id=id))
 
     form.id.data = npc.campaign.id
     form.character.data = npc.character.id
 
-    return render_template('campaign/removecharacter.html.jinja',
-                           character=npc.character,
-                           campaign=npc.campaign,
-                           form=form)
+    return render_template(
+        "campaign/removecharacter.html.jinja",
+        character=npc.character,
+        campaign=npc.campaign,
+        form=form,
+    )
 
 
-@bp.route('/<int:id>/npc/<int:npcid>', methods=('GET', 'POST'))
+@bp.route("/<int:id>/npc/<int:npcid>", methods=("GET", "POST"))
 @login_required
 def manage_npc(id: int, npcid: int):
     npc = session.get(NPC, npcid)
@@ -271,9 +286,9 @@ def manage_npc(id: int, npcid: int):
             campaign = npc.campaign
 
             # Create a copy of the character
-            new_character = Character(title=npc.character.title,
-                                      body=npc.character.body,
-                                      user_id=player.id)
+            new_character = Character(
+                title=npc.character.title, body=npc.character.body, user_id=player.id
+            )
 
             session.add(new_character)
 
@@ -286,17 +301,18 @@ def manage_npc(id: int, npcid: int):
             # Commit changes
             session.commit()
 
-            return redirect(url_for('campaign.view', id=campaign.id))
+            return redirect(url_for("campaign.view", id=campaign.id))
 
-    transferform.player.choices = [(p.id, p.user.username)
-                                   for p in npc.campaign.players]
+    transferform.player.choices = [
+        (p.id, p.user.username) for p in npc.campaign.players
+    ]
 
-    return render_template('campaign/managenpc.html.jinja',
-                           npc=npc,
-                           transferform=transferform)
+    return render_template(
+        "campaign/managenpc.html.jinja", npc=npc, transferform=transferform
+    )
 
 
-@bp.route('/<int:id>/removeplayer/<int:playerid>', methods=('GET', 'POST'))
+@bp.route("/<int:id>/removeplayer/<int:playerid>", methods=("GET", "POST"))
 @login_required
 def remove_player(id: int, playerid: int):
     form = RemovePlayerForm()
@@ -308,18 +324,17 @@ def remove_player(id: int, playerid: int):
     if form.validate_on_submit():
         campaign.players.remove(player)
         session.commit()
-        return redirect(url_for('campaign.view', id=campaign.id))
+        return redirect(url_for("campaign.view", id=campaign.id))
 
     form.id.data = campaign.id
     form.player.data = player.id
-    return render_template('campaign/removeplayer.html.jinja',
-                           player=player,
-                           campaign=campaign,
-                           form=form)
+    return render_template(
+        "campaign/removeplayer.html.jinja", player=player, campaign=campaign, form=form
+    )
 
 
-@bp.route('/<int:campaign_id>/player/<int:player_id>/message', methods=('GET', 'POST'))
-@bp.route('/<int:campaign_id>/message/', methods=('GET', 'POST'))
+@bp.route("/<int:campaign_id>/player/<int:player_id>/message", methods=("GET", "POST"))
+@bp.route("/<int:campaign_id>/message/", methods=("GET", "POST"))
 @login_required
 def message_player(campaign_id: int, player_id: Optional[int] = None):
     campaign = session.get(Campaign, campaign_id)
@@ -342,7 +357,7 @@ def message_player(campaign_id: int, player_id: Optional[int] = None):
         session.add(message)
         session.commit()
 
-        return redirect(url_for('campaign.view', id=campaign.id))
+        return redirect(url_for("campaign.view", id=campaign.id))
 
     form.campaign_id.data = campaign.id
     form.to_id.data = player_id
@@ -350,13 +365,18 @@ def message_player(campaign_id: int, player_id: Optional[int] = None):
 
     messages = campaign.messages.filter(
         or_(
-            and_(Message.to_id == player_id,
-                 Message.from_id == current_user.profile.id),
             and_(
-                Message.to_id == current_user.profile.id,
-                Message.from_id == player_id)))
-    return render_template('campaign/message_player.html.jinja',
-                           player=player,
-                           campaign=campaign,
-                           form=form,
-                           messages=messages)
+                Message.to_id == player_id, Message.from_id == current_user.profile.id
+            ),
+            and_(
+                Message.to_id == current_user.profile.id, Message.from_id == player_id
+            ),
+        )
+    )
+    return render_template(
+        "campaign/message_player.html.jinja",
+        player=player,
+        campaign=campaign,
+        form=form,
+        messages=messages,
+    )

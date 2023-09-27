@@ -11,31 +11,35 @@ def view(id, character, editable):
     subskillform = SubskillForm(prefix="subskillform")
     if editable and subskillform.data and subskillform.validate_on_submit():
         character.add_subskill(subskillform.name.data, subskillform.parent.data)
-        logentry = LogEntry(character,
-                            f"add subskill {subskillform.name.data} " + f"under {subskillform.parent.data}",
-                            user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
+        logentry = LogEntry(
+            character,
+            f"add subskill {subskillform.name.data} "
+            + f"under {subskillform.parent.data}",
+            user_id=current_user.id,
+        )  # pyright: ignore[reportGeneralTypeIssues]
         session.add(logentry)
 
         character.store_data()
         session.commit()
-        return redirect(url_for('character.view', id=id))
+        return redirect(url_for("character.view", id=id))
 
     skillform = SkillForm(prefix="skillform")
     if editable and skillform.data and skillform.validate_on_submit():
         skills = character.skills()
         for skill in skills:
-            if skillform.name.data == skill['name']:
+            if skillform.name.data == skill["name"]:
                 flash("Skill already exists")
-                return redirect(url_for('character.view', id=id))
+                return redirect(url_for("character.view", id=id))
 
         character.add_skill(skillform.name.data)
         character.store_data()
-        logentry = LogEntry(character, f"add skill {subskillform.name.data}",
-                            user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
+        logentry = LogEntry(
+            character, f"add skill {subskillform.name.data}", user_id=current_user.id
+        )  # pyright: ignore[reportGeneralTypeIssues]
         session.add(logentry)
 
         session.commit()
-        return redirect(url_for('character.view', id=id))
+        return redirect(url_for("character.view", id=id))
 
     typeheader = "1920s Era Investigator"
     if character.game and character.game[1] == "Modern":
@@ -43,10 +47,12 @@ def view(id, character, editable):
 
     shared = Invite.query_for(character).count()
 
-    return render_template('character/coc7e/sheet.html.jinja',
-                           shared=shared,
-                           character=character,
-                           typeheader=typeheader,
-                           editable=editable,
-                           skillform=skillform,
-                           subskillform=subskillform)
+    return render_template(
+        "character/coc7e/sheet.html.jinja",
+        shared=shared,
+        character=character,
+        typeheader=typeheader,
+        editable=editable,
+        skillform=skillform,
+        subskillform=subskillform,
+    )

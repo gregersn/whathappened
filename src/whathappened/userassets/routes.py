@@ -20,13 +20,13 @@ from whathappened.auth import login_required, current_user
 logger = logging.getLogger(__name__)
 
 
-@bp.route('/<uuid:folder_id>/')
-@bp.route('/')
+@bp.route("/<uuid:folder_id>/")
+@bp.route("/")
 @login_required
 def index(folder_id: Optional[str] = None):
     if current_user.profile.assetfolders.count() < 1:
         logger.debug("Creating initial folder")
-        rootfolder = AssetFolder(title='assets', owner=current_user.profile)
+        rootfolder = AssetFolder(title="assets", owner=current_user.profile)
         session.add(rootfolder)
         session.commit()
 
@@ -42,35 +42,48 @@ def index(folder_id: Optional[str] = None):
     folderform = NewFolderForm(parent_id=folder.id, prefix="newfolderform")
     deletefolderform = DeleteAssetFolderForm(id=folder.id, prefix="deletefolderform")
 
-    return render_template('userassets/assets.html.jinja',
-                           form=form,
-                           folderform=folderform,
-                           deletefolderform=deletefolderform,
-                           folder=folder)
+    return render_template(
+        "userassets/assets.html.jinja",
+        form=form,
+        folderform=folderform,
+        deletefolderform=deletefolderform,
+        folder=folder,
+    )
 
 
-@bp.route('/folder/<uuid:folder_id>/', methods=[
-    'POST',
-])
-@bp.route('/folder/', methods=[
-    'POST',
-])
+@bp.route(
+    "/folder/<uuid:folder_id>/",
+    methods=[
+        "POST",
+    ],
+)
+@bp.route(
+    "/folder/",
+    methods=[
+        "POST",
+    ],
+)
 @login_required
 def create_folder(folder_id=None):
     folderform = NewFolderForm(prefix="newfolderform")
     if folderform.validate_on_submit():
         logger.debug("Create a new folder")
-        folder = AssetFolder(parent_id=folderform.parent_id.data,
-                             title=folderform.title.data,
-                             owner=current_user.profile)
+        folder = AssetFolder(
+            parent_id=folderform.parent_id.data,
+            title=folderform.title.data,
+            owner=current_user.profile,
+        )
         session.add(folder)
         session.commit()
-    return redirect(url_for('userassets.index', folder_id=folder_id))
+    return redirect(url_for("userassets.index", folder_id=folder_id))
 
 
-@bp.route('/folder/<uuid:id>/delete', methods=[
-    'POST',
-])
+@bp.route(
+    "/folder/<uuid:id>/delete",
+    methods=[
+        "POST",
+    ],
+)
 @login_required
 def delete_folder(id):
     deletefolderform = DeleteAssetFolderForm(prefix="deletefolderform")
@@ -89,8 +102,9 @@ def delete_folder(id):
         parent_id = folder.parent.id
 
         if str(folder.id) != deletefolderform.id.data:
-            logger.debug(f"Wrong ids specified {folder.id} "
-                         f"and {deletefolderform.id.data}")
+            logger.debug(
+                f"Wrong ids specified {folder.id} " f"and {deletefolderform.id.data}"
+            )
             abort(403)
 
         if folder.files:
@@ -99,20 +113,26 @@ def delete_folder(id):
 
         session.delete(folder)
         session.commit()
-        return redirect(url_for('userassets.index', folder_id=parent_id))
+        return redirect(url_for("userassets.index", folder_id=parent_id))
 
-    return redirect(url_for('userassets.index', folder_id=id))
+    return redirect(url_for("userassets.index", folder_id=id))
 
 
-@bp.route('/<uuid:folder_id>/', methods=[
-    'POST',
-])
-@bp.route('/', methods=[
-    'POST',
-])
+@bp.route(
+    "/<uuid:folder_id>/",
+    methods=[
+        "POST",
+    ],
+)
+@bp.route(
+    "/",
+    methods=[
+        "POST",
+    ],
+)
 @login_required
 def upload_file(folder_id=None):
-    form = UploadForm(prefix='fileupload')
+    form = UploadForm(prefix="fileupload")
     if form.validate_on_submit():
         fileobject = form.uploaded.data
         folder: AssetFolder = session.get(AssetFolder, form.folder_id.data)
@@ -126,15 +146,16 @@ def upload_file(folder_id=None):
             folder.system_path.mkdir(parents=True, exist_ok=True)
             fileobject.save(folder.system_path / filename)
 
-            asset = Asset(filename=fileobject.filename, folder=folder,
-                          owner=current_user.profile)
+            asset = Asset(
+                filename=fileobject.filename, folder=folder, owner=current_user.profile
+            )
             session.add(asset)
             session.commit()
 
-    return redirect(url_for('userassets.index', folder_id=folder_id))
+    return redirect(url_for("userassets.index", folder_id=folder_id))
 
 
-@bp.route('/view/<uuid:fileid>/<string:filename>')
+@bp.route("/view/<uuid:fileid>/<string:filename>")
 @login_required
 def view(fileid, filename):
     userasset: Asset = session.get(Asset, fileid)
@@ -150,7 +171,7 @@ def view(fileid, filename):
     return send_from_directory(full_dir, assetname)
 
 
-@bp.route('/edit/<uuid:fileid>/<string:filename>')
+@bp.route("/edit/<uuid:fileid>/<string:filename>")
 @login_required
 def edit(fileid, filename):
     userasset = session.get(Asset, fileid)
@@ -158,21 +179,25 @@ def edit(fileid, filename):
     if filename != userasset.filename:
         abort(404)
 
-    deleteform = DeleteAssetForm(id=userasset.id,
-                                 prefix="deleteasset")
-    moveform = MoveAssetForm(id=userasset.id,
-                             prefix="moveasset",
-                             folder=userasset.folder)
+    deleteform = DeleteAssetForm(id=userasset.id, prefix="deleteasset")
+    moveform = MoveAssetForm(
+        id=userasset.id, prefix="moveasset", folder=userasset.folder
+    )
 
-    return render_template('userassets/edit.html.jinja',
-                           asset=userasset,
-                           deleteform=deleteform,
-                           moveform=moveform)
+    return render_template(
+        "userassets/edit.html.jinja",
+        asset=userasset,
+        deleteform=deleteform,
+        moveform=moveform,
+    )
 
 
-@bp.route('/edit/<uuid:fileid>/<string:filename>/delete', methods=[
-    'POST',
-])
+@bp.route(
+    "/edit/<uuid:fileid>/<string:filename>/delete",
+    methods=[
+        "POST",
+    ],
+)
 @login_required
 def delete(fileid, filename):
     logger.debug("Delete asset")
@@ -186,12 +211,15 @@ def delete(fileid, filename):
         session.delete(asset)
         session.commit()
 
-    return redirect(url_for('userassets.index', folder_id=asset.folder_id))
+    return redirect(url_for("userassets.index", folder_id=asset.folder_id))
 
 
-@bp.route('/edit/<uuid:fileid>/<string:filename>/move', methods=[
-    'POST',
-])
+@bp.route(
+    "/edit/<uuid:fileid>/<string:filename>/move",
+    methods=[
+        "POST",
+    ],
+)
 @login_required
 def move(fileid, filename):
     asset = session.get(Asset, fileid)
@@ -207,14 +235,16 @@ def move(fileid, filename):
         logger.debug(full_src_folder)
         logger.debug(full_dst_folder)
         if destinationfolder is not None:
-            logger.debug(f"Move {asset.system_path} "
-                         f"to {destinationfolder.system_path}")
+            logger.debug(
+                f"Move {asset.system_path} " f"to {destinationfolder.system_path}"
+            )
             if not full_dst_folder.is_dir():
                 full_dst_folder.mkdir(parents=True)
-            os.replace(full_src_folder / asset.filename,
-                       full_dst_folder / asset.filename)
+            os.replace(
+                full_src_folder / asset.filename, full_dst_folder / asset.filename
+            )
             asset.folder = destinationfolder
             session.commit()
             flash("You moved your file")
 
-    return redirect(url_for('userassets.index', folder_id=redirect_id))
+    return redirect(url_for("userassets.index", folder_id=redirect_id))

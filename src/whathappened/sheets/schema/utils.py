@@ -16,10 +16,10 @@ def up_or_down(from_version: SheetVersion, to_version: SheetVersion) -> int:
 
 def find_migration(version: SheetVersion, direction: int, migrations):
     for m in migrations:
-        if direction > 0 and parse(m['from']) == version:
+        if direction > 0 and parse(m["from"]) == version:
             return m
 
-        if direction < 0 and parse(m['to']) == version:
+        if direction < 0 and parse(m["to"]) == version:
             return m
 
 
@@ -27,13 +27,13 @@ def find_version(data) -> str:
     version_string = None
 
     try:
-        version_string = data['version']
+        version_string = data["version"]
         return version_string
     except KeyError:
         pass
 
     try:
-        version_string = data['meta']['Version']
+        version_string = data["meta"]["Version"]
         return version_string
     except KeyError:
         pass
@@ -54,9 +54,9 @@ def migrate(data, to_version, migrations=None):
         raise Exception("Migrator not found")
 
     if direction < 0:
-        data = migrator['down'](data)
+        data = migrator["down"](data)
 
     if direction > 0:
-        data = migrator['up'](data)
+        data = migrator["up"](data)
 
     return migrate(data, to_version=to_version, migrations=migrations)

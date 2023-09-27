@@ -6,14 +6,14 @@ from .alchemy import QuerySelectField, QuerySelectMultipleField  # noqa
 
 class JsonField(TextAreaField):
     def _value(self):
-        return json.dumps(self.data, indent=4) if self.data else ''
+        return json.dumps(self.data, indent=4) if self.data else ""
 
     def process_formdata(self, valuelist):
         if valuelist:
             try:
                 self.data = json.loads(valuelist[0])
             except ValueError:
-                raise ValueError('This field is not valid JSON')
+                raise ValueError("This field is not valid JSON")
         else:
             self.data = None
 
@@ -28,14 +28,14 @@ class JsonField(TextAreaField):
 
 class YamlField(TextAreaField):
     def _value(self):
-        return yaml.dump(self.data, indent=4) if self.data else ''
+        return yaml.dump(self.data, indent=4) if self.data else ""
 
     def process_formdata(self, valuelist):
         if valuelist:
             try:
                 self.data = yaml.load(valuelist[0], yaml.SafeLoader)
             except ValueError:
-                raise ValueError('This field is not valid YAML')
+                raise ValueError("This field is not valid YAML")
         else:
             self.data = None
 

@@ -13,8 +13,7 @@ def init_db(db_uri, nullpool: bool = False):
     Base.metadata.create_all(bind=engine)
 
 
-class db():
-
+class db:
     @staticmethod
     def drop_all():
         Base.metadata.drop_all(Base.metadata.bind)

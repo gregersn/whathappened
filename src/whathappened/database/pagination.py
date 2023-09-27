@@ -2,7 +2,7 @@ import math
 from typing import Any, List, Optional
 
 
-class Page():
+class Page:
     items: List[Any]
     prev_page: Optional[int]
     next_page: Optional[int]
@@ -29,9 +29,9 @@ class Page():
 
 def paginate(query, page: int, page_size: int = 25):
     if page <= 0:
-        raise AttributeError('page must be >= 1')
+        raise AttributeError("page must be >= 1")
     if page_size <= 0:
-        raise AttributeError('page_size must be >= 1')
+        raise AttributeError("page_size must be >= 1")
 
     items = query.limit(page_size).offset((page - 1) * page_size).all()
     total = query.order_by(None).count()

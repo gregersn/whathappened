@@ -18,15 +18,17 @@ from whathappened.email import mail
 from .database import init_db, session
 
 login_manager = LoginManager()
-login_manager.login_view = 'auth.login'  # type: ignore  # Not an error
-assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent / 'static')
+login_manager.login_view = "auth.login"  # type: ignore  # Not an error
+assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent / "static")
 csrf = CSRFProtect()
 
-logging.basicConfig(format='%(asctime)s %(levelname)s: %(name)s %(message)s', level=logging.DEBUG)
-logging.debug('Logger initialized')
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s: %(name)s %(message)s", level=logging.DEBUG
+)
+logging.debug("Logger initialized")
 
-logging.getLogger('semver').setLevel(logging.INFO)
-logging.getLogger('werkzeug').setLevel(logging.WARNING)
+logging.getLogger("semver").setLevel(logging.INFO)
+logging.getLogger("werkzeug").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +56,7 @@ def create_app(test_config=None) -> Flask:
         logger.info(f"Exception occured: {e} ")
 
     # Init addons
-    init_db(app.config['SQLALCHEMY_DATABASE_URI'], nullpool=test_config is not None)
+    init_db(app.config["SQLALCHEMY_DATABASE_URI"], nullpool=test_config is not None)
 
     @app.teardown_appcontext
     def cleanup(resp_or_exc):
@@ -63,56 +65,66 @@ def create_app(test_config=None) -> Flask:
     login_manager.init_app(app)
     csrf.init_app(app)
     mail.init_app(app)
-    app.jinja_env.add_extension('webassets.ext.jinja2.AssetsExtension')
+    app.jinja_env.add_extension("webassets.ext.jinja2.AssetsExtension")
 
-    webpack_manifest = Path(__file__).absolute().parent / 'static' / 'manifest.json'
+    webpack_manifest = Path(__file__).absolute().parent / "static" / "manifest.json"
 
     if webpack_manifest.exists():
         webpack_env = WebpackEnvironment(manifest=webpack_manifest, publicRoot="")
 
-        app.jinja_env.filters['webpack'] = WebpackFilter(webpack_env)
+        app.jinja_env.filters["webpack"] = WebpackFilter(webpack_env)
 
-    app.jinja_env.assets_environment = assets_env  # pyright: ignore[reportGeneralTypeIssues]
+    app.jinja_env.assets_environment = (
+        assets_env  # pyright: ignore[reportGeneralTypeIssues]
+    )
 
     # Register blueprints
     from . import auth
+
     logger.debug("Registering blueprint auth")
     app.register_blueprint(auth.bp)
 
     from . import main
+
     logger.debug("Registering blueprint main")
     app.register_blueprint(main.bp)
 
     from . import assets
+
     app.register_blueprint(assets.bp)
 
     from . import profile
+
     logger.debug("Registering blueprint profile")
-    app.register_blueprint(profile.bp, url_prefix='/profile')
+    app.register_blueprint(profile.bp, url_prefix="/profile")
 
     from . import content
+
     logger.debug("Registering blueprint content")
-    app.register_blueprint(content.bp, url_prefix='/content')
+    app.register_blueprint(content.bp, url_prefix="/content")
 
     from . import userassets
+
     logger.debug("Registering assets module")
-    app.register_blueprint(userassets.bp, url_prefix='/assets')
-    app.register_blueprint(userassets.apibp, url_prefix='/api/assets')
+    app.register_blueprint(userassets.bp, url_prefix="/assets")
+    app.register_blueprint(userassets.apibp, url_prefix="/api/assets")
 
     from . import character
+
     logger.debug("Registering blueprint character")
-    app.register_blueprint(character.bp, url_prefix='/character')
-    app.register_blueprint(character.api, url_prefix='/api/character')
+    app.register_blueprint(character.bp, url_prefix="/character")
+    app.register_blueprint(character.api, url_prefix="/api/character")
     character.register_assets(assets_env)
 
     from . import campaign
-    app.register_blueprint(campaign.bp, url_prefix='/campaign')
-    app.register_blueprint(campaign.apibp, url_prefix='/api/campaign')
+
+    app.register_blueprint(campaign.bp, url_prefix="/campaign")
+    app.register_blueprint(campaign.apibp, url_prefix="/api/campaign")
     campaign.register_assets(assets_env)
 
-    app.add_url_rule('/', endpoint='profile.index')
+    app.add_url_rule("/", endpoint="profile.index")
 
-    @app.route('/hello')
+    @app.route("/hello")
     def hello():
         return "Hello, World!"
 
@@ -121,12 +133,14 @@ def create_app(test_config=None) -> Flask:
 
         logger.debug("Registering assets")
         assets_env.url = app.static_url_path
-        assets_env.config['TYPESCRIPT_CONFIG'] = '--target ES6'
+        assets_env.config["TYPESCRIPT_CONFIG"] = "--target ES6"
 
-        scss = Bundle('scss/main.scss', filters='pyscss', output='css/all.css')
-        assets_env.register('scss_all', scss)
+        scss = Bundle("scss/main.scss", filters="pyscss", output="css/all.css")
+        assets_env.register("scss_all", scss)
 
-        css_profile = Bundle('scss/profile.scss', filters='pyscss', output='css/profile.css')
-        assets_env.register('scss_profile', css_profile)
+        css_profile = Bundle(
+            "scss/profile.scss", filters="pyscss", output="css/profile.css"
+        )
+        assets_env.register("scss_profile", css_profile)
 
     return app
