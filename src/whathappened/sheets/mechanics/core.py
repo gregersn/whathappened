@@ -35,6 +35,7 @@ def fix_image(imagedata: str) -> str:
 
 
 class CharacterMechanics:
+
     def __init__(self, parent):
         self.parent = parent
 
@@ -123,18 +124,14 @@ class CharacterMechanics:
                 self.set_portrait(fix_image(data))
         else:
             logger.debug(f"Set '{attribute['field']}' to '{attribute['value']}'")
-            s = reduce(
-                lambda x, y: x[y], attribute["field"].split(".")[:-1], self.parent.body
-            )
+            s = reduce(lambda x, y: x[y], attribute["field"].split(".")[:-1], self.parent.body)
             s[attribute["field"].split(".")[-1]] = attribute["value"]
 
     def add_skill(self, skillname: str, value: int = 1):
         if self.skill(skillname) is not None:
             raise ValueError(f"Skill {skillname} already exists.")
 
-        self.parent.data["skills"].append(
-            {"name": skillname, "value": value, "start_value": value}
-        )
+        self.parent.data["skills"].append({"name": skillname, "value": value, "start_value": value})
         if isinstance(self.parent.data["skills"], list):
             self.parent.data["skills"].sort(key=lambda x: x["name"])
 
@@ -149,14 +146,10 @@ class CharacterMechanics:
         skill = self.skill(parent)
         if "subskills" not in skill:
             skill["subskills"] = []
-        skill["subskills"].append(
-            {"name": name, "value": value, "start_value": start_value}
-        )
+        skill["subskills"].append({"name": name, "value": value, "start_value": start_value})
 
 
-def register_game(
-    tag: str, name: str, mechanics: Type[CharacterMechanics] = CharacterMechanics
-):
+def register_game(tag: str, name: str, mechanics: Type[CharacterMechanics] = CharacterMechanics):
     global GameSystems
     GAMES[tag] = name
     MECHANICS[tag] = mechanics
@@ -178,3 +171,4 @@ def new_character(title: str, system: Optional[str] = None, **kwargs):
 
 
 register_game("landf", "Lasers and feelings")
+register_game("dod", "Drakar och demoner")

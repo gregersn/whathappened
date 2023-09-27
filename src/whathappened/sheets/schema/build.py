@@ -49,10 +49,7 @@ SchemaValidationError = Dict[str, str]
 def validate(data: Dict, system: str) -> List[SchemaValidationError]:
     schema = get_schema(system)
     v = Draft7Validator(schema)
-    return [
-        {"path": "/".join(str(x) for x in e.path), "message": e.message}
-        for e in v.iter_errors(data)
-    ]
+    return [{"path": "/".join(str(x) for x in e.path), "message": e.message} for e in v.iter_errors(data)]
 
 
 def build_boolean(schema: Dict[str, bool]) -> bool:
@@ -88,9 +85,7 @@ def get_sub(d: Dict[str, Any], path: List[str]) -> Dict:
     return get_sub(d[p], path)
 
 
-def sub_schema(
-    schema: Union[List, Dict], path: str
-) -> Union[Dict, List, str, int, bool]:
+def sub_schema(schema: Union[List, Dict], path: str) -> Union[Dict, List, str, int, bool]:
     parts = path.split("/")
     if parts[0] != "#":
         raise NotImplementedError(path)
@@ -100,9 +95,7 @@ def sub_schema(
     return get_sub(schema, parts[1:])
 
 
-def build_from_schema2(
-    schema: Union[List, Dict[str, Any]], main_schema: Dict[str, Any]
-) -> Union[Dict, List, str, int, bool]:
+def build_from_schema2(schema: Union[List, Dict[str, Any]], main_schema: Dict[str, Any]) -> Union[Dict, List, str, int, bool]:
     if isinstance(schema, Dict):
         logger.debug("Handling a dictionary")
         if "$ref" in schema:
@@ -125,6 +118,7 @@ def build_from_schema2(
             return build_array(schema)
     elif isinstance(schema, List):
         logger.debug("Handling a list")
+        raise NotImplementedError("Lists are not my strong suite.")
 
     return ""
 
