@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from flask import render_template, request
 from flask import redirect, url_for, jsonify

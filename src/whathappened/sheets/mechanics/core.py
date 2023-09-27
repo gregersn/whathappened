@@ -10,10 +10,6 @@ from whathappened.sheets.schema.build import get_schema, build_from_schema, vali
 
 logger = logging.getLogger(__name__)
 
-CHARACTER_SCHEMA_DIR = Path(__file__).parent.parent / "schema"
-
-assert CHARACTER_SCHEMA_DIR.is_dir(), CHARACTER_SCHEMA_DIR
-
 GAMES = {}
 
 MECHANICS = {}
@@ -162,10 +158,16 @@ def new_character(title: str, system: Optional[str] = None, **kwargs):
     if system is None:
         raise SyntaxError("new_character: System not specified")
 
-    schema_data = get_schema(system)
+    CHARACTER_SCHEMA = CHARACTER_SCHEMA_DIR / f"{system}.yaml"
+    if CHARACTER_SCHEMA.is_file():
+        schema_data = load_schema(CHARACTER_SCHEMA)
+        nc = build_from_schema(schema_data)
+        nc["title"] = title
+    else:
+        import importlib
 
-    nc = build_from_schema(schema_data)
-    nc["title"] = title
+        game_module = importlib.import_module(f"whathappened.sheets.schema.{system}")
+        nc = game_module.CharacterSheet().model_dump()
 
     return nc
 

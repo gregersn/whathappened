@@ -7,6 +7,10 @@ from jsonschema.exceptions import SchemaError
 
 from jsonschema.validators import Draft7Validator
 
+CHARACTER_SCHEMA_DIR = Path(__file__).parent.parent / "schema"
+
+assert CHARACTER_SCHEMA_DIR.is_dir(), CHARACTER_SCHEMA_DIR
+
 logger = logging.getLogger(__name__)
 
 SCHEMA_DIR = Path(__file__).parent
@@ -24,6 +28,16 @@ def get_schema(system: str):
         return load_schema(CHARACTER_SCHEMA)
 
     logger.debug("No character schema: %s", CHARACTER_SCHEMA)
+
+    try:
+
+        import importlib
+
+        game_module = importlib.import_module(f"whathappened.sheets.schema.{system}")
+
+        return game_module.CharacterSheet.model_json_schema()
+    except:
+        ...
 
     raise SchemaError("Missing schema")
 
