@@ -6,7 +6,7 @@ import base64
 import io
 from PIL import Image
 
-from whathappened.sheets.schema.build import load_schema, build_from_schema, validate
+from whathappened.sheets.schema.build import get_schema, build_from_schema, validate
 
 logger = logging.getLogger(__name__)
 
@@ -43,13 +43,7 @@ class CharacterMechanics():
         raise NotImplementedError
 
     def validate(self, *args, **kwargs):
-        schema_file = CHARACTER_SCHEMA_DIR / f"{self.parent.system}.yaml"
-
-        if not schema_file.is_file():
-            logger.error(f"Could not find: {schema_file}")
-            return [{"path": "/", "message": "This character sheet has no known schema or validation."}]
-
-        return validate(self.parent.body, schema_file)
+        return validate(self.parent.body, self.parent.system)
 
     @property
     def name(self):
@@ -164,9 +158,8 @@ def register_game(tag: str, name: str, mechanics: Type[CharacterMechanics] = Cha
 def new_character(title: str, system: Optional[str] = None, **kwargs):
     if system is None:
         raise SyntaxError("new_character: System not specified")
-    CHARACTER_SCHEMA = CHARACTER_SCHEMA_DIR / f"{system}.yaml"
-    assert CHARACTER_SCHEMA.is_file()
-    schema_data = load_schema(CHARACTER_SCHEMA)
+
+    schema_data = get_schema(system)
 
     nc = build_from_schema(schema_data)
     nc['title'] = title

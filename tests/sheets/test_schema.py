@@ -1,4 +1,4 @@
-from whathappened.sheets.schema.build import SCHEMA_DIR, build_from_schema, load_schema, validate
+from whathappened.sheets.schema.build import SCHEMA_DIR, build_from_schema, get_schema, load_schema, validate
 
 
 def test_load_schema():
@@ -11,7 +11,7 @@ def test_load_schema():
 
 
 def test_build_from_schema():
-    schema = load_schema(SCHEMA_DIR / "landf.yaml")
+    schema = get_schema("landf")
 
     data = build_from_schema(schema)
 
@@ -22,12 +22,12 @@ def test_build_from_schema():
 
 
 def test_validate():
-    schema = load_schema(SCHEMA_DIR / "landf.yaml")
+    schema = get_schema("landf")
     data = build_from_schema(schema)
 
-    assert not validate(data, SCHEMA_DIR / "landf.yaml")
+    assert not validate(data, "landf")
 
     del data['character_sheet']['name']
-    errors = validate(data, SCHEMA_DIR / "landf.yaml")
+    errors = validate(data, "landf")
 
     assert errors

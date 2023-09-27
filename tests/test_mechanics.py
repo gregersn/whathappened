@@ -5,7 +5,7 @@ from whathappened.sheets.utils import create_sheet
 
 @pytest.fixture
 def sheet():
-    return create_sheet('landf.yaml')
+    return create_sheet('landf')
 
 
 class Character:
@@ -20,7 +20,7 @@ class Character:
 
 @pytest.fixture
 def character():
-    return Character(create_sheet('landf.yaml'))
+    return Character(create_sheet('landf'))
 
 
 def test_validate(sheet):
