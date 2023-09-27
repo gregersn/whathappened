@@ -8,11 +8,13 @@ from whathappened.auth import current_user
 
 
 class NewFolderForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
+    title = StringField("Title", validators=[DataRequired()])
     owner_id = HiddenField(validators=[DataRequired()])
     # parent_id = QuerySelectField('Parent')
-    parent_id = HiddenField(validators=[Optional(), UUID()], default=None, filters=[lambda x: x or None])
-    add = SubmitField('Add')
+    parent_id = HiddenField(
+        validators=[Optional(), UUID()], default=None, filters=[lambda x: x or None]
+    )
+    add = SubmitField("Add")
 
 
 def available_folders():
@@ -20,5 +22,7 @@ def available_folders():
 
 
 class ChooseFolderForm(FlaskForm):
-    folder_id = QuerySelectField(query_factory=available_folders, get_label=lambda x: x.title, allow_blank=True)
-    choose = SubmitField('Choose')
+    folder_id = QuerySelectField(
+        query_factory=available_folders, get_label=lambda x: x.title, allow_blank=True
+    )
+    choose = SubmitField("Choose")

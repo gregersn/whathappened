@@ -62,6 +62,7 @@ class QuerySelectField(SelectFieldBase):
     being `None`. The label for this blank choice can be set by specifying the
     `blank_text` parameter.
     """
+
     widget = widgets.Select()
 
     def __init__(
@@ -72,8 +73,8 @@ class QuerySelectField(SelectFieldBase):
         get_pk=None,
         get_label=None,
         allow_blank=False,
-        blank_text='',
-        **kwargs
+        blank_text="",
+        **kwargs,
     ):
         super(QuerySelectField, self).__init__(label, validators, **kwargs)
         self.query_factory = query_factory
@@ -85,7 +86,7 @@ class QuerySelectField(SelectFieldBase):
 
         if get_label is None:
             self.get_label = lambda x: x
-        elif isinstance(get_label, (str, )):
+        elif isinstance(get_label, (str,)):
             self.get_label = operator.attrgetter(get_label)
         else:
             self.get_label = get_label
@@ -112,25 +113,26 @@ class QuerySelectField(SelectFieldBase):
     def _get_object_list(self):
         if self._object_list is None:
             query = (
-                self.query if self.query is not None
-                else self.query_factory() if self.query_factory else []
+                self.query
+                if self.query is not None
+                else self.query_factory()
+                if self.query_factory
+                else []
             )
             get_pk = self.get_pk
-            self._object_list = list(
-                (str(get_pk(obj)), obj) for obj in query
-            )
+            self._object_list = list((str(get_pk(obj)), obj) for obj in query)
         return self._object_list
 
     def iter_choices(self):
         if self.allow_blank:
-            yield ('__None', self.blank_text, self.data is None)
+            yield ("__None", self.blank_text, self.data is None)
 
         for pk, obj in self._get_object_list():
             yield (pk, self.get_label(obj), obj == self.data)
 
     def process_formdata(self, valuelist):
         if valuelist:
-            if self.allow_blank and valuelist[0] == '__None':
+            if self.allow_blank and valuelist[0] == "__None":
                 self.data = None
             else:
                 self._data = None
@@ -143,9 +145,9 @@ class QuerySelectField(SelectFieldBase):
                 if data == obj:
                     break
             else:
-                raise ValidationError(self.gettext('Not a valid choice'))
+                raise ValidationError(self.gettext("Not a valid choice"))
         elif self._formdata or not self.allow_blank:
-            raise ValidationError(self.gettext('Not a valid choice'))
+            raise ValidationError(self.gettext("Not a valid choice"))
 
 
 class QuerySelectMultipleField(QuerySelectField):
@@ -156,22 +158,20 @@ class QuerySelectMultipleField(QuerySelectField):
     If any of the items in the data list or submitted form data cannot be
     found in the query, this will result in a validation error.
     """
+
     widget = widgets.Select(multiple=True)
 
     def __init__(self, label=None, validators=None, default=None, **kwargs):
         if default is None:
             default = []
         super(QuerySelectMultipleField, self).__init__(
-            label,
-            validators,
-            default=default,
-            **kwargs
+            label, validators, default=default, **kwargs
         )
-        if kwargs.get('allow_blank', False):
+        if kwargs.get("allow_blank", False):
             import warnings
+
             warnings.warn(
-                'allow_blank=True does not do anything for '
-                'QuerySelectMultipleField.'
+                "allow_blank=True does not do anything for " "QuerySelectMultipleField."
             )
         self._invalid_formdata = False
 
@@ -205,14 +205,14 @@ class QuerySelectMultipleField(QuerySelectField):
 
     def pre_validate(self, form):
         if self._invalid_formdata:
-            raise ValidationError(self.gettext('Not a valid choice'))
+            raise ValidationError(self.gettext("Not a valid choice"))
         elif self.data:
             obj_list = list(x[1] for x in self._get_object_list())
             for v in self.data:
                 if v not in obj_list:
-                    raise ValidationError(self.gettext('Not a valid choice'))
+                    raise ValidationError(self.gettext("Not a valid choice"))
 
 
 def get_pk_from_identity(obj):
     cls, key = identity_key(instance=obj)[0:2]
-    return ':'.join(str(x) for x in key)
+    return ":".join(str(x) for x in key)

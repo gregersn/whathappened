@@ -29,12 +29,12 @@ def get_schema(system: str):
 
 
 def load_schema(filename: Path) -> Dict[str, Any]:
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         try:
-            if filename.suffix == '.json':
+            if filename.suffix == ".json":
                 data = json.load(f)
                 return data
-            elif filename.suffix == '.yaml':
+            elif filename.suffix == ".yaml":
                 data = yaml.safe_load(f)
                 return data
         except Exception as e:
@@ -49,31 +49,34 @@ SchemaValidationError = Dict[str, str]
 def validate(data: Dict, system: str) -> List[SchemaValidationError]:
     schema = get_schema(system)
     v = Draft7Validator(schema)
-    return [{'path': "/".join(str(x) for x in e.path), "message": e.message} for e in v.iter_errors(data)]
+    return [
+        {"path": "/".join(str(x) for x in e.path), "message": e.message}
+        for e in v.iter_errors(data)
+    ]
 
 
 def build_boolean(schema: Dict[str, bool]) -> bool:
-    return schema['default']
+    return schema["default"]
 
 
 def build_string(schema: Dict[str, str]) -> str:
-    return schema['default']
+    return schema["default"]
 
 
 def build_integer(schema: Dict[str, int]) -> int:
-    return schema['default']
+    return schema["default"]
 
 
 def build_object(schema: Dict[str, Any], main_schema: Dict[str, Any]) -> Dict[str, Any]:
     output = {}
-    for property, description in schema['properties'].items():
+    for property, description in schema["properties"].items():
         output[property] = build_from_schema2(description, main_schema)
     return output
 
 
 def build_array(schema: Dict[str, List[Any]]) -> List[Any]:
-    if 'default' in schema:
-        return schema['default']
+    if "default" in schema:
+        return schema["default"]
     return []
 
 
@@ -85,10 +88,11 @@ def get_sub(d: Dict[str, Any], path: List[str]) -> Dict:
     return get_sub(d[p], path)
 
 
-def sub_schema(schema: Union[List, Dict], path: str) -> \
-        Union[Dict, List, str, int, bool]:
+def sub_schema(
+    schema: Union[List, Dict], path: str
+) -> Union[Dict, List, str, int, bool]:
     parts = path.split("/")
-    if parts[0] != '#':
+    if parts[0] != "#":
         raise NotImplementedError(path)
 
     assert isinstance(schema, dict)
@@ -96,34 +100,33 @@ def sub_schema(schema: Union[List, Dict], path: str) -> \
     return get_sub(schema, parts[1:])
 
 
-def build_from_schema2(schema: Union[List, Dict[str, Any]],
-                       main_schema: Dict[str, Any]) -> \
-        Union[Dict, List, str, int, bool]:
-
+def build_from_schema2(
+    schema: Union[List, Dict[str, Any]], main_schema: Dict[str, Any]
+) -> Union[Dict, List, str, int, bool]:
     if isinstance(schema, Dict):
         logger.debug("Handling a dictionary")
-        if '$ref' in schema:
-            sub = sub_schema(main_schema, schema['$ref'])
+        if "$ref" in schema:
+            sub = sub_schema(main_schema, schema["$ref"])
 
             assert isinstance(sub, Dict) or isinstance(sub, List)
 
             return build_from_schema2(sub, main_schema)
-        if 'const' in schema:
-            return schema['const']
-        if schema.get('type') == 'object' and isinstance(main_schema, dict):
+        if "const" in schema:
+            return schema["const"]
+        if schema.get("type") == "object" and isinstance(main_schema, dict):
             return build_object(schema, main_schema)
-        if schema.get('type') == 'string':
+        if schema.get("type") == "string":
             return build_string(schema)
-        if schema.get('type') == 'integer':
+        if schema.get("type") == "integer":
             return build_integer(schema)
-        if schema.get('type') == 'boolean':
+        if schema.get("type") == "boolean":
             return build_boolean(schema)
-        if schema.get('type') == 'array':
+        if schema.get("type") == "array":
             return build_array(schema)
     elif isinstance(schema, List):
         logger.debug("Handling a list")
 
-    return ''
+    return ""
 
 
 def build_from_schema(schema: Dict[str, Any]) -> Dict[str, Any]:

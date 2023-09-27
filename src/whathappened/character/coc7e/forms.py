@@ -5,4 +5,7 @@ from . import GameTypes
 
 
 class CreateForm(BaseCreateForm):
-    gametype = SelectField('Type', choices=GameTypes, )
+    gametype = SelectField(
+        "Type",
+        choices=GameTypes,
+    )

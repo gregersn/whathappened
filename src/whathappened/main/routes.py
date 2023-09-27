@@ -18,23 +18,25 @@ logger = logging.getLogger(__name__)
 
 def get_class_by_tablename(tablename):
     for c in Base._decl_class_registry.values():
-        if hasattr(c, '__tablename__') and c.__tablename__ == tablename:
+        if hasattr(c, "__tablename__") and c.__tablename__ == tablename:
             return c
 
 
-@bp.route('/')
+@bp.route("/")
 def index():
     if current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
-        return redirect(url_for('profile.index'))
+        return redirect(url_for("profile.index"))
 
-    return render_template('main/index.html.jinja')
+    return render_template("main/index.html.jinja")
 
 
-@bp.route('/share/<uuid:id>/delete', methods=('GET', 'POST'))
+@bp.route("/share/<uuid:id>/delete", methods=("GET", "POST"))
 @login_required
 def invite_delete(id):
     invite = session.get(Invite, id)
-    if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
+    if (
+        current_user.profile.id != invite.owner_id
+    ):  # pyright: ignore[reportGeneralTypeIssues]
         logger.debug("Wrong user")
         abort(403)
     form = DeleteInviteForm()
@@ -42,7 +44,7 @@ def invite_delete(id):
         logger.debug("Delete form validated")
         session.delete(invite)
         session.commit()
-        return redirect('/')
+        return redirect("/")
 
     objclass = get_class_by_tablename(invite.table)
     obj = None
@@ -51,16 +53,20 @@ def invite_delete(id):
 
     form.id.data = invite.id
 
-    return render_template('main/invite_delete.html.jinja', obj=obj, invite=invite, form=form)
+    return render_template(
+        "main/invite_delete.html.jinja", obj=obj, invite=invite, form=form
+    )
 
 
-@api.route('/invite/<int:id>/delete', methods=('POST', ))
+@api.route("/invite/<int:id>/delete", methods=("POST",))
 @login_required
 def api_invite_delete(id):
     invite = session.get(Invite, id)
-    if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
+    if (
+        current_user.profile.id != invite.owner_id
+    ):  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
     session.delete(invite)
     session.commit()
 
-    return jsonify({'html': 'Deleted'})
+    return jsonify({"html": "Deleted"})

@@ -4,38 +4,41 @@ from flask.cli import with_appcontext
 import logging
 from webassets.script import CommandLineEnvironment
 
-bp = Blueprint('assets', __name__)
+bp = Blueprint("assets", __name__)
 
 logger = logging.getLogger(__name__)
 
 _named_bundles = {}
 
 
-@bp.cli.command('build')
+@bp.cli.command("build")
 @with_appcontext
 def build():
     """Build bundles."""
     cmdenv = CommandLineEnvironment(
         current_app.jinja_env.assets_environment,  # pyright: ignore[reportGeneralTypeIssues]
-        logger)
+        logger,
+    )
     cmdenv.build()
 
 
-@bp.cli.command('watch')
+@bp.cli.command("watch")
 @with_appcontext
 def watch():
     """Watch bundles for file changes."""
     cmdenv = CommandLineEnvironment(
         current_app.jinja_env.assets_environment,  # pyright: ignore[reportGeneralTypeIssues]
-        logger)
+        logger,
+    )
     cmdenv.watch()
 
 
-@bp.cli.command('clean')
+@bp.cli.command("clean")
 @with_appcontext
 def clean():
     """Clean bundles."""
     cmdenv = CommandLineEnvironment(
         current_app.jinja_env.assets_environment,  # pyright: ignore[reportGeneralTypeIssues]
-        logger)
+        logger,
+    )
     cmdenv.clean()

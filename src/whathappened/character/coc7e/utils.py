@@ -3,7 +3,7 @@ import math
 from .. import bp
 
 
-@bp.app_template_filter('half')
+@bp.app_template_filter("half")
 def half(value):
     if not value:
         return 0
@@ -15,7 +15,7 @@ def half(value):
     return math.floor(value / 2)
 
 
-@bp.app_template_filter('fifth')
+@bp.app_template_filter("fifth")
 def fifth(value):
     if not value:
         return 0

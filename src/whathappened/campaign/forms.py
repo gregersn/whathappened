@@ -15,23 +15,23 @@ from .models import HandoutStatus
 
 
 class CreateForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    characters_enabled = BooleanField('Use Characters')
-    npcs_enabled = BooleanField('Use NPCs')
-    handouts_enabled = BooleanField('Use handouts')
-    messages_enabled = BooleanField('Use messages')
-    submit = SubmitField('Create')
+    title = StringField("Title", validators=[DataRequired()])
+    characters_enabled = BooleanField("Use Characters")
+    npcs_enabled = BooleanField("Use NPCs")
+    handouts_enabled = BooleanField("Use handouts")
+    messages_enabled = BooleanField("Use messages")
+    submit = SubmitField("Create")
 
 
 class EditForm(CreateForm):
     id = IntegerField(widget=HiddenInput())
-    description = StringField('Description', widget=TextArea())
-    submit = SubmitField('Save')
+    description = StringField("Description", widget=TextArea())
+    submit = SubmitField("Save")
 
 
 class InvitePlayerForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Invite')
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    submit = SubmitField("Invite")
 
 
 def available_characters():
@@ -39,33 +39,34 @@ def available_characters():
 
 
 class AddCharacterForm(FlaskForm):
-    character = QuerySelectField(query_factory=available_characters, get_label=lambda x: x.title)
-    submit = SubmitField('Add character')
+    character = QuerySelectField(
+        query_factory=available_characters, get_label=lambda x: x.title
+    )
+    submit = SubmitField("Add character")
 
 
 class AddNPCForm(AddCharacterForm):
-    visible = BooleanField('Visible', default=False)
+    visible = BooleanField("Visible", default=False)
 
 
 class RemoveCharacterForm(FlaskForm):
     id = IntegerField(widget=HiddenInput())
     character = IntegerField(widget=HiddenInput())
-    submit = SubmitField('Remove character')
+    submit = SubmitField("Remove character")
 
 
 class RemovePlayerForm(FlaskForm):
     id = IntegerField(widget=HiddenInput())
     player = IntegerField(widget=HiddenInput())
-    submit = SubmitField('Remove player')
+    submit = SubmitField("Remove player")
 
 
 class JoinCampaignForm(FlaskForm):
-    invite_code = HiddenField('Invite', validators=[DataRequired()])
-    submit = SubmitField('Join campaign')
+    invite_code = HiddenField("Invite", validators=[DataRequired()])
+    submit = SubmitField("Join campaign")
 
 
 class EnumField(SelectField):
-
     def process_data(self, value):
         if value is not None:
             value = value.name
@@ -79,52 +80,60 @@ class PlayerListField(QuerySelectMultipleField):
 
 class HandoutGroupForm(FlaskForm):
     campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
-    name = StringField('Name', validators=[DataRequired()])
-    submit = SubmitField('Add group')
+    name = StringField("Name", validators=[DataRequired()])
+    submit = SubmitField("Add group")
 
 
 class HandoutForm(FlaskForm):
     campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
-    title = StringField('Title', validators=[DataRequired()])
-    content = StringField('Content', widget=TextArea())
-    status = EnumField('Status', choices=[(e.name, e.value) for e in HandoutStatus], default=HandoutStatus.draft)
+    title = StringField("Title", validators=[DataRequired()])
+    content = StringField("Content", widget=TextArea())
+    status = EnumField(
+        "Status",
+        choices=[(e.name, e.value) for e in HandoutStatus],
+        default=HandoutStatus.draft,
+    )
 
-    group_id = SelectField('Group', choices=[
-        ('', '(none)'),
-    ], default='', validate_choice=False)
+    group_id = SelectField(
+        "Group",
+        choices=[
+            ("", "(none)"),
+        ],
+        default="",
+        validate_choice=False,
+    )
 
-    submit = SubmitField('Save handout')
+    submit = SubmitField("Save handout")
 
 
 class DeleteHandoutForm(FlaskForm):
     campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
-    submit = SubmitField('Delete handout')
+    submit = SubmitField("Delete handout")
 
 
 class TableRowWidget(object):
-
     def __init__(self, with_tr_tag: bool = True):
         self.with_tr_tag = with_tr_tag
 
     def __call__(self, field, **kwargs):
         html = []
         if self.with_tr_tag:
-            kwargs.setdefault('id', field.id)
-            html.append('<tr %s>' % widgets.html_params(**kwargs))
+            kwargs.setdefault("id", field.id)
+            html.append("<tr %s>" % widgets.html_params(**kwargs))
 
-        hidden = ''
+        hidden = ""
         for subfield in field:
-            if subfield.type in ('HiddenField', 'CSRFTokenField'):
+            if subfield.type in ("HiddenField", "CSRFTokenField"):
                 hidden += str(subfield)
             else:
-                html.append('<td>%s%s</td>' % (hidden, str(subfield)))
-                hidden = ''
+                html.append("<td>%s%s</td>" % (hidden, str(subfield)))
+                hidden = ""
         if self.with_tr_tag:
-            html.append('</tr>')
+            html.append("</tr>")
         if hidden:
             html.append(hidden)
-        return Markup(''.join(html))
+        return Markup("".join(html))
 
 
 class PlayerField(SelectMultipleField):
@@ -135,31 +144,41 @@ class PlayerField(SelectMultipleField):
 class RevealHandout(FlaskForm):
     campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
-    players = QuerySelectMultipleField('Show to', get_label=lambda x: x.user.username)
+    players = QuerySelectMultipleField("Show to", get_label=lambda x: x.user.username)
 
 
 class NPCTransferForm(FlaskForm):
     npc_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     player = SelectField(validate_choice=False)
-    submit = SubmitField('Transfer NPC')
+    submit = SubmitField("Transfer NPC")
 
 
 class MessagePlayerForm(FlaskForm):
     campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     from_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     message = StringField()
-    submit = SubmitField('Send...')
+    submit = SubmitField("Send...")
 
-    to_id = SelectField('To', choices=[
-        ('', 'All'),
-    ], validate_choice=False)
+    to_id = SelectField(
+        "To",
+        choices=[
+            ("", "All"),
+        ],
+        validate_choice=False,
+    )
 
-    def __init__(self, hide_to_id: bool = False, players: List[Tuple[int, str]] = [], *args, **kwargs):
+    def __init__(
+        self,
+        hide_to_id: bool = False,
+        players: List[Tuple[int, str]] = [],
+        *args,
+        **kwargs,
+    ):
         super(MessagePlayerForm, self).__init__(*args, **kwargs)
         if hide_to_id:
             self.to_id.widget = HiddenInput()  # type: ignore  # Not an error
 
-        player_choices: List[Tuple[int | str, str]] = [('', 'All')]
+        player_choices: List[Tuple[int | str, str]] = [("", "All")]
         player_choices += players
         self.to_id.choices = player_choices
 
