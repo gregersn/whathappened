@@ -5,7 +5,7 @@ from ...sheets.mechanics.core import register_game
 
 from ...sheets.mechanics.tftl.mechanics import TftlMechanics
 from .forms import CreateForm  # noqa F401
-from whathappened.sheets.schema.build import load_schema, build_from_schema
+from whathappened.sheets.schema.build import get_schema, build_from_schema
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ CHARACTER_SHEET_TEMPLATE = 'character/tftl/sheet.html.jinja'
 
 
 def new_character(title: str, **kwargs):
-    schema = load_schema(CHARACTER_SCHEMA)
+    schema = get_schema("tftl")
 
     nc = build_from_schema(schema)
     nc['title'] = title

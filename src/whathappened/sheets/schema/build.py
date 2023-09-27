@@ -12,6 +12,22 @@ logger = logging.getLogger(__name__)
 SCHEMA_DIR = Path(__file__).parent
 
 
+def get_schema(system: str):
+    CHARACTER_SCHEMA = SCHEMA_DIR / f"{system}.yaml"
+    if CHARACTER_SCHEMA.is_file():
+        return load_schema(CHARACTER_SCHEMA)
+
+    logger.debug("No character schema: %s", CHARACTER_SCHEMA)
+
+    CHARACTER_SCHEMA = SCHEMA_DIR / f"{system}.json"
+    if CHARACTER_SCHEMA.is_file():
+        return load_schema(CHARACTER_SCHEMA)
+
+    logger.debug("No character schema: %s", CHARACTER_SCHEMA)
+
+    raise SchemaError("Missing schema")
+
+
 def load_schema(filename: Path) -> Dict[str, Any]:
     with open(filename, 'r') as f:
         try:
@@ -30,8 +46,8 @@ def load_schema(filename: Path) -> Dict[str, Any]:
 SchemaValidationError = Dict[str, str]
 
 
-def validate(data: Dict, filename: Path) -> List[SchemaValidationError]:
-    schema = load_schema(filename)
+def validate(data: Dict, system: str) -> List[SchemaValidationError]:
+    schema = get_schema(system)
     v = Draft7Validator(schema)
     return [{'path': "/".join(str(x) for x in e.path), "message": e.message} for e in v.iter_errors(data)]
 

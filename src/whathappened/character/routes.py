@@ -1,4 +1,3 @@
-from pathlib import Path
 import logging
 from typing import Optional
 
@@ -8,8 +7,8 @@ from flask import redirect, url_for, jsonify
 from werkzeug.exceptions import abort
 
 from whathappened.sheets.mechanics import core
-from whathappened.sheets.mechanics.core import CHARACTER_SCHEMA_DIR, GameSystems
-from whathappened.sheets.schema.build import load_schema, sub_schema
+from whathappened.sheets.mechanics.core import GameSystems
+from whathappened.sheets.schema.build import get_schema, sub_schema
 
 from . import bp, api
 
@@ -48,8 +47,7 @@ def get_character(id: int, check_author: bool = True) -> Character:
         for campaign in character.campaigns:
             if current_user.profile in campaign.players \
                     or campaign in current_user.profile.campaigns:  # pyright: ignore[reportGeneralTypeIssues]
-                logger.debug(f"Character '{character.title}' " + f"is in '{campaign.title}' " +
-                             f"with '{current_user.username}''")  # pyright: ignore[reportGeneralTypeIssues]
+                logger.debug(f"Character '{character.title}' " + f"is in '{campaign.title}' " + f"with '{current_user.username}''")  # pyright: ignore[reportGeneralTypeIssues]
                 return character
 
     if check_author and character.user_id != current_user.profile.id:  # pyright: ignore[reportGeneralTypeIssues]
@@ -74,8 +72,7 @@ def create(chartype: str):
     if form.validate_on_submit():
         logger.debug(f"Creating new character specified by {form.data}")
         char_data = character_module.new_character(**form.data)
-        c = Character(title=form.title.data, body=char_data,
-                      user_id=current_user.profile.id)  # pyright: ignore[reportGeneralTypeIssues]
+        c = Character(title=form.title.data, body=char_data, user_id=current_user.profile.id)  # pyright: ignore[reportGeneralTypeIssues]
         session.add(c)
         session.commit()
         return redirect(url_for('character.view', id=c.id))
@@ -108,8 +105,7 @@ def import_character(type: Optional[str] = None, id: Optional[int] = None, code:
 
     form = ImportForm(obj=character)
     if form.validate_on_submit():
-        c = Character(title=form.title.data, body=form.body.data,
-                      user_id=current_user.profile.id)  # pyright: ignore[reportGeneralTypeIssues]
+        c = Character(title=form.title.data, body=form.body.data, user_id=current_user.profile.id)  # pyright: ignore[reportGeneralTypeIssues]
         session.add(c)
         session.commit()
         return redirect(url_for('character.view', id=c.id))
@@ -138,8 +134,7 @@ def update(id: int):
                 log_subfield = ' ' + subfield
             log_message = (f"set {type} on {field}{log_subfield}: {value}")
 
-            logentry = LogEntry(character, log_message,
-                                user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
+            logentry = LogEntry(character, log_message, user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
             session.add(logentry)
 
         character.store_data()
@@ -161,13 +156,7 @@ def shared(code: str):
     if character.game[1] == "Modern":
         typeheader = "Modern Era"
 
-    return render_template('character/coc7e/sheet.html.jinja',
-                           code=code,
-                           character=character,
-                           typeheader=typeheader,
-                           editable=editable,
-                           skillform=None,
-                           subskillform=None)
+    return render_template('character/coc7e/sheet.html.jinja', code=code, character=character, typeheader=typeheader, editable=editable, skillform=None, subskillform=None)
 
 
 @bp.route('/<int:id>/', methods=('GET', 'POST'))
@@ -201,12 +190,7 @@ def view(id: int):
     if system_template:
         return render_template(character_module.CHARACTER_SHEET_TEMPLATE, character=character, editable=editable)
 
-    character_schema = getattr(character_module, 'CHARACTER_SCHEMA', None)
-
-    if character_schema is None:
-        character_schema = CHARACTER_SCHEMA_DIR / f"{character.system}.yaml"
-
-    return render_general_view(character_schema, character=character, editable=editable)
+    return render_general_view(character.system, character=character, editable=editable)
 
 
 def html_data_type(t: str) -> str:
@@ -215,14 +199,9 @@ def html_data_type(t: str) -> str:
     return t
 
 
-def render_general_view(schema_file: Path, character: Character, editable: bool):
-    schema = load_schema(schema_file)
-    return render_template('character/general_character.html.jinja',
-                           schema=schema,
-                           character=character,
-                           editable=editable,
-                           html_data_type=html_data_type,
-                           get_ref=sub_schema)
+def render_general_view(system: str, character: Character, editable: bool):
+    schema = get_schema(system)
+    return render_template('character/general_character.html.jinja', schema=schema, character=character, editable=editable, html_data_type=html_data_type, get_ref=sub_schema)
 
 
 @bp.route('/<int:id>/tokens/', methods=('GET', 'POST'))
@@ -328,11 +307,7 @@ def editjson(id: int):
 
     validation_errors = c.validate()
 
-    return render_template('character/import.html.jinja',
-                           title="Edit JSON",
-                           validation_errors=validation_errors,
-                           form=form,
-                           type=None)
+    return render_template('character/import.html.jinja', title="Edit JSON", validation_errors=validation_errors, form=form, type=None)
 
 
 @bp.route('/<int:id>/eventlog', methods=('GET', ))
@@ -355,11 +330,7 @@ def eventlog(id: int):
     prev_url = None
     logger.debug(next_url)
     log_entries = entries_page.items
-    return render_template('character/eventlog.html.jinja',
-                           character=c,
-                           entries=log_entries,
-                           next_url=next_url,
-                           prev_url=prev_url)
+    return render_template('character/eventlog.html.jinja', character=c, entries=log_entries, next_url=next_url, prev_url=prev_url)
 
 
 @bp.route('/<int:id>/folder', methods=('GET', 'POST'))

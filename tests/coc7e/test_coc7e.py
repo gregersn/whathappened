@@ -59,7 +59,7 @@ def fixture_test_character() -> Character:
 
 def test_validate(test_sheet: dict):
     nc = new_character("Test Character", "Classic (1920's)")
-    errors = validate(nc, CHARACTER_SCHEMA)
+    errors = validate(nc, "coc7e")
     assert len(errors) == 0
 
 
@@ -67,7 +67,7 @@ def test_convert_from_dholes(dholes_sheet: dict):
     """Test conversion from a character sheet generated at dholes house."""
     assert dholes_sheet is not None
     converted = convert_from_dholes(dholes_sheet)
-    errors = validate(converted, CHARACTER_SCHEMA)
+    errors = validate(converted, "coc7e")
     error_messages = errors
     assert len(errors) == 0, error_messages
 
@@ -121,12 +121,7 @@ def test_subskill(newly_created_character: Character):
     with pytest.raises(ValueError):
         newly_created_character.mechanics.add_subskill(subskill_name, skill_name)
 
-    newly_created_character.set_attribute({
-        'category': 'skill',
-        'field': skill_name,
-        'subfield': subskill_name,
-        'value': 21
-    })
+    newly_created_character.set_attribute({'category': 'skill', 'field': skill_name, 'subfield': subskill_name, 'value': 21})
 
     subskill = newly_created_character.skill(skill_name, subskill_name)
     assert subskill is not None
@@ -134,12 +129,12 @@ def test_subskill(newly_created_character: Character):
 
 
 def test_validate_migration_up(test_sheet: dict):
-    errors = validate(migrate(test_sheet, "0.0.4", migrations=migrations), CHARACTER_SCHEMA)
+    errors = validate(migrate(test_sheet, "0.0.4", migrations=migrations), "coc7e")
     assert len(errors) == 0, errors
 
 
 def test_validate_migration_latest(test_sheet: dict):
-    errors = validate(migrate(test_sheet, latest, migrations=migrations), CHARACTER_SCHEMA)
+    errors = validate(migrate(test_sheet, latest, migrations=migrations), "coc7e")
 
     assert len(errors) == 0, errors
 

@@ -10,7 +10,7 @@ assert CHARACTER_SCHEMA.is_file(), CHARACTER_SCHEMA
 class TftlMechanics(CharacterMechanics):
 
     def validate(self):
-        return validate(self.parent.body, CHARACTER_SCHEMA)
+        return validate(self.parent.body, 'tftl')
 
     def version(self):
         return '0.0.1'

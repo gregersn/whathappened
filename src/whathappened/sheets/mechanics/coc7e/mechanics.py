@@ -20,7 +20,7 @@ class CoCMechanics(CharacterMechanics):
             return None
 
     def validate(self):
-        return validate(self.parent.body, CHARACTER_SCHEMA)
+        return validate(self.parent.body, 'coc7e')
 
     def version(self):
         return '0.0.4'

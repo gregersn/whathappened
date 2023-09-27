@@ -1,7 +1,7 @@
 from jsonschema import validate
 
-from whathappened.character.coc7e import CHARACTER_SCHEMA, new_character
-from whathappened.sheets.schema.build import load_schema
+from whathappened.character.coc7e import new_character
+from whathappened.sheets.schema.build import get_schema
 
 latest = '0.0.4'
 
@@ -100,7 +100,7 @@ def v003_to_v002(data):
 def v001_to_002(data):
     data = data.copy()
     nc = new_character("Test Character", "Classic (1920's)")
-    schema = load_schema(CHARACTER_SCHEMA)
+    schema = get_schema("coc7e")
     validate(nc, schema=schema)
 
     start_values = {skill['name']: str(skill['start_value']) for skill in nc['skills']}
@@ -120,8 +120,7 @@ def v001_to_002(data):
             skill['start_value'] = '0'
 
         if 'specializations' in skill:
-            skill['specializations'] = (skill['specializations'] == "true" or skill['specializations'] == "True"
-                                        or skill['specializations'] is True)
+            skill['specializations'] = (skill['specializations'] == "true" or skill['specializations'] == "True" or skill['specializations'] is True)
 
         if skill['name'] not in skill_index:
             skill_index[skill['name']] = skill
@@ -165,15 +164,15 @@ migrations = [{
     'from': '0.0.1',
     'to': '0.0.2',
     'up': v001_to_002,
-    'down': v002_to_001
+    'down': v002_to_001,
 }, {
     'from': '0.0.2',
     'to': '0.0.3',
     'up': v002_to_v003,
-    'down': v003_to_v002
+    'down': v003_to_v002,
 }, {
     'from': '0.0.3',
     'to': '0.0.4',
     'up': v003_to_v004,
-    'down': v004_to_v003
+    'down': v004_to_v003,
 }]
