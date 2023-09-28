@@ -10,24 +10,51 @@ from pydantic import BaseModel, Field
 class SheetInfo(BaseModel):
     """Basic info about the sheet."""
 
-    gamename: str
+    gamename: str = "Drakar och Demoner"
     title: str = "Unknown"
 
 
 class DoDSlakte(str, Enum):
     MANNISKA = "Människa"
+    HALVLING = "Halvling"
+    DVARG = "Dvärg"
+    ALV = "Alv"
+    ANKA = "Anka"
+    VARGFOLK = "Vargfolk"
 
 
 class DoDYrke(str, Enum):
     BARD = "Bard"
+    HANTVERKARE = "Hantverkare"
+    JAGARE = "Jägare"
+    KRIGARE = "Krigare"
+    LARD = "Lärd"
+    MAGIKER = "Magiker"
+    NASARE = "Masare"
+    RIDDARE = "Riddare"
+    SJOFARARE = "Sjöfarare"
+    TJUV = "Tjuv"
 
 
 class DoDAttributer(BaseModel):
-    ...
+    STY: int = 0
+    FYS: int = 0
+    SMI: int = 0
+    INT: int = 0
+    PSY: int = 0
+    KAR: int = 0
+
+    utmattad: bool = False
+    krasslig: bool = False
+    omtocknad: bool = False
+    arg: bool = False
+    radd: bool = False
+    uppgiven: bool = False
 
 
 class DoDSkadebonus(BaseModel):
-    ...
+    sty: str = Field("", title="Styrke")
+    smi: str = Field("", title="Smidighet")
 
 
 class DoDFardigheter(BaseModel):
@@ -35,10 +62,10 @@ class DoDFardigheter(BaseModel):
 
 
 class DoDPackning(BaseModel):
-    barformoga: int = Field(title="Bärformåga")
-    items: List[str] = list()
-    minnessak: str
-    smaasaker: List[str] = list()
+    barformoga: int = Field(0, title="Bärformåga")
+    items: List[str] = []
+    minnessak: str = ""
+    smaasaker: List[str] = []
 
 
 class DoDPenger(BaseModel):
@@ -48,27 +75,29 @@ class DoDPenger(BaseModel):
 
 
 class DrakarOchDemonerCharacter(BaseModel):
-    namn: str
-    slakte: Annotated[DoDSlakte, Field(title="Släkte")]
-    alder: str = Field(title="Ålder")
-    yrke: Annotated[DoDYrke, Field(title="Yrke")]
-    svaghet: str
-    utseende: str
-    attributer: DoDAttributer
-    skadebonus: DoDSkadebonus
-    forflyttning: str
-    formagor_og_besvarjelser: List[str]
-    fardigheter: DoDFardigheter
-    packning: DoDPackning
-    penger: DoDPenger
+    namn: str = ""
+    slakte: Annotated[DoDSlakte, Field(title="Släkte")] = DoDSlakte.MANNISKA
+    alder: str = Field("", title="Ålder")
+    yrke: Annotated[DoDYrke, Field(title="Yrke")] = DoDYrke.BARD
+    svaghet: str = ""
+    utseende: str = ""
+    attributer: DoDAttributer = Field(default_factory=DoDAttributer)
+    skadebonus: DoDSkadebonus = Field(default_factory=DoDSkadebonus)
+    forflyttning: str = ""
+    formagor_og_besvarjelser: List[str] = list()
+    fardigheter: DoDFardigheter = Field(default_factory=DoDFardigheter)
+    packning: DoDPackning = Field(default_factory=DoDPackning)
+    penger: DoDPenger = Field(default_factory=DoDPenger)
 
 
 class DrakarOchDemoner(BaseModel):
     """Character sheet."""
 
-    system: str = Field("dod")
-    meta: SheetInfo = Field(SheetInfo(gamename="Drakar och Demoner"))
-    character_Sheet: DrakarOchDemonerCharacter = Field(title="Drakar och Demoner")
+    system: str = "dod"
+    meta: SheetInfo = Field(default_factory=SheetInfo)
+    character_sheet: DrakarOchDemonerCharacter = Field(
+        default_factory=DrakarOchDemonerCharacter
+    )
 
 
 CharacterSheet = DrakarOchDemoner
