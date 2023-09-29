@@ -14,7 +14,7 @@ class SheetInfo(BaseModel):
     title: str = "Unknown"
 
 
-class DoDSlakte(str, Enum):
+class Slakte(str, Enum):
     MANNISKA = "Människa"
     HALVLING = "Halvling"
     DVARG = "Dvärg"
@@ -23,7 +23,7 @@ class DoDSlakte(str, Enum):
     VARGFOLK = "Vargfolk"
 
 
-class DoDYrke(str, Enum):
+class Yrke(str, Enum):
     BARD = "Bard"
     HANTVERKARE = "Hantverkare"
     JAGARE = "Jägare"
@@ -36,7 +36,7 @@ class DoDYrke(str, Enum):
     TJUV = "Tjuv"
 
 
-class DoDAttributer(BaseModel):
+class Attributer(BaseModel):
     STY: int = 0
     FYS: int = 0
     SMI: int = 0
@@ -52,42 +52,134 @@ class DoDAttributer(BaseModel):
     uppgiven: bool = False
 
 
-class DoDSkadebonus(BaseModel):
+class Skadebonus(BaseModel):
     sty: str = Field("", title="Styrke")
     smi: str = Field("", title="Smidighet")
 
 
-class DoDFardigheter(BaseModel):
-    ...
+class Fardighet(BaseModel):
+    checked: bool = False
+    value: int = 0
+    name: str
+    base: str
 
 
-class DoDPackning(BaseModel):
+PrimaraFerdigheter = [
+    ("Bestiologi", "INT"),
+    ("Bluffa", "KAR"),
+    ("Fingerfärdighet", "SMI"),
+    ("Finna dolda ting", "INT"),
+    ("Främmande språk", "INT"),
+    ("Hantverk", "STY"),
+    ("Hoppa & klättra", "SMI"),
+    ("Jakt & fiske", "SMI"),
+    ("Köpslå", "KAR"),
+    ("Läkekonst", "INT"),
+    ("Myter & legender", "INT"),
+    ("Rida", "SMI"),
+    ("Simma", "SMI"),
+    ("Sjökunnighet", "INT"),
+    ("Smyga", "SMI"),
+    ("Undivka", "SMI"),
+    ("Uppträda", "KAR"),
+    ("Upptäcka fara", "INT"),
+    ("Vildmakrsvana", "KAR"),
+]
+
+VapenFardigheter = [
+    ("Armbrost", "SMI"),
+    ("Hammare", "STY"),
+    ("Kniv", "SMI"),
+    ("Pilbåge", "SMI"),
+    ("Slagsmål", "STY"),
+    ("Slunga", "SMI"),
+    ("Spjut", "STY"),
+    ("Stav", "SMI"),
+    ("Svärd", "STY"),
+    ("Yxa", "STY"),
+]
+
+
+class Fardigheter(BaseModel):
+    primar: List[Fardighet] = Field(
+        [Fardighet(name=name, base=base) for name, base in PrimaraFerdigheter]
+    )
+    vapenfardigheter: List[Fardighet] = Field(
+        [Fardighet(name=name, base=base) for name, base in VapenFardigheter],
+        title="Vapenfärdigheter",
+    )
+
+    sekundarafardigheter: List[Fardighet] = Field([], title="Sekundära färdigheter")
+
+
+class Packning(BaseModel):
     barformoga: int = Field(0, title="Bärformåga")
     items: List[str] = []
     minnessak: str = ""
     smaasaker: List[str] = []
 
 
-class DoDPenger(BaseModel):
+class Penger(BaseModel):
     guldmynt: int = 0
     silvermynt: int = 0
     kopparmynt: int = 0
 
 
+class Rustning(BaseModel):
+    skyddsvärde: int = 0
+    smyga: bool = False
+    undvika: bool = False
+    hoppa_och_klatra: bool = False
+
+
+class Hjalm(BaseModel):
+    skyddsvärde: int = 0
+    upptäcka_fara: bool = False
+    avståndsattacker: bool = False
+
+
+class Vapen(BaseModel):
+    vapen: str = ""
+    grepp: str = ""
+    räckvidd: str = ""
+    skada: str = ""
+    brytvärde: str = ""
+    egenskaper: str = ""
+
+
+class Bevapning(BaseModel):
+    rustning: Rustning = Field(default_factory=Rustning)
+    hjalm: Hjalm = Field(default_factory=Hjalm, title="Hjälm")
+    til_hands: List[Vapen] = Field(default=[Vapen() for _ in range(3)])
+
+
+class Viljepoang(BaseModel):
+    poeng: int = 0
+    brukt: int = 0
+
+
+class Kroppspoang(Viljepoang):
+    lyckade: int = 0
+    misslyckade: int = 0
+
+
 class DrakarOchDemonerCharacter(BaseModel):
     namn: str = ""
-    slakte: Annotated[DoDSlakte, Field(title="Släkte")] = DoDSlakte.MANNISKA
+    slakte: Annotated[Slakte, Field(title="Släkte")] = Slakte.MANNISKA
     alder: str = Field("", title="Ålder")
-    yrke: Annotated[DoDYrke, Field(title="Yrke")] = DoDYrke.BARD
+    yrke: Annotated[Yrke, Field(title="Yrke")] = Yrke.BARD
     svaghet: str = ""
     utseende: str = ""
-    attributer: DoDAttributer = Field(default_factory=DoDAttributer)
-    skadebonus: DoDSkadebonus = Field(default_factory=DoDSkadebonus)
-    forflyttning: str = ""
-    formagor_og_besvarjelser: List[str] = list()
-    fardigheter: DoDFardigheter = Field(default_factory=DoDFardigheter)
-    packning: DoDPackning = Field(default_factory=DoDPackning)
-    penger: DoDPenger = Field(default_factory=DoDPenger)
+    attributer: Attributer = Field(default_factory=Attributer)
+    skadebonus: Skadebonus = Field(default_factory=Skadebonus)
+    forflyttning: int = 0
+    formagor_og_besvarjelser: List[str] = Field([], title="Förmågor & besvärjelser")
+    fardigheter: Fardigheter = Field(default_factory=Fardigheter, title="Färdigheter")
+    packning: Packning = Field(default_factory=Packning)
+    penger: Penger = Field(default_factory=Penger)
+    vapen: Bevapning = Field(default_factory=Bevapning)
+    viljepoang: Viljepoang = Field(default_factory=Viljepoang)
+    kroppspoang: Kroppspoang = Field(default_factory=Kroppspoang)
 
 
 class DrakarOchDemoner(BaseModel):
