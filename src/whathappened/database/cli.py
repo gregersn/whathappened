@@ -5,6 +5,7 @@ from flask.cli import with_appcontext
 
 from alembic.config import Config
 from alembic import command
+from whathappened.database.base import Base
 
 
 CONFIG_FILE = Path(current_app.root_path) / "migrations/alembic.ini"
@@ -101,3 +102,16 @@ def revision(directory, message):
 
 
 current_app.cli.add_command(db)
+
+
+@db.command('export')
+@click.option('-d', '--destination', default=".")
+def export(destination):
+    """Export all data to file."""
+    print("All models")
+    print(Base.metadata.tables.keys())
+
+
+@db.command('import')
+def import_data(source):
+    """Import all data from file. WARNING: Will overwrite EVERYTHING!"""
