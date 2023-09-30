@@ -26,8 +26,9 @@ class Settings(BaseSettings):
     WEBPACKEXT_MANIFEST_PATH: str = "manifest.json"
     WTF_CSRF_TIME_LIMIT: Optional[int] = None
 
-    class Config:
-        _env_file_encoding = "utf-8"
+    model_config = {
+        "_env_file_encoding": "utf-8",
+    }
 
 
 Config = Settings(_env_file=os.environ.get("WHATHAPPENED_SETTINGS"))
