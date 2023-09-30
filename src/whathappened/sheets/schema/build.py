@@ -30,7 +30,6 @@ def get_schema(system: str):
     logger.debug("No character schema: %s", CHARACTER_SCHEMA)
 
     try:
-
         import importlib
 
         game_module = importlib.import_module(f"whathappened.sheets.schema.{system}")
@@ -63,22 +62,29 @@ SchemaValidationError = Dict[str, str]
 def validate(data: Dict, system: str) -> List[SchemaValidationError]:
     schema = get_schema(system)
     v = Draft7Validator(schema)
-    return [{"path": "/".join(str(x) for x in e.path), "message": e.message} for e in v.iter_errors(data)]
+    return [
+        {"path": "/".join(str(x) for x in e.path), "message": e.message}
+        for e in v.iter_errors(data)
+    ]
 
 
 def build_boolean(schema: Dict[str, bool]) -> bool:
+    logger.debug("build boolean: %s", schema["default"])
     return schema["default"]
 
 
 def build_string(schema: Dict[str, str]) -> str:
+    logger.debug("build string: %s", schema["default"])
     return schema["default"]
 
 
 def build_integer(schema: Dict[str, int]) -> int:
+    logger.debug("build integer: %s", schema["default"])
     return schema["default"]
 
 
 def build_object(schema: Dict[str, Any], main_schema: Dict[str, Any]) -> Dict[str, Any]:
+    logger.debug("build object")
     output = {}
     for property, description in schema["properties"].items():
         output[property] = build_from_schema2(description, main_schema)
@@ -86,12 +92,14 @@ def build_object(schema: Dict[str, Any], main_schema: Dict[str, Any]) -> Dict[st
 
 
 def build_array(schema: Dict[str, List[Any]]) -> List[Any]:
+    logger.debug("build array")
     if "default" in schema:
         return schema["default"]
     return []
 
 
 def get_sub(d: Dict[str, Any], path: List[str]) -> Dict:
+    logger.debug("get_sub: %s", path)
     if len(path) == 1:
         return d[path[0]]
 
@@ -99,7 +107,10 @@ def get_sub(d: Dict[str, Any], path: List[str]) -> Dict:
     return get_sub(d[p], path)
 
 
-def sub_schema(schema: Union[List, Dict], path: str) -> Union[Dict, List, str, int, bool]:
+def sub_schema(
+    schema: Union[List, Dict], path: str
+) -> Union[Dict, List, str, int, bool]:
+    logger.debug("sub_schema: %s", path)
     parts = path.split("/")
     if parts[0] != "#":
         raise NotImplementedError(path)
@@ -109,7 +120,9 @@ def sub_schema(schema: Union[List, Dict], path: str) -> Union[Dict, List, str, i
     return get_sub(schema, parts[1:])
 
 
-def build_from_schema2(schema: Union[List, Dict[str, Any]], main_schema: Dict[str, Any]) -> Union[Dict, List, str, int, bool]:
+def build_from_schema2(
+    schema: Union[List, Dict[str, Any]], main_schema: Dict[str, Any]
+) -> Union[Dict, List, str, int, bool]:
     if isinstance(schema, Dict):
         logger.debug("Handling a dictionary")
         if "$ref" in schema:
@@ -130,6 +143,13 @@ def build_from_schema2(schema: Union[List, Dict[str, Any]], main_schema: Dict[st
             return build_boolean(schema)
         if schema.get("type") == "array":
             return build_array(schema)
+        if "default" in schema:
+            return schema["default"]
+        if "allOf" in schema:
+            out = {}
+            for entry in schema["allOf"]:
+                out.update(build_from_schema2(entry, main_schema))
+            return out
     elif isinstance(schema, List):
         logger.debug("Handling a list")
         raise NotImplementedError("Lists are not my strong suite.")
