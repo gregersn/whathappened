@@ -41,6 +41,10 @@ def get_schema(system: str):
     raise SchemaError("Missing schema")
 
 
+def flatten_schema(schema: Dict[str, Any]):
+    return schema
+
+
 def load_schema(filename: Path) -> Dict[str, Any]:
     with open(filename, "r") as f:
         try:

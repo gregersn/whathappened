@@ -236,6 +236,7 @@ def html_data_type(t: str) -> str:
 
 def render_general_view(system: str, character: Character, editable: bool):
     schema = get_schema(system)
+    schema = flatten_schema(schema)
     return render_template(
         "character/general_character.html.jinja",
         schema=schema,
