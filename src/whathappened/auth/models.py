@@ -7,7 +7,6 @@ from sqlalchemy.sql.schema import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import Integer, String
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from flask_login import UserMixin
 from flask import current_app
 
 from whathappened.database import Base, session
@@ -15,7 +14,7 @@ from whathappened.database import Base, session
 logger = logging.getLogger(__name__)
 
 
-class User(UserMixin, Base):
+class User(Base):
     __tablename__ = "user_account"
     id = Column(Integer, primary_key=True)
     username = Column(String(64), index=True, unique=True)

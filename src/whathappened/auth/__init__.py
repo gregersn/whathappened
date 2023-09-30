@@ -1,7 +1,6 @@
 import logging
 from flask import Blueprint, render_template, current_app
 
-from flask_login import login_required, current_user, LoginManager
 
 from whathappened import login_manager
 from whathappened.email import send_mail
