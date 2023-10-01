@@ -73,9 +73,15 @@ class CharacterMechanics:
 
     def attribute(self, *args):
         path = args[0]
+        logger.debug("Getting attribute for: %s", path)
+
+        def reducer(source, selector):
+            if isinstance(source, list):
+                return source[int(selector)]
+            return source[selector] if source is not None else None
 
         val = reduce(
-            lambda x, y: x.get(y, None) if x is not None else None,
+            reducer,
             path.split("."),
             self.parent.body,
         )
@@ -119,9 +125,13 @@ class CharacterMechanics:
                 self.set_portrait(fix_image(data))
         else:
             logger.debug(f"Set '{attribute['field']}' to '{attribute['value']}'")
-            s = reduce(
-                lambda x, y: x[y], attribute["field"].split(".")[:-1], self.parent.body
-            )
+
+            def reducer(source, selector):
+                if isinstance(source, list):
+                    return source[int(selector)]
+                return source[selector] if source is not None else None
+
+            s = reduce(reducer, attribute["field"].split(".")[:-1], self.parent.body)
             s[attribute["field"].split(".")[-1]] = attribute["value"]
 
     def add_skill(self, skillname: str, value: int = 1):

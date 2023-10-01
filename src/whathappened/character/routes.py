@@ -8,7 +8,7 @@ from werkzeug.exceptions import abort
 
 from whathappened.sheets.mechanics import core
 from whathappened.sheets.mechanics.core import GameSystems
-from whathappened.sheets.schema.build import get_schema, sub_schema
+from whathappened.sheets.schema.build import flatten_schema, get_schema, sub_schema
 
 from . import bp, api
 

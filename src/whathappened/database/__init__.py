@@ -20,6 +20,7 @@ class db:
 
     @staticmethod
     def create_all():
+        breakpoint()
         Base.metadata.create_all(Base.metadata.bind)
 
     session = session

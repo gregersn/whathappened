@@ -1,4 +1,6 @@
-from typing import Dict, List, MutableMapping, Union, Any
+from typing import Dict, List, MutableMapping, Optional, Union, Any
+import msgspec
+from pydantic import BaseModel
 import yaml
 import logging
 import json
@@ -33,16 +35,32 @@ def get_schema(system: str):
         import importlib
 
         game_module = importlib.import_module(f"whathappened.sheets.schema.{system}")
+        if issubclass(game_module.CharacterSheet, BaseModel):
+            return game_module.CharacterSheet.model_json_schema()
 
-        return game_module.CharacterSheet.model_json_schema()
+        if issubclass(game_module.CharacterSheet, msgspec.Struct):
+            return msgspec.json.schema(game_module.CharacterSheet)
     except:
         ...
 
     raise SchemaError("Missing schema")
 
 
-def flatten_schema(schema: Dict[str, Any]):
-    return schema
+def flatten_schema(
+    schema: Dict[str, Any], main_schema: Optional[Dict[str, Any]] = None
+):
+    output: Dict[str, Any] = {}
+    for key, value in schema.items():
+        if key == "$ref":
+            value = sub_schema(main_schema or schema, schema["$ref"])
+            if isinstance(value, dict):
+                value = flatten_schema(value, main_schema or schema)
+            output.update(value)
+        elif isinstance(value, dict):
+            output[key] = flatten_schema(value, main_schema or schema)
+        else:
+            output[key] = value
+    return output
 
 
 def load_schema(filename: Path) -> Dict[str, Any]:
@@ -129,6 +147,8 @@ def build_from_schema2(
 ) -> Union[Dict, List, str, int, bool]:
     if isinstance(schema, Dict):
         logger.debug("Handling a dictionary")
+        if "default" in schema:
+            return schema["default"]
         if "$ref" in schema:
             sub = sub_schema(main_schema, schema["$ref"])
 
@@ -147,8 +167,6 @@ def build_from_schema2(
             return build_boolean(schema)
         if schema.get("type") == "array":
             return build_array(schema)
-        if "default" in schema:
-            return schema["default"]
         if "allOf" in schema:
             out = {}
             for entry in schema["allOf"]:

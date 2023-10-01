@@ -17,6 +17,8 @@ def test_new_character_from_schema():
     nc = build_from_schema(data)
 
     assert nc["character_sheet"]["slakte"] == "Människa"
-    assert not isinstance(nc["character_sheet"]["fardigheter"], str)
+    assert not isinstance(nc["character_sheet"]["Färdigheter"], str)
 
     assert not validate(nc, "dod")
+
+    assert nc["character_sheet"]["Ålder"] == "Ung", nc["character_sheet"]["Ålder"]

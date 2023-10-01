@@ -8,27 +8,29 @@
 </div>
 {%- endmacro %}
 
-{%- macro render_item(item, path='' )%}
-{% if 'type' in item and item.type == 'object' %}
-{{ render_object(item, path)}}
-{% elif 'type' in item and item.type == 'array' %}
-<ul class="{%- if editable %} editable_list{%- endif %}" data-field="{{path}}">
+{%- macro render_array(object, path='') %}
+<ul data-field="{{path}}">
     {% for litem in character.mechanics.attribute(path) or [] %}
-    <li>{{ litem }}</li>
+        <li data-field="{{ path ~ '.' ~ loop.index0 }}">{{ render_item(object['items'], path ~ '.' ~ loop.index0) }}</li>
     {% endfor %}
 </ul>
+{%- endmacro %}
+
+{%- macro render_item(item, path='' )%}
+{% if 'type' in item and item.type == 'object' %}
+    {{ render_object(item, path)}}
+{% elif 'type' in item and item.type == 'array' %}
+    {{ render_array(item, path) }}
+{% elif 'enum' in item %}
+    {{ editable_choice(path, type=html_data_type(item.type), choices=item.enum) }}
 {% elif 'type' in item and (item.type == 'integer' or item.type == 'string') %}
-{% if 'enum' in item %}
-{{ editable_choice(path, type=html_data_type(item.type), choices=item.enum) }}
-{% else %}
-{{ editable_field(path, type=html_data_type(item.type)) }}
-{% endif %}
+    {{ editable_field(path, type=html_data_type(item.type)) }}
 {% elif 'type' in item and item.type == 'boolean'%}
-{{ editable_binary(path) }}
+    {{ editable_binary(path) }}
 {% elif '$ref' in item %}
-{{ render_item(get_ref(schema, item['$ref']), path)}}
+    {{ render_item(get_ref(schema, item['$ref']), path)}}
 {% else %}
-{{ item }}
+    {{path}} : {{ item }}
 {% endif %}
 {%- endmacro %}
 

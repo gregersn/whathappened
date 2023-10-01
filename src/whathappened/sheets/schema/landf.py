@@ -4,6 +4,8 @@ import yaml
 
 from pydantic import BaseModel, Field
 
+from whathappened.sheets.schema.build import build_from_schema
+
 
 class CharacterStyle(str, Enum):
     """What style of character being played."""

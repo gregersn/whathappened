@@ -1,13 +1,13 @@
 from enum import Enum
-from typing import List
+from typing import List, Literal
 from typing_extensions import Annotated
 
 import yaml
 
-from pydantic import BaseModel, Field
+import msgspec
 
 
-class SheetInfo(BaseModel):
+class SheetInfo(msgspec.Struct):
     """Basic info about the sheet."""
 
     gamename: str = "Drakar och Demoner"
@@ -36,13 +36,18 @@ class Yrke(str, Enum):
     TJUV = "Tjuv"
 
 
-class Attributer(BaseModel):
-    STY: int = 0
-    FYS: int = 0
-    SMI: int = 0
-    INT: int = 0
-    PSY: int = 0
-    KAR: int = 0
+Attribut = Annotated[int, msgspec.Meta(le=18)]
+Bonus = Literal["-", "+T4", "+T6"]
+Alder = Literal["Ung", "Medelålders", "Gammal"]
+
+
+class Attributer(msgspec.Struct, frozen=True):
+    STY: Attribut = 0
+    FYS: Attribut = 0
+    SMI: Attribut = 0
+    INT: Attribut = 0
+    PSY: Attribut = 0
+    KAR: Attribut = 0
 
     utmattad: bool = False
     krasslig: bool = False
@@ -52,16 +57,16 @@ class Attributer(BaseModel):
     uppgiven: bool = False
 
 
-class Skadebonus(BaseModel):
-    sty: str = Field("", title="Styrke")
-    smi: str = Field("", title="Smidighet")
+class Skadebonus(msgspec.Struct, frozen=True):
+    sty: Bonus = "-"
+    smi: Bonus = "-"
 
 
-class Fardighet(BaseModel):
-    checked: bool = False
-    value: int = 0
+class Fardighet(msgspec.Struct, frozen=True):
     name: str
     base: str
+    checked: bool = False
+    value: Attribut = 0
 
 
 PrimaraFerdigheter = [
@@ -100,45 +105,51 @@ VapenFardigheter = [
 ]
 
 
-class Fardigheter(BaseModel):
-    primar: List[Fardighet] = Field(
-        [Fardighet(name=name, base=base) for name, base in PrimaraFerdigheter]
+class Fardigheter(msgspec.Struct, frozen=True):
+    primar: List[Fardighet] = msgspec.field(
+        default_factory=lambda: [
+            Fardighet(name=name, base=base) for name, base in PrimaraFerdigheter
+        ]
     )
-    vapenfardigheter: List[Fardighet] = Field(
-        [Fardighet(name=name, base=base) for name, base in VapenFardigheter],
-        title="Vapenfärdigheter",
+    vapenfardigheter: List[Fardighet] = msgspec.field(
+        default_factory=lambda: [
+            Fardighet(name=name, base=base) for name, base in VapenFardigheter
+        ],
+        name="Vapenfärdigheter",
     )
 
-    sekundarafardigheter: List[Fardighet] = Field([], title="Sekundära färdigheter")
+    sekundarafardigheter: List[Fardighet] = msgspec.field(
+        default_factory=lambda: [], name="Sekundära färdigheter"
+    )
 
 
-class Packning(BaseModel):
-    barformoga: int = Field(0, title="Bärformåga")
+class Packning(msgspec.Struct, frozen=True):
+    barformoga: int = msgspec.field(default=0, name="Bärformåga")
     items: List[str] = []
     minnessak: str = ""
     smaasaker: List[str] = []
 
 
-class Penger(BaseModel):
+class Penger(msgspec.Struct, frozen=True):
     guldmynt: int = 0
     silvermynt: int = 0
     kopparmynt: int = 0
 
 
-class Rustning(BaseModel):
+class Rustning(msgspec.Struct, frozen=True):
     skyddsvärde: int = 0
     smyga: bool = False
     undvika: bool = False
     hoppa_och_klatra: bool = False
 
 
-class Hjalm(BaseModel):
+class Hjalm(msgspec.Struct, frozen=True):
     skyddsvärde: int = 0
     upptäcka_fara: bool = False
     avståndsattacker: bool = False
 
 
-class Vapen(BaseModel):
+class Vapen(msgspec.Struct, frozen=True):
     vapen: str = ""
     grepp: str = ""
     räckvidd: str = ""
@@ -147,47 +158,51 @@ class Vapen(BaseModel):
     egenskaper: str = ""
 
 
-class Bevapning(BaseModel):
-    rustning: Rustning = Field(default_factory=Rustning)
-    hjalm: Hjalm = Field(default_factory=Hjalm, title="Hjälm")
-    til_hands: List[Vapen] = Field(default=[Vapen() for _ in range(3)])
+class Bevapning(msgspec.Struct, frozen=True):
+    rustning: Rustning = msgspec.field(default_factory=Rustning)
+    hjalm: Hjalm = msgspec.field(default_factory=Hjalm, name="Hjälm")
+    til_hands: List[Vapen] = msgspec.field(
+        default_factory=lambda: [Vapen() for _ in range(3)]
+    )
 
 
-class Viljepoang(BaseModel):
+class Viljepoang(msgspec.Struct, frozen=True):
     poeng: int = 0
     brukt: int = 0
 
 
-class Kroppspoang(Viljepoang):
+class Kroppspoang(Viljepoang, frozen=True):
     lyckade: int = 0
     misslyckade: int = 0
 
 
-class DrakarOchDemonerCharacter(BaseModel):
-    namn: str = ""
-    slakte: Annotated[Slakte, Field(title="Släkte")] = Slakte.MANNISKA
-    alder: str = Field("", title="Ålder")
-    yrke: Annotated[Yrke, Field(title="Yrke")] = Yrke.BARD
-    svaghet: str = ""
-    utseende: str = ""
-    attributer: Attributer = Field(default_factory=Attributer)
-    skadebonus: Skadebonus = Field(default_factory=Skadebonus)
+class DrakarOchDemonerCharacter(msgspec.Struct):
+    namn: str = "Inget namn"
+    slakte: Slakte = msgspec.field(default=Slakte.MANNISKA)
+    alder: Alder = msgspec.field(default="Ung", name="Ålder")
+    yrke: Annotated[Yrke, msgspec.field(name="Yrke")] = Yrke.BARD
+    svaghet: str = "Odefinerad"
+    utseende: str = "Odefinerad"
+    attributer: Attributer = msgspec.field(default=Attributer())
+    skadebonus: Skadebonus = msgspec.field(default=Skadebonus())
     forflyttning: int = 0
-    formagor_og_besvarjelser: List[str] = Field([], title="Förmågor & besvärjelser")
-    fardigheter: Fardigheter = Field(default_factory=Fardigheter, title="Färdigheter")
-    packning: Packning = Field(default_factory=Packning)
-    penger: Penger = Field(default_factory=Penger)
-    vapen: Bevapning = Field(default_factory=Bevapning)
-    viljepoang: Viljepoang = Field(default_factory=Viljepoang)
-    kroppspoang: Kroppspoang = Field(default_factory=Kroppspoang)
+    formagor_og_besvarjelser: List[str] = msgspec.field(
+        default=[], name="Förmågor & besvärjelser"
+    )
+    fardigheter: Fardigheter = msgspec.field(default=Fardigheter(), name="Färdigheter")
+    packning: Packning = msgspec.field(default=Packning())
+    penger: Penger = msgspec.field(default=Penger())
+    vapen: Bevapning = msgspec.field(default=Bevapning())
+    viljepoang: Viljepoang = msgspec.field(default=Viljepoang())
+    kroppspoang: Kroppspoang = msgspec.field(default=Kroppspoang())
 
 
-class DrakarOchDemoner(BaseModel):
+class DrakarOchDemoner(msgspec.Struct):
     """Character sheet."""
 
     system: str = "dod"
-    meta: SheetInfo = Field(default_factory=SheetInfo)
-    character_sheet: DrakarOchDemonerCharacter = Field(
+    meta: SheetInfo = msgspec.field(default_factory=SheetInfo)
+    character_sheet: DrakarOchDemonerCharacter = msgspec.field(
         default_factory=DrakarOchDemonerCharacter
     )
 
@@ -195,4 +210,4 @@ class DrakarOchDemoner(BaseModel):
 CharacterSheet = DrakarOchDemoner
 
 if __name__ == "__main__":
-    print(yaml.dump(DrakarOchDemoner.model_json_schema(), allow_unicode=True))
+    print(yaml.dump(msgspec.json.schema(DrakarOchDemoner), allow_unicode=True))
