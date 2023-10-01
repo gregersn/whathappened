@@ -85,10 +85,10 @@ PrimaraFerdigheter = [
     ("Simma", "SMI"),
     ("Sjökunnighet", "INT"),
     ("Smyga", "SMI"),
-    ("Undivka", "SMI"),
+    ("Undvika", "SMI"),
     ("Uppträda", "KAR"),
     ("Upptäcka fara", "INT"),
-    ("Vildmakrsvana", "KAR"),
+    ("Vildmarksvana", "KAR"),
 ]
 
 VapenFardigheter = [
@@ -106,21 +106,28 @@ VapenFardigheter = [
 
 
 class Fardigheter(msgspec.Struct, frozen=True):
-    primar: List[Fardighet] = msgspec.field(
+    primar: Annotated[
+        List[Fardighet],
+        msgspec.Meta(extra_json_schema={"constant": True, "widget": "table"}),
+    ] = msgspec.field(
         default_factory=lambda: [
             Fardighet(name=name, base=base) for name, base in PrimaraFerdigheter
-        ]
+        ],
     )
-    vapenfardigheter: List[Fardighet] = msgspec.field(
+    vapenfardigheter: Annotated[
+        List[Fardighet],
+        msgspec.Meta(extra_json_schema={"constant": True, "widget": "table"}),
+    ] = msgspec.field(
         default_factory=lambda: [
             Fardighet(name=name, base=base) for name, base in VapenFardigheter
         ],
         name="Vapenfärdigheter",
     )
 
-    sekundarafardigheter: List[Fardighet] = msgspec.field(
-        default_factory=lambda: [], name="Sekundära färdigheter"
-    )
+    sekundarafardigheter: Annotated[
+        List[Fardighet],
+        msgspec.Meta(extra_json_schema={"constant": False, "widget": "table"}),
+    ] = msgspec.field(default_factory=lambda: [], name="Sekundära färdigheter")
 
 
 class Packning(msgspec.Struct, frozen=True):
@@ -161,14 +168,15 @@ class Vapen(msgspec.Struct, frozen=True):
 class Bevapning(msgspec.Struct, frozen=True):
     rustning: Rustning = msgspec.field(default_factory=Rustning)
     hjalm: Hjalm = msgspec.field(default_factory=Hjalm, name="Hjälm")
-    til_hands: List[Vapen] = msgspec.field(
-        default_factory=lambda: [Vapen() for _ in range(3)]
-    )
+    til_hands: Annotated[
+        List[Vapen],
+        msgspec.Meta(extra_json_schema={"constant": True, "widget": "table"}),
+    ] = msgspec.field(default_factory=lambda: [Vapen() for _ in range(3)])
 
 
 class Viljepoang(msgspec.Struct, frozen=True):
-    poeng: int = 0
-    brukt: int = 0
+    poang: int = msgspec.field(default=0, name="Poäng")
+    anvanda: int = msgspec.field(default=0, name="Använda")
 
 
 class Kroppspoang(Viljepoang, frozen=True):

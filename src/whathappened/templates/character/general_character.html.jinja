@@ -9,15 +9,53 @@
 {%- endmacro %}
 
 {%- macro render_array(object, path='') %}
+{% if not object.constant %}
+<ul class="{%- if editable %} editable_list{%- endif %}" data-field="{{path}}">
+{% else %}
 <ul data-field="{{path}}">
+{% endif %}
     {% for litem in character.mechanics.attribute(path) or [] %}
         <li data-field="{{ path ~ '.' ~ loop.index0 }}">{{ render_item(object['items'], path ~ '.' ~ loop.index0) }}</li>
     {% endfor %}
 </ul>
 {%- endmacro %}
 
+{%- macro render_table(object, path='')%}
+<section>
+<table id="tbl{{path}}" class="{%- if editable %} editableTable{%- endif %}">
+    <thead>
+    <tr>
+    {% for column in object['items'].properties %}
+    <th>{{column}}</th>
+    {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for litem in character.mechanics.attribute(path)  or [] %}
+    {% set rowloop = loop %}
+    <tr>
+        {% for column, properties in object['items'].properties.items() %}
+        <td data-blank="-">{{ render_item(properties, path ~ "." ~ rowloop.index0 ~ "." ~ column) }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</section>
+{%- endmacro %}
+
+{%- macro render_widget(widget, object, path='') %}
+{% if widget == "table"%}
+{{ render_table(object, path) }}
+{% else %}
+<div>Missing widget: {{ widget }} </div>
+{% endif %}
+{%- endmacro %}
+
 {%- macro render_item(item, path='' )%}
-{% if 'type' in item and item.type == 'object' %}
+{% if 'widget' in item %}
+    {{ render_widget(item.widget, item, path)}}
+{% elif 'type' in item and item.type == 'object' %}
     {{ render_object(item, path)}}
 {% elif 'type' in item and item.type == 'array' %}
     {{ render_array(item, path) }}
