@@ -3,7 +3,7 @@
 {%- macro render_object(object, path='') %}
 <div>
     {% for key, value in object.properties.items() %}
-    {{ value.title if 'title' in value else key }}: {{ render_item(value, path + '.' + key) }}<br />
+    {{ value.title if 'title' in value else key }}: {{ render_item(value, path + '.' + key, key) }}<br />
     {% endfor %}
 </div>
 {%- endmacro %}
@@ -20,22 +20,22 @@
 </ul>
 {%- endmacro %}
 
-{%- macro render_table(object, path='')%}
+{%- macro render_table(object, path='', key=None)%}
 <section>
-<table id="tbl{{path}}" class="{%- if editable %} editableTable{%- endif %}">
+<table id="tbl{{object['items'].title}}" class="{%- if editable %} editableTable{%- endif %}" data-field="{{ key or object['items'].title }}">
     <thead>
     <tr>
     {% for column in object['items'].properties %}
-    <th>{{column}}</th>
+    <th data-property="{{column}}">{{column}}</th>
     {% endfor %}
     </tr>
     </thead>
     <tbody>
     {% for litem in character.mechanics.attribute(path)  or [] %}
     {% set rowloop = loop %}
-    <tr>
+    <tr data-row="{{ loop.index }}">
         {% for column, properties in object['items'].properties.items() %}
-        <td data-blank="-">{{ render_item(properties, path ~ "." ~ rowloop.index0 ~ "." ~ column) }}</td>
+        <td data-type="{{ properties.type }}" data-blank="-">{{ render_item(properties, path ~ "." ~ rowloop.index0 ~ "." ~ column) }}</td>
         {% endfor %}
     </tr>
     {% endfor %}
@@ -44,17 +44,17 @@
 </section>
 {%- endmacro %}
 
-{%- macro render_widget(widget, object, path='') %}
+{%- macro render_widget(widget, object, path='', key=None) %}
 {% if widget == "table"%}
-{{ render_table(object, path) }}
+{{ render_table(object, path, key) }}
 {% else %}
-<div>Missing widget: {{ widget }} </div>
+<div>Missing widget: {{ widget }}</div>
 {% endif %}
 {%- endmacro %}
 
-{%- macro render_item(item, path='' )%}
+{%- macro render_item(item, path='', key=None)%}
 {% if 'widget' in item %}
-    {{ render_widget(item.widget, item, path)}}
+    {{ render_widget(item.widget, item, path, key)}}
 {% elif 'type' in item and item.type == 'object' %}
     {{ render_object(item, path)}}
 {% elif 'type' in item and item.type == 'array' %}
@@ -68,7 +68,7 @@
 {% elif '$ref' in item %}
     {{ render_item(get_ref(schema, item['$ref']), path)}}
 {% else %}
-    {{path}} : {{ item }}
+    Unknown stuff: {{path}} : {{ item }}
 {% endif %}
 {%- endmacro %}
 

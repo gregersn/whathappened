@@ -25,7 +25,7 @@ function saveElement(
   editable_handler: (e: Event) => void
 ) {
   let value = null;
-  if (editfield instanceof HTMLInputElement && editfield.type === "number") {
+  if (editfield instanceof HTMLInputElement && (editfield.type === "number" || editfield.type === "integer")) {
     value = isNaN(editfield.valueAsNumber)
       ? element.getAttribute("data-blank")
       : editfield.valueAsNumber;
@@ -100,7 +100,7 @@ function editElement(
     });
   } else if (type === "string") {
     editfield = document.createElement("input");
-  } else if (type === "number") {
+  } else if (type === "number" || type === "integer") {
     editfield = document.createElement("input") as HTMLInputElement;
     editfield.type = "number";
     editfield.setAttribute("data-blank", element.getAttribute("data-blank"));
@@ -129,7 +129,7 @@ function editElement(
   element.removeEventListener("click", editable_handler);
 }
 
-export type edit_type = "input" | "area" | "string" | "number";
+export type edit_type = "input" | "area" | "string" | "number" | "integer";
 
 const make_editable_handler = (
   element: HTMLElement,
@@ -224,7 +224,7 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
   for (const row of rows) {
     const row_data = {};
     fields.forEach((field) => {
-      if (field["type"] === "number") {
+      if (field["type"] === "number" || field["type"] === "integer") {
         const value = Number.parseInt(row.cells.item(field["index"]).innerHTML);
         row_data[field["property"]] = isNaN(value) ? field["blank"] : value;
       } else {
