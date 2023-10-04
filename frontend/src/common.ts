@@ -242,6 +242,65 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
   return data_rows;
 }
 
+export const editable_table_2 = (
+  table: HTMLTableElement
+) => {
+  const make_cell_editable = (cell: HTMLTableCellElement) => {
+    make_element_editable(
+      cell,
+      (data: any) => {
+        //save(table_to_obj(table));
+      },
+      cell.getAttribute("data-type") as edit_type
+    );
+  };
+  const make_row_editable = (row: HTMLTableRowElement, fields: any[]) => {
+    const cells = Array.from(row.cells);
+    //console.log(fields);
+    cells.forEach((cell, index) => {
+      if (fields.find((field) => field["index"] === index)) {
+        make_cell_editable(cell);
+      }
+    });
+  };
+
+ 
+  const cells = Array.from(table.tHead.rows[0].cells);
+  const fields = cells
+    .map((element, index) => {
+      return { property: element.getAttribute("data-property"), index: index };
+    })
+    .filter((element, index) => {
+      if (element["property"]) return true;
+      return false;
+    });
+
+  const rows = Array.from(table.tBodies[0].rows);
+  for (const row of rows) {
+    make_row_editable(row, fields);
+  }
+  const parent = table.parentElement;
+
+
+  const button = document.createElement("button");
+  button.innerHTML = "Add row";
+
+  const table_body = table.getElementsByTagName("tbody")[0];
+  button.onclick = () => {
+    const new_row = table_body.insertRow(-1);
+    new_row.setAttribute("data-row", `${table_body.rows.length}`);
+    // Set data-row on tr (length + 1)
+    // set data-type on each row, with data-blank
+    // create span inside each
+    new_row.innerHTML = "<td><span>-</span></td>".repeat(cells.length);
+    //make_row_editable(new_row, fields);
+  };
+
+  parent.appendChild(button);
+
+}
+
+
 export const editable_table = (
   table: HTMLTableElement,
   save: (data: Tabledata) => void

@@ -1,6 +1,6 @@
 import { make_element_editable, saveCheck, show_message } from "../common";
 import { send_update, Datamap, Elementdata, Tabledata } from "../common";
-import { editable_list, editable_table, Listdata, edit_type } from "../common"
+import { editable_list, editable_table, editable_table_2, Listdata, edit_type } from "../common"
 import { editable_check_progress } from "../widgets/check_progress";
 
 
@@ -118,6 +118,17 @@ function init_editable_tables() {
 
 }
 
+function init_editable_tables_2() {
+    console.log("Init editable tables 2");
+    const tables: HTMLTableElement[] = <HTMLTableElement[]>Array.from(document.getElementsByClassName('editableTable2'));
+
+    tables.forEach(table => {
+        editable_table_2(table);
+    });
+
+
+}
+
 
 function init_check_progress() {
     console.log("Init check progress");
@@ -139,5 +150,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
     init_editable_lists();
     init_editable_binaries();
     init_editable_tables();
+    init_editable_tables_2();
     init_check_progress();
+    console.log("Your mother is a hamster");
 })

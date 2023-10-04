@@ -67,9 +67,10 @@ def create_app(test_config=None) -> Flask:
     mail.init_app(app)
     app.jinja_env.add_extension("webassets.ext.jinja2.AssetsExtension")
 
-    webpack_manifest = Path(__file__).absolute().parent / "static" / "manifest.json"
+    webpack_manifest = Path(__file__).absolute().parent / "manifest.json"
 
     if webpack_manifest.exists():
+        logger.debug("Loading webpack manifest")
         webpack_env = WebpackEnvironment(manifest=webpack_manifest, publicRoot="")
 
         app.jinja_env.filters["webpack"] = WebpackFilter(webpack_env)
