@@ -242,6 +242,29 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
   return data_rows;
 }
 
+const create_editable = (tagname: keyof HTMLElementTagNameMap, data_type: string, data_field: string, data_blank: any) => {
+  const editable = document.createElement(tagname);
+  editable.setAttribute("data-type", data_type);
+  
+  const new_span: HTMLSpanElement = document.createElement("span");
+  new_span.setAttribute("data-field", data_field);
+  new_span.setAttribute("data-type", data_type);
+  new_span.innerText = data_blank;
+
+  const save = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => {
+    console.log("Save data");
+    console.log(data);
+    send_update(datamap, data);
+}
+
+
+
+  make_element_editable(new_span, save, data_type as edit_type);
+  editable.append(new_span);
+
+  return editable;
+}
+
 export const editable_table_2 = (
   table: HTMLTableElement
 ) => {
@@ -277,7 +300,7 @@ export const editable_table_2 = (
 
   const rows = Array.from(table.tBodies[0].rows);
   for (const row of rows) {
-    make_row_editable(row, fields);
+    //make_row_editable(row, fields);
   }
   const parent = table.parentElement;
 
@@ -286,14 +309,24 @@ export const editable_table_2 = (
   button.innerHTML = "Add row";
 
   const table_body = table.getElementsByTagName("tbody")[0];
+  const table_header = table.getElementsByTagName("thead")[0];
   button.onclick = () => {
+    // Set data-row on tr (length + 1)
     const new_row = table_body.insertRow(-1);
     new_row.setAttribute("data-row", `${table_body.rows.length}`);
-    // Set data-row on tr (length + 1)
     // set data-type on each row, with data-blank
-    // create span inside each
-    new_row.innerHTML = "<td><span>-</span></td>".repeat(cells.length);
-    //make_row_editable(new_row, fields);
+    for(const cell of table_header.rows[0].cells) {
+      const type = cell.getAttribute("data-type");
+      const field = `${table.getAttribute("data-field")}.${(table_body.rows.length - 1)}.${cell.getAttribute("data-property")}`;
+      const blank =  cell.getAttribute("data-blank");
+
+      const new_cell: HTMLTableCellElement = create_editable("td", type, field, blank) as HTMLTableCellElement;
+      new_row.appendChild(new_cell);
+
+      // create span inside each
+      //make_row_editable(new_row, fields);
+      console.log(cell);
+    }
   };
 
   parent.appendChild(button);
