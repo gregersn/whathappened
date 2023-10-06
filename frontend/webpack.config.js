@@ -1,7 +1,7 @@
 const path = require("path");
 const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 const options = {
-  fileName: "../manifest.json",
+  fileName: "manifest.json",
   publicPath: "/static/",
 };
 

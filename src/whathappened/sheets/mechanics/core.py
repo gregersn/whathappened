@@ -1,6 +1,6 @@
+"""Core mechanics for manipulating character sheet."""
 import copy
 from functools import reduce
-from pathlib import Path
 import logging
 from typing import Dict, Optional, Type
 import base64
@@ -21,7 +21,8 @@ CHARACTER_SHEET_TEMPLATE = ""
 
 
 def fix_image(imagedata: str) -> str:
-    imagetype, imagedata = imagedata.split(",")
+    """Convert image to right size and bith depth."""
+    imagetype, imagedata = imagedata.split(",")  # pylint: disable=unused-variable
     decoded = base64.b64decode(imagedata)
     buf = io.BytesIO(decoded)
     img = Image.open(buf).convert("RGB")
@@ -32,47 +33,60 @@ def fix_image(imagedata: str) -> str:
 
 
 class CharacterMechanics:
+    """Base class for character mechanics."""
+
     def __init__(self, parent):
         self.parent = parent
 
     def game(self):
+        """Get game specific stuff."""
         raise NotImplementedError
 
     def validate(self, *args, **kwargs):
+        """Validate character sheet data against game system."""
         return validate(self.parent.body, self.parent.system)
 
     @property
     def name(self):
+        """Name of the character."""
         logger.error("name: Not implemented")
         return "Unknown property, name"
 
     @property
     def age(self):
+        """Age of character."""
         logger.error("age: Not implemented")
         return "Unknown property, age"
 
     @property
     def description(self):
+        """Character description."""
         logger.error("description: Not implemented")
         return "Unknown property, description"
 
     def portrait(self):
+        """Character portrait."""
         logger.error("portrait: Not implemented")
         return "Unknown property, portrait"
 
     def store_data(self):
+        """Store character data."""
         return
 
     def skill(self, skill, subskill=None):
+        """Manipulate skill."""
         raise NotImplementedError
 
     def skills(self, *args):
+        """Get skills."""
         raise NotImplementedError
 
     def set_portrait(self, data: str):
+        """Set character portrait."""
         raise NotImplementedError
 
     def attribute(self, *args):
+        """Get an attribute."""
         path = args[0]
         logger.debug("Getting attribute for: %s", path)
 
@@ -90,6 +104,7 @@ class CharacterMechanics:
         return val
 
     def set_attribute(self, attribute: Dict):
+        """Set an attribute."""
         if attribute.get("category", None) == "skill":
             logger.debug("Set a skill")
             datatype = attribute.get("type", "string")
@@ -125,12 +140,13 @@ class CharacterMechanics:
             if data is not None:
                 self.set_portrait(fix_image(data))
         else:
-            logger.debug(f"Set '{attribute['field']}' to '{attribute['value']}'")
+            logger.debug("Set '%s' to '%s'", attribute["field"], attribute["value"])
 
             def reducer(source, selector):
                 if isinstance(source, list):
                     idx = int(selector)
                     if idx < 0:
+                        raise NotImplementedError("Index is less than 1")
                         copy_of_last = copy.deepcopy(source[-1])
                         source.append(copy_of_last)
                         return copy_of_last
@@ -138,9 +154,18 @@ class CharacterMechanics:
                 return source[selector] if source is not None else None
 
             s = reduce(reducer, attribute["field"].split(".")[:-1], self.parent.body)
-            s[attribute["field"].split(".")[-1]] = attribute["value"]
+            accessor = attribute["field"].split(".")[-1]
+            if isinstance(s, list):
+                idx = int(accessor)
+                if idx < 0:
+                    s.append(attribute["value"])
+                else:
+                    s[idx] = attribute["value"]
+            elif s is not None:
+                s[accessor] = attribute["value"]
 
     def add_skill(self, skillname: str, value: int = 1):
+        """Add skill."""
         if self.skill(skillname) is not None:
             raise ValueError(f"Skill {skillname} already exists.")
 
@@ -151,6 +176,7 @@ class CharacterMechanics:
             self.parent.data["skills"].sort(key=lambda x: x["name"])
 
     def add_subskill(self, name: str, parent: str):
+        """Add subskill."""
         value = self.skill(parent)["value"]
         start_value = self.skill(parent)["start_value"]
         logger.debug("Try to add subskill")
@@ -169,6 +195,7 @@ class CharacterMechanics:
 def register_game(
     tag: str, name: str, mechanics: Type[CharacterMechanics] = CharacterMechanics
 ):
+    """Register a game system."""
     global GameSystems
     GAMES[tag] = name
     MECHANICS[tag] = mechanics
@@ -178,25 +205,15 @@ def register_game(
 
 
 def new_character(title: str, system: Optional[str] = None, **kwargs):
+    """Create new character."""
     if system is None:
         raise SyntaxError("new_character: System not specified")
 
     schema_data = get_schema(system)
-    nc = build_from_schema(schema_data)
-    nc["title"] = title
-    """
-    CHARACTER_SCHEMA = CHARACTER_SCHEMA_DIR / f"{system}.yaml"
-    if CHARACTER_SCHEMA.is_file():
-        schema_data = load_schema(CHARACTER_SCHEMA)
-        nc = build_from_schema(schema_data)
-        nc["title"] = title
-    else:
-        import importlib
+    new_character_data = build_from_schema(schema_data)
+    new_character_data["title"] = title
 
-        game_module = importlib.import_module(f"whathappened.sheets.schema.{system}")
-        nc = game_module.CharacterSheet().model_dump()
-    """
-    return nc
+    return new_character_data
 
 
 register_game("landf", "Lasers and feelings")

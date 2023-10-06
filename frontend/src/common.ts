@@ -2,12 +2,12 @@ export type Datamap = {
   field: string;
   subfield?: string | undefined;
   type?:
-    | "skillcheck"
-    | "binary"
-    | "area"
-    | "table"
-    | "occupationcheck"
-    | undefined;
+  | "skillcheck"
+  | "binary"
+  | "area"
+  | "table"
+  | "occupationcheck"
+  | undefined;
 };
 
 export type Elementdata = any;
@@ -40,6 +40,28 @@ function saveElement(
   element.innerHTML = value;
   element.addEventListener("click", editable_handler);
   save(data, value);
+}
+
+function parse_value(value: any, value_type: string) {
+  console.log(`Converting ${value} to ${value_type}`);
+  switch (value_type) {
+    case "number":
+    case "integer":
+      return Number.parseInt(value);
+
+    case "string":
+      return String(value);
+
+    case "boolean":
+      return value == "True"
+    case "":
+      return value;
+
+    default:
+      throw new Error(`Unknown value type: ${value_type}`);
+      break;
+  }
+
 }
 
 export function list_to_obj(list: HTMLUListElement): Listdata {
@@ -245,7 +267,7 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
 const create_editable = (tagname: keyof HTMLElementTagNameMap, data_type: string, data_field: string, data_blank: any) => {
   const editable = document.createElement(tagname);
   editable.setAttribute("data-type", data_type);
-  
+
   const new_span: HTMLSpanElement = document.createElement("span");
   new_span.setAttribute("data-field", data_field);
   new_span.setAttribute("data-type", data_type);
@@ -255,7 +277,7 @@ const create_editable = (tagname: keyof HTMLElementTagNameMap, data_type: string
     console.log("Save data");
     console.log(data);
     send_update(datamap, data);
-}
+  }
 
 
 
@@ -287,7 +309,7 @@ export const editable_table_2 = (
     });
   };
 
- 
+
   const cells = Array.from(table.tHead.rows[0].cells);
   const fields = cells
     .map((element, index) => {
@@ -312,20 +334,26 @@ export const editable_table_2 = (
   const table_header = table.getElementsByTagName("thead")[0];
   button.onclick = () => {
     // Set data-row on tr (length + 1)
+    console.log("Adding row to table")
+    console.log(`${table.getAttribute("data-field")}.-1`);
+    console.log("Default values");
+    const default_values = {};
+    for (const cell of table_header.rows[0].cells) {
+      default_values[cell.getAttribute("data-property")] = parse_value(cell.getAttribute("data-blank"), cell.getAttribute("data-type"));
+    }
+    send_update({ "field": `${table.getAttribute("data-field")}.-1` }, default_values);
+    console.log(default_values)
     const new_row = table_body.insertRow(-1);
     new_row.setAttribute("data-row", '-1');
     // set data-type on each row, with data-blank
-    for(const cell of table_header.rows[0].cells) {
+    for (const cell of table_header.rows[0].cells) {
       const type = cell.getAttribute("data-type");
-      const field = `${table.getAttribute("data-field")}.-1.${cell.getAttribute("data-property")}`;
-      const blank =  cell.getAttribute("data-blank");
+      const field = `${table.getAttribute("data-field")}.${(table_body.rows.length - 1)}.${cell.getAttribute("data-property")}`;
+      const blank = cell.getAttribute("data-blank");
 
       const new_cell: HTMLTableCellElement = create_editable("td", type, field, blank) as HTMLTableCellElement;
       new_row.appendChild(new_cell);
-
-      // create span inside each
-      //make_row_editable(new_row, fields);
-      console.log(cell);
+      //console.log(cell);
     }
   };
 

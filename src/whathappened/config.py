@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
     UPLOAD_EXTENSIONS: List[str] = [".jpg", ".png", ".jpeg", ".gif"]
     UPLOAD_FOLDER: str = "uploads"
-    WEBPACKEXT_MANIFEST_PATH: str = "manifest.json"
+    WEBPACKEXT_MANIFEST_PATH: str = "static/manifest.json"
     WTF_CSRF_TIME_LIMIT: Optional[int] = None
 
     model_config = {
