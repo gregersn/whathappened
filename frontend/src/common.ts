@@ -313,11 +313,11 @@ export const editable_table_2 = (
   button.onclick = () => {
     // Set data-row on tr (length + 1)
     const new_row = table_body.insertRow(-1);
-    new_row.setAttribute("data-row", `${table_body.rows.length}`);
+    new_row.setAttribute("data-row", '-1');
     // set data-type on each row, with data-blank
     for(const cell of table_header.rows[0].cells) {
       const type = cell.getAttribute("data-type");
-      const field = `${table.getAttribute("data-field")}.${(table_body.rows.length - 1)}.${cell.getAttribute("data-property")}`;
+      const field = `${table.getAttribute("data-field")}.-1.${cell.getAttribute("data-property")}`;
       const blank =  cell.getAttribute("data-blank");
 
       const new_cell: HTMLTableCellElement = create_editable("td", type, field, blank) as HTMLTableCellElement;

@@ -1,3 +1,4 @@
+import copy
 from functools import reduce
 from pathlib import Path
 import logging
@@ -128,6 +129,11 @@ class CharacterMechanics:
 
             def reducer(source, selector):
                 if isinstance(source, list):
+                    idx = int(selector)
+                    if idx < 0:
+                        copy_of_last = copy.deepcopy(source[-1])
+                        source.append(copy_of_last)
+                        return copy_of_last
                     return source[int(selector)]
                 return source[selector] if source is not None else None
 

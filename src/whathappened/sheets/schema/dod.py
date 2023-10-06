@@ -39,6 +39,7 @@ class Yrke(str, Enum):
 Attribut = Annotated[int, msgspec.Meta(le=18)]
 Bonus = Literal["-", "+T4", "+T6"]
 Alder = Literal["Ung", "Medelålders", "Gammal"]
+BasAttribut = Literal["STY", "FYS", "SMI", "INT", "PSY", "KAR"]
 
 
 class Attributer(msgspec.Struct, frozen=True):
@@ -63,8 +64,8 @@ class Skadebonus(msgspec.Struct, frozen=True):
 
 
 class Fardighet(msgspec.Struct, frozen=True):
-    name: str
-    base: str
+    name: str = "namn"
+    base: BasAttribut = "STY"
     checked: bool = False
     value: Attribut = 0
 
@@ -133,7 +134,7 @@ class Fardigheter(msgspec.Struct, frozen=True):
 class Packning(msgspec.Struct, frozen=True):
     barformoga: int = msgspec.field(default=0, name="Bärformåga")
     items: List[str] = []
-    minnessak: str = ""
+    minnessak: str = "-"
     smaasaker: List[str] = []
 
 
@@ -144,6 +145,7 @@ class Penger(msgspec.Struct, frozen=True):
 
 
 class Rustning(msgspec.Struct, frozen=True):
+    namn: str = "Ingen"
     skyddsvärde: int = 0
     smyga: bool = False
     undvika: bool = False
@@ -151,18 +153,19 @@ class Rustning(msgspec.Struct, frozen=True):
 
 
 class Hjalm(msgspec.Struct, frozen=True):
+    namn: str = "Ingen"
     skyddsvärde: int = 0
     upptäcka_fara: bool = False
     avståndsattacker: bool = False
 
 
 class Vapen(msgspec.Struct, frozen=True):
-    vapen: str = ""
-    grepp: str = ""
-    räckvidd: str = ""
-    skada: str = ""
-    brytvärde: str = ""
-    egenskaper: str = ""
+    vapen: str = "Obeväpnad"
+    grepp: Literal["-", "1H", "2H"] = "-"
+    räckvidd: str = "2"
+    skada: str = "T6"
+    brytvärde: str = "-"
+    egenskaper: str = "Krossande"
 
 
 class Bevapning(msgspec.Struct, frozen=True):
