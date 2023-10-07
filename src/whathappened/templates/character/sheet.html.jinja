@@ -31,8 +31,9 @@
 {% endif %}
 {% endblock %}
 
-{%- macro editable_field(field, default='', type='string') %}
-<span {%- if editable %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}">{{
+{%- macro editable_field(field, default='', type='string', minimum=None, maximum=None) %}
+<span {%- if editable %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}" {%- if minimum is
+    not none %}data-min="{{minimum}}" {%- endif %} {%- if maximum is not none %}data-max="{{maximum}}" {%- endif %}>{{
     character.mechanics.attribute(field) }}</span>
 {%- endmacro %}
 

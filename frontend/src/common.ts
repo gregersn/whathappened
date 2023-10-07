@@ -125,6 +125,8 @@ function editElement(
   } else if (type === "number" || type === "integer") {
     editfield = document.createElement("input") as HTMLInputElement;
     editfield.type = "number";
+    editfield.min = element.getAttribute("data-min");
+    editfield.max = element.getAttribute("data-max");
     editfield.setAttribute("data-blank", element.getAttribute("data-blank"));
   } else if (type === "area") {
     editfield = document.createElement("textarea");

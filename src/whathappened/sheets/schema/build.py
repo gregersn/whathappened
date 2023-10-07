@@ -1,10 +1,11 @@
+"""Build sheets from schemas."""
 from typing import Dict, List, MutableMapping, Optional, Union, Any
+import logging
+from pathlib import Path
+import json
+import yaml
 import msgspec
 from pydantic import BaseModel
-import yaml
-import logging
-import json
-from pathlib import Path
 from jsonschema.exceptions import SchemaError
 
 from jsonschema.validators import Draft7Validator
@@ -49,13 +50,16 @@ def get_schema(system: str):
 def flatten_schema(
     schema: Dict[str, Any], main_schema: Optional[Dict[str, Any]] = None
 ):
+    """Resolve refs."""
     output: Dict[str, Any] = {}
     for key, value in schema.items():
         if key == "$ref":
             value = sub_schema(main_schema or schema, schema["$ref"])
             if isinstance(value, dict):
                 value = flatten_schema(value, main_schema or schema)
-            output.update(value)
+                output = value | output
+            else:
+                raise NotImplementedError("WTF")
         elif isinstance(value, dict):
             output[key] = flatten_schema(value, main_schema or schema)
         else:
@@ -64,6 +68,7 @@ def flatten_schema(
 
 
 def load_schema(filename: Path) -> Dict[str, Any]:
+    """Load schema from file."""
     with open(filename, "r") as f:
         try:
             if filename.suffix == ".json":
@@ -82,6 +87,7 @@ SchemaValidationError = Dict[str, str]
 
 
 def validate(data: Dict, system: str) -> List[SchemaValidationError]:
+    """Validate a sheet against a system."""
     schema = get_schema(system)
     v = Draft7Validator(schema)
     return [

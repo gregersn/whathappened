@@ -36,38 +36,36 @@ class Yrke(str, Enum):
     TJUV = "Tjuv"
 
 
-Attribut = Annotated[int, msgspec.Meta(le=18)]
 Bonus = Literal["-", "+T4", "+T6"]
 Alder = Literal["Ung", "Medelålders", "Gammal"]
 BasAttribut = Literal["STY", "FYS", "SMI", "INT", "PSY", "KAR"]
 
 
 class Attributer(msgspec.Struct, frozen=True):
-    STY: Attribut = 0
-    FYS: Attribut = 0
-    SMI: Attribut = 0
-    INT: Attribut = 0
-    PSY: Attribut = 0
-    KAR: Attribut = 0
-
+    STY: Annotated[int, msgspec.Meta(le=18, ge=0, title="Styrke (STY)")] = 0
     utmattad: bool = False
+    FYS: Annotated[int, msgspec.Meta(le=18, ge=0, title="Fysik (FYS)")] = 0
     krasslig: bool = False
+    SMI: Annotated[int, msgspec.Meta(le=18, ge=0, title="Smidighet (SMI)")] = 0
     omtocknad: bool = False
+    INT: Annotated[int, msgspec.Meta(le=18, ge=0, title="Intelligens (INT)")] = 0
     arg: bool = False
+    PSY: Annotated[int, msgspec.Meta(le=18, ge=0, title="Psyke (PSY)")] = 0
     radd: bool = False
+    KAR: Annotated[int, msgspec.Meta(le=18, ge=0, title="Karisma (KAR)")] = 0
     uppgiven: bool = False
 
 
 class Skadebonus(msgspec.Struct, frozen=True):
-    sty: Bonus = "-"
-    smi: Bonus = "-"
+    sty: Annotated[Bonus, msgspec.Meta(title="STY")] = "-"
+    smi: Annotated[Bonus, msgspec.Meta(title="SMI")] = "-"
 
 
 class Fardighet(msgspec.Struct, frozen=True):
+    checked: bool = False
     name: str = "namn"
     base: BasAttribut = "STY"
-    checked: bool = False
-    value: Attribut = 0
+    value: int = 0
 
 
 PrimaraFerdigheter = [
@@ -117,22 +115,29 @@ class Fardigheter(msgspec.Struct, frozen=True):
     )
     vapenfardigheter: Annotated[
         List[Fardighet],
-        msgspec.Meta(extra_json_schema={"constant": True, "widget": "table"}),
+        msgspec.Meta(
+            extra_json_schema={"constant": True, "widget": "table"},
+            title="Vapenfärdigheter",
+        ),
     ] = msgspec.field(
         default_factory=lambda: [
             Fardighet(name=name, base=base) for name, base in VapenFardigheter
         ],
-        name="Vapenfärdigheter",
     )
 
     sekundarafardigheter: Annotated[
         List[Fardighet],
-        msgspec.Meta(extra_json_schema={"constant": False, "widget": "table"}),
-    ] = msgspec.field(default_factory=lambda: [], name="Sekundära färdigheter")
+        msgspec.Meta(
+            extra_json_schema={"constant": False, "widget": "table"},
+            title="Sekundära färdigheter",
+        ),
+    ] = msgspec.field(default_factory=lambda: [])
 
 
 class Packning(msgspec.Struct, frozen=True):
-    barformoga: int = msgspec.field(default=0, name="Bärformåga")
+    barformoga: Annotated[int, msgspec.Meta(title="Bärformåga")] = msgspec.field(
+        default=0
+    )
     items: List[str] = []
     minnessak: str = "-"
     smaasaker: List[str] = []
@@ -170,7 +175,9 @@ class Vapen(msgspec.Struct, frozen=True):
 
 class Bevapning(msgspec.Struct, frozen=True):
     rustning: Rustning = msgspec.field(default_factory=Rustning)
-    hjalm: Hjalm = msgspec.field(default_factory=Hjalm, name="Hjälm")
+    hjalm: Annotated[Hjalm, msgspec.Meta(title="Hjälm")] = msgspec.field(
+        default_factory=Hjalm
+    )
     til_hands: Annotated[
         List[Vapen],
         msgspec.Meta(extra_json_schema={"constant": True, "widget": "table"}),
@@ -178,34 +185,65 @@ class Bevapning(msgspec.Struct, frozen=True):
 
 
 class Viljepoang(msgspec.Struct, frozen=True):
-    poang: int = msgspec.field(default=0, name="Poäng")
-    anvanda: int = msgspec.field(default=0, name="Använda")
+    poang: Annotated[int, msgspec.Meta(title="Poäng", le=20)] = msgspec.field(default=0)
+    anvanda: Annotated[
+        int,
+        msgspec.Meta(
+            title="Använda", le=20, extra_json_schema=({"widget": "progress"})
+        ),
+    ] = msgspec.field(default=0)
+
+
+class Dodsrull(msgspec.Struct, frozen=True):
+    lyckade: Annotated[
+        int, msgspec.Meta(le=3, ge=0, extra_json_schema=({"widget": "progress"}))
+    ] = 0
+    misslyckade: Annotated[
+        int, msgspec.Meta(le=3, ge=0, extra_json_schema=({"widget": "progress"}))
+    ] = 0
 
 
 class Kroppspoang(Viljepoang, frozen=True):
-    lyckade: int = 0
-    misslyckade: int = 0
+    dodsrull: Dodsrull = msgspec.field(default=Dodsrull())
 
 
-class DrakarOchDemonerCharacter(msgspec.Struct):
+class Personalia(msgspec.Struct, frozen=True):
     namn: str = "Inget namn"
-    slakte: Slakte = msgspec.field(default=Slakte.MANNISKA)
-    alder: Alder = msgspec.field(default="Ung", name="Ålder")
-    yrke: Annotated[Yrke, msgspec.field(name="Yrke")] = Yrke.BARD
+    slakte: Annotated[Slakte, msgspec.Meta(title="Släkte")] = msgspec.field(
+        default=Slakte.MANNISKA
+    )
+    alder: Annotated[Alder, msgspec.Meta(title="Ålder")] = "Ung"
+    yrke: Yrke = Yrke.BARD
     svaghet: str = "Odefinerad"
     utseende: str = "Odefinerad"
-    attributer: Attributer = msgspec.field(default=Attributer())
+
+
+class AvledadeAttributer(msgspec.Struct, frozen=True):
     skadebonus: Skadebonus = msgspec.field(default=Skadebonus())
     forflyttning: int = 0
+    viljepoang: Annotated[Viljepoang, msgspec.Meta(title="Viljepoäng")] = msgspec.field(
+        default=Viljepoang()
+    )
+    kroppspoang: Annotated[
+        Kroppspoang, msgspec.Meta(title="Kroppspoäng")
+    ] = msgspec.field(default=Kroppspoang())
+
+
+class Character(msgspec.Struct):
+    personalia: Personalia = msgspec.field(default=Personalia())
+    attributer: Attributer = msgspec.field(default=Attributer())
+    avledade_attributer: Annotated[
+        AvledadeAttributer, msgspec.Meta(title="Avledade attributer")
+    ] = msgspec.field(default=AvledadeAttributer())
     formagor_og_besvarjelser: List[str] = msgspec.field(
         default=[], name="Förmågor & besvärjelser"
     )
-    fardigheter: Fardigheter = msgspec.field(default=Fardigheter(), name="Färdigheter")
+    fardigheter: Annotated[
+        Fardigheter, msgspec.Meta(title="Färdigheter")
+    ] = msgspec.field(default=Fardigheter())
     packning: Packning = msgspec.field(default=Packning())
     penger: Penger = msgspec.field(default=Penger())
     vapen: Bevapning = msgspec.field(default=Bevapning())
-    viljepoang: Viljepoang = msgspec.field(default=Viljepoang())
-    kroppspoang: Kroppspoang = msgspec.field(default=Kroppspoang())
 
 
 class DrakarOchDemoner(msgspec.Struct):
@@ -213,9 +251,7 @@ class DrakarOchDemoner(msgspec.Struct):
 
     system: str = "dod"
     meta: SheetInfo = msgspec.field(default_factory=SheetInfo)
-    character_sheet: DrakarOchDemonerCharacter = msgspec.field(
-        default_factory=DrakarOchDemonerCharacter
-    )
+    character_sheet: Character = msgspec.field(default_factory=Character)
 
 
 CharacterSheet = DrakarOchDemoner

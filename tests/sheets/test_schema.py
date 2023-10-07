@@ -1,6 +1,5 @@
 from typing import Dict
 
-from more_itertools import flatten
 from whathappened.sheets.schema.build import (
     SCHEMA_DIR,
     build_from_schema,
@@ -53,3 +52,9 @@ def test_flatten_schema():
     assert isinstance(flattened["properties"]["character_sheet"], dict), flattened
     assert "properties" in flattened["properties"]["character_sheet"]
     assert isinstance(flattened["properties"]["character_sheet"]["properties"], dict)
+    assert (
+        flattened["properties"]["character_sheet"]["properties"]["personalia"][
+            "properties"
+        ]["slakte"]["title"]
+        == "Släkte"
+    )
