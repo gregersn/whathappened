@@ -189,12 +189,12 @@ def new_character(title: str, system: Optional[str] = None, **kwargs):
     if system is None:
         raise SyntaxError("new_character: System not specified")
 
+    logger.debug("Getting schema")
     schema_data = get_schema(system)
+    new_character_data = build_from_schema(schema_data)
+    new_character_data["title"] = title
 
-    nc = build_from_schema(schema_data)
-    nc["title"] = title
-
-    return nc
+    return new_character_data
 
 
 register_game("landf", "Lasers and feelings")

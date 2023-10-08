@@ -8,7 +8,7 @@ from werkzeug.exceptions import abort
 
 from whathappened.sheets.mechanics import core
 from whathappened.sheets.mechanics.core import GameSystems
-from whathappened.sheets.schema.build import get_schema, sub_schema
+from whathappened.sheets.schema.build import flatten_schema, get_schema, sub_schema
 
 from . import bp, api
 
@@ -235,7 +235,9 @@ def html_data_type(t: str) -> str:
 
 
 def render_general_view(system: str, character: Character, editable: bool):
+    logger.debug("Getting schema")
     schema = get_schema(system)
+    schema = flatten_schema(schema)
     return render_template(
         "character/general_character.html.jinja",
         schema=schema,

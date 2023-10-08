@@ -1,12 +1,17 @@
 """Build sheets from schemas."""
 from typing import Dict, List, MutableMapping, Optional, Union, Any
-import yaml
 import logging
-import json
 from pathlib import Path
+import json
+import yaml
+import msgspec
 from jsonschema.exceptions import SchemaError
 
 from jsonschema.validators import Draft7Validator
+
+CHARACTER_SCHEMA_DIR = Path(__file__).parent.parent / "schema"
+
+assert CHARACTER_SCHEMA_DIR.is_dir(), CHARACTER_SCHEMA_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -14,19 +19,52 @@ SCHEMA_DIR = Path(__file__).parent
 
 
 def get_schema(system: str):
+    try:
+        import importlib
+
+        game_module = importlib.import_module(f"whathappened.sheets.schema.{system}")
+
+        if issubclass(game_module.CharacterSheet, msgspec.Struct):
+            logger.debug("Getting character sheet from imgspec")
+            return msgspec.json.schema(game_module.CharacterSheet)
+    except:
+        ...
+
     CHARACTER_SCHEMA = SCHEMA_DIR / f"{system}.yaml"
     if CHARACTER_SCHEMA.is_file():
+        logger.debug("Loading: %s", CHARACTER_SCHEMA)
         return load_schema(CHARACTER_SCHEMA)
 
     logger.debug("No character schema: %s", CHARACTER_SCHEMA)
 
     CHARACTER_SCHEMA = SCHEMA_DIR / f"{system}.json"
     if CHARACTER_SCHEMA.is_file():
+        logger.debug("Loading: %s", CHARACTER_SCHEMA)
         return load_schema(CHARACTER_SCHEMA)
 
     logger.debug("No character schema: %s", CHARACTER_SCHEMA)
 
     raise SchemaError("Missing schema")
+
+
+def flatten_schema(
+    schema: Dict[str, Any], main_schema: Optional[Dict[str, Any]] = None
+):
+    """Resolve refs."""
+    output: Dict[str, Any] = {}
+    for key, value in schema.items():
+        if key == "$ref":
+            value = sub_schema(main_schema or schema, schema["$ref"])
+            if isinstance(value, dict):
+                value = flatten_schema(value, main_schema or schema)
+                output = value | output
+            else:
+                raise NotImplementedError("WTF")
+        elif isinstance(value, dict):
+            output[key] = flatten_schema(value, main_schema or schema)
+        else:
+            output[key] = value
+    return output
 
 
 def load_schema(filename: Path) -> Dict[str, Any]:
@@ -50,6 +88,7 @@ SchemaValidationError = Dict[str, str]
 
 def validate(data: Dict, system: str) -> List[SchemaValidationError]:
     """Validate a sheet against a system."""
+    logger.debug("Getting schema")
     schema = get_schema(system)
     v = Draft7Validator(schema)
     return [
@@ -59,18 +98,22 @@ def validate(data: Dict, system: str) -> List[SchemaValidationError]:
 
 
 def build_boolean(schema: Dict[str, bool]) -> bool:
+    logger.debug("build boolean: %s", schema["default"])
     return schema["default"]
 
 
 def build_string(schema: Dict[str, str]) -> str:
+    logger.debug("build string: %s", schema["default"])
     return schema["default"]
 
 
 def build_integer(schema: Dict[str, int]) -> int:
+    logger.debug("build integer: %s", schema["default"])
     return schema["default"]
 
 
 def build_object(schema: Dict[str, Any], main_schema: Dict[str, Any]) -> Dict[str, Any]:
+    logger.debug("build object")
     output = {}
     for property, description in schema["properties"].items():
         output[property] = build_from_schema2(description, main_schema)
@@ -78,12 +121,14 @@ def build_object(schema: Dict[str, Any], main_schema: Dict[str, Any]) -> Dict[st
 
 
 def build_array(schema: Dict[str, List[Any]]) -> List[Any]:
+    logger.debug("build array")
     if "default" in schema:
         return schema["default"]
     return []
 
 
 def get_sub(d: Dict[str, Any], path: List[str]) -> Dict:
+    logger.debug("get_sub: %s", path)
     if len(path) == 1:
         return d[path[0]]
 
@@ -94,6 +139,7 @@ def get_sub(d: Dict[str, Any], path: List[str]) -> Dict:
 def sub_schema(
     schema: Union[List, Dict], path: str
 ) -> Union[Dict, List, str, int, bool]:
+    logger.debug("sub_schema: %s", path)
     parts = path.split("/")
     if parts[0] != "#":
         raise NotImplementedError(path)
@@ -108,6 +154,8 @@ def build_from_schema2(
 ) -> Union[Dict, List, str, int, bool]:
     if isinstance(schema, Dict):
         logger.debug("Handling a dictionary")
+        if "default" in schema:
+            return schema["default"]
         if "$ref" in schema:
             sub = sub_schema(main_schema, schema["$ref"])
 
@@ -126,8 +174,14 @@ def build_from_schema2(
             return build_boolean(schema)
         if schema.get("type") == "array":
             return build_array(schema)
+        if "allOf" in schema:
+            out = {}
+            for entry in schema["allOf"]:
+                out.update(build_from_schema2(entry, main_schema))
+            return out
     elif isinstance(schema, List):
         logger.debug("Handling a list")
+        raise NotImplementedError("Lists are not my strong suite.")
 
     return ""
 
