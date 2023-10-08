@@ -10,6 +10,7 @@ class Settings(BaseSettings):
 
     ADMINS: List[str] = ["your-email@example.com"]
     ASSETS_DEBUG: bool = False
+    ASSETS_AUTO_BUILD: bool = False
     FLASK_DEBUG: bool = True
     MAIL_PORT: int = 8025
     MAIL_SERVER: str = "localhost"
