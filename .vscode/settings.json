@@ -1,5 +1,13 @@
 {
-  "editor.defaultFormatter": "ms-python.black-formatter",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "gitlens.codeLens.symbolScopes": [
+      "!Module"
+    ],
+    "editor.formatOnType": false,
+    "editor.wordBasedSuggestions": false
+  },
   "python.testing.pytestArgs": ["-vv", "tests"],
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,
