@@ -16,7 +16,8 @@
 {%- macro check_progress(field, points=10) %}
 <span {%- if editable %} class="editable_check_progress" {%- endif %} data-field="{{field}}">
     {% for v in range(points) %}
-    <input type="checkbox" {{ "checked" if v < character.mechanics.attribute(field) }} autocomplete="off" />
+    <input type="checkbox" {{ "checked" if v < character.mechanics.attribute(field) }} autocomplete="off"
+        data-value="{{ v + 1}}" />
     {% endfor %}
 </span>
 {%- endmacro %}
