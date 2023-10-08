@@ -7,7 +7,9 @@
     {% do item.pop("subsection")%}
     {{ render_section_2(key, item, path)}}
     {% else %}
-    {{ item.title if 'title' in item else key|title }}: {{ render_item(item, path + '.' + key, key) }}{% if not
+    {%- if not item.hide_title%}{{ item.title if 'title' in item else key|title }}: {%- endif %}{{ render_item(item,
+    path +
+    '.' + key, key) }}{% if not
     item.block == "inline" %}<br />{% endif%}
     {% endif %}
     {% endfor %}

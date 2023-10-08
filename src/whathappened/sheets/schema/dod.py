@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import List, Literal
 from typing_extensions import Annotated
 
@@ -14,30 +13,22 @@ class SheetInfo(msgspec.Struct):
     title: str = "Unknown"
 
 
-class Slakte(str, Enum):
-    MANNISKA = "Människa"
-    HALVLING = "Halvling"
-    DVARG = "Dvärg"
-    ALV = "Alv"
-    ANKA = "Anka"
-    VARGFOLK = "Vargfolk"
-
-
-class Yrke(str, Enum):
-    BARD = "Bard"
-    HANTVERKARE = "Hantverkare"
-    JAGARE = "Jägare"
-    KRIGARE = "Krigare"
-    LARD = "Lärd"
-    MAGIKER = "Magiker"
-    NASARE = "Masare"
-    RIDDARE = "Riddare"
-    SJOFARARE = "Sjöfarare"
-    TJUV = "Tjuv"
-
+Yrke = Literal[
+    "Bard",
+    "Hantverkare",
+    "Jägare",
+    "Krigare",
+    "Lärd",
+    "Magiker",
+    "Masare",
+    "Riddare",
+    "Sjöfarare",
+    "Tjuv",
+]
 
 Bonus = Literal["-", "+T4", "+T6"]
 Alder = Literal["Ung", "Medelålders", "Gammal"]
+Slakte = Literal["Människa", "Halvling", "Dvärg", "Alv", "Anka", "Vargfolk"]
 BasAttribut = Literal["STY", "FYS", "SMI", "INT", "PSY", "KAR"]
 
 
@@ -105,7 +96,12 @@ class Fardigheter(msgspec.Struct, frozen=True):
     primar: Annotated[
         List[Fardighet],
         msgspec.Meta(
-            extra_json_schema={"constant": True, "widget": "table", "heading": False}
+            extra_json_schema={
+                "constant": True,
+                "widget": "table",
+                "heading": False,
+                "hide_title": True,
+            }
         ),
     ] = msgspec.field(
         default_factory=lambda: [
@@ -155,13 +151,13 @@ class Rustning(msgspec.Struct, frozen=True):
     skyddsvärde: int = 0
     smyga: bool = False
     undvika: bool = False
-    hoppa_och_klatra: bool = False
+    hoppa_och_klatra: Annotated[bool, msgspec.Meta(title="Hoppa och klätra")] = False
 
 
 class Hjalm(msgspec.Struct, frozen=True):
     typ: str = "Ingen"
     skyddsvärde: int = 0
-    upptäcka_fara: bool = False
+    upptäcka_fara: Annotated[bool, msgspec.Meta(title="Upptäcka fara")] = False
     avståndsattacker: bool = False
 
 
@@ -215,10 +211,10 @@ class Kroppspoang(Viljepoang, frozen=True):
 class Personalia(msgspec.Struct, frozen=True):
     namn: str = "Inget namn"
     slakte: Annotated[Slakte, msgspec.Meta(title="Släkte")] = msgspec.field(
-        default=Slakte.MANNISKA
+        default="Människa"
     )
     alder: Annotated[Alder, msgspec.Meta(title="Ålder")] = "Ung"
-    yrke: Yrke = Yrke.BARD
+    yrke: Yrke = "Bard"
     svaghet: str = "Odefinerad"
     utseende: str = "Odefinerad"
 
