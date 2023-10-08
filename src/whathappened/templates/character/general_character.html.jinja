@@ -27,133 +27,138 @@
         </li>
         {% endfor %}
     </ul>
-    {%- endmacro %}
+</ul>
+{%- endmacro %}
 
-    {%- macro render_table(object, path='', key=None)%}
+{%- macro render_table(object, path='', key=None)%}
 
-    <section>
-        <table id="tbl{{object['items'].title}}"
-            class="{%- if editable and not object.constant %} editableTable2{%- endif %}" data-field="{{ path }}">
-            <thead style="{% if not object.header %}display: none{% endif %}">
-                <tr>
-                    {% for column, properties in object['items'].properties.items() %}
-                    <th data-property="{{column}}" data-type="{{ properties.type }}"
-                        data-blank="{{ properties.default if properties.default is not none else '-'}}">{{column if not
-                        properties.hide_heading}}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for litem in character.mechanics.attribute(path) or [] %}
-                {% set rowloop = loop %}
-                <tr data-row="{{ loop.index }}">
-                    {% for column, properties in object['items'].properties.items() %}
-                    <td data-type="{{ properties.type }}" data-blank="-">{{ render_item(properties, path ~ "." ~
-                        rowloop.index0 ~ "." ~ column) }}</td>
-                    {% endfor %}
-                </tr>
+<section>
+    <table id="tbl{{object['items'].title}}"
+        class="{%- if editable and not object.constant %} editableTable2{%- endif %}" data-field="{{ path }}">
+        <thead style="{% if not object.header %}display: none{% endif %}">
+            <tr>
+                {% for column, properties in object['items'].properties.items() %}
+                <th data-property="{{column}}" data-type="{{ properties.type }}"
+                    data-blank="{{ properties.default if properties.default is not none else '-'}}">
+                    {{(properties.title or column)|title
+                    if not
+                    properties.hide_heading}}</th>
                 {% endfor %}
-            </tbody>
-        </table>
+            </tr>
+        </thead>
+        <tbody>
+            {% for litem in character.mechanics.attribute(path) or [] %}
+            {% set rowloop = loop %}
+            <tr data-row="{{ loop.index }}">
+                {% for column, properties in object['items'].properties.items() %}
+                <td data-type="{{ properties.type }}" data-blank="-">{{ render_item(properties, path ~ "." ~
+                    rowloop.index0 ~ "." ~ column, constant=(column in object.constant_fields)) }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{%- endmacro %}
+
+{%- macro render_progress(object, path, key) %}
+<span {%- if editable %} class="editable_check_progress" {%- endif %} data-field="{{path}}">
+    {% for v in range(object.maximum) %}
+    <input type="checkbox" {{ "checked" if v < character.mechanics.attribute(path) }} autocomplete="off" />
+    {% endfor %}
+</span>
+{%- endmacro %}
+
+
+{%- macro render_widget(widget, object, path='', key=None) %}
+{% if widget == "table"%}
+{{ render_table(object, path, key) }}
+{% elif widget == "progress" %}
+{{ render_progress(object, path, key) }}
+{% else %}
+<div>Missing widget: {{ widget }}</div>
+{% endif %}
+{%- endmacro %}
+
+{%- macro render_item(item, path='', key=None, constant=False)%}
+{% if 'widget' in item %}
+{{ render_widget(item.widget, item, path, key)}}
+{% elif 'type' in item and item.type == 'object' %}
+{{ render_object(item, path)}}
+{% elif 'type' in item and item.type == 'array' %}
+{{ render_array(item, path) }}
+{% elif 'enum' in item %}
+{{ editable_choice(path, type=html_data_type(item.type), choices=item.enum, constant=constant)|uberfilter(item.filter)
+}}
+{% elif 'type' in item and (item.type == 'integer') %}
+{{ editable_field(path, type=html_data_type(item.type), minimum=item.minimum, maximum=item.maximum, constant=constant)
+}}
+{% elif 'type' in item and (item.type == 'string')%}
+{{ editable_field(path, type=html_data_type(item.type), filter=item.filter, constant=constant) }}
+{% elif 'type' in item and item.type == 'boolean'%}
+{{ editable_binary(path) }}
+{% elif '$ref' in item %}
+{{ render_item(get_ref(schema, item['$ref']), path)}}
+{% else %}
+Unknown stuff: {{path}} : {{ item }}
+{% endif %}
+{%- endmacro %}
+
+{%- macro render_section(name, section, path='') %}
+<div class="box">
+    <h3>{{ section.title if 'title' in section else name }}</h3>
+    <div style="column-count: {{section.columns if 'columns' in section else 1}};">
+        {{ render_item(section, path + "." + name)}}
+    </div>
+</div>
+{%- endmacro %}
+
+{%- macro render_section_2(name, section, path='') %}
+<div class="box">
+    <h4>{{ section.title if 'title' in section else name }}</h4>
+    <div style="column-count: {{section.columns if 'columns' in section else 1}};">
+        {{ render_item(section, path + "." + name)}}
+    </div>
+</div>
+{%- endmacro %}
+
+
+
+
+{% block head %}
+{{ super() }}
+
+{% assets "scss_character_general" %}
+<link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+{% endassets %}
+
+{% if editable %}
+<script src="{{ 'general.js' | webpack}}"></script>
+{% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+<div id="busy">
+
+</div>
+
+<div class="extrainfo">
+    {% if editable and character.campaigns %}
+    In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{
+        character.campaigns.0.title
+        }}</a>
+    {% endif %}
+
+</div>
+
+<div class="charactersheet">
+    {% for key, value in schema.properties.character_sheet.properties.items() %}
+    <section id="{{ key }}">
+        {{ render_section(key, value, 'character_sheet') }}
     </section>
-    {%- endmacro %}
+    {% endfor %}
+</div>
 
-    {%- macro render_progress(object, path, key) %}
-    <span {%- if editable %} class="editable_check_progress" {%- endif %} data-field="{{path}}">
-        {% for v in range(object.maximum) %}
-        <input type="checkbox" {{ "checked" if v < character.mechanics.attribute(path) }} autocomplete="off" />
-        {% endfor %}
-    </span>
-    {%- endmacro %}
-
-
-    {%- macro render_widget(widget, object, path='', key=None) %}
-    {% if widget == "table"%}
-    {{ render_table(object, path, key) }}
-    {% elif widget == "progress" %}
-    {{ render_progress(object, path, key) }}
-    {% else %}
-    <div>Missing widget: {{ widget }}</div>
-    {% endif %}
-    {%- endmacro %}
-
-    {%- macro render_item(item, path='', key=None)%}
-    {% if 'widget' in item %}
-    {{ render_widget(item.widget, item, path, key)}}
-    {% elif 'type' in item and item.type == 'object' %}
-    {{ render_object(item, path)}}
-    {% elif 'type' in item and item.type == 'array' %}
-    {{ render_array(item, path) }}
-    {% elif 'enum' in item %}
-    {{ editable_choice(path, type=html_data_type(item.type), choices=item.enum) }}
-    {% elif 'type' in item and (item.type == 'integer') %}
-    {{ editable_field(path, type=html_data_type(item.type), minimum=item.minimum, maximum=item.maximum) }}
-    {% elif 'type' in item and (item.type == 'string')%}
-    {{ editable_field(path, type=html_data_type(item.type)) }}
-    {% elif 'type' in item and item.type == 'boolean'%}
-    {{ editable_binary(path) }}
-    {% elif '$ref' in item %}
-    {{ render_item(get_ref(schema, item['$ref']), path)}}
-    {% else %}
-    Unknown stuff: {{path}} : {{ item }}
-    {% endif %}
-    {%- endmacro %}
-
-    {%- macro render_section(name, section, path='') %}
-    <div class="box">
-        <h3>{{ section.title if 'title' in section else name }}</h3>
-        <div style="column-count: {{section.columns if 'columns' in section else 1}};">
-            {{ render_item(section, path + "." + name)}}
-        </div>
-    </div>
-    {%- endmacro %}
-
-    {%- macro render_section_2(name, section, path='') %}
-    <div class="box">
-        <h4>{{ section.title if 'title' in section else name }}</h4>
-        <div style="column-count: {{section.columns if 'columns' in section else 1}};">
-            {{ render_item(section, path + "." + name)}}
-        </div>
-    </div>
-    {%- endmacro %}
-
-
-
-
-    {% block head %}
-    {{ super() }}
-
-    {% assets "scss_character_general" %}
-    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
-    {% endassets %}
-
-    {% if editable %}
-    <script src="{{ 'general.js' | webpack}}"></script>
-    {% endif %}
-
-    {% endblock %}
-
-
-    {% block content %}
-    <div id="busy">
-
-    </div>
-
-    <div class="extrainfo">
-        {% if editable and character.campaigns %}
-        In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{
-            character.campaigns.0.title
-            }}</a>
-        {% endif %}
-
-    </div>
-
-    <div class="charactersheet">
-        {% for key, value in schema.properties.character_sheet.properties.items() %}
-        <section id="{{ key }}">
-            {{ render_section(key, value, 'character_sheet') }}
-        </section>
-        {% endfor %}
-    </div>
-
-    {% endblock %}
+{% endblock %}

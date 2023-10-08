@@ -4,6 +4,8 @@ $system_color: #119911;
 
     //display: grid;
     //grid-template-columns: 1fr 1fr;
+    column-gap: 0;
+
     @media screen and (min-width: 960px) {
         column-count: 2;
 
@@ -55,6 +57,12 @@ $system_color: #119911;
             text-align: right;
             padding: 5px;
             padding-right: 10px;
+        }
+    }
+
+    span {
+        &.editable {
+            font-weight: bold;
         }
     }
 

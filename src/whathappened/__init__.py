@@ -33,6 +33,19 @@ logging.getLogger("werkzeug").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
+FILTERS = {
+    "parenthesize": lambda x: f"({x})",
+    "": lambda x: x,
+}
+
+
+def uberfilter(inp: str, filter: str = ""):
+    fun = FILTERS.get(filter, None)
+    if fun:
+        return fun(inp)
+    return inp
+
+
 def create_app(test_config=None) -> Flask:
     logger.info("Creating app")
 
@@ -67,6 +80,8 @@ def create_app(test_config=None) -> Flask:
     mail.init_app(app)
     app.jinja_env.add_extension("jinja2.ext.do")
     app.jinja_env.add_extension("webassets.ext.jinja2.AssetsExtension")
+
+    app.jinja_env.filters["uberfilter"] = uberfilter
 
     webpack_manifest = Path(__file__).absolute().parent / "static" / "manifest.json"
 

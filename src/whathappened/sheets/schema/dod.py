@@ -29,10 +29,10 @@ Yrke = Literal[
 Bonus = Literal["-", "+T4", "+T6"]
 Alder = Literal["Ung", "Medelålders", "Gammal"]
 Slakte = Literal["Människa", "Halvling", "Dvärg", "Alv", "Anka", "Vargfolk"]
-BasAttribut = Literal["STY", "FYS", "SMI", "INT", "PSY", "KAR"]
+BasEgenskap = Literal["STY", "FYS", "SMI", "INT", "PSY", "KAR"]
 
 
-class Attributer(msgspec.Struct, frozen=True):
+class Grundegenskaper(msgspec.Struct, frozen=True):
     STY: Annotated[int, msgspec.Meta(le=18, ge=0, title="Styrke (STY)")] = 0
     FYS: Annotated[int, msgspec.Meta(le=18, ge=0, title="Fysik (FYS)")] = 0
     SMI: Annotated[int, msgspec.Meta(le=18, ge=0, title="Smidighet (SMI)")] = 0
@@ -52,7 +52,9 @@ class Fardighet(msgspec.Struct, frozen=True):
         bool, msgspec.Meta(extra_json_schema=({"hide_heading": True}))
     ] = False
     name: str = "namn"
-    base: BasAttribut = "STY"
+    base: Annotated[
+        BasEgenskap, msgspec.Meta(extra_json_schema=({"filter": "parenthesize"}))
+    ] = "STY"
     value: int = 0
 
 
@@ -79,7 +81,7 @@ PrimaraFerdigheter = [
 ]
 
 VapenFardigheter = [
-    ("Armbrost", "SMI"),
+    ("Armborst", "SMI"),
     ("Hammare", "STY"),
     ("Kniv", "SMI"),
     ("Pilbåge", "SMI"),
@@ -101,6 +103,7 @@ class Fardigheter(msgspec.Struct, frozen=True):
                 "widget": "table",
                 "heading": False,
                 "hide_title": True,
+                "constant_fields": ["name", "base"],
             }
         ),
     ] = msgspec.field(
@@ -111,7 +114,11 @@ class Fardigheter(msgspec.Struct, frozen=True):
     vapenfardigheter: Annotated[
         List[Fardighet],
         msgspec.Meta(
-            extra_json_schema={"constant": True, "widget": "table"},
+            extra_json_schema={
+                "constant": True,
+                "widget": "table",
+                "constant_fields": ["name", "base"],
+            },
             title="Vapenfärdigheter",
         ),
     ] = msgspec.field(
@@ -137,10 +144,10 @@ class Packning(msgspec.Struct, frozen=True):
         List[str], msgspec.Meta(extra_json_schema={"constant": True})
     ] = msgspec.field(default_factory=lambda: ["-" for _ in range(10)])
     minnessak: str = "-"
-    smaasaker: List[str] = []
+    smaasaker: Annotated[List[str], msgspec.Meta(title="Småsaker")] = []
 
 
-class Penger(msgspec.Struct, frozen=True):
+class Pengar(msgspec.Struct, frozen=True):
     guldmynt: int = 0
     silvermynt: int = 0
     kopparmynt: int = 0
@@ -162,7 +169,7 @@ class Hjalm(msgspec.Struct, frozen=True):
 
 
 class Vapen(msgspec.Struct, frozen=True):
-    vapen: str = "Obeväpnad"
+    vapen: Annotated[str, msgspec.Meta(title="Vapen/sköld")] = "Obeväpnad"
     grepp: Literal["-", "1H", "2H"] = "-"
     räckvidd: str = "2"
     skada: str = "T6"
@@ -177,10 +184,11 @@ class Bevapning(msgspec.Struct, frozen=True):
     hjalm: Annotated[
         Hjalm, msgspec.Meta(title="Hjälm", extra_json_schema={"subsection": True})
     ] = msgspec.field(default_factory=Hjalm)
-    til_hands: Annotated[
+    till_hands: Annotated[
         List[Vapen],
         msgspec.Meta(
-            extra_json_schema={"constant": True, "widget": "table", "header": True}
+            title="Till hands",
+            extra_json_schema={"constant": True, "widget": "table", "header": True},
         ),
     ] = msgspec.field(default_factory=lambda: [Vapen() for _ in range(3)])
 
@@ -195,7 +203,7 @@ class Viljepoang(msgspec.Struct, frozen=True):
     ] = msgspec.field(default=0)
 
 
-class Dodsrull(msgspec.Struct, frozen=True):
+class Dodsslag(msgspec.Struct, frozen=True):
     lyckade: Annotated[
         int, msgspec.Meta(le=3, ge=0, extra_json_schema=({"widget": "progress"}))
     ] = 0
@@ -205,7 +213,9 @@ class Dodsrull(msgspec.Struct, frozen=True):
 
 
 class Kroppspoang(Viljepoang, frozen=True):
-    dodsrull: Dodsrull = msgspec.field(default=Dodsrull())
+    dodsslag: Annotated[Dodsslag, msgspec.Meta(title="Dödsslag")] = msgspec.field(
+        default=Dodsslag()
+    )
 
 
 class Personalia(msgspec.Struct, frozen=True):
@@ -219,7 +229,7 @@ class Personalia(msgspec.Struct, frozen=True):
     utseende: str = "Odefinerad"
 
 
-class AvledadeAttributer(msgspec.Struct, frozen=True):
+class SekundaraEgenskaper(msgspec.Struct, frozen=True):
     skadebonus_sty: Annotated[
         Bonus,
         msgspec.Meta(title="Skadebonus STY", extra_json_schema={"block": "inline"}),
@@ -245,12 +255,12 @@ class Character(msgspec.Struct):
     personalia: Annotated[
         Personalia, msgspec.Meta(extra_json_schema=({"columns": 2}))
     ] = msgspec.field(default=Personalia())
-    attributer: Annotated[
-        Attributer, msgspec.Meta(extra_json_schema=({"columns": 2}))
-    ] = msgspec.field(default=Attributer())
-    avledade_attributer: Annotated[
-        AvledadeAttributer, msgspec.Meta(title="Avledade attributer")
-    ] = msgspec.field(default=AvledadeAttributer())
+    egenskaper: Annotated[
+        Grundegenskaper, msgspec.Meta(extra_json_schema=({"columns": 2}))
+    ] = msgspec.field(default=Grundegenskaper())
+    sekundara_egenskaper: Annotated[
+        SekundaraEgenskaper, msgspec.Meta(title="Sekundära egenskaper")
+    ] = msgspec.field(default=SekundaraEgenskaper())
     formagor_og_besvarjelser: List[str] = msgspec.field(
         default=[], name="Förmågor & besvärjelser"
     )
@@ -259,7 +269,7 @@ class Character(msgspec.Struct):
         msgspec.Meta(title="Färdigheter", extra_json_schema=({"columns": 2})),
     ] = msgspec.field(default=Fardigheter())
     packning: Packning = msgspec.field(default=Packning())
-    penger: Penger = msgspec.field(default=Penger())
+    pengar: Pengar = msgspec.field(default=Pengar())
     vapen: Annotated[Bevapning, msgspec.Meta(title="Beväpning")] = msgspec.field(
         default=Bevapning()
     )
