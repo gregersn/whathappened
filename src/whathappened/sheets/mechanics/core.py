@@ -1,6 +1,5 @@
 """Core mechanics for manipulating character sheet."""
 from functools import reduce
-from pathlib import Path
 import logging
 from typing import Dict, Optional, Type
 import base64
@@ -10,10 +9,6 @@ from PIL import Image
 from whathappened.sheets.schema.build import get_schema, build_from_schema, validate
 
 logger = logging.getLogger(__name__)
-
-CHARACTER_SCHEMA_DIR = Path(__file__).parent.parent / "schema"
-
-assert CHARACTER_SCHEMA_DIR.is_dir(), CHARACTER_SCHEMA_DIR
 
 GAMES = {}
 
@@ -92,12 +87,23 @@ class CharacterMechanics:
     def attribute(self, *args):
         """Get an attribute."""
         path = args[0]
+        logger.debug("Getting attribute for: %s", path)
 
-        val = reduce(
-            lambda x, y: x.get(y, None) if x is not None else None,
-            path.split("."),
-            self.parent.body,
-        )
+        def reducer(source, selector):
+            if isinstance(source, list):
+                return source[int(selector)]
+            return source[selector] if source is not None else None
+
+        try:
+            val = reduce(
+                reducer,
+                path.split("."),
+                self.parent.body,
+            )
+        except KeyError as exc:
+            # TODO: This is a bad hack
+            logger.error("Could not resolve: %s in %s", path, self.parent)
+            return None
 
         return val
 
@@ -138,11 +144,26 @@ class CharacterMechanics:
             if data is not None:
                 self.set_portrait(fix_image(data))
         else:
-            logger.debug(f"Set '{attribute['field']}' to '{attribute['value']}'")
-            s = reduce(
-                lambda x, y: x[y], attribute["field"].split(".")[:-1], self.parent.body
-            )
-            s[attribute["field"].split(".")[-1]] = attribute["value"]
+            logger.debug("Set '%s' to '%s'", attribute["field"], attribute["value"])
+
+            def reducer(source, selector):
+                if isinstance(source, list):
+                    idx = int(selector)
+                    if idx < 0:
+                        raise NotImplementedError("Index is less than 1")
+                    return source[int(selector)]
+                return source[selector] if source is not None else None
+
+            s = reduce(reducer, attribute["field"].split(".")[:-1], self.parent.body)
+            accessor = attribute["field"].split(".")[-1]
+            if isinstance(s, list):
+                idx = int(accessor)
+                if idx < 0:
+                    s.append(attribute["value"])
+                else:
+                    s[idx] = attribute["value"]
+            elif s is not None:
+                s[accessor] = attribute["value"]
 
     def add_skill(self, skillname: str, value: int = 1):
         """Add skill."""
@@ -198,3 +219,4 @@ def new_character(title: str, system: Optional[str] = None, **kwargs):
 
 
 register_game("landf", "Lasers and feelings")
+register_game("dod", "Drakar och demoner")
