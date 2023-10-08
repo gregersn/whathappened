@@ -17,6 +17,7 @@ test("editable_check_progress", () => {
     for (let i = 0; i < 5; i++) {
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
+        checkbox.setAttribute('data-value', (i + 1).toString());
         checkboxes.push(checkbox);
         progress_element.appendChild(
             checkbox
@@ -31,7 +32,7 @@ test("editable_check_progress", () => {
 
     checkboxes[2].click();
     expect(callback).toHaveBeenCalled();
-    expect(count).toBe(2);
+    expect(count).toBe(3);
 
     checkboxes[0].click();
     expect(callback).toHaveBeenCalled();
