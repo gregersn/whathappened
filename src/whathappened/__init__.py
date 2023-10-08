@@ -78,6 +78,7 @@ def create_app(test_config=None) -> Flask:
     login_manager.init_app(app)
     csrf.init_app(app)
     mail.init_app(app)
+    app.jinja_env.add_extension("jinja2.ext.do")
     app.jinja_env.add_extension("webassets.ext.jinja2.AssetsExtension")
 
     app.jinja_env.filters["uberfilter"] = uberfilter
@@ -85,6 +86,7 @@ def create_app(test_config=None) -> Flask:
     webpack_manifest = Path(__file__).absolute().parent / "static" / "manifest.json"
 
     if webpack_manifest.exists():
+        logger.debug("Loading webpack manifest")
         webpack_env = WebpackEnvironment(manifest=webpack_manifest, publicRoot="")
 
         app.jinja_env.filters["webpack"] = WebpackFilter(webpack_env)

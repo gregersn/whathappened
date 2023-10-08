@@ -22,6 +22,12 @@ def register_assets(assets: Environment):
         output="css/character.css",
     )
     assets.register(
+        "scss_character_general",
+        "scss/character/character_general.scss",
+        filters="pyscss",
+        output="css/character_general.css",
+    )
+    assets.register(
         "scss_character_coc7e",
         "scss/character/character_coc7e.scss",
         filters="pyscss",

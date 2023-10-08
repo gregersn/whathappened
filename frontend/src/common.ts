@@ -2,12 +2,12 @@ export type Datamap = {
   field: string;
   subfield?: string | undefined;
   type?:
-    | "skillcheck"
-    | "binary"
-    | "area"
-    | "table"
-    | "occupationcheck"
-    | undefined;
+  | "skillcheck"
+  | "binary"
+  | "area"
+  | "table"
+  | "occupationcheck"
+  | undefined;
 };
 
 export type Elementdata = any;
@@ -25,7 +25,7 @@ function saveElement(
   editable_handler: (e: Event) => void
 ) {
   let value = null;
-  if (editfield instanceof HTMLInputElement && editfield.type === "number") {
+  if (editfield instanceof HTMLInputElement && (editfield.type === "number" || editfield.type === "integer")) {
     value = isNaN(editfield.valueAsNumber)
       ? element.getAttribute("data-blank")
       : editfield.valueAsNumber;
@@ -40,6 +40,28 @@ function saveElement(
   element.innerHTML = value;
   element.addEventListener("click", editable_handler);
   save(data, value);
+}
+
+function parse_value(value: any, value_type: string) {
+  console.log(`Converting ${value} to ${value_type}`);
+  switch (value_type) {
+    case "number":
+    case "integer":
+      return Number.parseInt(value);
+
+    case "string":
+      return String(value);
+
+    case "boolean":
+      return value == "True"
+    case "":
+      return value;
+
+    default:
+      throw new Error(`Unknown value type: ${value_type}`);
+      break;
+  }
+
 }
 
 export function list_to_obj(list: HTMLUListElement): Listdata {
@@ -100,9 +122,11 @@ function editElement(
     });
   } else if (type === "string") {
     editfield = document.createElement("input");
-  } else if (type === "number") {
+  } else if (type === "number" || type === "integer") {
     editfield = document.createElement("input") as HTMLInputElement;
     editfield.type = "number";
+    editfield.min = element.getAttribute("data-min");
+    editfield.max = element.getAttribute("data-max");
     editfield.setAttribute("data-blank", element.getAttribute("data-blank"));
   } else if (type === "area") {
     editfield = document.createElement("textarea");
@@ -129,7 +153,7 @@ function editElement(
   element.removeEventListener("click", editable_handler);
 }
 
-export type edit_type = "input" | "area" | "string" | "number";
+export type edit_type = "input" | "area" | "string" | "number" | "integer";
 
 const make_editable_handler = (
   element: HTMLElement,
@@ -226,7 +250,7 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
   for (const row of rows) {
     const row_data = {};
     fields.forEach((field) => {
-      if (field["type"] === "number") {
+      if (field["type"] === "number" || field["type"] === "integer") {
         const value = Number.parseInt(row.cells.item(field["index"]).innerHTML);
         row_data[field["property"]] = isNaN(value) ? field["blank"] : value;
       } else {
@@ -243,6 +267,115 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
 
   return data_rows;
 }
+
+const create_editable = (tagname: keyof HTMLElementTagNameMap, data_type: string, data_field: string, data_blank: any) => {
+  const editable = document.createElement(tagname);
+  editable.setAttribute("data-type", data_type);
+
+  if (data_type == "boolean") {
+    const new_input: HTMLInputElement = document.createElement('input');
+    new_input.type = "checkbox";
+    new_input.setAttribute('data-field', data_field);
+    new_input.setAttribute("data-type", "binary");
+    new_input.onchange = () => {
+      saveCheck(new_input);
+    }
+    editable.append(new_input);
+
+  }
+
+  else {
+    const new_span: HTMLSpanElement = document.createElement("span");
+    new_span.setAttribute("data-field", data_field);
+    new_span.setAttribute("data-type", data_type);
+    new_span.innerText = data_blank;
+
+    const save = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => {
+      console.log("Save data");
+      console.log(data);
+      send_update(datamap, data);
+    }
+    make_element_editable(new_span, save, data_type as edit_type);
+    editable.append(new_span);
+  }
+
+  return editable;
+}
+
+export const editable_table_2 = (
+  table: HTMLTableElement
+) => {
+  const make_cell_editable = (cell: HTMLTableCellElement) => {
+    make_element_editable(
+      cell,
+      (data: any) => {
+        //save(table_to_obj(table));
+      },
+      cell.getAttribute("data-type") as edit_type
+    );
+  };
+  /*const make_row_editable = (row: HTMLTableRowElement, fields: any[]) => {
+    const cells = Array.from(row.cells);
+    //console.log(fields);
+    cells.forEach((cell, index) => {
+      if (fields.find((field) => field["index"] === index)) {
+        make_cell_editable(cell);
+      }
+    });
+  };*/
+
+
+  const cells = Array.from(table.tHead.rows[0].cells);
+  /*const fields = cells
+    .map((element, index) => {
+      return { property: element.getAttribute("data-property"), index: index };
+    })
+    .filter((element, index) => {
+      if (element["property"]) return true;
+      return false;
+    });
+    */
+  //const rows = Array.from(table.tBodies[0].rows);
+  /*for (const row of rows) {
+    //make_row_editable(row, fields);
+  }*/
+  const parent = table.parentElement;
+
+
+  const button = document.createElement("button");
+  button.innerHTML = "Add row";
+
+  const table_body = table.getElementsByTagName("tbody")[0];
+  const table_header = table.getElementsByTagName("thead")[0];
+  button.onclick = () => {
+    // Set data-row on tr (length + 1)
+    console.log("Adding row to table")
+    console.log(`${table.getAttribute("data-field")}.-1`);
+    console.log("Default values");
+    const default_values = {};
+    for (const cell of table_header.rows[0].cells) {
+      default_values[cell.getAttribute("data-property")] = parse_value(cell.getAttribute("data-blank"), cell.getAttribute("data-type"));
+    }
+    send_update({ "field": `${table.getAttribute("data-field")}.-1` }, default_values);
+    console.log(default_values)
+    const new_row = table_body.insertRow(-1);
+    new_row.setAttribute("data-row", new_row.rowIndex.toString());
+    // set data-type on each row, with data-blank
+    for (const cell of table_header.rows[0].cells) {
+      const type = cell.getAttribute("data-type");
+      const field = `${table.getAttribute("data-field")}.${(new_row.rowIndex - 1)}.${cell.getAttribute("data-property")}`;
+      const blank = cell.getAttribute("data-blank");
+
+      const new_cell: HTMLTableCellElement = create_editable("td", type, field, blank) as HTMLTableCellElement;
+      new_row.appendChild(new_cell);
+      //console.log(cell);
+    }
+  };
+
+  parent.appendChild(button);
+
+}
+
 
 export const editable_table = (
   table: HTMLTableElement,
