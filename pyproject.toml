@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "whathappened"
-version = "0.0.3"
+version = "0.0.4"
 
 
 authors = [{ name = "Greger Stolt Nilsen", email = "gregersn@gmail.com" }]
@@ -35,7 +35,7 @@ dependencies = [
     "PyMysql",
     "PyYAML",
     "SQLAlchemy",
-    "werkzeug",
+    "werkzeug==2.3.6",
     "webassets",
     "jinja2-webpack",
     "pydantic",
