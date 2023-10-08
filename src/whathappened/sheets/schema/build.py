@@ -1,4 +1,5 @@
-from typing import Dict, List, MutableMapping, Union, Any
+"""Build sheets from schemas."""
+from typing import Dict, List, MutableMapping, Optional, Union, Any
 import yaml
 import logging
 import json
@@ -29,6 +30,7 @@ def get_schema(system: str):
 
 
 def load_schema(filename: Path) -> Dict[str, Any]:
+    """Load schema from file."""
     with open(filename, "r") as f:
         try:
             if filename.suffix == ".json":
@@ -47,6 +49,7 @@ SchemaValidationError = Dict[str, str]
 
 
 def validate(data: Dict, system: str) -> List[SchemaValidationError]:
+    """Validate a sheet against a system."""
     schema = get_schema(system)
     v = Draft7Validator(schema)
     return [
