@@ -43,16 +43,16 @@ BasAttribut = Literal["STY", "FYS", "SMI", "INT", "PSY", "KAR"]
 
 class Attributer(msgspec.Struct, frozen=True):
     STY: Annotated[int, msgspec.Meta(le=18, ge=0, title="Styrke (STY)")] = 0
-    utmattad: bool = False
     FYS: Annotated[int, msgspec.Meta(le=18, ge=0, title="Fysik (FYS)")] = 0
-    krasslig: bool = False
     SMI: Annotated[int, msgspec.Meta(le=18, ge=0, title="Smidighet (SMI)")] = 0
-    omtocknad: bool = False
     INT: Annotated[int, msgspec.Meta(le=18, ge=0, title="Intelligens (INT)")] = 0
-    arg: bool = False
     PSY: Annotated[int, msgspec.Meta(le=18, ge=0, title="Psyke (PSY)")] = 0
-    radd: bool = False
     KAR: Annotated[int, msgspec.Meta(le=18, ge=0, title="Karisma (KAR)")] = 0
+    utmattad: bool = False
+    krasslig: bool = False
+    omtocknad: bool = False
+    arg: bool = False
+    radd: bool = False
     uppgiven: bool = False
 
 
@@ -135,7 +135,7 @@ class Fardigheter(msgspec.Struct, frozen=True):
 
 
 class Packning(msgspec.Struct, frozen=True):
-    barformoga: Annotated[int, msgspec.Meta(title="Bärformåga")] = msgspec.field(
+    barformoga: Annotated[int, msgspec.Meta(title="Bärformåga", le=10)] = msgspec.field(
         default=0
     )
     items: List[str] = []
@@ -231,7 +231,9 @@ class AvledadeAttributer(msgspec.Struct, frozen=True):
 
 class Character(msgspec.Struct):
     personalia: Personalia = msgspec.field(default=Personalia())
-    attributer: Attributer = msgspec.field(default=Attributer())
+    attributer: Annotated[
+        Attributer, msgspec.Meta(extra_json_schema=({"columns": 2}))
+    ] = msgspec.field(default=Attributer())
     avledade_attributer: Annotated[
         AvledadeAttributer, msgspec.Meta(title="Avledade attributer")
     ] = msgspec.field(default=AvledadeAttributer())
@@ -239,7 +241,8 @@ class Character(msgspec.Struct):
         default=[], name="Förmågor & besvärjelser"
     )
     fardigheter: Annotated[
-        Fardigheter, msgspec.Meta(title="Färdigheter")
+        Fardigheter,
+        msgspec.Meta(title="Färdigheter", extra_json_schema=({"columns": 2})),
     ] = msgspec.field(default=Fardigheter())
     packning: Packning = msgspec.field(default=Packning())
     penger: Penger = msgspec.field(default=Penger())

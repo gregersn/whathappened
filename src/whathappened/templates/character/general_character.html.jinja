@@ -92,7 +92,9 @@
     {%- macro render_section(name, section, path='') %}
     <div class="box">
         <h3>{{ section.title if 'title' in section else name }}</h3>
-        {{ render_item(section, path + "." + name)}}
+        <div style="column-count: {{section.columns if 'columns' in section else 1}};">
+            {{ render_item(section, path + "." + name)}}
+        </div>
     </div>
     {%- endmacro %}
 
@@ -100,7 +102,7 @@
     {% block head %}
     {{ super() }}
 
-    {% assets "scss_character_tftl" %}
+    {% assets "scss_character_general" %}
     <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
     {% endassets %}
 
