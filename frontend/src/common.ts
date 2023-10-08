@@ -270,21 +270,32 @@ const create_editable = (tagname: keyof HTMLElementTagNameMap, data_type: string
   const editable = document.createElement(tagname);
   editable.setAttribute("data-type", data_type);
 
-  const new_span: HTMLSpanElement = document.createElement("span");
-  new_span.setAttribute("data-field", data_field);
-  new_span.setAttribute("data-type", data_type);
-  new_span.innerText = data_blank;
+  if (data_type == "boolean") {
+    const new_input: HTMLInputElement = document.createElement('input');
+    new_input.type = "checkbox";
+    new_input.setAttribute('data-field', data_field);
+    new_input.setAttribute("data-type", "binary");
+    new_input.onchange = () => {
+      saveCheck(new_input);
+    }
+    editable.append(new_input);
 
-  const save = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => {
-    console.log("Save data");
-    console.log(data);
-    send_update(datamap, data);
   }
 
+  else {
+    const new_span: HTMLSpanElement = document.createElement("span");
+    new_span.setAttribute("data-field", data_field);
+    new_span.setAttribute("data-type", data_type);
+    new_span.innerText = data_blank;
 
-
-  make_element_editable(new_span, save, data_type as edit_type);
-  editable.append(new_span);
+    const save = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => {
+      console.log("Save data");
+      console.log(data);
+      send_update(datamap, data);
+    }
+    make_element_editable(new_span, save, data_type as edit_type);
+    editable.append(new_span);
+  }
 
   return editable;
 }
@@ -301,7 +312,7 @@ export const editable_table_2 = (
       cell.getAttribute("data-type") as edit_type
     );
   };
-  const make_row_editable = (row: HTMLTableRowElement, fields: any[]) => {
+  /*const make_row_editable = (row: HTMLTableRowElement, fields: any[]) => {
     const cells = Array.from(row.cells);
     //console.log(fields);
     cells.forEach((cell, index) => {
@@ -309,11 +320,11 @@ export const editable_table_2 = (
         make_cell_editable(cell);
       }
     });
-  };
+  };*/
 
 
   const cells = Array.from(table.tHead.rows[0].cells);
-  const fields = cells
+  /*const fields = cells
     .map((element, index) => {
       return { property: element.getAttribute("data-property"), index: index };
     })
@@ -321,11 +332,11 @@ export const editable_table_2 = (
       if (element["property"]) return true;
       return false;
     });
-
-  const rows = Array.from(table.tBodies[0].rows);
-  for (const row of rows) {
+    */
+  //const rows = Array.from(table.tBodies[0].rows);
+  /*for (const row of rows) {
     //make_row_editable(row, fields);
-  }
+  }*/
   const parent = table.parentElement;
 
 
@@ -346,11 +357,11 @@ export const editable_table_2 = (
     send_update({ "field": `${table.getAttribute("data-field")}.-1` }, default_values);
     console.log(default_values)
     const new_row = table_body.insertRow(-1);
-    new_row.setAttribute("data-row", '-1');
+    new_row.setAttribute("data-row", new_row.rowIndex.toString());
     // set data-type on each row, with data-blank
     for (const cell of table_header.rows[0].cells) {
       const type = cell.getAttribute("data-type");
-      const field = `${table.getAttribute("data-field")}.${(table_body.rows.length - 1)}.${cell.getAttribute("data-property")}`;
+      const field = `${table.getAttribute("data-field")}.${(new_row.rowIndex - 1)}.${cell.getAttribute("data-property")}`;
       const blank = cell.getAttribute("data-blank");
 
       const new_cell: HTMLTableCellElement = create_editable("td", type, field, blank) as HTMLTableCellElement;

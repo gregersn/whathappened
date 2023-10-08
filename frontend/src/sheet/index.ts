@@ -5,6 +5,7 @@ import { editable_check_progress } from "../widgets/check_progress";
 
 
 function init_sharebutton() {
+    // Make the Share "button" request a sharable link to the character sheet.
     const button = document.getElementById('sharebtn')
     if (button) {
         button.onclick = (e: Event) => {
@@ -28,18 +29,23 @@ function init_sharebutton() {
 
 function init_editable() {
     console.log("Init editable values");
+
+    // Find all HTML elements that has the class "editable"
     const editables: HTMLElement[] = <HTMLElement[]>Array.from(document.getElementsByClassName('editable'));
 
+    // Create save function
     const save = (datamap: Datamap | DOMStringMap, data: Elementdata | Tabledata) => {
         console.log("Save data");
         console.log(data);
         send_update(datamap, data);
     }
 
+    // Make all of the found elements editable
     editables.forEach(element => {
         const dataType = element.getAttribute('data-type');
         switch (dataType) {
             case 'area':
+                // TODO: Document what the reason (if any) is for this special case.
                 make_element_editable(element, save, "area");
                 break;
             case 'picture':
@@ -80,6 +86,7 @@ function init_editable_lists() {
 
 let popup: HTMLDivElement = null;
 function init_popup() {
+    // Create element that can be used as a popup on the character sheet.
     popup = document.createElement('div');
     popup.style.backgroundColor = "#ff0000";
     popup.style.width = "100px";
