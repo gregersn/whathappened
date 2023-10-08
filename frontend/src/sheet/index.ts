@@ -134,10 +134,14 @@ function init_check_progress() {
     console.log("Init check progress");
     const bars: HTMLSpanElement[] = <HTMLSpanElement[]>Array.from(document.getElementsByClassName('editable_check_progress'));
     bars.forEach(bar => {
+        const field = bar.getAttribute('data-field');
+        const indicator = document.getElementById(field + "-value");
         editable_check_progress(bar, (value: number) => {
-            const field = bar.getAttribute('data-field');
-            console.log("Saving progress.\n"); console.log(value);
+            console.log(`Saving progress: ${value}`);
             send_update({ field: field }, value);
+            if (indicator) {
+                indicator.innerHTML = value.toString();
+            }
         })
     })
 }

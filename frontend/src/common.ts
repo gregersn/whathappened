@@ -214,7 +214,7 @@ export function send_update(datamap: Datamap | DOMStringMap, value: any) {
   datamap["value"] = value;
 
   console.log(`Sending: ${JSON.stringify(datamap)}`);
-  busy.style.display = "block";
+  //busy.style.display = "block";
   xhr.send(JSON.stringify([datamap]));
 }
 
