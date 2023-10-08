@@ -65,6 +65,7 @@ def create_app(test_config=None) -> Flask:
     login_manager.init_app(app)
     csrf.init_app(app)
     mail.init_app(app)
+    app.jinja_env.add_extension("jinja2.ext.do")
     app.jinja_env.add_extension("webassets.ext.jinja2.AssetsExtension")
 
     webpack_manifest = Path(__file__).absolute().parent / "static" / "manifest.json"

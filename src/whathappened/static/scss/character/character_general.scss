@@ -1,17 +1,30 @@
-$tftl_orange: #ed8823;
+$system_color: #119911;
 
 .charactersheet {
+
     //display: grid;
     //grid-template-columns: 1fr 1fr;
-    column-count: 2;
+    @media screen and (min-width: 960px) {
+        column-count: 2;
+
+    }
+
+    @media screen and (min-width: 1900px) {
+        column-count: 3;
+
+    }
 
     section {
         break-inside: avoid;
     }
 
+    td {
+        vertical-align: top;
+    }
+
     .box {
         h3 {
-            background-color: $tftl_orange;
+            background-color: $system_color;
         }
     }
 
@@ -42,6 +55,12 @@ $tftl_orange: #ed8823;
             text-align: right;
             padding: 5px;
             padding-right: 10px;
+        }
+    }
+
+    .editable_check_progress {
+        input {
+            margin: 0;
         }
     }
 }

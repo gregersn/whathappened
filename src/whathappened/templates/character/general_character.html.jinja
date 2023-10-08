@@ -2,8 +2,14 @@
 
 {%- macro render_object(object, path='') %}
 <div>
-    {% for key, value in object.properties.items() %}
-    {{ value.title if 'title' in value else key|title }}: {{ render_item(value, path + '.' + key, key) }}<br />
+    {% for key, item in object.properties.items() %}
+    {% if 'subsection' in item and item.subsection%}
+    {% do item.pop("subsection")%}
+    {{ render_section_2(key, item, path)}}
+    {% else %}
+    {{ item.title if 'title' in item else key|title }}: {{ render_item(item, path + '.' + key, key) }}{% if not
+    item.block == "inline" %}<br />{% endif%}
+    {% endif %}
     {% endfor %}
 </div>
 {%- endmacro %}
@@ -22,14 +28,16 @@
     {%- endmacro %}
 
     {%- macro render_table(object, path='', key=None)%}
+
     <section>
         <table id="tbl{{object['items'].title}}"
             class="{%- if editable and not object.constant %} editableTable2{%- endif %}" data-field="{{ path }}">
-            <thead>
+            <thead style="{% if not object.header %}display: none{% endif %}">
                 <tr>
                     {% for column, properties in object['items'].properties.items() %}
                     <th data-property="{{column}}" data-type="{{ properties.type }}"
-                        data-blank="{{ properties.default if properties.default is not none else '-'}}">{{column}}</th>
+                        data-blank="{{ properties.default if properties.default is not none else '-'}}">{{column if not
+                        properties.hide_heading}}</th>
                     {% endfor %}
                 </tr>
             </thead>
@@ -97,6 +105,17 @@
         </div>
     </div>
     {%- endmacro %}
+
+    {%- macro render_section_2(name, section, path='') %}
+    <div class="box">
+        <h4>{{ section.title if 'title' in section else name }}</h4>
+        <div style="column-count: {{section.columns if 'columns' in section else 1}};">
+            {{ render_item(section, path + "." + name)}}
+        </div>
+    </div>
+    {%- endmacro %}
+
+
 
 
     {% block head %}
