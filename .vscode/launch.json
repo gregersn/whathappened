@@ -35,7 +35,7 @@
         "LOGLEVEL": "DEBUG",
         "SQLALCHEMY_WARN_20": "1"
       },
-      "args": ["run"],
+      "args": ["run", "--debug", "--extra-files", "src/whathappened/static/manifest.json"],
       "jinja": true,
       "justMyCode": false
     },
@@ -48,7 +48,7 @@
         "FLASK_APP": "src/whathappened",
         "FLASK_DEBUG": "1"
       },
-      "args": ["upgrade"],
+      "args": ["db", "upgrade"],
       "jinja": true
     }
   ]
