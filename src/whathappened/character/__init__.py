@@ -1,6 +1,10 @@
 from flask import Blueprint
 from webassets.env import Environment
 
+from ..sheets.mechanics.core import register_game
+from whathappened.sheets.mechanics.dod.mechanics import DoDMechanics
+
+
 bp = Blueprint(
     "character", __name__, template_folder="templates", static_folder="static"
 )
@@ -40,3 +44,6 @@ def register_assets(assets: Environment):
         filters="pyscss",
         output="css/character_tftl.css",
     )
+
+
+register_game("dod", "Drakar och demoner", DoDMechanics)
