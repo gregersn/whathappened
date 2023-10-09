@@ -17,12 +17,11 @@ $tftl_orange: #ed8823;
         * {
             height: 100%;
             &:nth-child(4n-1) {
-                background-color:lightgray;
+                background-color: lightgray;
             }
             &:nth-child(4n) {
                 background-color: lightgray;
             }
-
         }
         label {
             padding: 5px;
@@ -34,5 +33,5 @@ $tftl_orange: #ed8823;
             padding: 5px;
             padding-right: 10px;
         }
-}
+    }
 }

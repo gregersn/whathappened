@@ -10,26 +10,26 @@ This will probably be no different. The software is written to satisfy the autho
 
 ### Implemented
 
-* User registration, login and password reset.
-* Creation and basic editing of a single type of character sheet.
+-   User registration, login and password reset.
+-   Creation and basic editing of a single type of character sheet.
 
 ### To be implemented soon
 
-* Sharing of character sheets.
-* Completion of sheet for one ruleset.
+-   Sharing of character sheets.
+-   Completion of sheet for one ruleset.
 
 ### Future endeavors
 
-* Better styling.
-* Handling campaigns.
-* Support for handouts.
-* Websockets for dynamically updated views.
+-   Better styling.
+-   Handling campaigns.
+-   Support for handouts.
+-   Websockets for dynamically updated views.
 
 In its current state it can not be recommended to anyone, and instructions for setting up will not yet be provided. However, if you do test it, and find something that needs to be fixed, or you have a fix, issues and pull requests are welcome.
 
 Come back later.
 
-*Cthulhu fhtagn.*
+_Cthulhu fhtagn._
 
 ## Development and testing
 
@@ -37,9 +37,9 @@ To get started, clone the project with git.
 
 ### Prerequisites
 
-* `make` (probably the GNU variety)
-* `node` and `npm`
-* Python 3
+-   `make` (probably the GNU variety)
+-   `node` and `npm`
+-   Python 3
 
 ### Setup and build
 

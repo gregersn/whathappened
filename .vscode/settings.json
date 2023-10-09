@@ -1,21 +1,19 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "diffEditor.ignoreTrimWhitespace": false,
-    "gitlens.codeLens.symbolScopes": [
-      "!Module"
-    ],
-    "editor.formatOnType": false,
-    "editor.wordBasedSuggestions": false
-  },
-  "python.testing.pytestArgs": ["-vv", "tests"],
-  "python.testing.unittestEnabled": false,
-  "python.testing.nosetestsEnabled": false,
-  "python.testing.pytestEnabled": true,
-  "python.testing.nosetestArgs": ["test"],
-  "python.pythonPath": ".venv/bin/python",
-  "python.analysis.stubPath": "typings",
-  "python.analysis.typeCheckingMode": "basic",
-  "python.analysis.diagnosticMode": "workspace"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "diffEditor.ignoreTrimWhitespace": false,
+        "gitlens.codeLens.symbolScopes": ["!Module"],
+        "editor.formatOnType": false,
+        "editor.wordBasedSuggestions": false
+    },
+    "python.testing.pytestArgs": ["-vv", "tests"],
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.nosetestArgs": ["test"],
+    "python.pythonPath": ".venv/bin/python",
+    "python.analysis.stubPath": "typings",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.diagnosticMode": "workspace"
 }

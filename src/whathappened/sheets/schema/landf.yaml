@@ -1,72 +1,72 @@
 ---
 type: object
 properties:
-  system:
-    const: landf
-  meta:
-    type: object
-    properties:
-      title:
-        type: string
-        default: Unknown
-      gamename:
-        const: "Lasers and feelings"
-    required:
-      - title
-      - gamename
-  character_sheet:
-    type: object
-    properties:
-      name:
-        title: Character name
-        type: string
-        default: Ace
-      style:
-        title: Character style
-        type: string
-        enum:
-          - Alien
-          - Droid
-          - Dangerous
-          - Heroic
-          - Hot-Shot
-          - Intrepid
-          - Savvy
-        default: Heroic
-      role:
-        title: Character role
-        type: string
-        enum:
-          - Doctor
-          - Envoy
-          - Engineer
-          - Explorer
-          - Pilot
-          - Scientist
-          - Soldier
-        default: Soldier
-      inventory:
-        title: Inventory
-        type: array
-        items:
-          type: string
-        default:
-          - Consortium uniform
-          - Communicator
-          - Pistol
-      goal:
-        title: Character goal
-        type: string
-        default: Meet new aliens
-      stat:
-        title: Lasers or feelings
-        type: integer
-        min: 2
-        max: 5
-        default: 4
-    required:
-      - style
-      - role
-      - name
-      - goal
-      - stat
+    system:
+        const: landf
+    meta:
+        type: object
+        properties:
+            title:
+                type: string
+                default: Unknown
+            gamename:
+                const: "Lasers and feelings"
+        required:
+            - title
+            - gamename
+    character_sheet:
+        type: object
+        properties:
+            name:
+                title: Character name
+                type: string
+                default: Ace
+            style:
+                title: Character style
+                type: string
+                enum:
+                    - Alien
+                    - Droid
+                    - Dangerous
+                    - Heroic
+                    - Hot-Shot
+                    - Intrepid
+                    - Savvy
+                default: Heroic
+            role:
+                title: Character role
+                type: string
+                enum:
+                    - Doctor
+                    - Envoy
+                    - Engineer
+                    - Explorer
+                    - Pilot
+                    - Scientist
+                    - Soldier
+                default: Soldier
+            inventory:
+                title: Inventory
+                type: array
+                items:
+                    type: string
+                default:
+                    - Consortium uniform
+                    - Communicator
+                    - Pistol
+            goal:
+                title: Character goal
+                type: string
+                default: Meet new aliens
+            stat:
+                title: Lasers or feelings
+                type: integer
+                min: 2
+                max: 5
+                default: 4
+        required:
+            - style
+            - role
+            - name
+            - goal
+            - stat

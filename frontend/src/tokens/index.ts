@@ -1,9 +1,10 @@
+document.addEventListener("DOMContentLoaded", function (event) {
+    const image: HTMLImageElement = <HTMLImageElement>(
+        document.getElementById("source_picture")
+    );
 
-document.addEventListener('DOMContentLoaded', function(event) {
-    const image: HTMLImageElement = <HTMLImageElement>document.getElementById('source_picture');
-    
-    const canvas: HTMLCanvasElement = document.createElement('canvas');
-    canvas.id="canvas";
+    const canvas: HTMLCanvasElement = document.createElement("canvas");
+    canvas.id = "canvas";
 
     const borderWidth = 10;
     const size = Math.min(image.width, image.height) + borderWidth * 2;

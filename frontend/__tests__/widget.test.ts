@@ -9,22 +9,21 @@ afterEach(() => {
 });
 
 test("editable_check_progress", () => {
-
     let count = 0;
-    const callback = jest.fn(value => { count = value; });
-    const progress_element = document.createElement('span');
+    const callback = jest.fn((value) => {
+        count = value;
+    });
+    const progress_element = document.createElement("span");
     let checkboxes: HTMLInputElement[] = [];
     for (let i = 0; i < 5; i++) {
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.setAttribute('data-value', (i + 1).toString());
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.setAttribute("data-value", (i + 1).toString());
         checkboxes.push(checkbox);
-        progress_element.appendChild(
-            checkbox
-        )
+        progress_element.appendChild(checkbox);
     }
     document.body.appendChild(progress_element);
-    editable_check_progress(progress_element, callback)
+    editable_check_progress(progress_element, callback);
 
     checkboxes[0].click();
     expect(callback).toHaveBeenCalled();
@@ -37,6 +36,4 @@ test("editable_check_progress", () => {
     checkboxes[0].click();
     expect(callback).toHaveBeenCalled();
     expect(count).toBe(1);
-
-
 });
