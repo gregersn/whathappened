@@ -1,5 +1,5 @@
 import enum
-from datetime import datetime
+from datetime import datetime, UTC
 
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey, Table, Column
@@ -159,7 +159,7 @@ class Message(BaseModel):
     sender = relationship("UserProfile", foreign_keys=[from_id])
 
     message = Column(Text)
-    timestamp = Column(DateTime, index=True, default=datetime.utcnow)
+    timestamp = Column(DateTime, index=True, default=lambda: datetime.now(UTC))
 
     _default_fields = ["timestamp", "sender_name", "to_name", "message", "id"]
 

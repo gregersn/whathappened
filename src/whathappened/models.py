@@ -47,7 +47,7 @@ class LogEntry(Base):
     table = Column(String(128))
     object_id = Column(Integer)
     entry = Column(Text)
-    created_date = Column(DateTime, default=datetime.datetime.utcnow)
+    created_date = Column(DateTime, default=lambda: datetime.datetime.now(datetime.UTC))
     user = relationship("User")
 
     def __init__(self, target: Base, entry: str, user_id=None, **kwargs):

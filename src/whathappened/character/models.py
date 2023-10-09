@@ -1,6 +1,6 @@
 import logging
 from typing import Any, Dict, Type, cast
-from datetime import datetime
+from datetime import datetime, UTC
 
 from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.orm import reconstructor, relationship, backref
@@ -20,7 +20,10 @@ class Character(BaseContent, BaseModel):
     title = cast(str, Column(String(256)))
     body = cast(Dict[str, Any], Column(JSON))
     timestamp = Column(
-        DateTime, index=True, default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime,
+        index=True,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
     user_id = cast(int, Column(Integer, ForeignKey("user_profile.id")))
     player = relationship("UserProfile", backref=backref("characters", lazy="dynamic"))
