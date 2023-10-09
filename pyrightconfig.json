@@ -1,6 +1,3 @@
 {
-    "exclude": [
-        "./whathappened/migrations",
-        "./.venv"
-    ]
+    "exclude": ["./whathappened/migrations", "./.venv"]
 }

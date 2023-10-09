@@ -1,20 +1,25 @@
 @import "markdown.scss";
 
-#show_add_character,#add_character_form,#show_add_npc,#add_npc_form {
-    display:none;
+#show_add_character,
+#add_character_form,
+#show_add_npc,
+#add_npc_form {
+    display: none;
 }
 
-
-#show_add_character + label, #show_add_npc + label {
+#show_add_character + label,
+#show_add_npc + label  {
     color: gray;
 }
 
-#show_add_character:checked + label, #show_add_npc:checked + label {
+#show_add_character:checked + label,
+#show_add_npc:checked + label  {
     color: black;
 }
 
-#show_add_character:checked~#add_character_form, #show_add_npc:checked~#add_npc_form {
-    display:block;
+#show_add_character:checked ~ #add_character_form,
+#show_add_npc:checked ~ #add_npc_form {
+    display: block;
 }
 
 .strong {
@@ -37,28 +42,26 @@ section {
         }
         tr:nth-child(even) {
             background-color: #f2f2f2;
-          }
+        }
         td {
             width: 30px;
             text-align: center;
             padding: 10px 5px;
             border: 1px solid #ccc;
-        }        
+        }
     }
     .rot90 {
         height: 140px;
         white-space: nowrap;
 
         > div {
-            transform: 
-                translate(4px, 54px)
-                rotate(270deg);
+            transform: translate(4px, 54px) rotate(270deg);
             width: 30px;
         }
         > div > span {
-                border-bottom: 1px solid #ccc;
-                padding: 0px 10px;
-            }
+            border-bottom: 1px solid #ccc;
+            padding: 0px 10px;
+        }
     }
 }
 
@@ -76,7 +79,8 @@ section {
     }
 }
 
-#npc_section, #handout_section {
+#npc_section,
+#handout_section {
     h3 {
         cursor: pointer;
     }

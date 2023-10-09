@@ -330,12 +330,7 @@
         "possessions": null,
         "encounters": null
     },
-    "possessions": [
-        "A",
-        "list",
-        "of",
-        "possessions"
-    ],
+    "possessions": ["A", "list", "of", "possessions"],
     "cash": {
         "spending": "5",
         "cash": "25",

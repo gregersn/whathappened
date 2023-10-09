@@ -1,55 +1,60 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "trace": true,
-      "type": "chrome",
-      "request": "launch",
-      "name": "Launch Chrome",
-      "url": "http://localhost:5000",
-      "webRoot": "${workspaceFolder}/frontend/",
-      "userDataDir": "${workspaceRoot}/.vscode/chrome",
-      "sourceMaps": true,
-      "disableNetworkCache": true,
-      // we have multiple js source folders, so some source maps are still generated with webpack protocol links. Don't know why?
-      "sourceMapPathOverrides": {
-        // if you override this, you MUST provide all defaults again
-        "webpack:///./~/*": "${webRoot}/node_modules/*", // a default
-        "webpack:///./*": "${webRoot}/src/*", // unsure how/why webpack generates ./links.js
-        "webpack:///../*": "${webRoot}/src/*", // unsure how/why webpack generates ../links.js
-        "webpack:///*": "*" // a default, catch everything else
-      }
-    },
-    {
-      "name": "What Happened?",
-      "type": "python",
-      "pythonArgs": ["-W always::DeprecationWarning"],
-      "request": "launch",
-      "module": "flask",
-      "env": {
-        "FLASK_APP": "src/whathappened",
-        "FLASK_DEBUG": "1",
-        "LOGLEVEL": "DEBUG",
-        "SQLALCHEMY_WARN_20": "1"
-      },
-      "args": ["run", "--debug", "--extra-files", "src/whathappened/static/manifest.json"],
-      "jinja": true,
-      "justMyCode": false
-    },
-    {
-      "name": "Init db",
-      "type": "python",
-      "request": "launch",
-      "module": "flask",
-      "env": {
-        "FLASK_APP": "src/whathappened",
-        "FLASK_DEBUG": "1"
-      },
-      "args": ["db", "upgrade"],
-      "jinja": true
-    }
-  ]
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "trace": true,
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:5000",
+            "webRoot": "${workspaceFolder}/frontend/",
+            "userDataDir": "${workspaceRoot}/.vscode/chrome",
+            "sourceMaps": true,
+            "disableNetworkCache": true,
+            // we have multiple js source folders, so some source maps are still generated with webpack protocol links. Don't know why?
+            "sourceMapPathOverrides": {
+                // if you override this, you MUST provide all defaults again
+                "webpack:///./~/*": "${webRoot}/node_modules/*", // a default
+                "webpack:///./*": "${webRoot}/src/*", // unsure how/why webpack generates ./links.js
+                "webpack:///../*": "${webRoot}/src/*", // unsure how/why webpack generates ../links.js
+                "webpack:///*": "*" // a default, catch everything else
+            }
+        },
+        {
+            "name": "What Happened?",
+            "type": "python",
+            "pythonArgs": ["-W always::DeprecationWarning"],
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "src/whathappened",
+                "FLASK_DEBUG": "1",
+                "LOGLEVEL": "DEBUG",
+                "SQLALCHEMY_WARN_20": "1"
+            },
+            "args": [
+                "run",
+                "--debug",
+                "--extra-files",
+                "src/whathappened/static/manifest.json"
+            ],
+            "jinja": true,
+            "justMyCode": false
+        },
+        {
+            "name": "Init db",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "src/whathappened",
+                "FLASK_DEBUG": "1"
+            },
+            "args": ["db", "upgrade"],
+            "jinja": true
+        }
+    ]
 }

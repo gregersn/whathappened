@@ -1,18 +1,22 @@
 @font-face {
-    font-family: 'Hind Siliguri';
+    font-family: "Hind Siliguri";
     font-style: normal;
     font-weight: normal;
-    src: local('Hind Siliguri Regular'), url('/static/fonts/hind_siliguri/HindSiliguri-Regular.woff') format('woff');
+    src:
+        local("Hind Siliguri Regular"),
+        url("/static/fonts/hind_siliguri/HindSiliguri-Regular.woff")
+            format("woff");
 }
 
 @font-face {
-    font-family: 'Permanent Marker';
+    font-family: "Permanent Marker";
     font-style: normal;
     font-weight: normal;
-    src: local('Permanent Marker'), url('/static/fonts/permanent_marker/PermanentMarker-webfont.woff') format('woff');
+    src:
+        local("Permanent Marker"),
+        url("/static/fonts/permanent_marker/PermanentMarker-webfont.woff")
+            format("woff");
 }
-
-
 
 html {
     box-sizing: border-box;
@@ -28,7 +32,7 @@ $main-color: rgb(119, 154, 170);
 $header-color: darken($main-color, 15%);
 
 html {
-    font-family: 'Hind Siliguri', sans-serif;
+    font-family: "Hind Siliguri", sans-serif;
     background: #666;
     background-image: linear-gradient(#666, #aaa);
     padding: 1rem;
@@ -42,7 +46,7 @@ body {
 }
 
 h1 {
-    font-family: 'Permanent Marker', cursive;
+    font-family: "Permanent Marker", cursive;
     color: $header-color;
     margin: 1rem 0;
 }
@@ -91,13 +95,13 @@ header .action {
     padding: 0 1rem 1rem;
     min-height: 80vh;
 
-    >header {
+    > header {
         //border-bottom: 1px solid lightgray;
         display: flex;
         align-items: flex-end;
     }
 
-    >header h1 {
+    > header h1 {
         flex: auto;
         //margin: 1rem 0 0.25rem 0;
     }
@@ -171,36 +175,33 @@ input[type="submit"] {
                 display: block;
                 float: left;
                 color: #fff;
-                background: #4A6867;
+                background: #4a6867;
                 line-height: 27px;
                 text-decoration: none;
                 padding: 0 17px 0 18px;
                 height: 27px;
 
                 a:hover {
-                    background: #2E4560;
+                    background: #2e4560;
                 }
 
                 a.current {
-                    color: #2E4560;
+                    color: #2e4560;
                     background: #fff;
                 }
 
                 a.current:hover {
-                    color: #2E4560;
+                    color: #2e4560;
                     background: #fff;
                 }
-
             }
         }
     }
-
 
     .tab-content {
         border: 1px solid black;
         padding: 2px;
     }
-
 }
 
 .page {
@@ -212,7 +213,7 @@ input[type="submit"] {
         justify-content: center;
         align-items: stretch;
 
-        >div,
+        > div,
         section {
             flex-grow: 1;
         }
@@ -228,15 +229,15 @@ input[type="submit"] {
         padding: 2px;
 
         section {
-            padding-left: .5em;
-            padding-right: .5em;
+            padding-left: 0.5em;
+            padding-right: 0.5em;
         }
 
         h3 {
             text-align: center;
             background-color: rgb(119, 154, 170);
             margin-top: 0;
-            margin-bottom: .5em;
+            margin-bottom: 0.5em;
         }
     }
 }
