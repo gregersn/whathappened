@@ -32,27 +32,30 @@
 {% endblock %}
 
 {%- macro editable_field(field, default='', type='string', minimum=None, maximum=None, filter="", constant=False) %}
-<span {%- if editable and not constant %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}"
-    {%- if minimum is not none %}data-min="{{minimum}}" {%- endif %} {%- if maximum is not none %}data-max="{{maximum}}"
-    {%- endif %}>{{
+<span {%- if editable and not constant %} class="editable" {%- endif %} data-field="{{ field }}" id="{{ field }}"
+    name="{{ field }}" data-type="{{ type }}" {%- if minimum is not none %}data-min="{{minimum}}" {%- endif %} {%- if
+    maximum is not none %}data-max="{{maximum}}" {%- endif %}>{{
     character.mechanics.attribute(field)|uberfilter(filter) }}</span>
 {%- endmacro %}
 
 {%- macro editable_choice(field, default='', type='string', choices=[], constant=False) -%}
-<span {%- if editable and not constant %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}"
-    data-choices='{{ choices|tojson }}'>{{ character.mechanics.attribute(field) }}</span>
+<span {%- if editable and not constant %} class="editable" {%- endif %} data-field="{{ field }}" id="{{ field }}"
+    name="{{ field }}" data-type="{{ type }}" data-choices='{{ choices|tojson }}'>{{
+    character.mechanics.attribute(field) }}</span>
 {%- endmacro -%}
 
 
 {%- macro editable_skill(field, subfield=None, default='', type='string') %}
-<span {%- if editable %} class="editable" {%- endif %} data-field="{{ field }}" data-subfield="{{subfield}}"
-    data-type="{{ type }}" data-category="skill">{{ character.skill(field, subfield)['value'] or '_' }}</span>
+<span {%- if editable %} class="editable" {%- endif %} data-field="{{ field }}" id="{{ field }}" name="{{ field }}"
+    data-subfield="{{subfield}}" data-type="{{ type }}" data-category="skill">{{ character.skill(field,
+    subfield)['value'] or '_' }}</span>
 <span class="half">{{ character.skill(field, subfield)['value']|half }}</span>
 <span class="fifth">{{ character.skill(field, subfield)['value']|fifth }}</span>
 {%- endmacro %}
 
 {%- macro editable_stat(field, default='', type='string') %}
-<span {%- if editable %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}">{{
+<span {%- if editable %} class="editable" {%- endif %} data-field="{{ field }}" id="{{ field }}" name="{{ field }}"
+    data-type="{{ type }}">{{
     character.mechanics.attribute(field) }}</span>
 <span class="half">{{ character.mechanics.attribute(field)|half }}</span>
 <span class="fifth">{{ character.mechanics.attribute(field)|fifth }}</span>
