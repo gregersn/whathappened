@@ -63,10 +63,11 @@ class CharacterMechanics:
         logger.error("description: Not implemented")
         return "Unknown property, description"
 
+    @property
     def portrait(self):
         """Character portrait."""
         logger.error("portrait: Not implemented")
-        return "Unknown property, portrait"
+        return lambda: None
 
     def store_data(self):
         """Store character data."""
@@ -219,4 +220,3 @@ def new_character(title: str, system: Optional[str] = None, **kwargs):
 
 
 register_game("landf", "Lasers and feelings")
-register_game("dod", "Drakar och demoner")
