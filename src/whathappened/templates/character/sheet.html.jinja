@@ -35,12 +35,12 @@
 <span {%- if editable and not constant %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}"
     {%- if minimum is not none %}data-min="{{minimum}}" {%- endif %} {%- if maximum is not none %}data-max="{{maximum}}"
     {%- endif %}>{{
-    character.mechanics.attribute(field)|uberfilter(filter) }}</span>
+    character.mechanics.attribute(field)|uberfilter(filter) or default or "-"  }}</span>
 {%- endmacro %}
 
 {%- macro editable_choice(field, default='', type='string', choices=[], constant=False) -%}
 <span {%- if editable and not constant %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}"
-    data-choices='{{ choices|tojson }}'>{{ character.mechanics.attribute(field) }}</span>
+    data-choices='{{ choices|tojson }}'>{{ character.mechanics.attribute(field)}}</span>
 {%- endmacro -%}
 
 
