@@ -42,7 +42,7 @@ function init_editable() {
     // Create save function
     const save = (
         datamap: Datamap | DOMStringMap,
-        data: Elementdata | Tabledata,
+        data: Elementdata | Tabledata
     ) => {
         console.log("Save data");
         console.log(data);
@@ -69,7 +69,7 @@ function init_editable() {
 function init_editable_binaries() {
     console.log("Init editable binaries");
     const checkboxes: HTMLInputElement[] = Array.from(
-        document.getElementsByTagName("input"),
+        document.getElementsByTagName("input")
     );
     checkboxes.forEach((element) => {
         if (
@@ -89,8 +89,10 @@ function init_editable_lists() {
     const lists = <HTMLUListElement[]>(
         Array.from(document.getElementsByClassName("editable_list"))
     );
-
+    console.log("Found editable lists: ", lists.length);
     lists.forEach((list) => {
+        console.log("Making list editable");
+        console.log(list);
         editable_list(list, (data: Listdata) => {
             const field = list.getAttribute("data-field");
             console.log("Saving list.\n");

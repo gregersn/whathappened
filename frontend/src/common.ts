@@ -15,14 +15,14 @@ export type Tabledata = any[];
 export type Listdata = string[];
 export type SaveFunction = (
     datamap: Datamap | DOMStringMap,
-    data: Elementdata | Tabledata,
+    data: Elementdata | Tabledata
 ) => void;
 
 function saveElement(
     editfield: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
     element: HTMLElement,
     save: SaveFunction,
-    editable_handler: (e: Event) => void,
+    editable_handler: (e: Event) => void
 ) {
     let value = null;
     if (
@@ -77,26 +77,32 @@ export function list_to_obj(list: HTMLUListElement): Listdata {
 
 export const editable_list = (
     list: HTMLUListElement,
-    save: (data: Listdata) => void,
+    save: (data: Listdata) => void
 ) => {
     console.log("Editable list...");
     const lines: HTMLLIElement[] = Array.from(list.getElementsByTagName("li"));
-    for (const line of lines) {
-        make_element_editable(line, (data: any) => {
-            save(list_to_obj(list));
-        });
-    }
 
     const parent = list.parentElement;
     const button = document.createElement("button");
     button.innerHTML = "Add...";
     button.onclick = () => {
-        const new_item = document.createElement("li");
-        new_item.innerHTML = "New item...";
+        console.log("Adding row to list");
+        send_update(
+            { field: `${list.getAttribute("data-field")}.-1` },
+            "New item..."
+        );
+        const blank = "New item...";
+        const field = `${list.getAttribute("data-field")}.${
+            list.childElementCount
+        }`;
+        const type = list.getAttribute("data-type");
+        const new_item: HTMLLIElement = create_editable(
+            "li",
+            type,
+            field,
+            blank
+        ) as HTMLLIElement;
         list.appendChild(new_item);
-        make_element_editable(new_item, (data: any) => {
-            save(list_to_obj(list));
-        });
     };
     parent.appendChild(button);
 };
@@ -105,7 +111,7 @@ function editElement(
     element: HTMLElement,
     type: edit_type,
     save: SaveFunction,
-    editable_handler: (e: Event) => void,
+    editable_handler: (e: Event) => void
 ) {
     console.log("Edit element");
     const value = element.innerHTML;
@@ -131,7 +137,7 @@ function editElement(
         editfield.max = element.getAttribute("data-max");
         editfield.setAttribute(
             "data-blank",
-            element.getAttribute("data-blank"),
+            element.getAttribute("data-blank")
         );
     } else if (type === "area") {
         editfield = document.createElement("textarea");
@@ -163,7 +169,7 @@ export type edit_type = "input" | "area" | "string" | "number" | "integer";
 const make_editable_handler = (
     element: HTMLElement,
     save: SaveFunction,
-    type: edit_type = "input",
+    type: edit_type = "input"
 ) => {
     const f = (e: Event) => {
         e.preventDefault();
@@ -176,10 +182,16 @@ const make_editable_handler = (
 export function make_element_editable(
     element: HTMLElement,
     save: SaveFunction,
-    type: edit_type = "input",
+    type: edit_type = "input"
 ) {
     const editable_handler = make_editable_handler(element, save, type);
     element.addEventListener("click", editable_handler);
+    const label = document.getElementById(
+        `${element.getAttribute("data-field")}-label`
+    );
+    if (label) {
+        label.addEventListener("click", editable_handler);
+    }
 }
 
 export function get_meta_tag(tagname: string): string | undefined {
@@ -257,14 +269,14 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
         fields.forEach((field) => {
             if (field["type"] === "number" || field["type"] === "integer") {
                 const value = Number.parseInt(
-                    row.cells.item(field["index"]).innerHTML,
+                    row.cells.item(field["index"]).innerHTML
                 );
                 row_data[field["property"]] = isNaN(value)
                     ? field["blank"]
                     : value;
             } else {
                 row_data[field["property"]] = row.cells.item(
-                    field["index"],
+                    field["index"]
                 ).innerHTML;
             }
         });
@@ -283,7 +295,7 @@ const create_editable = (
     tagname: keyof HTMLElementTagNameMap,
     data_type: string,
     data_field: string,
-    data_blank: any,
+    data_blank: any
 ) => {
     const editable = document.createElement(tagname);
     editable.setAttribute("data-type", data_type);
@@ -305,53 +317,20 @@ const create_editable = (
 
         const save = (
             datamap: Datamap | DOMStringMap,
-            data: Elementdata | Tabledata,
+            data: Elementdata | Tabledata
         ) => {
             console.log("Save data");
             console.log(data);
             send_update(datamap, data);
         };
-        make_element_editable(new_span, save, data_type as edit_type);
         editable.append(new_span);
+        make_element_editable(new_span, save, data_type as edit_type);
     }
 
     return editable;
 };
 
 export const editable_table_2 = (table: HTMLTableElement) => {
-    const make_cell_editable = (cell: HTMLTableCellElement) => {
-        make_element_editable(
-            cell,
-            (data: any) => {
-                //save(table_to_obj(table));
-            },
-            cell.getAttribute("data-type") as edit_type,
-        );
-    };
-    /*const make_row_editable = (row: HTMLTableRowElement, fields: any[]) => {
-    const cells = Array.from(row.cells);
-    //console.log(fields);
-    cells.forEach((cell, index) => {
-      if (fields.find((field) => field["index"] === index)) {
-        make_cell_editable(cell);
-      }
-    });
-  };*/
-
-    const cells = Array.from(table.tHead.rows[0].cells);
-    /*const fields = cells
-    .map((element, index) => {
-      return { property: element.getAttribute("data-property"), index: index };
-    })
-    .filter((element, index) => {
-      if (element["property"]) return true;
-      return false;
-    });
-    */
-    //const rows = Array.from(table.tBodies[0].rows);
-    /*for (const row of rows) {
-    //make_row_editable(row, fields);
-  }*/
     const parent = table.parentElement;
 
     const button = document.createElement("button");
@@ -368,12 +347,12 @@ export const editable_table_2 = (table: HTMLTableElement) => {
         for (const cell of table_header.rows[0].cells) {
             default_values[cell.getAttribute("data-property")] = parse_value(
                 cell.getAttribute("data-blank"),
-                cell.getAttribute("data-type"),
+                cell.getAttribute("data-type")
             );
         }
         send_update(
             { field: `${table.getAttribute("data-field")}.-1` },
-            default_values,
+            default_values
         );
         console.log(default_values);
         const new_row = table_body.insertRow(-1);
@@ -390,7 +369,7 @@ export const editable_table_2 = (table: HTMLTableElement) => {
                 "td",
                 type,
                 field,
-                blank,
+                blank
             ) as HTMLTableCellElement;
             new_row.appendChild(new_cell);
             //console.log(cell);
@@ -402,7 +381,7 @@ export const editable_table_2 = (table: HTMLTableElement) => {
 
 export const editable_table = (
     table: HTMLTableElement,
-    save: (data: Tabledata) => void,
+    save: (data: Tabledata) => void
 ) => {
     const make_cell_editable = (cell: HTMLTableCellElement) => {
         make_element_editable(
@@ -410,7 +389,7 @@ export const editable_table = (
             (data: any) => {
                 save(table_to_obj(table));
             },
-            cell.getAttribute("data-type") as edit_type,
+            cell.getAttribute("data-type") as edit_type
         );
     };
     const make_row_editable = (row: HTMLTableRowElement, fields: any[]) => {
@@ -469,7 +448,7 @@ export function init_set_portrait(field_name: string) {
             reader.onload = () => {
                 send_update(
                     { field: field_name, type: "portrait" },
-                    reader.result,
+                    reader.result
                 );
             };
         };

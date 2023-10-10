@@ -133,18 +133,22 @@
             <h3>Relationships</h3>
             <h4>Kids</h4>
             <section>
-                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="relationships.kids">
+                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="relationships.kids" data-type="string">
                     {% for item in character.mechanics.relationships('kids') %}
-                    <li>{{ item }}</li>
+                    <li data-field="relationshis.kids.{{loop.index0}}">
+                        <span class="{%- if editable %} editable{%- endif %}" data-field="relationships.kids.{{loop.index0}}" data-type="string">{{ item }}</span>
+                    </li>
                     {% endfor %}
                 </ul>
             </section>
 
             <h4>NPCs</h4>
             <section>
-                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="relationships.npcs">
+                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="relationships.npcs", data-type="string">
                     {% for item in character.mechanics.relationships('npcs') %}
-                    <li>{{ item }}</li>
+                    <li data-field="relationships.npcs.{{loop.index0}}">
+                    <span class="{%- if editable %} editable{%- endif %}" data-field="relationships.npcs.{{loop.index0}}" data-type="string">{{ item }}</span>
+                    </li>
                     {% endfor %}
                 </ul>
             </section>
