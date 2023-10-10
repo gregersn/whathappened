@@ -164,6 +164,8 @@ class CharacterMechanics:
                     s[idx] = attribute["value"]
             elif s is not None:
                 s[accessor] = attribute["value"]
+            else:
+                logger.error("Unknown object manipulation: %s", type(s))
 
     def add_skill(self, skillname: str, value: int = 1):
         """Add skill."""

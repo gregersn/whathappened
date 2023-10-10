@@ -247,9 +247,11 @@
         <div class="gearpossessions box">
             <h3>Gear &amp; Possessions</h3>
             <section>
-                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="possessions">
+                <ul class="{%- if editable %} editable_list{%- endif %}" data-field="possessions" data-type="string">
                     {% for item in character.mechanics.attribute('possessions') or [] %}
-                    <li>{{ item }}</li>
+                    <li data-field="possessions.{{loop.index0}}">
+                    <span class="{%- if editable %} editable{%- endif %}" data-field="possessions.{{loop.index0}}" data-type="string">{{ item }}</span>
+                    </li>
                     {% endfor %}
                 </ul>
             </section>

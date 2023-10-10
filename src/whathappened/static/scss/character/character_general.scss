@@ -59,6 +59,9 @@ $system_color: #119911;
     span {
         &.editable {
             font-weight: bold;
+            &:empty {
+                padding-right: 200px;
+            }
         }
     }
 
