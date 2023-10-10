@@ -1,13 +1,13 @@
 {% extends 'character/sheet.html.jinja' %}
 
-{%- macro render_object(object, path='') %}
+{%- macro render_object(name, object, path='') %}
 <div>
     {% for key, item in object.properties.items() %}
     {% if 'subsection' in item and item.subsection%}
     {% do item.pop("subsection")%}
     {{ render_section_2(key, item, path)}}
     {% else %}
-    {%- if not item.hide_title%}{{ item.title if 'title' in item else key|title }}: {%- endif %}{{ render_item(item,
+    {{ render_item(key, item,
     path +
     '.' + key, key) }}{% if not
     item.block == "inline" %}<br />{% endif%}
@@ -16,23 +16,24 @@
 </div>
 {%- endmacro %}
 
-{%- macro render_array(object, path='') %}
+{%- macro render_array(name, object, path='') %}
 {% if not object.constant %}
 <ul class="{%- if editable %} editable_list{%- endif %}" data-field="{{path}}">
     {% else %}
     <ul data-field="{{path}}">
         {% endif %}
         {% for litem in character.mechanics.attribute(path) or [] %}
-        <li data-field="{{ path ~ '.' ~ loop.index0 }}">{{ render_item(object['items'], path ~ '.' ~ loop.index0) }}
+        <li data-field="{{ path ~ '.' ~ loop.index0 }}">{{ render_item(None, object['items'], path ~ '.' ~ loop.index0) }}
         </li>
         {% endfor %}
     </ul>
 </ul>
 {%- endmacro %}
 
-{%- macro render_table(object, path='', key=None)%}
+{%- macro render_table(name, object, path='', key=None)%}
 
 <section>
+    {%- if name %}<span>{{ name }}: </span>{%- endif %}
     <table id="tbl{{object['items'].title}}"
         class="{%- if editable and not object.constant %} editableTable2{%- endif %}" data-field="{{ path }}">
         <thead style="{% if not object.header %}display: none{% endif %}">
@@ -51,7 +52,7 @@
             {% set rowloop = loop %}
             <tr data-row="{{ loop.index }}">
                 {% for column, properties in object['items'].properties.items() %}
-                <td data-type="{{ properties.type }}" data-blank="-">{{ render_item(properties, path ~ "." ~
+                <td data-type="{{ properties.type }}" data-blank="-">{{ render_item(None, properties, path ~ "." ~
                     rowloop.index0 ~ "." ~ column, constant=(column in object.constant_fields)) }}</td>
                 {% endfor %}
             </tr>
@@ -61,9 +62,9 @@
 </section>
 {%- endmacro %}
 
-{%- macro render_progress(object, path, key) %}
+{%- macro render_progress(name, object, path, key) %}
 {% set value = character.mechanics.attribute(path) %}
-<span {%- if editable %} class="editable_check_progress" {%- endif %} data-field="{{path}}" data-value="{{value}}">
+{%- if name %}<span>{{ name }}: </span>{%- endif %}<span {%- if editable %} class="editable_check_progress" {%- endif %} data-field="{{path}}" data-value="{{value}}">
     <span data-type="number" id="{{path}}-value">{{ value }}</span>
     {% for v in range(object.maximum) %}
     <input type="checkbox" {{ "checked" if v < value }} autocomplete="off" data-value="{{v + 1}}" />
@@ -72,35 +73,36 @@
 {%- endmacro %}
 
 
-{%- macro render_widget(widget, object, path='', key=None) %}
+{%- macro render_widget(name, widget, object, path='', key=None) %}
 {% if widget == "table"%}
-{{ render_table(object, path, key) }}
+{{ render_table(name, object, path, key) }}
 {% elif widget == "progress" %}
-{{ render_progress(object, path, key) }}
+{{ render_progress(name, object, path, key) }}
 {% else %}
 <div>Missing widget: {{ widget }}</div>
 {% endif %}
 {%- endmacro %}
 
-{%- macro render_item(item, path='', key=None, constant=False)%}
+{%- macro render_item(name, item, path='', key=None, constant=False)%}
+{% set title = ((item.title or (key|title if key)) if not item.hide_title else None) %}
 {% if 'widget' in item %}
-{{ render_widget(item.widget, item, path, key)}}
+{{ render_widget(title, item.widget, item, path, key)}}
 {% elif 'type' in item and item.type == 'object' %}
-{{ render_object(item, path)}}
+{{ render_object("object name", item, path)}}
 {% elif 'type' in item and item.type == 'array' %}
-{{ render_array(item, path) }}
+{{ render_array("array name", item, path) }}
 {% elif 'enum' in item %}
-{{ editable_choice(path, type=html_data_type(item.type), choices=item.enum, constant=constant)|uberfilter(item.filter)
+{{ editable_choice(title, path, type=html_data_type(item.type), choices=item.enum, constant=constant)|uberfilter(item.filter)
 }}
 {% elif 'type' in item and (item.type == 'integer') %}
-{{ editable_field(path, type=html_data_type(item.type), minimum=item.minimum, maximum=item.maximum, constant=constant)
+{{ editable_field(title, path, type=html_data_type(item.type), minimum=item.minimum, maximum=item.maximum, constant=constant)
 }}
 {% elif 'type' in item and (item.type == 'string')%}
-{{ editable_field(path, type=html_data_type(item.type), filter=item.filter, constant=constant) }}
+{{ editable_field(title, path, type=html_data_type(item.type), filter=item.filter, constant=constant) }}
 {% elif 'type' in item and item.type == 'boolean'%}
-{{ editable_binary(path) }}
+{{ editable_binary(title, path) }}
 {% elif '$ref' in item %}
-{{ render_item(get_ref(schema, item['$ref']), path)}}
+{{ render_item("ref name", get_ref(schema, item['$ref']), path)}}
 {% else %}
 {{ item }}
 {% endif %}
@@ -110,7 +112,7 @@
 <div class="box">
     <h3>{{ section.title if 'title' in section else name }}</h3>
     <div style="column-count: {{section.columns if 'columns' in section else 1}};">
-        {{ render_item(section, path + "." + name)}}
+        {{ render_item(name, section, path + "." + name)}}
     </div>
 </div>
 {%- endmacro %}
@@ -119,7 +121,7 @@
 <div class="box">
     <h4>{{ section.title if 'title' in section else name }}</h4>
     <div style="column-count: {{section.columns if 'columns' in section else 1}};">
-        {{ render_item(section, path + "." + name)}}
+        {{ render_item(name, section, path + "." + name)}}
     </div>
 </div>
 {%- endmacro %}

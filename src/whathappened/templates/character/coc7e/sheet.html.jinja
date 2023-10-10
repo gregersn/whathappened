@@ -39,12 +39,12 @@
         <div class="box personalia">
             <h3>{{ typeheader }}</h3>
             <section>
-                <label>Name: </label>{{ editable_field("personalia.Name", "Unknown") }}<br />
-                <label>Occupation: </label><span>{{ editable_field("personalia.Occupation", "Unknown") }}</span><br />
-                <label>Age: </label>{{ editable_field("personalia.Age", "18") }}
-                <label>Sex: </label><span>{{ editable_field('personalia.Gender', 'Unknown')}}</span><br />
-                <label>Residence: </label><span>{{ editable_field("personalia.Residence", "Unknown") }}</span><br />
-                <label>Birthplace: </label><span>{{ editable_field("personalia.Birthplace", "Unknown") }}</span><br />
+                <label>Name: </label>{{ editable_field(None, "personalia.Name", "Unknown") }}<br />
+                <label>Occupation: </label><span>{{ editable_field(None, "personalia.Occupation", "Unknown") }}</span><br />
+                <label>Age: </label>{{ editable_field(None, "personalia.Age", "18") }}
+                <label>Sex: </label><span>{{ editable_field(None, 'personalia.Gender', 'Unknown')}}</span><br />
+                <label>Residence: </label><span>{{ editable_field(None, "personalia.Residence", "Unknown") }}</span><br />
+                <label>Birthplace: </label><span>{{ editable_field(None, "personalia.Birthplace", "Unknown") }}</span><br />
             </section>
         </div>
         <div class="box characteristics">
@@ -73,7 +73,7 @@
                         <td><label>INT:</label></td>
                         <td><span class="stat">{{ editable_stat('characteristics.INT', type="number") }}</span></td>
                         <td><label>Move:</label></td>
-                        <td>{{ editable_field('characteristics.Move', type="number") }}</td>
+                        <td>{{ editable_field(None, 'characteristics.Move', type="number") }}</td>
                     </tr>
                 </table>
             </section>
@@ -87,34 +87,34 @@
         <div class="box hitpoints">
             <h3>Hitpoints</h3>
             <section>
-                <label>Current: </label> {{ editable_field("characteristics.HitPts", type="number") }} <br />
-                <label>Max: </label>{{ editable_field("characteristics.HitPtsMax", type="number") }}<br />
-                <label>Major wound: </label>{{ editable_binary("characteristics.HitPtsMajorWound") }}
+                <label>Current: </label> {{ editable_field(None, "characteristics.HitPts", type="number") }} <br />
+                <label>Max: </label>{{ editable_field(None, "characteristics.HitPtsMax", type="number") }}<br />
+                <label>Major wound: </label>{{ editable_binary(None, "characteristics.HitPtsMajorWound") }}
             </section>
         </div>
         <div class="box sanity">
             <h3>Sanity</h3>
             <section>
-                <label>Current:</label> {{ editable_field('characteristics.Sanity', 0, type="number") }}<br />
-                <label>Start:</label> {{ editable_field('characteristics.SanityStart', 0, type="number") }}<br />
+                <label>Current:</label> {{ editable_field(None, 'characteristics.Sanity', 0, type="number") }}<br />
+                <label>Start:</label> {{ editable_field(None, 'characteristics.SanityStart', 0, type="number") }}<br />
                 <label>Threshold:</label> <span>{{ (character.mechanics.attribute('characteristics.SanityStart') -
                     (character.mechanics.attribute('characteristics.SanityStart'))*0.2)|int }}</span><br />
-                <label>Max:</label> {{ editable_field('characteristics.SanityMax', 99, type="number") }} <br />
-                <label>Temp insane:</label> {{ editable_binary("characteristics.SanityTemp") }}<br />
-                <label>Indefinitely insane:</label> {{ editable_binary("characteristics.SanityIndef") }}
+                <label>Max:</label> {{ editable_field(None, 'characteristics.SanityMax', 99, type="number") }} <br />
+                <label>Temp insane:</label> {{ editable_binary(None, "characteristics.SanityTemp") }}<br />
+                <label>Indefinitely insane:</label> {{ editable_binary(None, "characteristics.SanityIndef") }}
             </section>
         </div>
         <div class="box magicpoints">
             <h3>Magic points</h3>
             <section>
-                <label>Current: </label>{{ editable_field('characteristics.MagicPts', type="number") }}<br />
-                <label>Max: </label>{{ editable_field('characteristics.MagicPtsMax', type="number") }}
+                <label>Current: </label>{{ editable_field(None, 'characteristics.MagicPts', type="number") }}<br />
+                <label>Max: </label>{{ editable_field(None, 'characteristics.MagicPtsMax', type="number") }}
             </section>
         </div>
         <div class="box luck">
             <h3>Luck</h3>
             <section>
-                <label>Current: </label>{{ editable_field('characteristics.Luck', type="number") }}<br />
+                <label>Current: </label>{{ editable_field(None, 'characteristics.Luck', type="number") }}<br />
             </section>
         </div>
     </div>
@@ -190,9 +190,9 @@
         <div class="combat box">
             <h3>Combat</h3>
             <section>
-                <label>Damage bonus: </label>{{ editable_field("combat.DamageBonus") }}<br />
-                <label>Build: </label>{{ editable_field("combat.Build") }}<br />
-                <label>Dodge: </label>{{ editable_field("combat.Dodge") }}<br />
+                <label>Damage bonus: </label>{{ editable_field(None, "combat.DamageBonus") }}<br />
+                <label>Build: </label>{{ editable_field(None, "combat.Build") }}<br />
+                <label>Dodge: </label>{{ editable_field(None, "combat.Dodge") }}<br />
             </section>
         </div>
     </section>
@@ -257,9 +257,9 @@
         <div class="cashassets box">
             <h3>Cash &amp; Assets</h3>
             <section>
-                <label>Spending level: </label>{{ editable_field("cash.spending")}}<br />
-                <label>Cash: </label>{{ editable_field("cash.cash")}}<br />
-                <label>Assets: </label>{{ editable_field("cash.assets")}}<br />{{ editable_area("assets", "None") }}
+                <label>Spending level: </label>{{ editable_field(None, "cash.spending")}}<br />
+                <label>Cash: </label>{{ editable_field(None, "cash.cash")}}<br />
+                <label>Assets: </label>{{ editable_field(None, "cash.assets")}}<br />{{ editable_area("assets", "None") }}
             </section>
         </div>
     </section>
