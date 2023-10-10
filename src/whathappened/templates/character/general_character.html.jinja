@@ -39,7 +39,7 @@
             <tr>
                 {% for column, properties in object['items'].properties.items() %}
                 <th data-property="{{column}}" data-type="{{ properties.type }}"
-                    data-blank="{{ properties.default if properties.default is not none else '-'}}">
+                    data-blank="{{ properties.default|default('-')}}">
                     {{(properties.title or column)|title
                     if not
                     properties.hide_heading}}</th>

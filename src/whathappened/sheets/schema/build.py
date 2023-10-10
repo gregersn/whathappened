@@ -97,6 +97,10 @@ def validate(data: Dict, system: str) -> List[SchemaValidationError]:
     ]
 
 
+def convert_errors(errors: List[Dict[str, str]]):
+    return [error["path"].replace("/", ".") for error in errors]
+
+
 def build_boolean(schema: Dict[str, bool]) -> bool:
     logger.debug("build boolean: %s", schema["default"])
     return schema["default"]

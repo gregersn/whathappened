@@ -3,6 +3,7 @@ import pytest
 from whathappened.sheets.schema.build import (
     SCHEMA_DIR,
     build_from_schema,
+    convert_errors,
     flatten_schema,
     get_schema,
     load_schema,
@@ -60,3 +61,16 @@ def test_flatten_schema():
         ]["slakte"]["title"]
         == "Släkte"
     )
+
+
+def test_convert_errors():
+    errors = [
+        {
+            "path": "character_sheet/packning/items/1",
+            "message": "None is not of type 'string'",
+        }
+    ]
+
+    result = ["character_sheet.packning.items.1"]
+
+    assert convert_errors(errors) == result

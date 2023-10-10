@@ -8,7 +8,12 @@ from werkzeug.exceptions import abort
 
 from whathappened.sheets.mechanics import core
 from whathappened.sheets.mechanics.core import GameSystems
-from whathappened.sheets.schema.build import flatten_schema, get_schema, sub_schema
+from whathappened.sheets.schema.build import (
+    convert_errors,
+    flatten_schema,
+    get_schema,
+    sub_schema,
+)
 
 from . import bp, api
 
@@ -136,6 +141,9 @@ def update(id: int):
         update = request.get_json()
         assert update is not None
         for setting in update:
+            value = setting.get("value", None)
+            if value in [None, ""]:
+                setting["value"] = None
             character.set_attribute(setting)
             field = setting["field"]
             subfield = setting.get("subfield", "")
@@ -204,7 +212,11 @@ def view(id: int):
             editable = True
             break
 
-    if (character.system is None or character.validate()) and editable:
+    errors = convert_errors(character.validate())
+    if errors:
+        logger.debug("Found errors in character: %s", errors)
+
+    if (character.system is None) and editable:
         return redirect(url_for("character.editjson", id=id))
 
     character_module = (
@@ -223,9 +235,12 @@ def view(id: int):
             character_module.CHARACTER_SHEET_TEMPLATE,
             character=character,
             editable=editable,
+            errors=errors,
         )
 
-    return render_general_view(character.system, character=character, editable=editable)
+    return render_general_view(
+        character.system, character=character, editable=editable, errors=errors
+    )
 
 
 def html_data_type(t: str) -> str:
@@ -234,7 +249,7 @@ def html_data_type(t: str) -> str:
     return t
 
 
-def render_general_view(system: str, character: Character, editable: bool):
+def render_general_view(system: str, character: Character, editable: bool, errors):
     logger.debug("Getting schema")
     schema = get_schema(system)
     schema = flatten_schema(schema)
@@ -245,6 +260,7 @@ def render_general_view(system: str, character: Character, editable: bool):
         editable=editable,
         html_data_type=html_data_type,
         get_ref=sub_schema,
+        errors=errors,
     )
 
 
