@@ -13,16 +13,6 @@
 
 {% endblock %}
 
-{%- macro check_progress(field, points=10) %}
-<span {%- if editable %} class="editable_check_progress" {%- endif %} data-field="{{field}}">
-    {% for v in range(points) %}
-    <input type="checkbox" {{ "checked" if v < character.mechanics.attribute(field) }} autocomplete="off"
-        data-value="{{ v + 1}}" />
-    {% endfor %}
-</span>
-{%- endmacro %}
-
-
 {% block content %}
 <div id="busy">
 
@@ -100,7 +90,7 @@
         <div class="box experience">
             <h3>Experience</h3>
             <section>
-                {{ check_progress("experience") }}
+                {{ render_progress("experience", character.mechanics.attribute("experience"), 10) }}
             </section>
         </div>
 
@@ -113,7 +103,7 @@
                     <label>Name: </label>{{ editable_field("personalia.name", "Unknown") }}
                     <label>Type: </label><span>{{ editable_field("personalia.type", "Unknown") }}</span><br />
                     <label>Age: </label>{{ editable_field("personalia.age", "18") }}
-                    <label>Luck points: </label><span>{{ check_progress('personalia.luck_points',
+                    <label>Luck points: </label><span>{{ render_progress('personalia.luck_points', character.mechanics.attribute("personalia.luck_points"),
                         points=5)}}</span><br />
                     <label>Drive: </label>{{ editable_field("personalia.drive", "Unknown") }}<br />
                     <label>Problem: </label>{{ editable_field("personalia.problem", "Unknown") }}<br />

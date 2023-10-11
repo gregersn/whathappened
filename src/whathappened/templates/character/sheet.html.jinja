@@ -88,3 +88,16 @@
 {{ item }}
 {% endfor %}
 {%- endmacro %}
+
+
+{%- macro render_progress(path, value, points=10) %}
+<span {%- if editable %} class="editable_check_progress" {%- endif %} data-field="{{path}}" data-value="{{ value }}">
+    <span data-type="number" id="{{path}}-value">{{ value }}</span>
+    {% for v in range(points) %}
+    <input type="checkbox" {{ "checked" if v < value }} autocomplete="off"
+        data-value="{{ v + 1}}" />
+    {% endfor %}
+</span>
+{%- endmacro %}
+
+
