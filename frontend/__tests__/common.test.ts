@@ -3,7 +3,6 @@
  */
 
 import {
-    list_to_obj,
     ExportedForTesting,
     init_set_portrait,
     show_message,
@@ -14,15 +13,6 @@ const { saveElement, editElement } = ExportedForTesting;
 afterEach(() => {
     // restore the spy created with spyOn
     jest.restoreAllMocks();
-});
-
-test("list_to_obj", () => {
-    const list = document.createElement("ul");
-    list.innerHTML = "<li>A</li><li>B</li>";
-
-    const obj = list_to_obj(list);
-    expect(obj.length).toEqual(2);
-    expect(obj).toEqual(["A", "B"]);
 });
 
 test("saveElement", () => {
@@ -39,7 +29,7 @@ test("saveElement", () => {
         (data, value) => {
             status = value;
         },
-        () => {},
+        () => {}
     );
 
     expect(status).toEqual("TestValue");
@@ -61,7 +51,7 @@ test("saveElement with number", () => {
         (data, value) => {
             status = value;
         },
-        () => {},
+        () => {}
     );
 
     expect(status).toEqual(2);
@@ -109,7 +99,7 @@ test("editElement", () => {
         },
         (event) => {
             console.log(event);
-        },
+        }
     );
 
     const input_element = editable_element.children.item(0) as HTMLInputElement;

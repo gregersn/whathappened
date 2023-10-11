@@ -66,15 +66,6 @@ function parse_value(value: any, value_type: string) {
     }
 }
 
-export function list_to_obj(list: HTMLUListElement): Listdata {
-    let data_rows = [];
-    const lines: HTMLLIElement[] = Array.from(list.getElementsByTagName("li"));
-    for (const line of lines) {
-        data_rows.push(line.innerHTML);
-    }
-    return data_rows;
-}
-
 export const editable_list = (list: HTMLUListElement) => {
     console.debug("Editable list...");
     const lines: HTMLLIElement[] = Array.from(list.getElementsByTagName("li"));
