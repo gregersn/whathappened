@@ -1,10 +1,14 @@
-import { make_element_editable, saveCheck, show_message } from "../common";
+import {
+    make_element_editable,
+    saveCheck,
+    show_message,
+    default_for_type,
+} from "../common";
 import { send_update, Datamap, Elementdata, Tabledata } from "../common";
 import {
     editable_list,
     editable_table,
     editable_table_2,
-    Listdata,
     edit_type,
 } from "../common";
 import { editable_check_progress } from "../widgets/check_progress";
@@ -44,8 +48,10 @@ function init_editable() {
         datamap: Datamap | DOMStringMap,
         data: Elementdata | Tabledata
     ) => {
-        console.log("Save data");
-        console.log(data);
+        console.debug("Save data");
+        if (data === null) {
+            data = default_for_type(datamap.type);
+        }
         send_update(datamap, data);
     };
 
@@ -91,14 +97,7 @@ function init_editable_lists() {
     );
     console.log("Found editable lists: ", lists.length);
     lists.forEach((list) => {
-        console.log("Making list editable");
-        console.log(list);
-        editable_list(list, (data: Listdata) => {
-            const field = list.getAttribute("data-field");
-            console.log("Saving list.\n");
-            console.log(data);
-            send_update({ field: field }, data);
-        });
+        editable_list(list);
     });
 }
 

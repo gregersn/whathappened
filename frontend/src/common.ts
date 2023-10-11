@@ -75,11 +75,8 @@ export function list_to_obj(list: HTMLUListElement): Listdata {
     return data_rows;
 }
 
-export const editable_list = (
-    list: HTMLUListElement,
-    save: (data: Listdata) => void
-) => {
-    console.log("Editable list...");
+export const editable_list = (list: HTMLUListElement) => {
+    console.debug("Editable list...");
     const lines: HTMLLIElement[] = Array.from(list.getElementsByTagName("li"));
 
     const parent = list.parentElement;
@@ -291,6 +288,17 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
     return data_rows;
 }
 
+export function default_for_type(data_type: string) {
+    if (data_type === "string") {
+        return "-";
+    }
+    if (data_type === "number" || data_type === "integer") {
+        return 0;
+    }
+    console.error("No default value for type: ", data_type);
+    return "-";
+}
+
 const create_editable = (
     tagname: keyof HTMLElementTagNameMap,
     data_type: string,
@@ -319,8 +327,10 @@ const create_editable = (
             datamap: Datamap | DOMStringMap,
             data: Elementdata | Tabledata
         ) => {
-            console.log("Save data");
-            console.log(data);
+            console.debug("Save data");
+            if (data === null) {
+                data = default_for_type(data_type);
+            }
             send_update(datamap, data);
         };
         editable.append(new_span);
