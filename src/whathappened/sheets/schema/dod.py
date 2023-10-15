@@ -20,7 +20,7 @@ Yrke = Literal[
     "Krigare",
     "Lärd",
     "Magiker",
-    "Masare",
+    "Nasare",
     "Riddare",
     "Sjöfarare",
     "Tjuv",
@@ -158,7 +158,7 @@ class Rustning(msgspec.Struct, frozen=True):
     skyddsvärde: int = 0
     smyga: bool = False
     undvika: bool = False
-    hoppa_och_klatra: Annotated[bool, msgspec.Meta(title="Hoppa och klätra")] = False
+    hoppa_och_klattra: Annotated[bool, msgspec.Meta(title="Hoppa & klättra")] = False
 
 
 class Hjalm(msgspec.Struct, frozen=True):
