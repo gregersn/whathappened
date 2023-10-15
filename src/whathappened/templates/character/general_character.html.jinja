@@ -60,7 +60,7 @@
 {% if widget == "table"%}
 {{ render_table(object, path, key) }}
 {% elif widget == "progress" %}
-{{ render_progress(path, character.mechanics.attribute(field), object.maximum) }}
+{{ render_progress(path, character.mechanics.attribute(path), object.maximum) }}
 {% else %}
 <div>Missing widget: {{ widget }}</div>
 {% endif %}
