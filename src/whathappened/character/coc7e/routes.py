@@ -10,7 +10,9 @@ from . import utils  # noqa # import to register filters
 def view(id, character, editable):
     subskillform = SubskillForm(prefix="subskillform")
     if editable and subskillform.data and subskillform.validate_on_submit():
-        character.add_subskill(subskillform.name.data, subskillform.parent.data)
+        character.mechanics.add_subskill(
+            subskillform.name.data, subskillform.parent.data
+        )
         logentry = LogEntry(
             character,
             f"add subskill {subskillform.name.data} "
