@@ -161,6 +161,36 @@ def update(id: int):
     return "OK"
 
 
+def render_character(
+    character: Character, editable: bool = False, code: Optional[str] = None
+):
+    if (character.system is None or character.validate()) and editable:
+        return redirect(url_for("character.editjson", id=id))
+
+    character_module = (
+        globals()[character.system] if character.system in globals() else core
+    )
+
+    system_view = getattr(character_module, "view", None)
+
+    if system_view is not None:
+        return system_view(character.id, character, editable)
+
+    system_template = getattr(character_module, "CHARACTER_SHEET_TEMPLATE", None)
+
+    if system_template:
+        return render_template(
+            character_module.CHARACTER_SHEET_TEMPLATE,
+            character=character,
+            editable=editable,
+            code=code,
+        )
+
+    return render_general_view(
+        character.system, character=character, editable=editable, code=code
+    )
+
+
 @bp.route("/<uuid:code>", methods=("GET",))
 def shared(code: str):
     invite = session.get(Invite, code)
@@ -168,21 +198,8 @@ def shared(code: str):
         return "Invalid code"
 
     character = session.get(Character, invite.object_id)
-    editable = False
 
-    typeheader = "1920s Era Investigator"
-    if character.game[1] == "Modern":
-        typeheader = "Modern Era"
-
-    return render_template(
-        "character/coc7e/sheet.html.jinja",
-        code=code,
-        character=character,
-        typeheader=typeheader,
-        editable=editable,
-        skillform=None,
-        subskillform=None,
-    )
+    return render_character(character, editable=False, code=code)
 
 
 @bp.route("/<int:id>/", methods=("GET", "POST"))
@@ -194,39 +211,20 @@ def view(id: int):
 
     if (
         current_user.is_authenticated  # pyright: ignore[reportGeneralTypeIssues]
-        and current_user.profile.id == character.user_id
-    ):  # pyright: ignore[reportGeneralTypeIssues]
+        and current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
+        == character.user_id
+    ):
         editable = True
 
     for campaign in character.campaigns:
         if (
-            campaign.user_id == current_user.profile.id
-        ):  # pyright: ignore[reportGeneralTypeIssues]
+            campaign.user_id
+            == current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
+        ):
             editable = True
             break
 
-    if (character.system is None or character.validate()) and editable:
-        return redirect(url_for("character.editjson", id=id))
-
-    character_module = (
-        globals()[character.system] if character.system in globals() else core
-    )
-
-    system_view = getattr(character_module, "view", None)
-
-    if system_view is not None:
-        return system_view(id, character, editable)
-
-    system_template = getattr(character_module, "CHARACTER_SHEET_TEMPLATE", None)
-
-    if system_template:
-        return render_template(
-            character_module.CHARACTER_SHEET_TEMPLATE,
-            character=character,
-            editable=editable,
-        )
-
-    return render_general_view(character.system, character=character, editable=editable)
+    return render_character(character, editable=editable)
 
 
 def html_data_type(t: str) -> str:
@@ -235,7 +233,9 @@ def html_data_type(t: str) -> str:
     return t
 
 
-def render_general_view(system: str, character: Character, editable: bool):
+def render_general_view(
+    system: str, character: Character, editable: bool, code: Optional[str] = None
+):
     logger.debug("Getting schema")
     schema = get_schema(system)
     schema = flatten_schema(schema)
@@ -246,6 +246,7 @@ def render_general_view(system: str, character: Character, editable: bool):
         editable=editable,
         html_data_type=html_data_type,
         get_ref=sub_schema,
+        code=code,
     )
 
 
