@@ -1,5 +1,5 @@
+import subprocess
 from flask import Blueprint
-from pywebpack import WebpackProject
 import logging
 
 bp = Blueprint("main", __name__)
@@ -14,15 +14,11 @@ logger = logging.getLogger(__name__)
 def build():
     logger.debug("Build stuff")
     project_path = "./frontend"
-    project = WebpackProject(project_path)
-
-    project.build()
+    subprocess.run("npm run build", cwd=project_path, check=True, shell=True)
 
 
 @bp.cli.command("watch")
 def watch():
     logger.debug("Watch stuff")
     project_path = "./frontend"
-    project = WebpackProject(project_path)
-
-    project.run("watch")
+    subprocess.run("npm run watch", cwd=project_path, check=True, shell=True)
