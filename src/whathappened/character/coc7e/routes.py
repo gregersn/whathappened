@@ -43,17 +43,12 @@ def view(id, character, editable):
         session.commit()
         return redirect(url_for("character.view", id=id))
 
-    typeheader = "1920s Era Investigator"
-    if character.game and character.game[1] == "Modern":
-        typeheader = "Modern Era"
-
     shared = Invite.query_for(character).count()
 
     return render_template(
         "character/coc7e/sheet.html.jinja",
         shared=shared,
         character=character,
-        typeheader=typeheader,
         editable=editable,
         skillform=skillform,
         subskillform=subskillform,
