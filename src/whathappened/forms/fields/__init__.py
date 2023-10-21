@@ -6,7 +6,9 @@ from .alchemy import QuerySelectField, QuerySelectMultipleField  # noqa
 
 class JsonField(TextAreaField):
     def _value(self):
-        return self.data or {}
+        if not isinstance(self.data, str):
+            return json.dumps(self.data or {}, indent=4)
+        return self.data
 
     def process_formdata(self, valuelist):
         if valuelist:
