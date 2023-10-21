@@ -63,13 +63,13 @@
 
       - name: copy whathappened
         copy:
-            src: ../dist/whathappened-0.0.8-py3-none-any.whl
+            src: ../dist/whathappened-0.0.9-py3-none-any.whl
             dest: ~/
         register: result
 
       - name: install whathappened
         pip:
-            name: ~/whathappened-0.0.8-py3-none-any.whl
+            name: ~/whathappened-0.0.9-py3-none-any.whl
             virtualenv: ~/.venv
             state: forcereinstall
         when: result is changed
