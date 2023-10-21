@@ -106,6 +106,11 @@
                 killasgroup=true
         register: result
 
+      - name: set permission on home folder
+        ansible.builtin.file:
+            path: /home/vagrant
+            mode: "1775"
+
       - name: reload supervisor
         become: yes
         supervisorctl:
