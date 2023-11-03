@@ -2,7 +2,7 @@ import logging
 from flask import flash, redirect, render_template, request, url_for
 
 from flask_login import current_user, login_user, logout_user
-from werkzeug.urls import url_parse
+from urllib.parse import urlsplit
 
 from .forms import LoginForm, RegistrationForm
 from .forms import ResetPasswordRequestForm, ResetPasswordForm
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     next_page = request.args.get("next")
-    if not next_page or url_parse(next_page).netloc != "":
+    if not next_page or urlsplit(next_page).netloc != "":
         next_page = url_for("main.index")
 
     if current_user.is_authenticated:
