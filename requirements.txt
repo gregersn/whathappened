@@ -23,5 +23,5 @@
     pydantic==2.4.2
     pydantic-settings
     msgspec
-    WTForms==3.1.0
+    WTForms==3.1.1
     
