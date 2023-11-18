@@ -30,7 +30,7 @@ class User(UserMixin, Base):
         return "<User {}>".format(self.username)
 
     def set_password(self, password: str):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password, "pbkdf2")
 
     def check_password(self, password: str):
         return check_password_hash(str(self.password_hash), password)
