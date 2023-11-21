@@ -382,18 +382,17 @@ def eventlog(id: int):
     page = request.args.get("page", 1, type=int)
     c = get_character(id, check_author=True)
     entries_page = paginate(LogEntry.query_for(c), page, 50)
-    """
-    # TODO
-    next_url = url_for('character.eventlog', id=id,
-                       page=entries_page.next_num) \
-        if entries_page.has_next else None
+    next_url = (
+        url_for("character.eventlog", id=id, page=entries_page.next_page)
+        if entries_page.has_next
+        else None
+    )
 
-    prev_url = url_for('character.eventlog', id=id,
-                       page=entries_page.prev_num) \
-        if entries_page.has_prev else None
-    """
-    next_url = None
-    prev_url = None
+    prev_url = (
+        url_for("character.eventlog", id=id, page=entries_page.prev_page)
+        if entries_page.has_prev
+        else None
+    )
     logger.debug(next_url)
     log_entries = entries_page.items
     return render_template(
