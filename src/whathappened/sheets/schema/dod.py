@@ -1,3 +1,4 @@
+"""Character sheet data for DoD."""
 from typing import List, Literal
 from typing_extensions import Annotated
 
@@ -33,6 +34,8 @@ BasEgenskap = Literal["STY", "FYS", "SMI", "INT", "PSY", "KAR"]
 
 
 class Grundegenskaper(msgspec.Struct, frozen=True):
+    """Attributes."""
+
     STY: Annotated[int, msgspec.Meta(le=18, ge=0, title="Styrke (STY)")] = 0
     FYS: Annotated[int, msgspec.Meta(le=18, ge=0, title="Fysik (FYS)")] = 0
     SMI: Annotated[int, msgspec.Meta(le=18, ge=0, title="Smidighet (SMI)")] = 0
@@ -48,6 +51,8 @@ class Grundegenskaper(msgspec.Struct, frozen=True):
 
 
 class Fardighet(msgspec.Struct, frozen=True):
+    """Skill."""
+
     checked: Annotated[
         bool, msgspec.Meta(extra_json_schema=({"hide_heading": True}))
     ] = False
@@ -78,6 +83,7 @@ PrimaraFerdigheter = [
     ("Uppträda", "KAR"),
     ("Upptäcka fara", "INT"),
     ("Vildmarksvana", "KAR"),
+    ("Övertala", "KAR"),
 ]
 
 VapenFardigheter = [
@@ -95,6 +101,8 @@ VapenFardigheter = [
 
 
 class Fardigheter(msgspec.Struct, frozen=True):
+    """Skills."""
+
     primar: Annotated[
         List[Fardighet],
         msgspec.Meta(
@@ -137,6 +145,8 @@ class Fardigheter(msgspec.Struct, frozen=True):
 
 
 class Packning(msgspec.Struct, frozen=True):
+    """Inventory."""
+
     barformoga: Annotated[
         int, msgspec.Meta(title="Bärformåga", ge=0, le=10)
     ] = msgspec.field(default=0)
@@ -148,12 +158,16 @@ class Packning(msgspec.Struct, frozen=True):
 
 
 class Pengar(msgspec.Struct, frozen=True):
+    """Money."""
+
     guldmynt: int = 0
     silvermynt: int = 0
     kopparmynt: int = 0
 
 
 class Rustning(msgspec.Struct, frozen=True):
+    """Armor."""
+
     typ: str = "Ingen"
     skyddsvärde: int = 0
     smyga: bool = False
@@ -162,6 +176,8 @@ class Rustning(msgspec.Struct, frozen=True):
 
 
 class Hjalm(msgspec.Struct, frozen=True):
+    """Helmet."""
+
     typ: str = "Ingen"
     skyddsvärde: int = 0
     upptäcka_fara: Annotated[bool, msgspec.Meta(title="Upptäcka fara")] = False
@@ -169,6 +185,8 @@ class Hjalm(msgspec.Struct, frozen=True):
 
 
 class Vapen(msgspec.Struct, frozen=True):
+    """Weapon."""
+
     vapen: Annotated[str, msgspec.Meta(title="Vapen/sköld")] = "Obeväpnad"
     grepp: Literal["-", "1H", "2H"] = "-"
     räckvidd: str = "2"
@@ -178,6 +196,8 @@ class Vapen(msgspec.Struct, frozen=True):
 
 
 class Bevapning(msgspec.Struct, frozen=True):
+    """Armory."""
+
     rustning: Annotated[
         Rustning, msgspec.Meta(extra_json_schema={"subsection": True})
     ] = msgspec.field(default_factory=Rustning)
@@ -194,6 +214,8 @@ class Bevapning(msgspec.Struct, frozen=True):
 
 
 class Viljepoang(msgspec.Struct, frozen=True):
+    """Willpower points."""
+
     poang: Annotated[int, msgspec.Meta(title="Poäng", le=20)] = msgspec.field(default=0)
     anvanda: Annotated[
         int,
@@ -204,6 +226,8 @@ class Viljepoang(msgspec.Struct, frozen=True):
 
 
 class Dodsslag(msgspec.Struct, frozen=True):
+    """Death rolls."""
+
     lyckade: Annotated[
         int, msgspec.Meta(le=3, ge=0, extra_json_schema=({"widget": "progress"}))
     ] = 0
@@ -213,12 +237,16 @@ class Dodsslag(msgspec.Struct, frozen=True):
 
 
 class Kroppspoang(Viljepoang, frozen=True):
+    """Hit points."""
+
     dodsslag: Annotated[Dodsslag, msgspec.Meta(title="Dödsslag")] = msgspec.field(
         default=Dodsslag()
     )
 
 
 class Personalia(msgspec.Struct, frozen=True):
+    """Personalia."""
+
     namn: str = "Inget namn"
     slakte: Annotated[Slakte, msgspec.Meta(title="Släkte")] = msgspec.field(
         default="Människa"
@@ -230,6 +258,8 @@ class Personalia(msgspec.Struct, frozen=True):
 
 
 class SekundaraEgenskaper(msgspec.Struct, frozen=True):
+    """Secondary skills."""
+
     skadebonus_sty: Annotated[
         Bonus,
         msgspec.Meta(title="Skadebonus STY", extra_json_schema={"block": "inline"}),
@@ -252,6 +282,8 @@ class SekundaraEgenskaper(msgspec.Struct, frozen=True):
 
 
 class Character(msgspec.Struct):
+    """Character."""
+
     personalia: Annotated[
         Personalia, msgspec.Meta(extra_json_schema=({"columns": 2}))
     ] = msgspec.field(default=Personalia())
