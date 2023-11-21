@@ -82,7 +82,7 @@ PrimaraFerdigheter = [
     ("Undvika", "SMI"),
     ("Uppträda", "KAR"),
     ("Upptäcka fara", "INT"),
-    ("Vildmarksvana", "KAR"),
+    ("Vildmarksvana", "INT"),
     ("Övertala", "KAR"),
 ]
 
