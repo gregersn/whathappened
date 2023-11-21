@@ -1,6 +1,8 @@
 import logging
 from flask import Blueprint, render_template, current_app
 
+from .decorators import login_required
+
 
 from whathappened import login_manager
 from whathappened.email import send_mail
@@ -12,6 +14,15 @@ from .forms import LoginForm, RegistrationForm  # noqa E402
 from whathappened.database import session
 
 logger = logging.getLogger(__name__)
+
+
+class AnonymousUser:
+    @property
+    def is_authenticated(self):
+        return False
+
+
+current_user = AnonymousUser()
 
 
 @login_manager.user_loader

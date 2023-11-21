@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     WEBPACKEXT_MANIFEST_PATH: str = "manifest.json"
     WTF_CSRF_TIME_LIMIT: Optional[int] = None
 
+    JWT_SECRET_KEY: str = "super-secret-key"
+    JWT_BLACKLIST_ENABLED: bool = True
+    JWT_BLACKLIST_TOKEN_CHECKS: List[str] = ["access", "refresh"]
+
     model_config = {
         "_env_file_encoding": "utf-8",
     }

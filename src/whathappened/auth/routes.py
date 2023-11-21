@@ -8,6 +8,7 @@ from .forms import ResetPasswordRequestForm, ResetPasswordForm
 from .models import User
 
 from whathappened.database import session
+from whathappened.auth import current_user
 
 from . import bp, send_password_reset_email
 
