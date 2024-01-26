@@ -1,34 +1,43 @@
 ---
 - name: Setup whathappened on a blank server
   hosts: "*"
-  tasks:
+  gather_facts: yes
+  vars_files:
+      - vars.yml
+
+  vars_prompt:
+      - name: db_engine
+        prompt: postgresql or mysql?
+        private: false
+
+  pre_tasks:
       - name: install packages
         become: yes
         package:
             name:
+                - kitty-terminfo
                 - nginx
                 - python3-pip
                 - supervisor
-                - mysql-server
             state: latest
             update_cache: yes
 
-      - name: check for xterm-kitty file
-        stat:
-            path: ~/.terminfo/x/xterm-kitty
-        register: xterm_kitty
+      - name: install mysql
+        become: yes
+        package:
+            name:
+                - mysql-server
+            state: latest
+        when: db_engine == "mysql"
 
-      - name: get kitty term info
-        shell: infocmp -x xterm-kitty
-        delegate_to: localhost
-        register: kitty_term_info
-        when: not xterm_kitty.stat.exists
-
-      - name: kitty term info upload
-        shell: tic -x -o ~/.terminfo /dev/stdin
-        args:
-            stdin: "{{ kitty_term_info.stdout }}"
-        when: kitty_term_info.stdout is defined
+      - name: install postgresql
+        become: yes
+        package:
+            name:
+                - postgresql
+                # - postgresql-server
+            state: latest
+        when: db_engine == "postgresql"
 
       - name: install venv with pip
         become: yes
@@ -42,25 +51,120 @@
             name: PyMySQL
             executable: pip3
 
+      - name: install Psycopg2-binary with pip globally
+        become: yes
+        pip:
+            name: psycopg2-binary
+            executable: pip3
+        when: db_engine == "postgresql"
+
+  tasks:
+      # PostgreSQL
+      - name: "Find out if PostgreSQL is initialized"
+        ansible.builtin.stat:
+            path: "/var/lib/pgsql/data/pg_hba.conf"
+        register: postgres_data
+        become: yes
+        when: db_engine == "postgresql"
+
+      - name: "Initialize PostgreSQL"
+        shell: "postgresql-setup --initdb --unit postgresql"
+        when: (db_engine == "postgresql") and (not postgres_data.stat.exists)
+        become: yes
+
+      - name: Add password auth to posgress for user, ipv6
+        postgresql_pg_hba:
+            dest: /var/lib/pgsql/data/pg_hba.conf
+            contype: host
+            users: "{{ db_user }}"
+            databases: "{{ db_name }}"
+            address: ::1/128
+            method: md5
+        become: true
+        when: db_engine == "postgresql"
+
+      - name: Add password auth to posgress for user, ipv4
+        postgresql_pg_hba:
+            dest: /var/lib/pgsql/data/pg_hba.conf
+            contype: host
+            users: "{{ db_user }}"
+            databases: "{{ db_name }}"
+            address: 127.0.0.1/32
+            method: md5
+        become: true
+        when: db_engine == "postgresql"
+
+      - name: "Start and enable services"
+        service: "name={{ item }} state=started enabled=yes"
+        with_items:
+            - postgresql
+        become: yes
+        when: db_engine == "postgresql"
+
+      - name: Create postgresSQL database
+        postgresql_db:
+            state: present
+            name: "{{ db_name }}"
+        become: yes
+        become_user: postgres
+        when: db_engine == "postgresql"
+
+      - name: User access
+        postgresql_user:
+            state: present
+            name: "{{ db_user }}"
+            password: "{{ db_password }}"
+        become: yes
+        become_user: postgres
+        when: db_engine == "postgresql"
+
+      - name: Grant db access
+        postgresql_privs:
+            type: database
+            database: "{{ db_name }}"
+            roles: "{{ db_user }}"
+            grant_option: no
+            privs: all
+        become: true
+        become_user: postgres
+        when: db_engine == "postgresql"
+
+      - name: Grant schema public access
+        postgresql_privs:
+            type: schema
+            database: "{{ db_name }}"
+            roles: "{{ db_user }}"
+            grant_option: no
+            privs: all
+            objs: public
+        become: true
+        become_user: postgres
+        when: db_engine == "postgresql"
+
+      # Mysql
+
       - name: Create mysql database
         become: yes
         community.mysql.mysql_db:
             name: whathappened
             state: present
             login_unix_socket: /var/run/mysqld/mysqld.sock
+        when: db_engine == "mysql"
 
       # Todo: Set performance_schema = off under [mysqld] in the mysql config
 
       - name: Create database user for whathappened
         become: yes
         community.mysql.mysql_user:
-            name: whathappened
-            password: letsroll
+            name: "{{ db_user }}"
+            password: "{{ db_password }}"
             priv: "whathappened.*:ALL"
             host: localhost
             state: present
             login_unix_socket: /var/run/mysqld/mysqld.sock
+        when: db_engine == "mysql"
 
+      # What Happened
       - name: copy whathappened
         copy:
             src: ../dist/whathappened-0.0.17-py3-none-any.whl
@@ -74,12 +178,25 @@
             state: forcereinstall
         when: result is changed
 
-      - name: create whathappened config file
+      - name: create whathappened config file for postgresql
+        become: yes
+        become_user: "{{ db_user }}"
         copy:
             dest: ~/whathappened_config.env
             content: |
                 UPLOAD_FOLDER="uploads"
-                SQLALCHEMY_DATABASE_URI="mysql+pymysql://whathappened:letsroll@localhost:3306/whathappened"
+                SQLALCHEMY_DATABASE_URI="postgresql+psycopg://{{ db_user }}:{{ db_password }}@localhost:5432/{{ db_name }}"
+        when: db_engine == "postgresql"
+
+      - name: create whathappened config file for mysql
+        become: yes
+        become_user: "{{ db_user }}"
+        copy:
+            dest: ~/whathappened_config.env
+            content: |
+                UPLOAD_FOLDER="uploads"
+                SQLALCHEMY_DATABASE_URI="mysql+pymysql://{{ db_user }}:{{ db_password }}@localhost:3306/{{ db_name }}"
+        when: db_engine == "mysql"
 
       - name: update whathappened database
         shell: WHATHAPPENED_SETTINGS=/home/vagrant/whathappened_config.env FLASK_APP=whathappened.web ~/.venv/bin/flask db upgrade
