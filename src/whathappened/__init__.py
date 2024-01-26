@@ -28,7 +28,6 @@ logging.basicConfig(
 logging.debug("Logger initialized")
 
 logging.getLogger("semver").setLevel(logging.INFO)
-logging.getLogger("werkzeug").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
