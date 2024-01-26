@@ -137,7 +137,7 @@ def update(id: int):
         update = request.get_json()
         assert update is not None
         for setting in update:
-            character.set_attribute(setting)
+            name = character.set_attribute(setting)
             field = setting["field"]
             subfield = setting.get("subfield", "")
             value = setting["value"]
@@ -148,7 +148,10 @@ def update(id: int):
             log_subfield = ""
             if subfield is not None and subfield != "None":
                 log_subfield = " " + subfield
-            log_message = f"set {type} on {field}{log_subfield}: {value}"
+            if name is not None:
+                log_message = f"set {type} on {field}{log_subfield} ({name}): {value}"
+            else:
+                log_message = f"set {type} on {field}{log_subfield}: {value}"
 
             logentry = LogEntry(
                 character, log_message, user_id=current_user.id
@@ -376,20 +379,24 @@ def editjson(id: int):
     )
 
 
-@bp.route("/<int:id>/eventlog", methods=("GET",))
+@bp.route("/<int:character_id>/eventlog", methods=("GET",))
 @login_required
-def eventlog(id: int):
+def eventlog(character_id: int):
     page = request.args.get("page", 1, type=int)
-    c = get_character(id, check_author=True)
+    c = get_character(character_id, check_author=True)
     entries_page = paginate(LogEntry.query_for(c), page, 50)
     next_url = (
-        url_for("character.eventlog", id=id, page=entries_page.next_page)
+        url_for(
+            "character.eventlog", character_id=character_id, page=entries_page.next_page
+        )
         if entries_page.has_next
         else None
     )
 
     prev_url = (
-        url_for("character.eventlog", id=id, page=entries_page.prev_page)
+        url_for(
+            "character.eventlog", character_id=character_id, page=entries_page.prev_page
+        )
         if entries_page.has_prev
         else None
     )

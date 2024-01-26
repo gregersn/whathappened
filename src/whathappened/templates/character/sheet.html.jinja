@@ -24,7 +24,7 @@
 | <a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>
 | <a href="{{ url_for('character.delete', id=character.id) }}">Delete</a>
 | <a href="#" id="sharebtn" data-id="{{ character.id }}">{% if not shared %}Share{% else %}Share link{% endif %}</a>
-| <a href="{{ url_for('character.eventlog', id=character.id) }}">Event log</a>
+| <a href="{{ url_for('character.eventlog', character_id=character.id) }}">Event log</a>
 | <a href="{{ url_for ('character.folder', id=character.id) }}">Choose folder</a>
 {%- endif %}
 | <a href="{{ url_for('character.tokens', id=character.id) }}">Tokens</a>

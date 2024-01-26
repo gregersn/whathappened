@@ -165,6 +165,7 @@ class CharacterMechanics:
                     s[idx] = attribute["value"]
             elif s is not None:
                 s[accessor] = attribute["value"]
+                return s.get("name", None)
             else:
                 logger.error("Unknown object manipulation: %s", type(s))
 
