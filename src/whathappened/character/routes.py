@@ -165,7 +165,7 @@ def render_character(
     character: Character, editable: bool = False, code: Optional[str] = None
 ):
     if (character.system is None or character.validate()) and editable:
-        return redirect(url_for("character.editjson", id=id))
+        return redirect(url_for("character.editjson", id=character.id))
 
     character_module = (
         globals()[character.system] if character.system in globals() else core
