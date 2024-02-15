@@ -2,8 +2,7 @@
     font-family: "Hind Siliguri";
     font-style: normal;
     font-weight: normal;
-    src:
-        local("Hind Siliguri Regular"),
+    src: local("Hind Siliguri Regular"),
         url("/static/fonts/hind_siliguri/HindSiliguri-Regular.woff")
             format("woff");
 }
@@ -12,8 +11,7 @@
     font-family: "Permanent Marker";
     font-style: normal;
     font-weight: normal;
-    src:
-        local("Permanent Marker"),
+    src: local("Permanent Marker"),
         url("/static/fonts/permanent_marker/PermanentMarker-webfont.woff")
             format("woff");
 }
@@ -40,9 +38,11 @@ html {
 }
 
 body {
-    //max-width: 960px;
+    max-width: unset;
     margin: 0 auto;
     background: white;
+    padding: unset;
+    font-family: unset;
 }
 
 h1 {

@@ -29,6 +29,9 @@
 }
 
 .charactersheet {
+    td {
+        padding: unset;
+    }
     .characteristics {
         table {
             width: 100%;
