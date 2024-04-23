@@ -20,7 +20,7 @@
     werkzeug==3.0.1
     webassets==2.0
     jinja2-webpack==0.2.0
-    pydantic==2.6.4
+    pydantic==2.7.1
     pydantic-settings
     msgspec
     WTForms==3.1.2
