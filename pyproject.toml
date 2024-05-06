@@ -35,7 +35,7 @@ dependencies = [
     "PyMysql",
     "PyYAML",
     "SQLAlchemy",
-    "werkzeug==3.0.1",
+    "werkzeug==3.0.3",
     "webassets",
     "jinja2-webpack",
     "pydantic",
