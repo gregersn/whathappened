@@ -7,7 +7,7 @@
     gunicorn==21.2.0
     itsdangerous==2.1.2
     Jinja2==3.1.4
-    jsonschema==4.21.1
+    jsonschema==4.22.0
     markdown2==2.4.13
     packaging==24.0
     Pillow==10.3.0
