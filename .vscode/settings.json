@@ -5,7 +5,7 @@
         "diffEditor.ignoreTrimWhitespace": false,
         "gitlens.codeLens.symbolScopes": ["!Module"],
         "editor.formatOnType": false,
-        "editor.wordBasedSuggestions": false
+        "editor.wordBasedSuggestions": "off"
     },
     "python.testing.pytestArgs": ["-vv", "tests"],
     "python.testing.unittestEnabled": false,
