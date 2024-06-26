@@ -9,7 +9,7 @@
     Jinja2==3.1.4
     jsonschema==4.22.0
     markdown2==2.4.13
-    packaging==24.0
+    packaging==24.1
     Pillow==10.3.0
     PyJWT==2.8.0
     pyScss @ git+https://github.com/Kronuz/pyScss.git
