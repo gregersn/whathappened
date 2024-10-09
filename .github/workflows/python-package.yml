@@ -53,15 +53,15 @@ jobs:
                   coverage html
               continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
             - name: Archive coverage html report
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
-                  name: code-coverage-report
+                  name: code-coverage-report-${{ matrix.python-version }}
                   path: htmlcov
             - name: Run package creation
               run: |
                   make dist
             - name: Archive package
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
-                  name: whathappened
+                  name: whathappened-${{ matrix.python-version }}
                   path: dist
