@@ -8,7 +8,7 @@
     itsdangerous==2.2.0
     Jinja2==3.1.4
     jsonschema==4.23.0
-    markdown2==2.5.0
+    markdown2==2.5.1
     packaging==24.1
     Pillow==10.4.0
     PyJWT==2.9.0
