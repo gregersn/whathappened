@@ -1,0 +1,226 @@
+$schema: http://json-schema.org/draft-07/schema#
+properties:
+  attributes:
+    properties:
+      Body:
+        default: 1
+        maximum: 5
+        minimum: 1
+        type: integer
+      Heart:
+        default: 1
+        maximum: 5
+        minimum: 1
+        type: integer
+      Mind:
+        default: 1
+        maximum: 5
+        minimum: 1
+        type: integer
+      Tech:
+        default: 1
+        maximum: 5
+        minimum: 1
+        type: integer
+    type: object
+  conditions:
+    properties:
+      Broken:
+        default: false
+        type: boolean
+      Exhausted:
+        default: false
+        type: boolean
+      Injured:
+        default: false
+        type: boolean
+      Scared:
+        default: false
+        type: boolean
+      Upset:
+        default: false
+        type: boolean
+    type: object
+  experience:
+    default: 0
+    maximum: 10
+    minimum: 0
+    type: integer
+  hideout:
+    default: Tree hut
+    type: string
+  items:
+    items:
+      default:
+      - bonus: 1
+        name: A precious thing
+      properties:
+        bonus:
+          anyOf:
+          - maximum: 3
+            minimum: 1
+            type: integer
+          - type: 'null'
+        name:
+          type: string
+      type: object
+    type: array
+    uniqueItems: true
+  meta:
+    properties:
+      CreateDate:
+        default: ''
+        type: string
+      Creator:
+        default: What happened? A TTRPG utility
+        type: string
+      Disclaimer:
+        default: We're not gonna take it!
+        type: string
+      GameName:
+        const: Tales From The Loop
+      GameType:
+        default: ''
+        type: string
+      GameVersion:
+        default: ''
+        type: string
+      Title:
+        default: New character
+        type: string
+    type: object
+  notes:
+    default: ''
+    type: string
+  personalia:
+    properties:
+      age:
+        default: Unknown
+        type: string
+      anchor:
+        default: Unknown
+        type: string
+      description:
+        default: Unknown
+        type: string
+      drive:
+        default: Unknown
+        type: string
+      favorite_song:
+        default: Unknown
+        type: string
+      luck_points:
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      name:
+        default: Unknown
+        type: string
+      portrait:
+        anyOf:
+        - type: string
+        - type: 'null'
+      pride:
+        properties:
+          description:
+            default: Unknown
+            type: string
+          used:
+            default: false
+            type: boolean
+        type: object
+      problem:
+        default: Unknown
+        type: string
+      type:
+        default: Unknown
+        type: string
+    type: object
+  relationships:
+    properties:
+      kids:
+        default:
+        - Unknown
+        items:
+          type: string
+        type: array
+      npcs:
+        default:
+        - Unknown
+        items:
+          type: string
+        type: array
+    type: object
+  skills:
+    properties:
+      Calculate (Tech):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      Charm (Heart):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      Comprehend (Mind):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      Contact (Heart):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      Empathize (Mind):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      Force (Body):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      Investigate (Mind):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      Lead (Heart):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      Move (Body):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      Program (Tech):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      Sneak (Body):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+      Tinker (Tech):
+        default: 0
+        maximum: 5
+        minimum: 0
+        type: integer
+    type: object
+  system:
+    const: tftl
+  version:
+    const: 0.0.1
+required:
+- system
+- version
+type: object
+version: 0.0.1

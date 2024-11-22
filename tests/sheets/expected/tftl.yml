@@ -1,0 +1,57 @@
+attributes:
+  Body: 1
+  Heart: 1
+  Mind: 1
+  Tech: 1
+conditions:
+  Broken: false
+  Exhausted: false
+  Injured: false
+  Scared: false
+  Upset: false
+experience: 0
+hideout: Tree hut
+items: []
+meta:
+  CreateDate: ''
+  Creator: What happened? A TTRPG utility
+  Disclaimer: We're not gonna take it!
+  GameName: Tales From The Loop
+  GameType: ''
+  GameVersion: ''
+  Title: New character
+notes: ''
+personalia:
+  age: Unknown
+  anchor: Unknown
+  description: Unknown
+  drive: Unknown
+  favorite_song: Unknown
+  luck_points: 0
+  name: Unknown
+  portrait: ''
+  pride:
+    description: Unknown
+    used: false
+  problem: Unknown
+  type: Unknown
+relationships:
+  kids:
+  - Unknown
+  npcs:
+  - Unknown
+skills:
+  Calculate (Tech): 0
+  Charm (Heart): 0
+  Comprehend (Mind): 0
+  Contact (Heart): 0
+  Empathize (Mind): 0
+  Force (Body): 0
+  Investigate (Mind): 0
+  Lead (Heart): 0
+  Move (Body): 0
+  Program (Tech): 0
+  Sneak (Body): 0
+  Tinker (Tech): 0
+system: tftl
+version: 0.0.1
