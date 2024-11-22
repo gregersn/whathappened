@@ -1,0 +1,96 @@
+$defs:
+  CharacterRole:
+    description: The characters role.
+    enum:
+    - Doctor
+    - Engineer
+    - Envoy
+    - Explorer
+    - Pilot
+    - Scientist
+    - Soldier
+    title: CharacterRole
+  CharacterStyle:
+    description: What style of character being played.
+    enum:
+    - Alien
+    - Dangerous
+    - Droid
+    - Heroic
+    - Hot-Shot
+    - Intrepid
+    - Savvy
+    title: CharacterStyle
+  LasersAndFeelings:
+    description: Character sheet.
+    properties:
+      character_sheet:
+        $ref: '#/$defs/LasersAndFeelingsCharacter'
+        default:
+          goal: Meet new aliens
+          inventory:
+          - Consortium uniform
+          - Communicator
+          - Pistol
+          name: Ace
+          role: Soldier
+          stat: 4
+          style: Heroic
+        title: Lasers And Feelings
+      meta:
+        $ref: '#/$defs/SheetInfo'
+        default:
+          gamename: Lasers and feelings
+          title: Unknown
+      system:
+        default: landf
+        type: string
+    required: []
+    title: LasersAndFeelings
+    type: object
+  LasersAndFeelingsCharacter:
+    description: Character information.
+    properties:
+      goal:
+        default: Meet new aliens
+        title: Character goal
+        type: string
+      inventory:
+        items:
+          type: string
+        title: Inventory
+        type: array
+      name:
+        default: Ace
+        title: Character name
+        type: string
+      role:
+        $ref: '#/$defs/CharacterRole'
+        default: Soldier
+        title: Character role
+      stat:
+        default: 4
+        maximum: 5
+        minimum: 2
+        title: Lasers or feelings
+        type: integer
+      style:
+        $ref: '#/$defs/CharacterStyle'
+        default: Heroic
+        title: Character style
+    required: []
+    title: LasersAndFeelingsCharacter
+    type: object
+  SheetInfo:
+    description: Basic info about the sheet.
+    properties:
+      gamename:
+        default: Lasers and feelings
+        type: string
+      title:
+        default: Unknown
+        type: string
+    required: []
+    title: SheetInfo
+    type: object
+$ref: '#/$defs/LasersAndFeelings'

@@ -1,0 +1,276 @@
+$schema: http://json-schema.org/draft-07/schema#
+definitions:
+  skill:
+    $id: '#skill'
+    properties:
+      checked:
+        type: boolean
+      name:
+        type: string
+      occupation:
+        type: boolean
+      start_value:
+        anyOf:
+        - type: string
+        - type: integer
+      value:
+        anyof:
+        - type: integer
+        - type: 'null'
+    required:
+    - name
+    - value
+    - start_value
+    type: object
+properties:
+  assets:
+    anyOf:
+    - type: string
+    - type: 'null'
+  backstory:
+    properties:
+      description:
+        anyOf:
+        - type: string
+        - type: 'null'
+      encounters:
+        anyOf:
+        - type: string
+        - type: 'null'
+      ideology:
+        anyOf:
+        - type: string
+        - type: 'null'
+      injurues:
+        anyOf:
+        - type: string
+        - type: 'null'
+      locations:
+        anyOf:
+        - type: string
+        - type: 'null'
+      people:
+        anyOf:
+        - type: string
+        - type: 'null'
+      phobias:
+        anyOf:
+        - type: string
+        - type: 'null'
+      possessions:
+        anyOf:
+        - type: string
+        - type: 'null'
+      tomes:
+        anyOf:
+        - type: string
+        - type: 'null'
+      traits:
+        anyOf:
+        - type: string
+        - type: 'null'
+    type: object
+  cash:
+    properties:
+      assets:
+        anyOf:
+        - type: string
+        - type: integer
+      cash:
+        anyOf:
+        - type: string
+        - type: integer
+      spending:
+        anyOf:
+        - type: string
+        - type: integer
+    type: object
+  characteristics:
+    properties:
+      APP:
+        type: integer
+      CON:
+        type: integer
+      DEX:
+        type: integer
+      EDU:
+        type: integer
+      HitPts:
+        type: integer
+      HitPtsMax:
+        type: integer
+      INT:
+        type: integer
+      Luck:
+        type: integer
+      LuckMax:
+        type: integer
+      MagicPts:
+        type: integer
+      MagicPtsMax:
+        type: integer
+      Move:
+        type: integer
+      POW:
+        type: integer
+      SIZ:
+        type: integer
+      STR:
+        type: integer
+      Sanity:
+        type: integer
+      SanityMax:
+        type: integer
+      SanityStart:
+        type: integer
+    required:
+    - STR
+    - DEX
+    - INT
+    - CON
+    - APP
+    - POW
+    - SIZ
+    - EDU
+    - Move
+    - Luck
+    - Sanity
+    - SanityMax
+    - MagicPts
+    - MagicPtsMax
+    - HitPts
+    - HitPtsMax
+    type: object
+  combat:
+    properties:
+      Build:
+        anyOf:
+        - type: string
+        - type: integer
+      DamageBonus:
+        anyOf:
+        - type: string
+        - type: integer
+      Dodge:
+        anyOf:
+        - type: string
+        - type: integer
+    required:
+    - DamageBonus
+    - Build
+    - Dodge
+    type: object
+  meta:
+    properties:
+      CreateDate:
+        type: string
+      Creator:
+        type: string
+      Disclaimer:
+        type: string
+      GameName:
+        const: Call of Cthulhu TM
+      GameType:
+        enum:
+        - Classic (1920's)
+        - Modern
+        type: string
+      GameVersion:
+        const: 7th Edition
+      Title:
+        type: string
+    required:
+    - Title
+    - GameName
+    - GameVersion
+    - GameType
+    type: object
+  personalia:
+    properties:
+      Age:
+        type: string
+      Birthplace:
+        type: string
+      Gender:
+        type: string
+      Name:
+        type: string
+      Occupation:
+        type: string
+      Portrait:
+        anyOf:
+        - type: string
+        - type: 'null'
+      Residence:
+        type: string
+    type: object
+  possessions:
+    anyOf:
+    - type: array
+    - type: 'null'
+  skills:
+    items:
+      allOf:
+      - $ref: '#/definitions/skill'
+      - if:
+          properties:
+            specialization:
+              const: true
+        properties:
+          specializations:
+            type: boolean
+        then:
+          properties:
+            subskills:
+              items:
+                $ref: '#/definitions/skill'
+              type: array
+            uniqueItems: true
+    type: array
+    uniqueItems: true
+  system:
+    const: coc7e
+  version:
+    const: 0.0.4
+  weapons:
+    items:
+      properties:
+        ammo:
+          anyOf:
+          - const: '-'
+          - type: integer
+        attacks:
+          anyOf:
+          - type: string
+          - type: integer
+        damage:
+          type: string
+        malf:
+          anyOf:
+          - const: '-'
+          - type: integer
+        name:
+          type: string
+        range:
+          type: string
+        regular:
+          anyOf:
+          - type: integer
+          - type: 'null'
+      required:
+      - name
+      - regular
+      - damage
+      - range
+      - attacks
+      - ammo
+      - malf
+      type: object
+    type: array
+required:
+- version
+- system
+- meta
+- personalia
+- characteristics
+type: object
