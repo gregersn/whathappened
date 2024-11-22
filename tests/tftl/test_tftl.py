@@ -1,4 +1,5 @@
 """Test functions related to Tales from the Loop."""
+
 from pathlib import Path
 import pytest
 

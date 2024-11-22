@@ -29,9 +29,7 @@ def folders(folder_id=None):
         print("Form did not validate")
         # return redirect(request.url)
 
-    new_folder_form.owner_id.data = (
-        current_user.profile.id
-    )  # pyright: ignore[reportGeneralTypeIssues]
+    new_folder_form.owner_id.data = current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
     new_folder_form.parent_id.data = folder_id
 
     current_folder = session.get(Folder, folder_id)

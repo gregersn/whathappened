@@ -1,4 +1,5 @@
 """Core mechanics for manipulating character sheet."""
+
 from functools import reduce
 import logging
 from typing import Dict, Optional, Type
@@ -101,7 +102,7 @@ class CharacterMechanics:
                 path.split("."),
                 self.parent.body,
             )
-        except KeyError as exc:
+        except KeyError:
             # TODO: This is a bad hack
             logger.error("Could not resolve: %s in %s", path, self.parent)
             return None

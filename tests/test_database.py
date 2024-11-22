@@ -9,13 +9,13 @@ from whathappened.models import LogEntry
 
 
 class DataModel(Base):
-    __tablename__ = 'test_table'
+    __tablename__ = "test_table"
     id = Column(Integer, primary_key=True)
     title = Column(String(256))
 
 
 def test_connect_db():
-    db_uri = 'sqlite:///whathappened_test_db.sqlite'
+    db_uri = "sqlite:///whathappened_test_db.sqlite"
     init_db(db_uri, nullpool=True)
     db.drop_all()
     db.create_all()
@@ -23,7 +23,7 @@ def test_connect_db():
     tests = DataModel.query.all()
     assert len(tests) == 0
 
-    test = DataModel(title='test object')
+    test = DataModel(title="test object")
     db.session.add(test)
     db.session.commit()
 
@@ -32,7 +32,7 @@ def test_connect_db():
 
 
 class SerializeModel(BaseModel):
-    __tablename__ = 'test_table_2'
+    __tablename__ = "test_table_2"
     id = Column(Integer, primary_key=True)
     title = Column(String(256))
     action = Column(String(256))
@@ -41,8 +41,7 @@ class SerializeModel(BaseModel):
 
 
 def test_serialize():
-
-    data = {'id': None, 'title': 'test object', 'action': 'do it'}
+    data = {"id": None, "title": "test object", "action": "do it"}
 
     test = SerializeModel()
 

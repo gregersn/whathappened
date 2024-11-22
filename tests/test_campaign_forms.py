@@ -1,4 +1,3 @@
-import pytest
 from markupsafe import Markup
 from whathappened.campaign import forms
 from whathappened.character.models import Character

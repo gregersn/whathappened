@@ -27,9 +27,7 @@ def handouts(campaignid: int):
         abort(403)
 
     campaign = session.get(Campaign, campaignid)
-    if (
-        current_user.profile not in campaign.players
-    ):  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.profile not in campaign.players:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
     handouts = campaign.handouts.filter_by(status=HandoutStatus.visible).filter(
@@ -60,10 +58,8 @@ def messages(campaignid: int):
     messages = (
         campaign.messages.filter(
             or_(
-                Message.from_id
-                == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
-                Message.to_id
-                == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
+                Message.from_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
+                Message.to_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
                 Message.to_id.is_(None),
             )
         )
@@ -89,9 +85,7 @@ def handout_players(campaignid: int, handoutid: int):
     if handout.campaign.id != campaignid:
         abort(404)
 
-    if (
-        current_user.profile != handout.campaign.user
-    ):  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.profile != handout.campaign.user:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
     if request.method == "POST":
@@ -155,9 +149,7 @@ def npc_visibility(npcid: int, campaignid: int):
     if npc.campaign.id != campaignid:
         abort(404)
 
-    if (
-        current_user.profile != npc.campaign.user
-    ):  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.profile != npc.campaign.user:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
     if request.method == "POST":

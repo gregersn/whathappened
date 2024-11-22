@@ -9,7 +9,6 @@ from whathappened.campaign.models import Campaign  # noqa
 
 from whathappened.character.coc7e import CoCMechanics
 from whathappened.character.coc7e import new_character
-from whathappened.character.coc7e import CHARACTER_SCHEMA
 from whathappened.sheets.schema.build import validate
 from whathappened.character.models import Character
 from whathappened.sheets.mechanics.coc7e.convert import fifth, half, convert_from_dholes

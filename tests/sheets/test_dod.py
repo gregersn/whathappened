@@ -1,5 +1,4 @@
 from whathappened.sheets.schema.build import build_from_schema, get_schema, validate
-from whathappened.sheets.schema import dod
 
 
 def test_new_character_from_schema():
