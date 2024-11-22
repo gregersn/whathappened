@@ -34,9 +34,7 @@ def index():
 @login_required
 def invite_delete(id):
     invite = session.get(Invite, id)
-    if (
-        current_user.profile.id != invite.owner_id
-    ):  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
         logger.debug("Wrong user")
         abort(403)
     form = DeleteInviteForm()
@@ -62,9 +60,7 @@ def invite_delete(id):
 @login_required
 def api_invite_delete(id):
     invite = session.get(Invite, id)
-    if (
-        current_user.profile.id != invite.owner_id
-    ):  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
     session.delete(invite)
     session.commit()

@@ -5,6 +5,7 @@ Revises: f047bb8f937f
 Create Date: 2020-10-14 16:32:12.011489
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 from whathappened.database.fields import GUID

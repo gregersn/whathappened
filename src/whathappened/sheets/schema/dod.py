@@ -1,4 +1,5 @@
 """Character sheet data for DoD."""
+
 from typing import List, Literal
 from typing_extensions import Annotated
 
@@ -147,12 +148,12 @@ class Fardigheter(msgspec.Struct, frozen=True):
 class Packning(msgspec.Struct, frozen=True):
     """Inventory."""
 
-    barformoga: Annotated[
-        int, msgspec.Meta(title="Bärformåga", ge=0, le=10)
-    ] = msgspec.field(default=0)
-    items: Annotated[
-        List[str], msgspec.Meta(extra_json_schema={"constant": True})
-    ] = msgspec.field(default_factory=lambda: ["-" for _ in range(10)])
+    barformoga: Annotated[int, msgspec.Meta(title="Bärformåga", ge=0, le=10)] = (
+        msgspec.field(default=0)
+    )
+    items: Annotated[List[str], msgspec.Meta(extra_json_schema={"constant": True})] = (
+        msgspec.field(default_factory=lambda: ["-" for _ in range(10)])
+    )
     minnessak: str = "-"
     smaasaker: Annotated[List[str], msgspec.Meta(title="Småsaker")] = []
 

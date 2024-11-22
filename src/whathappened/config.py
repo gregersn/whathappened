@@ -1,4 +1,5 @@
 """App default config."""
+
 import os
 from pathlib import Path
 from typing import List, Optional

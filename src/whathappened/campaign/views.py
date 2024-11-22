@@ -145,9 +145,7 @@ class HandoutView(View):
     @login_required
     def list_view(self, campaign_id: int) -> Text:
         campaign = session.get(Campaign, campaign_id)
-        is_owner = (
-            current_user and current_user.profile.id == campaign.user_id
-        )  # pyright: ignore[reportGeneralTypeIssues]
+        is_owner = current_user and current_user.profile.id == campaign.user_id  # pyright: ignore[reportGeneralTypeIssues]
         handouts = campaign.handouts.filter(~Handout.group.has()).filter(
             is_owner or Handout.players.contains(current_user.profile)
         )  # pyright: ignore[reportGeneralTypeIssues]
@@ -208,9 +206,7 @@ def handout_delete(campaign_id: int, handout_id: int):
     """Delete a handout."""
     handout = session.get(Handout, handout_id)
 
-    if (
-        current_user.profile.id != handout.campaign.user_id
-    ):  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.profile.id != handout.campaign.user_id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(404)
 
     form = DeleteHandoutForm()

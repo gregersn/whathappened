@@ -56,9 +56,7 @@ def get_character(id: int, check_author: bool = True) -> Character:
                 )  # pyright: ignore[reportGeneralTypeIssues]
                 return character
 
-    if (
-        check_author and character.user_id != current_user.profile.id
-    ):  # pyright: ignore[reportGeneralTypeIssues]
+    if check_author and character.user_id != current_user.profile.id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
     return character
@@ -153,9 +151,7 @@ def update(id: int):
             else:
                 log_message = f"set {type} on {field}{log_subfield}: {value}"
 
-            logentry = LogEntry(
-                character, log_message, user_id=current_user.id
-            )  # pyright: ignore[reportGeneralTypeIssues]
+            logentry = LogEntry(character, log_message, user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
             session.add(logentry)
 
         character.store_data()
@@ -221,8 +217,7 @@ def view(id: int):
 
     for campaign in character.campaigns:
         if (
-            campaign.user_id
-            == current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
+            campaign.user_id == current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
         ):
             editable = True
             break
@@ -287,9 +282,7 @@ def delete(id: int):
     """Delete a character."""
     character = get_character(id, check_author=True)
 
-    if (
-        current_user.profile.id != character.user_id
-    ):  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.profile.id != character.user_id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(404)
 
     form = DeleteForm()
@@ -358,9 +351,7 @@ def editjson(id: int):
             data = form.body.data
             c.body = convert_from_dholes(data)
 
-        logentry = LogEntry(
-            c, "JSON edited", user_id=current_user.id
-        )  # pyright: ignore[reportGeneralTypeIssues]
+        logentry = LogEntry(c, "JSON edited", user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
         session.add(logentry)
 
         session.commit()

@@ -110,7 +110,7 @@ HandoutStatusType: Enum = Enum(
     name="handoutstatus",
     create_constraint=True,
     metadata=Base.metadata,
-    validate_strings=True
+    validate_strings=True,
 )
 
 

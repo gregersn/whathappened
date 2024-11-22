@@ -1,5 +1,4 @@
 from pathlib import Path
-import pytest
 
 from whathappened.userassets.models import Asset, AssetFolder
 
@@ -17,11 +16,15 @@ def test_valid_folder(new_session):
     assert foolder.title == "Foolder"
     assert foolder.owner_id == 1
 
-    assert foolder.get_path() == Path(str(foolder.id)) / foolder.title, foolder.get_path()
+    assert (
+        foolder.get_path() == Path(str(foolder.id)) / foolder.title
+    ), foolder.get_path()
 
     assert foolder.path == Path(foolder.title), foolder.path
 
-    assert foolder.system_path == Path('uploads') / str(foolder.id) / foolder.title, foolder.system_path
+    assert (
+        foolder.system_path == Path("uploads") / str(foolder.id) / foolder.title
+    ), foolder.system_path
 
     new_session.rollback()
 
@@ -42,7 +45,10 @@ def test_sub_folder(new_session):
     assert sub_foolder
     assert sub_folder.parent_id == foolder.id
 
-    assert sub_folder.get_path() == Path(str(foolder.id)) / foolder.title / sub_folder.title
+    assert (
+        sub_folder.get_path()
+        == Path(str(foolder.id)) / foolder.title / sub_folder.title
+    )
 
     assert sub_folder.path == Path(foolder.title) / sub_folder.title
 

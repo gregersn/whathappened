@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from sqlalchemy import NullPool, create_engine, event
+from sqlalchemy import NullPool, create_engine
 from whathappened import create_app, assets
 from whathappened.database import db as _db
 
@@ -13,15 +13,15 @@ basedir = Path(__file__).parent.absolute()
 
 class Conf(Settings):
     TESTING: bool = True
-    TESTDB: Path = basedir / 'testing.sqlite'
-    SQLALCHEMY_DATABASE_URI: str = 'sqlite:///' + str(TESTDB)
+    TESTDB: Path = basedir / "testing.sqlite"
+    SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + str(TESTDB)
     WTF_CSRF_ENABLED: bool = False
 
 
 Config = Conf()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def app(request):
     assets._named_bundles = {}
     app = create_app(Config)
@@ -37,7 +37,7 @@ def app(request):
     return app
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def db(app, request):
     """Session-wide test database."""
     if Config.TESTDB.exists():
@@ -54,7 +54,7 @@ def db(app, request):
     return _db
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def session(db, request):
     """Creates a new database session for a test."""
     connection = db.engine.connect()
@@ -74,23 +74,23 @@ def session(db, request):
     return session
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def client(app, request):
     client = app.test_client()
     return client
 
 
 class AuthActions:
-
     def __init__(self, client):
         self._client = client
 
-    def login(self, username='test', password='test'):
-        return self._client.post('/auth/login',
-                                 data={'username': username, 'password': password})
+    def login(self, username="test", password="test"):
+        return self._client.post(
+            "/auth/login", data={"username": username, "password": password}
+        )
 
     def logout(self):
-        return self._client.get('/auth/logout')
+        return self._client.get("/auth/logout")
 
 
 @pytest.fixture
@@ -100,7 +100,9 @@ def auth(client):
 
 @pytest.fixture(scope="session")
 def connection(request):
-    engine = create_engine('sqlite:///test_db_2.sqlite', poolclass=NullPool, future=True)
+    engine = create_engine(
+        "sqlite:///test_db_2.sqlite", poolclass=NullPool, future=True
+    )
     connection = engine.connect()
 
     def teardown():

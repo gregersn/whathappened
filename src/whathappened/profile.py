@@ -1,4 +1,3 @@
-from whathappened.content.models import Folder
 import logging
 from flask import Blueprint, render_template
 from whathappened.auth import login_required, current_user

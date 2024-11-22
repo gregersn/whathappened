@@ -42,22 +42,22 @@ class LasersAndFeelingsCharacter(msgspec.Struct, frozen=True):
     name: Annotated[str, msgspec.Meta(title="Character name")] = msgspec.field(
         default="Ace"
     )
-    style: Annotated[
-        CharacterStyle, msgspec.Meta(title="Character style")
-    ] = CharacterStyle.HEROIC
-    role: Annotated[
-        CharacterRole, msgspec.Meta(title="Character role")
-    ] = CharacterRole.SOLDIER
+    style: Annotated[CharacterStyle, msgspec.Meta(title="Character style")] = (
+        CharacterStyle.HEROIC
+    )
+    role: Annotated[CharacterRole, msgspec.Meta(title="Character role")] = (
+        CharacterRole.SOLDIER
+    )
     inventory: Annotated[list[str], msgspec.Meta(title="Inventory")] = msgspec.field(
         default_factory=lambda: ["Consortium uniform", "Communicator", "Pistol"],
     )
     goal: Annotated[str, msgspec.Meta(title="Character goal")] = msgspec.field(
         default="Meet new aliens"
     )
-    stat: Annotated[
-        int, msgspec.Meta(ge=2, le=5, title="Lasers or feelings")
-    ] = msgspec.field(
-        default=4,
+    stat: Annotated[int, msgspec.Meta(ge=2, le=5, title="Lasers or feelings")] = (
+        msgspec.field(
+            default=4,
+        )
     )
 
 
