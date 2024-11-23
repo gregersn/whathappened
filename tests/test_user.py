@@ -9,7 +9,7 @@ from .conftest import Conf as Config
 class UserModelCase(unittest.TestCase):
     def setUp(self):
         assets._named_bundles = {}
-        self.app = create_app(Config)
+        self.app = create_app(Config())
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()

@@ -1,17 +1,19 @@
-from .conftest import Config
+from .conftest import Conf
 from whathappened import create_app, assets
 
 
-def test_config(app):
+def test_config():
     assets._named_bundles = {}
-    a = create_app()
+
+    a = create_app(Conf())
+    assert a.testing
+
+    Config = Conf()
+    Config.TESTING = False
+    assets._named_bundles = {}
+    a = create_app(Config)
 
     assert not a.testing
-
-    assets._named_bundles = {}
-
-    a = create_app(Config)
-    assert a.testing
 
 
 def test_hello(client):
