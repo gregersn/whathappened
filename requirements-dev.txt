@@ -1,6 +1,6 @@
 pytest==8.3.3
 pytest-cov==6.0.0
-wheel==0.45.0
+wheel==0.45.1
 yapf
 pylint
 build
