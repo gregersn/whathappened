@@ -21,7 +21,7 @@ class CoCMechanics(CharacterMechanics):
             logger.warning(e)
             return None
 
-    def validate(self):
+    def validate(self, *args, **kwargs):
         return validate(self.parent.body, "coc7e")
 
     def version(self):

@@ -1,3 +1,5 @@
+"""Schema and sheet utilities"""
+
 import copy
 from packaging.version import Version, parse
 
@@ -5,6 +7,7 @@ SheetVersion = Version
 
 
 def up_or_down(from_version: SheetVersion, to_version: SheetVersion) -> int:
+    """Deteremine if migration is up or down."""
     if from_version > to_version:
         return -1
 
@@ -15,6 +18,7 @@ def up_or_down(from_version: SheetVersion, to_version: SheetVersion) -> int:
 
 
 def find_migration(version: SheetVersion, direction: int, migrations):
+    """Find migration function."""
     for m in migrations:
         if direction > 0 and parse(m["from"]) == version:
             return m
@@ -24,6 +28,7 @@ def find_migration(version: SheetVersion, direction: int, migrations):
 
 
 def find_version(data) -> str:
+    """Find version string in schema."""
     version_string = None
 
     try:
@@ -42,6 +47,7 @@ def find_version(data) -> str:
 
 
 def migrate(data, to_version, migrations=None):
+    """Do the migration."""
     data = copy.deepcopy(data)
     from_version = parse(find_version(data))
     direction = up_or_down(from_version, parse(to_version))
@@ -51,7 +57,7 @@ def migrate(data, to_version, migrations=None):
     migrator = find_migration(from_version, direction, migrations)
 
     if migrator is None:
-        raise Exception("Migrator not found")
+        raise NotImplementedError("Migrator not found")
 
     if direction < 0:
         data = migrator["down"](data)

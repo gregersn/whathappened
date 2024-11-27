@@ -1,3 +1,5 @@
+"""Module for the interaction with character sheets in What Happened?"""
+
 from flask import Blueprint
 from webassets.env import Environment
 
@@ -14,11 +16,13 @@ from . import routes  # noqa: E402, F401 isort:skip
 
 
 @bp.app_template_filter("datetimeformat")
-def datetimeformat(value, format: str = "%Y-%m-%d %H:%M:%S"):
-    return value.strftime(format)
+def datetimeformat(value, formatstring: str = "%Y-%m-%d %H:%M:%S"):
+    """Jinja filter for formatting datetimes."""
+    return value.strftime(formatstring)
 
 
 def register_assets(assets: Environment):
+    """Register style assets."""
     assets.register(
         "scss_character",
         "scss/character/character.scss",

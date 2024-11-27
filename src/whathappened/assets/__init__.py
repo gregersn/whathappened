@@ -1,3 +1,5 @@
+"""Assets commands."""
+
 from flask import Blueprint, current_app
 from flask.cli import with_appcontext
 

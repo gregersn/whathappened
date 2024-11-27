@@ -54,17 +54,17 @@ class Grundegenskaper(msgspec.Struct, frozen=True):
 class Fardighet(msgspec.Struct, frozen=True):
     """Skill."""
 
-    checked: Annotated[
-        bool, msgspec.Meta(extra_json_schema=({"hide_heading": True}))
-    ] = False
+    checked: Annotated[bool, msgspec.Meta(extra_json_schema={"hide_heading": True})] = (
+        False
+    )
     name: str = "namn"
     base: Annotated[
-        BasEgenskap, msgspec.Meta(extra_json_schema=({"filter": "parenthesize"}))
+        BasEgenskap, msgspec.Meta(extra_json_schema={"filter": "parenthesize"})
     ] = "STY"
     value: int = 0
 
 
-PrimaraFerdigheter = [
+PrimaraFerdigheter: list[tuple[str, BasEgenskap]] = [
     ("Bestiologi", "INT"),
     ("Bluffa", "KAR"),
     ("Fingerfärdighet", "SMI"),
@@ -87,7 +87,7 @@ PrimaraFerdigheter = [
     ("Övertala", "KAR"),
 ]
 
-VapenFardigheter = [
+VapenFardigheter: list[tuple[str, BasEgenskap]] = [
     ("Armborst", "SMI"),
     ("Hammare", "STY"),
     ("Kniv", "SMI"),
@@ -230,10 +230,10 @@ class Dodsslag(msgspec.Struct, frozen=True):
     """Death rolls."""
 
     lyckade: Annotated[
-        int, msgspec.Meta(le=3, ge=0, extra_json_schema=({"widget": "progress"}))
+        int, msgspec.Meta(le=3, ge=0, extra_json_schema={"widget": "progress"})
     ] = 0
     misslyckade: Annotated[
-        int, msgspec.Meta(le=3, ge=0, extra_json_schema=({"widget": "progress"}))
+        int, msgspec.Meta(le=3, ge=0, extra_json_schema={"widget": "progress"})
     ] = 0
 
 
@@ -286,10 +286,10 @@ class Character(msgspec.Struct):
     """Character."""
 
     personalia: Annotated[
-        Personalia, msgspec.Meta(extra_json_schema=({"columns": 2}))
+        Personalia, msgspec.Meta(extra_json_schema={"columns": 2})
     ] = msgspec.field(default=Personalia())
     egenskaper: Annotated[
-        Grundegenskaper, msgspec.Meta(extra_json_schema=({"columns": 2}))
+        Grundegenskaper, msgspec.Meta(extra_json_schema={"columns": 2})
     ] = msgspec.field(default=Grundegenskaper())
     sekundara_egenskaper: Annotated[
         SekundaraEgenskaper, msgspec.Meta(title="Sekundära egenskaper")
@@ -299,7 +299,7 @@ class Character(msgspec.Struct):
     )
     fardigheter: Annotated[
         Fardigheter,
-        msgspec.Meta(title="Färdigheter", extra_json_schema=({"columns": 2})),
+        msgspec.Meta(title="Färdigheter", extra_json_schema={"columns": 2}),
     ] = msgspec.field(default=Fardigheter())
     packning: Packning = msgspec.field(default=Packning())
     pengar: Pengar = msgspec.field(default=Pengar())

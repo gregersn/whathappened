@@ -1,3 +1,5 @@
+"""Lasers and Feelings schema."""
+
 from enum import Enum
 from typing_extensions import Annotated
 import yaml

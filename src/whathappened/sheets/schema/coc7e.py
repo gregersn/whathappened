@@ -1,3 +1,5 @@
+"""Call of Cthulhu migration functions."""
+
 from jsonschema import validate
 
 from whathappened.character.coc7e import new_character
