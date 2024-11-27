@@ -24,7 +24,7 @@ from . import tftl  # noqa
 from whathappened.models import LogEntry
 from whathappened.sheets.schema.utils import migrate
 from whathappened.models import Invite
-from whathappened.sheets.schema.coc7e import migrations, latest
+from whathappened.sheets.schema.coc7e import migrations, LATEST
 from whathappened.database import session
 from whathappened.database.pagination import paginate
 from whathappened.auth import login_required, current_user
@@ -345,7 +345,7 @@ def editjson(id: int):
         if form.migration.data:
             logger.debug("Trying to migrate data")
             data = form.body.data
-            c.body = migrate(data, latest, migrations=migrations)
+            c.body = migrate(data, LATEST, migrations=migrations)
         elif form.conversion.data:
             logger.debug("Conversion is checked")
             data = form.body.data

@@ -13,7 +13,7 @@ from whathappened.sheets.schema.build import validate
 from whathappened.character.models import Character
 from whathappened.sheets.mechanics.coc7e.convert import fifth, half, convert_from_dholes
 from whathappened.sheets.schema.utils import migrate
-from whathappened.sheets.schema.coc7e import migrations, latest
+from whathappened.sheets.schema.coc7e import migrations, LATEST
 
 BASEDIR = Path(__file__).parent.absolute()
 
@@ -138,18 +138,18 @@ def test_subskill(newly_created_character: Character, app):
 
 
 def test_validate_migration_up(test_sheet: dict, app):
-    errors = validate(migrate(test_sheet, "0.0.4", migrations=migrations), "coc7e")
+    errors = validate(migrate(test_sheet, "0.0.5", migrations=migrations), "coc7e")
     assert len(errors) == 0, errors
 
 
 def test_validate_migration_latest(test_sheet: dict, app):
-    errors = validate(migrate(test_sheet, latest, migrations=migrations), "coc7e")
+    errors = validate(migrate(test_sheet, LATEST, migrations=migrations), "coc7e")
 
     assert len(errors) == 0, errors
 
 
 def test_validate_migration_up_and_down(test_sheet: dict, app):
-    migrated = migrate(test_sheet.copy(), "0.0.4", migrations=migrations)
+    migrated = migrate(test_sheet.copy(), "0.0.5", migrations=migrations)
 
     back_down = migrate(migrated, "0.0.1", migrations=migrations)
 
