@@ -25,7 +25,7 @@
         },
         {
             "name": "What Happened?",
-            "type": "python",
+            "type": "debugpy",
             "pythonArgs": ["-W always::DeprecationWarning"],
             "request": "launch",
             "module": "flask",
