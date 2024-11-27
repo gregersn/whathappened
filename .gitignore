@@ -30,3 +30,5 @@ nosetests.xml
 .vscode/chrome/
 
 uploads/
+
+tests/sheets/current/
