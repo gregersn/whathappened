@@ -59,7 +59,7 @@ class CharacterMechanics:
         return "Unknown property, age"
 
     @property
-    def description(self):
+    def description(self) -> str:
         """Character description."""
         logger.error("description: Not implemented")
         return "Unknown property, description"

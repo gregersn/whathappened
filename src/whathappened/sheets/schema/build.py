@@ -7,7 +7,6 @@ import json
 import yaml
 import msgspec
 from jsonschema.exceptions import SchemaError
-
 from jsonschema.validators import Draft7Validator
 
 CHARACTER_SCHEMA_DIR = Path(__file__).parent.parent / "schema"
@@ -20,6 +19,7 @@ SCHEMA_DIR = Path(__file__).parent
 
 
 def get_schema(system: str):
+    """Get schema based on system name."""
     try:
         import importlib
 
@@ -28,7 +28,9 @@ def get_schema(system: str):
         if issubclass(game_module.CharacterSheet, msgspec.Struct):
             logger.debug("Getting character sheet from imgspec")
             return msgspec.json.schema(game_module.CharacterSheet)
-    except:
+    except ImportError:
+        ...
+    except AttributeError:
         ...
 
     CHARACTER_SCHEMA = SCHEMA_DIR / f"{system}.yaml"
@@ -70,17 +72,17 @@ def flatten_schema(
 
 def load_schema(filename: Path) -> Dict[str, Any]:
     """Load schema from file."""
-    with open(filename, "r") as f:
+    with open(filename, "r", encoding="utf8") as f:
         try:
             if filename.suffix == ".json":
                 data = json.load(f)
                 return data
-            elif filename.suffix == ".yaml":
+            if filename.suffix == ".yaml":
                 data = yaml.safe_load(f)
                 return data
         except Exception as e:
             logger.debug(e)
-            raise SchemaError("Schema not saved in a known format")
+            raise SchemaError("Schema not saved in a known format") from e
     return {}
 
 
@@ -99,29 +101,34 @@ def validate(data: Dict, system: str) -> List[SchemaValidationError]:
 
 
 def build_boolean(schema: Dict[str, bool]) -> bool:
+    """Build boolean."""
     logger.debug("build boolean: %s", schema["default"])
     return schema["default"]
 
 
 def build_string(schema: Dict[str, str]) -> str:
+    """Build string."""
     logger.debug("build string: %s", schema["default"])
     return schema["default"]
 
 
 def build_integer(schema: Dict[str, int]) -> int:
+    """Build integer."""
     logger.debug("build integer: %s", schema["default"])
     return schema["default"]
 
 
 def build_object(schema: Dict[str, Any], main_schema: Dict[str, Any]) -> Dict[str, Any]:
+    """Build object."""
     logger.debug("build object")
     output = {}
-    for property, description in schema["properties"].items():
-        output[property] = build_from_schema2(description, main_schema)
+    for prop, description in schema["properties"].items():
+        output[prop] = build_from_schema_inner(description, main_schema)
     return output
 
 
 def build_array(schema: Dict[str, List[Any]]) -> List[Any]:
+    """Build array."""
     logger.debug("build array")
     if "default" in schema:
         return schema["default"]
@@ -129,6 +136,7 @@ def build_array(schema: Dict[str, List[Any]]) -> List[Any]:
 
 
 def get_sub(d: Dict[str, Any], path: List[str]) -> Dict:
+    """Get sub schema."""
     logger.debug("get_sub: %s", path)
     if len(path) == 1:
         return d[path[0]]
@@ -140,6 +148,7 @@ def get_sub(d: Dict[str, Any], path: List[str]) -> Dict:
 def sub_schema(
     schema: Union[List, Dict], path: str
 ) -> Union[Dict, List, str, int, bool]:
+    """Dive into sub schema."""
     logger.debug("sub_schema: %s", path)
     parts = path.split("/")
     if parts[0] != "#":
@@ -150,9 +159,10 @@ def sub_schema(
     return get_sub(schema, parts[1:])
 
 
-def build_from_schema2(
+def build_from_schema_inner(
     schema: Union[List, Dict[str, Any]], main_schema: Dict[str, Any]
 ) -> Union[Dict, List, str, int, bool]:
+    """Main loop of build_from_schema()"""
     if isinstance(schema, Dict):
         logger.debug("Handling a dictionary")
         if "default" in schema:
@@ -162,7 +172,7 @@ def build_from_schema2(
 
             assert isinstance(sub, Dict) or isinstance(sub, List)
 
-            return build_from_schema2(sub, main_schema)
+            return build_from_schema_inner(sub, main_schema)
         if "const" in schema:
             return schema["const"]
         if schema.get("type") == "object" and isinstance(main_schema, dict):
@@ -178,7 +188,9 @@ def build_from_schema2(
         if "allOf" in schema:
             out = {}
             for entry in schema["allOf"]:
-                out.update(build_from_schema2(entry, main_schema))
+                all_of_data = build_from_schema_inner(entry, main_schema)
+                assert isinstance(all_of_data, dict)
+                out.update(all_of_data)
             return out
     elif isinstance(schema, List):
         logger.debug("Handling a list")
@@ -188,6 +200,7 @@ def build_from_schema2(
 
 
 def build_from_schema(schema: Dict[str, Any]) -> Dict[str, Any]:
-    built = build_from_schema2(schema, schema)
+    """Build a charactersheet from a schema."""
+    built = build_from_schema_inner(schema, schema)
     assert isinstance(built, MutableMapping)
     return built

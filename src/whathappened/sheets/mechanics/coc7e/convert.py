@@ -1,10 +1,12 @@
+"""CoC conversion functions."""
+
 import math
 
 
 def half(value):
     if not value:
         return 0
-    if type(value) == str:
+    if isinstance(value, str):
         try:
             value = int(value, 10)
         except ValueError:
@@ -15,7 +17,7 @@ def half(value):
 def fifth(value):
     if not value:
         return 0
-    if type(value) == str:
+    if isinstance(value, str):
         try:
             value = int(value, 10)
         except ValueError:

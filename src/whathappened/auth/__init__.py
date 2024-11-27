@@ -1,3 +1,5 @@
+"""Authentication module."""
+
 import logging
 from flask import Blueprint, render_template, current_app
 

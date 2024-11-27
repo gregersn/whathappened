@@ -1,3 +1,5 @@
+"""Auth routes."""
+
 import logging
 from flask import flash, redirect, render_template, request, url_for
 
@@ -17,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
+    """Login route."""
     next_page = request.args.get("next")
     if not next_page or urlsplit(next_page).netloc != "":
         next_page = url_for("main.index")
@@ -38,12 +41,14 @@ def login():
 
 @bp.route("/logout")
 def logout():
+    """Logout route."""
     logout_user()
     return redirect(url_for("main.index"))
 
 
 @bp.route("/register", methods=["GET", "POST"])
 def register():
+    """Register new user route."""
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
     form = RegistrationForm()
@@ -59,6 +64,7 @@ def register():
 
 @bp.route("/reset_password_request", methods=["GET", "POST"])
 def reset_password_request():
+    """Reset password request route."""
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
 
@@ -77,6 +83,7 @@ def reset_password_request():
 
 @bp.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_password(token: str):
+    """Reset password route."""
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
 
