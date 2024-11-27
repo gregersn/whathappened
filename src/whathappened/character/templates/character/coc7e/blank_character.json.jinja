@@ -1,5 +1,5 @@
 {
-    "version": "0.0.4",
+    "version": "0.0.5",
     "system": "coc7e",
     "meta": {
         "Title": {{ title|tojson }},
@@ -81,7 +81,7 @@
             "value": 20,
             "start_value": 20
         },
-        {%- if type == "Modern" %}
+        {%- if gametype == "Modern" %}
         {
             "name": "Computer Use",
             "value": 5,
@@ -118,7 +118,7 @@
             "value": 10,
             "start_value": 10
         },
-        {%- if type == "Modern" %}
+        {%- if gametype == "Modern" %}
         {
             "name": "Electronics",
             "value": 1,

@@ -25,7 +25,8 @@ class CoCMechanics(CharacterMechanics):
         return validate(self.parent.body, "coc7e")
 
     def version(self):
-        return "0.0.4"
+        """Return schema version."""
+        return "0.0.5"
 
     @property
     def name(self):
@@ -56,11 +57,11 @@ class CoCMechanics(CharacterMechanics):
                     for ss in s["subskills"]:
                         if ss["name"] == subskill:
                             return ss
-                    logger.debug(f"Did not find subskill {skill}, {subskill}")
+                    logger.debug("Did not find subskill %s, %s", skill, subskill)
                     return None
                 return s
 
-        logger.debug(f"Did not find {skill}, {subskill}")
+        logger.debug("Did not find %s, %s", skill, subskill)
         return None
 
     def set_portrait(self, data):
