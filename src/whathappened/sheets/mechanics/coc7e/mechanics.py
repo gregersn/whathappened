@@ -40,6 +40,7 @@ class CoCMechanics(CharacterMechanics):
     def description(self):
         return self.parent.body["personalia"]["Occupation"]
 
+    @property
     def portrait(self):
         return self.parent.body["personalia"]["Portrait"]
 

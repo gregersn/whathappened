@@ -27,6 +27,7 @@ class TftlMechanics(CharacterMechanics):
     def description(self):
         return self.parent.body["personalia"]["type"]
 
+    @property
     def portrait(self):
         return self.parent.body["personalia"].get("portrait", None)
 
