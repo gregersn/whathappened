@@ -99,7 +99,7 @@ class Character(BaseContent, BaseModel):
 
     @property
     def portrait(self):
-        return self.mechanics.portrait()
+        return self.mechanics.portrait
 
     @property
     def description(self):
