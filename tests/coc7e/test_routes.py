@@ -1,4 +1,4 @@
-from whathappened.character.coc7e.utils import half, fifth
+from whathappened.character import half, fifth
 
 
 def test_half():
