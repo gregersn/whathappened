@@ -1,16 +1,16 @@
 """Auth routes."""
 
 import logging
-from flask import flash, redirect, render_template, request, url_for
-
-from flask_login import current_user, login_user, logout_user
 from urllib.parse import urlsplit
+
+from flask import flash, redirect, render_template, request, url_for
+from flask_login import current_user, login_user, logout_user
+
+from whathappened.database import session
 
 from .forms import LoginForm, RegistrationForm
 from .forms import ResetPasswordRequestForm, ResetPasswordForm
 from .models import User
-
-from whathappened.database import session
 
 from . import bp, send_password_reset_email
 
