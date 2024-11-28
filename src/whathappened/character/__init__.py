@@ -1,5 +1,6 @@
 """Module for the interaction with character sheets in What Happened?"""
 
+import math
 from flask import Blueprint
 from webassets.env import Environment
 
@@ -19,6 +20,30 @@ from . import routes  # noqa: E402, F401 isort:skip
 def datetimeformat(value, formatstring: str = "%Y-%m-%d %H:%M:%S"):
     """Jinja filter for formatting datetimes."""
     return value.strftime(formatstring)
+
+
+@bp.app_template_filter("half")
+def half(value):
+    if not value:
+        return 0
+    if isinstance(value, str):
+        try:
+            value = int(value, 10)
+        except ValueError:
+            return 0
+    return math.floor(value / 2)
+
+
+@bp.app_template_filter("fifth")
+def fifth(value):
+    if not value:
+        return 0
+    if isinstance(value, str):
+        try:
+            value = int(value, 10)
+        except ValueError:
+            return 0
+    return math.floor(value / 5)
 
 
 def register_assets(assets: Environment):

@@ -4,7 +4,6 @@ from ..forms import SkillForm, SubskillForm
 from whathappened.models import LogEntry, Invite
 from whathappened.database import session
 from whathappened.auth import current_user
-from . import utils  # noqa # import to register filters
 
 
 def view(id, character, editable):
