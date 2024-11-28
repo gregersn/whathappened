@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import os
 from pathlib import Path
+import logging
+
 from flask import Flask
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
@@ -10,7 +12,6 @@ from webassets.bundle import Bundle
 from jinja2_webpack import Environment as WebpackEnvironment
 from jinja2_webpack.filter import WebpackFilter
 
-import logging
 
 from whathappened.config import Config
 from whathappened.email import mail

@@ -10,9 +10,9 @@ from whathappened.email import send_mail
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
+from whathappened.database import session
 from .models import User  # noqa E402
 from .forms import LoginForm, RegistrationForm  # noqa E402
-from whathappened.database import session
 
 logger = logging.getLogger(__name__)
 

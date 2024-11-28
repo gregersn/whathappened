@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import Optional
 from flask_wtf import FlaskForm
@@ -5,7 +6,6 @@ from wtforms import StringField, BooleanField, HiddenField
 from wtforms import ValidationError, SubmitField
 from wtforms import Field
 from wtforms.validators import DataRequired
-import json
 
 from whathappened.forms.fields import JsonField
 

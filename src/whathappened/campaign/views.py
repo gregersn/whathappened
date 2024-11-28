@@ -1,19 +1,19 @@
+import logging
 from typing import Optional, Text, Union
+
 from flask import render_template, request, redirect, url_for
 from flask.views import View
 from werkzeug.exceptions import abort
 from werkzeug.wrappers import Response
-import logging
-
 import markdown2
 
-from . import bp
-
-from .models import Campaign, Handout, HandoutGroup
-from .forms import HandoutForm, DeleteHandoutForm, HandoutGroupForm
 from whathappened.userassets.forms import AssetSelectForm
 from whathappened.database import session
 from whathappened.auth import login_required, current_user
+
+from . import bp
+from .models import Campaign, Handout, HandoutGroup
+from .forms import HandoutForm, DeleteHandoutForm, HandoutGroupForm
 
 logger = logging.getLogger(__name__)
 

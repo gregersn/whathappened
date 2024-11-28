@@ -1,7 +1,8 @@
 from wtforms import SelectField
-from ..forms import CreateForm as BaseCreateForm
 
 from . import GameTypes
+
+from ..forms import CreateForm as BaseCreateForm
 
 
 class CreateForm(BaseCreateForm):
