@@ -2,14 +2,15 @@ from pathlib import Path
 import uuid
 import logging
 
-from flask import url_for, current_app
 from sqlalchemy import event
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import Integer, String
+from flask import url_for, current_app
+from werkzeug.utils import secure_filename
+
 from whathappened.database import Base
 from whathappened.models import GUID
-from werkzeug.utils import secure_filename
 
 logger = logging.getLogger(__name__)
 

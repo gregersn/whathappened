@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import logging
+
 from typing import Optional
 from flask import render_template, flash
 from flask import redirect, url_for
@@ -8,14 +9,14 @@ from flask.helpers import send_from_directory
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import abort
 
+from whathappened.database import session
+from whathappened.auth import login_required, current_user
+
 from . import bp
 from .forms import DeleteAssetFolderForm, DeleteAssetForm
 from .forms import UploadForm, NewFolderForm, MoveAssetForm
-
 from .models import Asset, AssetFolder
 
-from whathappened.database import session
-from whathappened.auth import login_required, current_user
 
 logger = logging.getLogger(__name__)
 

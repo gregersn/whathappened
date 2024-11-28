@@ -1,9 +1,10 @@
 """Assets commands."""
 
+import logging
+
 from flask import Blueprint, current_app
 from flask.cli import with_appcontext
 
-import logging
 from webassets.script import CommandLineEnvironment
 
 bp = Blueprint("assets", __name__)

@@ -1,9 +1,10 @@
 import logging
 import json
-import jinja2
 import time
-from flask import current_app
 from typing import Literal
+
+import jinja2
+from flask import current_app
 
 from ...sheets.mechanics.coc7e.mechanics import CoCMechanics
 from ...sheets.mechanics.coc7e.mechanics import CHARACTER_SCHEMA  # noqa F401
