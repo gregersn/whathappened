@@ -1,9 +1,7 @@
 from pathlib import Path
 import logging
 
-from ...sheets.mechanics.core import register_game
 
-from ...sheets.mechanics.tftl.mechanics import TftlMechanics
 from .forms import CreateForm  # noqa F401
 from whathappened.sheets.schema.build import get_schema, build_from_schema
 
@@ -25,6 +23,3 @@ def new_character(title: str, **kwargs):
     nc["title"] = title
 
     return nc
-
-
-register_game("tftl", "Tales from the Loop", TftlMechanics)
