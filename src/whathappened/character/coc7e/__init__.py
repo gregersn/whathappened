@@ -6,11 +6,6 @@ from typing import Literal
 import jinja2
 from flask import current_app
 
-from ...sheets.mechanics.coc7e.mechanics import CoCMechanics
-from ...sheets.mechanics.coc7e.mechanics import CHARACTER_SCHEMA  # noqa F401
-
-from ...sheets.mechanics.core import register_game
-
 logger = logging.getLogger(__name__)
 
 # This is not pretty
@@ -33,6 +28,3 @@ def new_character(title: str, gametype: GameType, **kwargs):
     return json.loads(
         template.render(title=title, timestamp=time.time(), gametype=gtype)
     )
-
-
-register_game("coc7e", "Call of Cthulhu TM", CoCMechanics)

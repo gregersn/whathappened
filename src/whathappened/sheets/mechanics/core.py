@@ -186,7 +186,7 @@ class CharacterMechanics:
         value = self.skill(parent)["value"]
         start_value = self.skill(parent)["start_value"]
         logger.debug("Try to add subskill")
-        logger.debug(f"Name: {name}, parent {parent}, value {value}")
+        logger.debug("Name: %s, parent %s, value %s", name, parent, value)
         if self.skill(parent, name) is not None:
             raise ValueError(f"Subskill {name} in {parent} already exists.")
 
@@ -221,6 +221,3 @@ def new_character(title: str, system: Optional[str] = None, **kwargs):
     new_character_data["title"] = title
 
     return new_character_data
-
-
-register_game("landf", "Lasers and feelings")
