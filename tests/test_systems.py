@@ -4,6 +4,7 @@ import pytest
 import yaml
 from pathlib import Path
 
+from whathappened import sheets
 from whathappened.sheets.schema.build import get_schema
 from whathappened.sheets.utils import create_sheet
 
@@ -45,23 +46,27 @@ def test_schemas(game: str):
 
 
 @pytest.mark.parametrize("game", SYSTEMS)
-def test_create_sheet(game: str):
-    sheet = create_sheet(game)
-    assert sheet
+def test_create_sheet(game: System):
+    character_module = sheets.find_system(game)
+
+    assert character_module
+
+    test_sheet = character_module.new_character("Test character", system=game)
+    assert test_sheet
 
     expected_file = Path(f"tests/sheets/expected/{game}.yml")
     current_file = Path(f"tests/sheets/current/{game}.yml")
 
     if not expected_file.is_file():
         expected_file.parent.mkdir(parents=True, exist_ok=True)
-        write_yaml(sheet, expected_file)
+        write_yaml(test_sheet, expected_file)
         assert False, "No expected sheet, wrote one to file."
 
     with open(expected_file, "r", encoding="utf8") as f:
         expected_sheet = yaml.safe_load(f)
 
-    if not expected_sheet == sheet:
+    if not expected_sheet == test_sheet:
         current_file.parent.mkdir(parents=True, exist_ok=True)
         with open(current_file, "w", encoding="utf8") as f:
-            yaml.safe_dump(sheet, f)
-        assert expected_sheet == sheet
+            yaml.safe_dump(test_sheet, f)
+        assert expected_sheet == test_sheet
