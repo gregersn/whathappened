@@ -7,7 +7,7 @@ import pytest
 from whathappened.auth.models import User  # noqa
 from whathappened.campaign.models import Campaign  # noqa
 
-from whathappened.character.coc7e import new_character
+from whathappened.sheets.mechanics.coc7e import new_character
 from whathappened.sheets.mechanics.coc7e.mechanics import CoCMechanics
 from whathappened.sheets.schema.build import validate
 from whathappened.character.models import Character

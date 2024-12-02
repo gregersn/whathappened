@@ -1,25 +1,7 @@
-from pathlib import Path
-import logging
-
-
 from .forms import CreateForm  # noqa F401
-from whathappened.sheets.schema.build import get_schema, build_from_schema
 
-logger = logging.getLogger(__name__)
+from whathappened.sheets.mechanics.tftl import new_character
 
-CHARACTER_SCHEMA = Path(__file__).parent / "../../sheets/schema/tftl.json"
-assert CHARACTER_SCHEMA.is_file()
-
-CHARACTER_TEMPLATE = "character/tftl/blank_character.json.jinja"
 CREATE_TEMPLATE = "character/tftl/create.html.jinja"
 
 CHARACTER_SHEET_TEMPLATE = "character/tftl/sheet.html.jinja"
-
-
-def new_character(title: str, **kwargs):
-    schema = get_schema("tftl")
-
-    nc = build_from_schema(schema)
-    nc["title"] = title
-
-    return nc
