@@ -2,7 +2,7 @@
 
 from jsonschema import validate
 
-from whathappened.character.coc7e import new_character
+from whathappened.sheets.mechanics.coc7e import new_character
 from whathappened.sheets.schema.build import get_schema
 
 LATEST = "0.0.5"

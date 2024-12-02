@@ -1,6 +1,6 @@
 from wtforms import SelectField
 
-from . import GameTypes
+from whathappened.sheets.mechanics.coc7e import GameTypes
 
 from ..forms import CreateForm as BaseCreateForm
 

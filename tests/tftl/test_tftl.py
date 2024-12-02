@@ -6,8 +6,8 @@ import pytest
 from jsonschema import validate
 
 from whathappened.sheets.schema.build import load_schema
-from whathappened.character.tftl import CHARACTER_SCHEMA
-from whathappened.character.tftl import new_character
+from whathappened.sheets.mechanics.tftl import CHARACTER_SCHEMA
+from whathappened.sheets.mechanics.tftl import new_character
 from whathappened.character.models import Character
 
 BASEDIR = BASEDIR = Path(__file__).parent.absolute()
