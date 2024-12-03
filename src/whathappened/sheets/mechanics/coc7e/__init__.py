@@ -11,7 +11,12 @@ current_folder = Path(__file__).parent
 CHARACTER_TEMPLATE = "character/coc7e/blank_character.json.jinja"
 
 
-def new_character(title: str, gametype: GameType = "Classic (1920's)", **kwargs):
+def new_character(
+    title: str,
+    gametype: GameType = "Classic (1920's)",
+    timestamp: float | None = None,
+    **kwargs,
+):
     """Create new CoC7e character."""
     templateloader = jinja2.FileSystemLoader(
         searchpath=current_folder / "../../templates/"
@@ -20,5 +25,5 @@ def new_character(title: str, gametype: GameType = "Classic (1920's)", **kwargs)
     template = templateenv.get_template(CHARACTER_TEMPLATE)
     gtype = gametype
     return json.loads(
-        template.render(title=title, timestamp=time.time(), gametype=gtype)
+        template.render(title=title, timestamp=timestamp or time.time(), gametype=gtype)
     )
