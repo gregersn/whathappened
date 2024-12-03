@@ -30,7 +30,7 @@ class JsonField(TextAreaField):
 
 class YamlField(TextAreaField):
     def _value(self):
-        return yaml.dump(self.data, indent=4) if self.data else ""
+        return yaml.dump(self.data, indent=4, sort_keys=False) if self.data else ""
 
     def process_formdata(self, valuelist):
         if valuelist:
@@ -45,6 +45,6 @@ class YamlField(TextAreaField):
         super().pre_validate(form)
         if self.data:
             try:
-                yaml.dump(self.data)
+                yaml.dump(self.data, sort_keys=False)
             except TypeError:
                 raise ValueError("Invalid YAML")

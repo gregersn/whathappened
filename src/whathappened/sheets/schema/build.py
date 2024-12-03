@@ -7,6 +7,7 @@ import json
 import yaml
 import msgspec
 import pydantic
+from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 from jsonschema.exceptions import SchemaError
 from jsonschema.validators import Draft7Validator
 
@@ -17,6 +18,13 @@ assert CHARACTER_SCHEMA_DIR.is_dir(), CHARACTER_SCHEMA_DIR
 logger = logging.getLogger(__name__)
 
 SCHEMA_DIR = Path(__file__).parent
+
+
+class UnsortedGenerateJsonSchema(GenerateJsonSchema):
+    def sort(
+        self, value: JsonSchemaValue, parent_key: Optional[str] = None
+    ) -> JsonSchemaValue:
+        return value
 
 
 def get_schema(system: str):
@@ -32,7 +40,9 @@ def get_schema(system: str):
 
         if issubclass(game_module.CharacterSheet, pydantic.BaseModel):
             logger.debug("Getting character sheet from pydantic")
-            return game_module.CharacterSheet.model_json_schema(mode="serialization")
+            return game_module.CharacterSheet.model_json_schema(
+                mode="serialization", schema_generator=UnsortedGenerateJsonSchema
+            )
 
     except ImportError:
         ...
