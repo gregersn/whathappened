@@ -1,7 +1,6 @@
 """Miscellanous character sheet utilities."""
 
-from .schema.build import get_schema
-from .schema import build_from_schema
+from .schema.build import get_schema, build_from_schema
 
 
 def create_sheet(system: str):

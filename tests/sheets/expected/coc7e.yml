@@ -1,226 +1,226 @@
 assets: null
 backstory:
-  description: null
-  encounters: null
-  ideology: null
-  injurues: null
-  locations: null
-  people: null
-  phobias: null
-  possessions: null
-  tomes: null
-  traits: null
+    description: null
+    encounters: null
+    ideology: null
+    injurues: null
+    locations: null
+    people: null
+    phobias: null
+    possessions: null
+    tomes: null
+    traits: null
 cash:
-  assets: 0
-  cash: 0
-  spending: 0
+    assets: 0
+    cash: 0
+    spending: 0
 characteristics:
-  APP: 0
-  Build: 0
-  CON: 0
-  DEX: 0
-  DamageBonus: 0
-  EDU: 0
-  HitPts: 1
-  HitPtsMax: 1
-  INT: 0
-  Luck: 0
-  LuckMax: 0
-  MagicPts: 0
-  MagicPtsMax: 0
-  Move: 0
-  OccupationSkillPoints: 0
-  POW: 0
-  PersonalInterestSkillPoints: 0
-  SIZ: 0
-  STR: 0
-  Sanity: 0
-  SanityMax: 99
-  SanityStart: 0
+    APP: 0
+    Build: 0
+    CON: 0
+    DEX: 0
+    DamageBonus: 0
+    EDU: 0
+    HitPts: 1
+    HitPtsMax: 1
+    INT: 0
+    Luck: 0
+    LuckMax: 0
+    MagicPts: 0
+    MagicPtsMax: 0
+    Move: 0
+    OccupationSkillPoints: 0
+    POW: 0
+    PersonalInterestSkillPoints: 0
+    SIZ: 0
+    STR: 0
+    Sanity: 0
+    SanityMax: 99
+    SanityStart: 0
 combat:
-  Build: 0
-  DamageBonus: 0
-  Dodge: 0
+    Build: 0
+    DamageBonus: 0
+    Dodge: 0
 meta:
-  CreateDate: '1733213970'
-  Creator: What happened? A TTRPG utility
-  Disclaimer: The developer has not rolled for sanity
-  GameName: Call of Cthulhu TM
-  GameType: Classic (1920's)
-  GameVersion: 7th Edition
-  Title: Test character
+    CreateDate: "1733213970"
+    Creator: What happened? A TTRPG utility
+    Disclaimer: The developer has not rolled for sanity
+    GameName: Call of Cthulhu TM
+    GameType: Classic (1920's)
+    GameVersion: 7th Edition
+    Title: Test character
 personalia:
-  Age: '18'
-  Archetype: null
-  Birthplace: Unknown
-  Gender: Unknown
-  Name: Unknown
-  Occupation: Unknown
-  Portrait: null
-  Residence: Unknown
+    Age: "18"
+    Archetype: null
+    Birthplace: Unknown
+    Gender: Unknown
+    Name: Unknown
+    Occupation: Unknown
+    Portrait: null
+    Residence: Unknown
 possessions: null
 skills:
-- name: Accounting
-  start_value: 5
-  value: 5
-- name: Anthropology
-  start_value: 1
-  value: 1
-- name: Appraise
-  start_value: 5
-  value: 5
-- name: Archaeology
-  start_value: 1
-  value: 1
-- name: Art/Craft
-  specializations: true
-  start_value: 5
-  value: 5
-- name: Charm
-  start_value: 15
-  value: 15
-- name: Climb
-  start_value: 20
-  value: 20
-- name: Credit Rating
-  start_value: 0
-  value: 0
-- name: Cthulhu Mythos
-  start_value: 0
-  value: 0
-- name: Disguise
-  start_value: 5
-  value: 5
-- name: Dodge
-  start_value: half DEX
-  value: 0
-- name: Drive Auto
-  start_value: 20
-  value: 20
-- name: Electrical Repair
-  start_value: 10
-  value: 10
-- name: Fast Talk
-  start_value: 5
-  value: 5
-- name: Fighting
-  specializations: true
-  start_value: 0
-  subskills:
-  - name: Brawl
-    start_value: 25
-    value: 25
-  value: 0
-- name: Firearms
-  specializations: true
-  start_value: 0
-  subskills:
-  - name: Handgun
-    start_value: 20
-    value: 20
-  - name: Rifle/Shotgun
-    start_value: 25
-    value: 25
-  value: 0
-- name: First Aid
-  start_value: 30
-  value: 30
-- name: History
-  start_value: 5
-  value: 5
-- name: Intimidate
-  start_value: 15
-  value: 15
-- name: Jump
-  start_value: 20
-  value: 20
-- name: Language (Other)
-  specializations: true
-  start_value: 1
-  value: 1
-- name: Language (Own)
-  start_value: EDU
-  value: 0
-- name: Law
-  start_value: 5
-  value: 5
-- name: Library Use
-  start_value: 20
-  value: 20
-- name: Listen
-  start_value: 20
-  value: 20
-- name: Locksmith
-  start_value: 1
-  value: 1
-- name: Mechanical Repair
-  start_value: 10
-  value: 10
-- name: Medicine
-  start_value: 1
-  value: 1
-- name: Natural World
-  start_value: 10
-  value: 10
-- name: Navigate
-  start_value: 10
-  value: 10
-- name: Occult
-  start_value: 5
-  value: 5
-- name: Operate Heavy Machine
-  start_value: 1
-  value: 1
-- name: Persuade
-  start_value: 10
-  value: 10
-- name: Pilot
-  specializations: true
-  start_value: 1
-  value: 1
-- name: Psychology
-  start_value: 10
-  value: 10
-- name: Psychoanalysis
-  start_value: 1
-  value: 1
-- name: Ride
-  start_value: 5
-  value: 5
-- name: Science
-  specializations: true
-  start_value: 1
-  value: 1
-- name: Sleight of Hand
-  start_value: 10
-  value: 10
-- name: Spot Hidden
-  start_value: 25
-  value: 25
-- name: Stealth
-  start_value: 20
-  value: 20
-- name: Survival
-  specializations: true
-  start_value: 10
-  value: 10
-- name: Swim
-  start_value: 20
-  value: 20
-- name: Throw
-  start_value: 20
-  value: 20
-- name: Track
-  start_value: 10
-  value: 10
+    - name: Accounting
+      start_value: 5
+      value: 5
+    - name: Anthropology
+      start_value: 1
+      value: 1
+    - name: Appraise
+      start_value: 5
+      value: 5
+    - name: Archaeology
+      start_value: 1
+      value: 1
+    - name: Art/Craft
+      specializations: true
+      start_value: 5
+      value: 5
+    - name: Charm
+      start_value: 15
+      value: 15
+    - name: Climb
+      start_value: 20
+      value: 20
+    - name: Credit Rating
+      start_value: 0
+      value: 0
+    - name: Cthulhu Mythos
+      start_value: 0
+      value: 0
+    - name: Disguise
+      start_value: 5
+      value: 5
+    - name: Dodge
+      start_value: half DEX
+      value: 0
+    - name: Drive Auto
+      start_value: 20
+      value: 20
+    - name: Electrical Repair
+      start_value: 10
+      value: 10
+    - name: Fast Talk
+      start_value: 5
+      value: 5
+    - name: Fighting
+      specializations: true
+      start_value: 0
+      subskills:
+          - name: Brawl
+            start_value: 25
+            value: 25
+      value: 0
+    - name: Firearms
+      specializations: true
+      start_value: 0
+      subskills:
+          - name: Handgun
+            start_value: 20
+            value: 20
+          - name: Rifle/Shotgun
+            start_value: 25
+            value: 25
+      value: 0
+    - name: First Aid
+      start_value: 30
+      value: 30
+    - name: History
+      start_value: 5
+      value: 5
+    - name: Intimidate
+      start_value: 15
+      value: 15
+    - name: Jump
+      start_value: 20
+      value: 20
+    - name: Language (Other)
+      specializations: true
+      start_value: 1
+      value: 1
+    - name: Language (Own)
+      start_value: EDU
+      value: 0
+    - name: Law
+      start_value: 5
+      value: 5
+    - name: Library Use
+      start_value: 20
+      value: 20
+    - name: Listen
+      start_value: 20
+      value: 20
+    - name: Locksmith
+      start_value: 1
+      value: 1
+    - name: Mechanical Repair
+      start_value: 10
+      value: 10
+    - name: Medicine
+      start_value: 1
+      value: 1
+    - name: Natural World
+      start_value: 10
+      value: 10
+    - name: Navigate
+      start_value: 10
+      value: 10
+    - name: Occult
+      start_value: 5
+      value: 5
+    - name: Operate Heavy Machine
+      start_value: 1
+      value: 1
+    - name: Persuade
+      start_value: 10
+      value: 10
+    - name: Pilot
+      specializations: true
+      start_value: 1
+      value: 1
+    - name: Psychology
+      start_value: 10
+      value: 10
+    - name: Psychoanalysis
+      start_value: 1
+      value: 1
+    - name: Ride
+      start_value: 5
+      value: 5
+    - name: Science
+      specializations: true
+      start_value: 1
+      value: 1
+    - name: Sleight of Hand
+      start_value: 10
+      value: 10
+    - name: Spot Hidden
+      start_value: 25
+      value: 25
+    - name: Stealth
+      start_value: 20
+      value: 20
+    - name: Survival
+      specializations: true
+      start_value: 10
+      value: 10
+    - name: Swim
+      start_value: 20
+      value: 20
+    - name: Throw
+      start_value: 20
+      value: 20
+    - name: Track
+      start_value: 10
+      value: 10
 system: coc7e
 version: 0.0.4
 weapons:
-- ammo: '-'
-  attacks: 1
-  damage: 1d3 + db
-  malf: '-'
-  name: Unarmed
-  range: '-'
-  regular: 0
-  skillname: Brawl
+    - ammo: "-"
+      attacks: 1
+      damage: 1d3 + db
+      malf: "-"
+      name: Unarmed
+      range: "-"
+      regular: 0
+      skillname: Brawl

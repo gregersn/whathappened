@@ -10,21 +10,20 @@ from whathappened.content.forms import ChooseFolderForm
 from whathappened.database import session
 from whathappened.database.pagination import paginate
 from whathappened.models import Invite, LogEntry
+from whathappened.models import LogEntry
 from whathappened.sheets.mechanics import core
 from whathappened.sheets.mechanics.core import GameSystems
 from whathappened.sheets.schema.build import flatten_schema, get_schema, sub_schema
 from whathappened.sheets.schema.coc7e import migrations, LATEST
 from whathappened.sheets.schema.utils import migrate
+from whathappened.character import coc7e
 
 from . import bp, api
 from .models import Character
 from .forms import ImportForm, CreateForm
 from .forms import DeleteForm
 
-# Imports for registering games.
-from . import coc7e  # noqa
 from ..sheets.mechanics.coc7e.convert import convert_from_dholes
-from . import tftl  # noqa
 
 
 logger = logging.getLogger(__name__)

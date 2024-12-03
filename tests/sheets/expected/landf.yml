@@ -1,15 +1,15 @@
 character_sheet:
-  goal: Meet new aliens
-  inventory:
-  - Consortium uniform
-  - Communicator
-  - Pistol
-  name: Ace
-  role: Soldier
-  stat: 4
-  style: Heroic
+    goal: Meet new aliens
+    inventory:
+        - Consortium uniform
+        - Communicator
+        - Pistol
+    name: Ace
+    role: Soldier
+    stat: 4
+    style: Heroic
 meta:
-  gamename: Lasers and feelings
-  title: Unknown
+    gamename: Lasers and feelings
+    title: Unknown
 system: landf
 title: Test character
