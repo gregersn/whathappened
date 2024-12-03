@@ -5,19 +5,7 @@ from jsonschema import validate
 from whathappened.sheets.mechanics.coc7e import new_character
 from whathappened.sheets.schema.build import get_schema
 
-LATEST = "0.0.5"
-
-
-def v004_to_v005(data):
-    data = data.copy()
-    data["version"] = "0.0.5"
-    return data
-
-
-def v005_to_v004(data):
-    data = data.copy()
-    data["version"] = "0.0.4"
-    return data
+LATEST = "0.0.4"
 
 
 def v003_to_v004(data):
@@ -198,11 +186,5 @@ migrations = [
         "to": "0.0.4",
         "up": v003_to_v004,
         "down": v004_to_v003,
-    },
-    {
-        "from": "0.0.4",
-        "to": "0.0.5",
-        "up": v004_to_v005,
-        "down": v005_to_v004,
     },
 ]

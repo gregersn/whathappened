@@ -21,13 +21,14 @@
     "type": "object",
     "required": ["version", "system", "meta", "personalia", "characteristics"],
     "properties": {
-        "version": { "const": "0.0.5" },
+        "version": { "const": "0.0.4" },
         "system": { "const": "coc7e" },
         "meta": {
             "type": "object",
             "properties": {
                 "Title": { "type": "string" },
                 "Creator": { "type": "string" },
+                "CreateDate": { "type": "string" },
                 "GameName": { "const": "Call of Cthulhu TM" },
                 "GameVersion": { "const": "7th Edition" },
                 "GameType": {

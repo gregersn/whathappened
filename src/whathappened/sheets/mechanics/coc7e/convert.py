@@ -153,7 +153,7 @@ def convert_from_dholes(indata):
     assets = investigator["Assets"]
 
     return {
-        "version": "0.0.5",
+        "version": "0.0.4",
         "system": "coc7e",
         "meta": header,
         "personalia": personal_details,
