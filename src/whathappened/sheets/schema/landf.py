@@ -1,18 +1,18 @@
 """Lasers and Feelings schema."""
 
 from enum import Enum
-from typing_extensions import Annotated
+from typing import Literal
 import yaml
 
-import msgspec
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CharacterStyle(str, Enum):
     """What style of character being played."""
 
     ALIEN = "Alien"
-    DROID = "Droid"
     DANGEROUS = "Dangerous"
+    DROID = "Droid"
     HEROIC = "Heroic"
     HOTSHOT = "Hot-Shot"
     INTREPID = "Intrepid"
@@ -23,60 +23,64 @@ class CharacterRole(str, Enum):
     """The characters role."""
 
     DOCTOR = "Doctor"
-    ENVOY = "Envoy"
     ENGINEER = "Engineer"
+    ENVOY = "Envoy"
     EXPLORER = "Explorer"
     PILOT = "Pilot"
     SCIENTIST = "Scientist"
     SOLDIER = "Soldier"
 
 
-class SheetInfo(msgspec.Struct, frozen=True):
+class SheetInfo(BaseModel):
     """Basic info about the sheet."""
 
-    gamename: str = "Lasers and feelings"
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    gamename: Literal["Lasers and feelings"] = "Lasers and feelings"
     title: str = "Unknown"
 
 
-class LasersAndFeelingsCharacter(msgspec.Struct, frozen=True):
+class LasersAndFeelingsCharacter(BaseModel):
     """Character information."""
 
-    name: Annotated[str, msgspec.Meta(title="Character name")] = msgspec.field(
-        default="Ace"
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    name: str = Field(title="Character name", default="Ace")
+    style: CharacterStyle = Field(
+        title="Character style", default=CharacterStyle.HEROIC
     )
-    style: Annotated[CharacterStyle, msgspec.Meta(title="Character style")] = (
-        CharacterStyle.HEROIC
+    role: CharacterRole = Field(title="Character role", default=CharacterRole.SOLDIER)
+    inventory: list[str] = Field(
+        title="Inventory",
+        default=["Consortium uniform", "Communicator", "Pistol"],
     )
-    role: Annotated[CharacterRole, msgspec.Meta(title="Character role")] = (
-        CharacterRole.SOLDIER
-    )
-    inventory: Annotated[list[str], msgspec.Meta(title="Inventory")] = msgspec.field(
-        default_factory=lambda: ["Consortium uniform", "Communicator", "Pistol"],
-    )
-    goal: Annotated[str, msgspec.Meta(title="Character goal")] = msgspec.field(
-        default="Meet new aliens"
-    )
-    stat: Annotated[int, msgspec.Meta(ge=2, le=5, title="Lasers or feelings")] = (
-        msgspec.field(
-            default=4,
-        )
+    goal: str = Field(title="Character goal", default="Meet new aliens")
+    stat: int = Field(
+        ge=2,
+        le=5,
+        title="Lasers or feelings",
+        default=4,
     )
 
 
-class LasersAndFeelings(msgspec.Struct):
+class LasersAndFeelings(BaseModel):
     """Character sheet."""
 
-    system: str = msgspec.field(default="landf")
+    model_config = ConfigDict(
+        frozen=True, json_schema_serialization_defaults_required=True
+    )
+
+    system: Literal["landf"] = "landf"
     meta: SheetInfo = SheetInfo()
 
-    character_sheet: Annotated[
-        LasersAndFeelingsCharacter, msgspec.Meta(title="Lasers And Feelings")
-    ] = LasersAndFeelingsCharacter()
+    character_sheet: LasersAndFeelingsCharacter = Field(
+        title="Lasers And Feelings", default_factory=LasersAndFeelingsCharacter
+    )
 
 
 CharacterSheet = LasersAndFeelings
 
 if __name__ == "__main__":
-    print(yaml.dump(msgspec.json.schema(LasersAndFeelings)))
+    print(yaml.dump(LasersAndFeelings.model_json_schema()))
 
     # print(LasersAndFeelings().model_dump_json())
