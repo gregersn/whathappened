@@ -38,11 +38,11 @@ def test_schemas(game: str):
     with open(expected_file, "r", encoding="utf8") as f:
         expected_schema = yaml.safe_load(f)
 
-    if not expected_schema == current_schema:
+    if not current_schema == expected_schema:
         current_file.parent.mkdir(parents=True, exist_ok=True)
         with open(current_file, "w", encoding="utf8") as f:
             yaml.safe_dump(current_schema, f)
-        assert expected_schema == current_schema
+        assert current_schema == expected_schema
 
 
 @pytest.mark.parametrize("game", SYSTEMS)
@@ -67,8 +67,8 @@ def test_create_sheet(game: System):
     with open(expected_file, "r", encoding="utf8") as f:
         expected_sheet = yaml.safe_load(f)
 
-    if not expected_sheet == test_sheet:
+    if not test_sheet == expected_sheet:
         current_file.parent.mkdir(parents=True, exist_ok=True)
         with open(current_file, "w", encoding="utf8") as f:
             yaml.safe_dump(test_sheet, f)
-        assert expected_sheet == test_sheet
+        assert test_sheet == expected_sheet
