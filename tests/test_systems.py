@@ -8,7 +8,7 @@ from whathappened import sheets
 from whathappened.sheets.schema.build import get_schema
 from whathappened.sheets.utils import create_sheet
 
-System = Literal["landf", "dod", "tftl"]
+System = Literal["landf", "dod", "tftl", "coc7e"]
 SYSTEMS: list[str] = list(typing.get_args(System))
 
 
@@ -51,7 +51,9 @@ def test_create_sheet(game: System):
 
     assert character_module
 
-    test_sheet = character_module.new_character("Test character", system=game)
+    test_sheet = character_module.new_character(
+        "Test character", system=game, timestamp=1733213970
+    )
     assert test_sheet
 
     expected_file = Path(f"tests/sheets/expected/{game}.yml")
