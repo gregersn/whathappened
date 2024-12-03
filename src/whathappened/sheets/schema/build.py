@@ -6,6 +6,7 @@ from pathlib import Path
 import json
 import yaml
 import msgspec
+import pydantic
 from jsonschema.exceptions import SchemaError
 from jsonschema.validators import Draft7Validator
 
@@ -28,6 +29,11 @@ def get_schema(system: str):
         if issubclass(game_module.CharacterSheet, msgspec.Struct):
             logger.debug("Getting character sheet from imgspec")
             return msgspec.json.schema(game_module.CharacterSheet)
+
+        if issubclass(game_module.CharacterSheet, pydantic.BaseModel):
+            logger.debug("Getting character sheet from pydantic")
+            return game_module.CharacterSheet.model_json_schema(mode="serialization")
+
     except ImportError:
         ...
     except AttributeError:

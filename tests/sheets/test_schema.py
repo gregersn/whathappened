@@ -33,9 +33,7 @@ def test_build_from_schema():
     assert data["character_sheet"]["name"] == "Ace"
 
 
-@pytest.mark.xfail
 def test_validate():
-    # TODO: Failing as fields are not required with default values.
     schema = get_schema("landf")
     data = build_from_schema(schema)
 

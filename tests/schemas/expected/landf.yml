@@ -10,6 +10,7 @@ $defs:
     - Scientist
     - Soldier
     title: CharacterRole
+    type: string
   CharacterStyle:
     description: What style of character being played.
     enum:
@@ -21,33 +22,7 @@ $defs:
     - Intrepid
     - Savvy
     title: CharacterStyle
-  LasersAndFeelings:
-    description: Character sheet.
-    properties:
-      character_sheet:
-        $ref: '#/$defs/LasersAndFeelingsCharacter'
-        default:
-          goal: Meet new aliens
-          inventory:
-          - Consortium uniform
-          - Communicator
-          - Pistol
-          name: Ace
-          role: Soldier
-          stat: 4
-          style: Heroic
-        title: Lasers And Feelings
-      meta:
-        $ref: '#/$defs/SheetInfo'
-        default:
-          gamename: Lasers and feelings
-          title: Unknown
-      system:
-        default: landf
-        type: string
-    required: []
-    title: LasersAndFeelings
-    type: object
+    type: string
   LasersAndFeelingsCharacter:
     description: Character information.
     properties:
@@ -56,6 +31,10 @@ $defs:
         title: Character goal
         type: string
       inventory:
+        default:
+        - Consortium uniform
+        - Communicator
+        - Pistol
         items:
           type: string
         title: Inventory
@@ -78,19 +57,50 @@ $defs:
         $ref: '#/$defs/CharacterStyle'
         default: Heroic
         title: Character style
-    required: []
+    required:
+    - name
+    - style
+    - role
+    - inventory
+    - goal
+    - stat
     title: LasersAndFeelingsCharacter
     type: object
   SheetInfo:
     description: Basic info about the sheet.
     properties:
       gamename:
+        const: Lasers and feelings
         default: Lasers and feelings
+        title: Gamename
         type: string
       title:
         default: Unknown
+        title: Title
         type: string
-    required: []
+    required:
+    - gamename
+    - title
     title: SheetInfo
     type: object
-$ref: '#/$defs/LasersAndFeelings'
+description: Character sheet.
+properties:
+  character_sheet:
+    $ref: '#/$defs/LasersAndFeelingsCharacter'
+    title: Lasers And Feelings
+  meta:
+    $ref: '#/$defs/SheetInfo'
+    default:
+      gamename: Lasers and feelings
+      title: Unknown
+  system:
+    const: landf
+    default: landf
+    title: System
+    type: string
+required:
+- system
+- meta
+- character_sheet
+title: LasersAndFeelings
+type: object
