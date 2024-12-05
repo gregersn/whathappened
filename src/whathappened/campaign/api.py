@@ -28,6 +28,9 @@ def handouts(campaignid: int):
         abort(403)
 
     campaign = session.get(Campaign, campaignid)
+    if campaign is None:
+        abort(404)
+
     if current_user.profile not in campaign.players:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
@@ -56,6 +59,10 @@ def messages(campaignid: int):
     after = int(request.args.get("after", "0"), 10)
     logger.debug(f"Get all messages for campaign {campaignid} after {after}")
     campaign = session.get(Campaign, campaignid)
+
+    if campaign is None:
+        abort(404)
+
     messages = (
         campaign.messages.filter(
             or_(
