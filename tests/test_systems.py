@@ -8,7 +8,7 @@ from whathappened import sheets
 from whathappened.sheets.schema.build import get_schema
 from whathappened.sheets.utils import create_sheet
 
-System = Literal["landf", "dod", "tftl", "coc7e"]
+System = Literal["landf", "dod", "tftl", "coc7e", "vaesen"]
 SYSTEMS: list[str] = list(typing.get_args(System))
 
 
