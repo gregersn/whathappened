@@ -12,7 +12,7 @@ FRONTEND_MARKER := frontend/$(MARKER_FILENAME)
 # Default target:
 .PHONY: dev_server
 dev_server: frontend
-	@FLASK_APP=src/whathappened FLASK_DEBUG=1 $(VENV_FLASK) run
+	@FLASK_APP=src/whathappened FLASK_DEBUG=1 $(VENV_FLASK) run --extra-files ./src/whathappened/static/manifest.json
 
 # Install Python dependencies:
 .PHONY: setup_dependencies
