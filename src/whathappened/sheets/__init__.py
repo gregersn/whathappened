@@ -21,6 +21,7 @@ def find_system(tag: Gametag):
 
 
 register_game("landf", "Lasers and feelings")
+register_game("vaesen", "Vaesen")
 register_game("tftl", "Tales from the Loop", TftlMechanics)
 register_game("coc7e", "Call of Cthulhu TM", CoCMechanics)
 register_game("dod", "Drakar och demoner", DoDMechanics)
