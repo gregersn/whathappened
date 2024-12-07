@@ -40,7 +40,13 @@ function saveElement(
 
     const field = element.getAttribute("data-field");
     console.log(`Save changes to ${field}, new value ${value}`);
-    element.innerHTML = value;
+    element.setAttribute("data-value", value);
+    if (editfield instanceof HTMLSelectElement) {
+        element.innerHTML =
+            editfield.options[editfield.selectedIndex].innerHTML;
+    } else {
+        element.innerHTML = value;
+    }
     element.addEventListener("click", editable_handler);
     save(data, value);
 }
@@ -102,18 +108,19 @@ function editElement(
     editable_handler: (e: Event) => void
 ) {
     console.log("Edit element");
-    const value = element.innerHTML;
+    const value = element.getAttribute("data-value") ?? element.innerHTML;
     let editfield: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement =
         null;
 
-    let choices = element.getAttribute("data-choices");
+    const choices = element.getAttribute("data-choices");
 
     if (choices) {
+        const values = JSON.parse(element.getAttribute("data-values"));
         editfield = document.createElement("select");
         JSON.parse(choices).forEach((choice) => {
             const option = document.createElement("option");
             option.value = choice;
-            option.innerHTML = choice;
+            option.innerHTML = values[choice] ?? choice;
             editfield.appendChild(option);
         });
     } else if (type === "string") {
@@ -234,7 +241,7 @@ export function saveCheck(editfield: HTMLInputElement) {
 }
 
 function table_to_obj(table: HTMLTableElement): Tabledata {
-    let data_rows = [];
+    const data_rows = [];
 
     //const tableName = table.getAttribute('data-field');
     const fields = Array.from(table.tHead.rows[0].cells)
