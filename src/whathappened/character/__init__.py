@@ -18,6 +18,13 @@ def datetimeformat(value, formatstring: str = "%Y-%m-%d %H:%M:%S"):
     return value.strftime(formatstring)
 
 
+@bp.app_template_filter("valuetostring")
+def valuetostring(value):
+    if isinstance(value, dict):
+        return ", ".join(f"{k}: {v}" for k, v in value.items())
+    return value
+
+
 @bp.app_template_filter("half")
 def half(value):
     if not value:

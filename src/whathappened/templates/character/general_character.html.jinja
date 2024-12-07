@@ -17,12 +17,14 @@
 {%- endmacro %}
 
 {%- macro render_array(object, path='') %}
+<div id="{{path}}">
 <ul class="{%- if editable and not object.constant %}  editable_list{%- endif %}" data-field="{{path}}" data-type="{{object.items.type}}">
     {% for litem in character.mechanics.attribute(path) or [] %}
     <li data-field="{{ path ~ '.' ~ loop.index0 }}">{{ render_item(object['items'], path ~ '.' ~ loop.index0) }}
     </li>
     {% endfor %}
 </ul>
+</div>
 {%- endmacro %}
 
 {%- macro render_table(object, path='', key=None)%}
@@ -73,8 +75,12 @@
 {{ render_object(item, path)}}
 {% elif 'type' in item and item.type == 'array' %}
 {{ render_array(item, path) }}
-{% elif 'enum' in item %}
-{{ editable_choice(path, type=html_data_type(item.type), choices=item.enum, constant=constant)|uberfilter(item.filter)
+{% elif 'enum' in item or item.type == 'enum' %}
+{{ editable_choice(path, 
+                  type=html_data_type(item.type), 
+                  choices=item.enum, 
+                  constant=constant, 
+                  values=item.get("choice_values", {}))|uberfilter(item.filter)
 }}
 {% elif 'type' in item and (item.type == 'integer') %}
 {{ editable_field(path, type=html_data_type(item.type), minimum=item.minimum, maximum=item.maximum, constant=constant)
