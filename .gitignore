@@ -18,6 +18,7 @@ build/
 
 .webassets-cache/
 
+src/whathappened/_version.py
 src/whathappened/static/js/
 src/whathappened/static/css/
 src/whathappened/static/manifest.json
