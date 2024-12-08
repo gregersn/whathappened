@@ -22,6 +22,7 @@ setup_dependencies: .venv/$(MARKER_FILENAME)
 	@python3 -m venv .venv
 	@$(VENV_PIP) install -r requirements.txt
 	@$(VENV_PIP) install -r requirements-dev.txt
+	@$(VENV_PIP) install -e .
 	@touch $@
 
 # Initialise database:
