@@ -30,10 +30,16 @@ class SheetInfo(BaseModel):
 
 
 class Attributes(BaseModel):
-    physique: int = Field(ge=2, le=5, default=2)
-    precision: int = Field(ge=2, le=5, default=2)
-    logic: int = Field(ge=2, le=5, default=2)
-    empathy: int = Field(ge=2, le=5, default=2)
+    physique: int = Field(
+        ge=2, le=5, default=2, description="How big and strong you are."
+    )
+    precision: int = Field(
+        ge=2, le=5, default=2, description="Coordination and motor skills."
+    )
+    logic: int = Field(ge=2, le=5, default=2, description="Intellectual capacity.")
+    empathy: int = Field(
+        ge=2, le=5, default=2, description="Your ability to understand other people."
+    )
 
 
 class Skills(BaseModel):
@@ -110,11 +116,18 @@ class Conditions(BaseModel):
 
 
 class Miscellaneous(BaseModel):
-    talents: list[str] = []
+    talents: list[str] = Field(
+        [],
+        description="Tricks, traits and abilities that can benefit you in various situations.",
+    )
     insights: list[str] = Field(title="Insights & defects", default=[])
-    advantages: str = ""
+    advantages: str = Field(
+        "", description="What can help you on your current adventure?"
+    )
     equipment: list[Equipment] = Field(
-        default=[], json_schema_extra={"widget": "table", "header": True}
+        default=[],
+        json_schema_extra={"widget": "table", "header": True},
+        description="All your things.",
     )
     armor: Armors = Field(
         title="Armor",
@@ -129,35 +142,58 @@ class Miscellaneous(BaseModel):
             "hide_title": True,
         },
     )
-    memento: str = ""
+    memento: str = Field("", description="Something that's a part of you.")
 
 
 class Personality(BaseModel):
-    name: str = ""
-    age: int = 17
-    archetype: Archetype = Field(title="Archetype", default=Archetype.ACADEMIC)
-    motivation: str = ""
-    trauma: str = ""
-    dark_secret: str = ""
+    name: str = Field("", description="How should you be adressed?")
+    age: int = Field(
+        17, description="Young: 17-25 years, middle-aged: 26-50 years, old: 51+ years."
+    )
+    archetype: Archetype = Field(
+        title="Archetype",
+        default=Archetype.ACADEMIC,
+        description="The skeleton of your character.",
+    )
+    motivation: str = Field(
+        "",
+        description="Why are you willing to risk your own life to track down and fight vaesen?",
+    )
+    trauma: str = Field("", description="What event gave you the Sight?")
+    dark_secret: str = Field(
+        "", description="A problem you are ashamed of, and keep to yourself."
+    )
     relationships: list[str] = Field(
         title="Relationships",
         default=["PC 1", "PC 2", "PC 3", "PC 4"],
         min_length=4,
         max_length=4,
         json_schema_extra={"constant": True},
+        description="Your relationship to the other characters.",
     )
     description: str = ""
 
 
 class Characteristics(BaseModel):
-    attributes: Attributes = Field(title="Attributes", default_factory=Attributes)
-    resources: int = 1
+    attributes: Attributes = Field(
+        title="Attributes",
+        default_factory=Attributes,
+        description="Each attribute has a value between 2 and 5 and determines the number of dice you roll when attempting things that depend on the attribute in question.",
+    )
+    resources: int = Field(
+        default=1,
+        description="How much capital you have at your disposal. 1 - destitude, 8 - filthy rich.",
+    )
     conditions: Conditions = Field(title="Conditions", default_factory=Conditions)
-    skills: Skills = Field(title="Skills", default_factory=Skills)
+    skills: Skills = Field(
+        title="Skills",
+        default_factory=Skills,
+        description="Acquired knowledge, training and experience. Value between 0 and 5.",
+    )
     experience: int = Field(
         title="Experience",
         ge=0,
-        le=10,
+        le=20,
         default=0,
         json_schema_extra={"widget": "progress"},
     )
