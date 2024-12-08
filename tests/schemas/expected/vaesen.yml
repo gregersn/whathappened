@@ -51,25 +51,32 @@ $defs:
       name:
         type: string
         default: ''
+        description: How should you be adressed?
         title: Name
       age:
         type: integer
         default: 17
+        description: 'Young: 17-25 years, middle-aged: 26-50 years, old: 51+ years.'
         title: Age
       archetype:
         $ref: '#/$defs/Archetype'
         default: Academic
+        description: The skeleton of your character.
       motivation:
         type: string
         default: ''
+        description: Why are you willing to risk your own life to track down and fight
+          vaesen?
         title: Motivation
       trauma:
         type: string
         default: ''
+        description: What event gave you the Sight?
         title: Trauma
       dark_secret:
         type: string
         default: ''
+        description: A problem you are ashamed of, and keep to yourself.
         title: Dark Secret
       relationships:
         type: array
@@ -83,6 +90,7 @@ $defs:
         - PC 3
         - PC 4
         title: Relationships
+        description: Your relationship to the other characters.
         constant: true
       description:
         type: string
@@ -137,6 +145,8 @@ $defs:
         items:
           type: string
         default: []
+        description: Tricks, traits and abilities that can benefit you in various
+          situations.
         title: Talents
       insights:
         type: array
@@ -147,12 +157,14 @@ $defs:
       advantages:
         type: string
         default: ''
+        description: What can help you on your current adventure?
         title: Advantages
       equipment:
         type: array
         items:
           $ref: '#/$defs/Equipment'
         default: []
+        description: All your things.
         widget: table
         header: true
         title: Equipment
@@ -176,6 +188,7 @@ $defs:
       memento:
         type: string
         default: ''
+        description: Something that's a part of you.
         title: Memento
     title: Miscellaneous
   Attributes:
@@ -186,24 +199,28 @@ $defs:
         maximum: 5
         minimum: 2
         default: 2
+        description: How big and strong you are.
         title: Physique
       precision:
         type: integer
         maximum: 5
         minimum: 2
         default: 2
+        description: Coordination and motor skills.
         title: Precision
       logic:
         type: integer
         maximum: 5
         minimum: 2
         default: 2
+        description: Intellectual capacity.
         title: Logic
       empathy:
         type: integer
         maximum: 5
         minimum: 2
         default: 2
+        description: Your ability to understand other people.
         title: Empathy
     title: Attributes
   PhysicalConditions:
@@ -337,17 +354,24 @@ $defs:
     properties:
       attributes:
         $ref: '#/$defs/Attributes'
+        description: Each attribute has a value between 2 and 5 and determines the
+          number of dice you roll when attempting things that depend on the attribute
+          in question.
       resources:
         type: integer
         default: 1
+        description: How much capital you have at your disposal. 1 - destitude, 8
+          - filthy rich.
         title: Resources
       conditions:
         $ref: '#/$defs/Conditions'
       skills:
         $ref: '#/$defs/Skills'
+        description: Acquired knowledge, training and experience. Value between 0
+          and 5.
       experience:
         type: integer
-        maximum: 10
+        maximum: 20
         minimum: 0
         default: 0
         title: Experience
