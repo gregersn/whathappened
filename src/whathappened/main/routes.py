@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_class_by_tablename(tablename):
-    for c in Base._decl_class_registry.values():
+    for c in Base.registry._class_registry.values():
         if hasattr(c, "__tablename__") and c.__tablename__ == tablename:
             return c
 
