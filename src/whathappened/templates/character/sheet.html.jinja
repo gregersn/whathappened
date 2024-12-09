@@ -33,8 +33,8 @@
 
 {%- macro editable_field(field, default='', type='string', minimum=None, maximum=None, filter="", constant=False) %}
 <span {%- if editable and not constant %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}"
-    {%- if minimum is not none %}data-min="{{minimum}}" {%- endif %} {%- if maximum is not none %}data-max="{{maximum}}"
-    {%- endif %}>{{
+    {%- if minimum %}data-min="{{minimum}}" {%- endif %} {%- if maximum %}data-max="{{maximum}}"
+    {%- endif %} title="{{type|capitalize}}{%- if minimum %} Minimum: {{minimum}}{%- endif %}{%- if maximum %} Maximum: {{maximum}}{%- endif%}">{{
     character.mechanics.attribute(field)|uberfilter(filter) }}</span>
 {%- endmacro %}
 

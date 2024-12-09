@@ -7,7 +7,7 @@
     {% do item.pop("subsection")%}
     {{ render_section_2(key, item, path)}}
     {% else %}
-    {%- if not item.hide_title%}<label for="{{ path + '.' + key}}" id="{{ path + '.' + key + '-label'}}">{{ item.title if 'title' in item else key|title }}:</label> {%- endif %}{{ render_item(item,
+    {%- if not item.hide_title%}<label for="{{ path + '.' + key}}" id="{{ path + '.' + key + '-label'}}" {%- if item.description %}title="{{ item.description }}"{%- endif %}>{{ item.title if 'title' in item else key|title }}:</label> {%- endif %}{{ render_item(item,
     path +
     '.' + key, key) }}{% if not
     item.block == "inline" %}<br />{% endif%}
