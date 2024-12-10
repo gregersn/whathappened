@@ -148,7 +148,7 @@ class NPC(BaseModel):
     campaign = relationship("Campaign", back_populates="NPCs")
 
     character_id = Column(Integer, ForeignKey("charactersheet.id"), nullable=False)
-    character = relationship("Character")
+    character = relationship("Character", backref="npc", lazy=True)
 
     visible = Column(Boolean, default=False)
 
