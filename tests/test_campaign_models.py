@@ -22,6 +22,16 @@ def test_campaign_player_list(db):
     assert campaign.players_by_id == {None: player1}
 
 
+def test_campain_character(db):
+    campaign = Campaign(title="test_campaign", characters_enabled=True)
+    character1 = Character(title="test_character")
+    assert campaign.characters_enabled == True
+
+    assert not campaign.characters.all()
+
+    campaign.characters.append(character1)
+
+
 def test_campaign_npc_list(db):
     campaign = Campaign(title="test_campaign")
     character1 = Character(title="test_character")

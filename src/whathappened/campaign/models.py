@@ -21,6 +21,9 @@ campaign_characters = Table(
     Base.metadata,
     Column("character_id", Integer, ForeignKey("charactersheet.id"), primary_key=True),
     Column("campaign_id", Integer, ForeignKey("campaign.id"), primary_key=True),
+    Column("share_with_gm", Boolean, default=False),
+    Column("share_with_players", Boolean, default=False),
+    Column("group_sheet", Boolean, default=False),
 )
 
 
