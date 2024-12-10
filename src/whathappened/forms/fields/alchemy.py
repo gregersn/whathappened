@@ -76,7 +76,7 @@ class QuerySelectField(SelectFieldBase):
         blank_text="",
         **kwargs,
     ):
-        super(QuerySelectField, self).__init__(label, validators, **kwargs)
+        super().__init__(label, validators, **kwargs)
         self.query_factory = query_factory
 
         if get_pk is None:
@@ -164,9 +164,7 @@ class QuerySelectMultipleField(QuerySelectField):
     def __init__(self, label=None, validators=None, default=None, **kwargs):
         if default is None:
             default = []
-        super(QuerySelectMultipleField, self).__init__(
-            label, validators, default=default, **kwargs
-        )
+        super().__init__(label, validators, default=default, **kwargs)
         if kwargs.get("allow_blank", False):
             import warnings
 

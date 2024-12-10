@@ -1,41 +1,55 @@
+"""Auth models."""
+
 import logging
 from time import time
 import jwt
 
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import Integer, String
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.sql.sqltypes import String
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from flask_login import UserMixin
 from flask import current_app
 
 from whathappened.database import Base, session
+from whathappened.models import UserProfile
 
 logger = logging.getLogger(__name__)
 
 
 class User(UserMixin, Base):
+    """User account."""
+
     __tablename__ = "user_account"
-    id = Column(Integer, primary_key=True)
-    username = Column(String(64), index=True, unique=True)
-    email = Column(String(128), index=True, unique=True)
-    password_hash = Column(String(128))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(
+        String(64), index=True, unique=True, nullable=True
+    )
+    email: Mapped[str] = mapped_column(
+        String(128), index=True, unique=True, nullable=True
+    )
+    password_hash: Mapped[str] = mapped_column(String(128), nullable=True)
 
-    profile = relationship("UserProfile", uselist=False, back_populates="user")
+    profile: Mapped[UserProfile] = relationship(
+        "UserProfile", uselist=False, back_populates="user"
+    )
 
-    roles = relationship("Role", secondary="user_roles")
+    roles: Mapped[list["Role"]] = relationship(secondary="user_roles")
 
     def __repr__(self):
-        return "<User {}>".format(self.username)
+        return f"<User {self.username}>"
 
     def set_password(self, password: str):
+        """Set user account password."""
         self.password_hash = generate_password_hash(password, "pbkdf2")
 
     def check_password(self, password: str):
+        """Verify user account password."""
         return check_password_hash(str(self.password_hash), password)
 
     def get_reset_password_token(self, expires_in: int = 600):
+        """Create token for password reset."""
         return jwt.encode(
             {"reset_password": self.id, "exp": time() + expires_in},
             current_app.config["SECRET_KEY"],
@@ -44,18 +58,14 @@ class User(UserMixin, Base):
 
     @staticmethod
     def verify_reset_password_token(token: str):
-        try:
-            id = jwt.decode(
-                token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
-            )["reset_password"]
-        except Exception:
-            logger.error(
-                "Exception occurent while trying to reset password.", exc_info=True
-            )
-            return
-        return session.get(User, id)
+        """Verify password reset token."""
+        user_id = jwt.decode(
+            token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
+        )["reset_password"]
+        return session.get(User, user_id)
 
     def has_role(self, role: str):
+        """Check if user has role."""
         for r in self.roles:
             if r.name == role:
                 return True
@@ -63,19 +73,28 @@ class User(UserMixin, Base):
 
 
 class Role(Base):
+    """Role a user can have."""
+
     __tablename__ = "roles"
-    id = Column(Integer(), primary_key=True)
-    name = Column(String(50), unique=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(50), unique=True, nullable=True)
 
 
 class UserRoles(Base):
+    """Connection between user and role."""
+
     __tablename__ = "user_roles"
-    id = Column(Integer(), primary_key=True)
-    user_id = Column(Integer(), ForeignKey("user_account.id", ondelete="CASCADE"))
-    role_id = Column(Integer(), ForeignKey("roles.id", ondelete="CASCADE"))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("user_account.id", ondelete="CASCADE"), nullable=True
+    )
+    role_id: Mapped[int] = mapped_column(
+        ForeignKey("roles.id", ondelete="CASCADE"), nullable=True
+    )
 
 
-def create_core_roles(*args, **kwargs):
+def create_core_roles(*_, **__):
+    """Create the core user roles."""
     session.add(Role(name="admin"))
     session.commit()
 
@@ -87,7 +106,8 @@ def create_core_roles(*args, **kwargs):
 # listen(Role.__table__, 'after_create', create_core_roles)
 
 
-def add_first_admin(*args, **kwargs):
+def add_first_admin(*_, **__):
+    """Create the first user/admin."""
     session.add(UserRoles(user_id=1, role_id=1))
     session.commit()
 

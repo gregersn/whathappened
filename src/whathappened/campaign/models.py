@@ -1,13 +1,18 @@
+"""Campaign database models."""
+
 import enum
 from datetime import datetime
 
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import backref, relationship, Mapped, mapped_column
 from sqlalchemy.sql.schema import ForeignKey, Table, Column
-from sqlalchemy.sql.sqltypes import Boolean, DateTime
-from sqlalchemy.sql.sqltypes import Enum, Integer, String, Text
+from sqlalchemy.sql.sqltypes import DateTime, Enum, Integer, String, Text
 
 from whathappened.database.base import Base, BaseModel
 from whathappened.content.mixins import BaseContent
+from whathappened.models import UserProfile
+from whathappened.character.models import Character
+from whathappened.content.models import Folder
+
 
 campaign_players = Table(
     "campaign_players",
@@ -25,55 +30,60 @@ campaign_characters = Table(
 
 
 class Campaign(BaseModel, BaseContent):
+    """Campaign information."""
+
     __tablename__ = "campaign"
-    id = Column(Integer, primary_key=True)
-    title = Column(String(256))
-    description = Column(Text)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(256), nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
 
     # Owner of the campaign (GM)
-    user_id = Column(Integer, ForeignKey("user_profile.id"))
-    user = relationship("UserProfile", backref=backref("campaigns", lazy="dynamic"))
+    user_id = mapped_column(ForeignKey("user_profile.id"))
+    user: Mapped[UserProfile] = relationship(
+        backref=backref("campaigns", lazy="dynamic")
+    )
 
     # The players in a campaign
-    players = relationship(
-        "UserProfile",
+    players: Mapped[list[UserProfile]] = relationship(
         secondary=campaign_players,
         lazy="dynamic",
         backref=backref("campaigns_as_player", lazy=True),
     )
     # Characters added to the campaign
-    characters = relationship(
-        "Character",
+    characters: Mapped[list[Character]] = relationship(
         secondary=campaign_characters,
         lazy="dynamic",
         backref=backref("campaigns", lazy=True),
     )
 
     # NPCs added to campaign
-    NPCs = relationship("NPC", back_populates="campaign", lazy="dynamic")
+    NPCs: Mapped[list["NPC"]] = relationship(back_populates="campaign", lazy="dynamic")
 
     # Handouts added to campaign
-    handouts = relationship("Handout", back_populates="campaign", lazy="dynamic")
+    handouts: Mapped[list["Handout"]] = relationship(
+        back_populates="campaign", lazy="dynamic"
+    )
 
     # Handout groups for the campaign
-    handout_groups = relationship(
-        "HandoutGroup", back_populates="campaign", lazy="dynamic"
+    handout_groups: Mapped[list["HandoutGroup"]] = relationship(
+        back_populates="campaign", lazy="dynamic"
     )
 
     # Features used for campaign
-    characters_enabled = Column(Boolean, default=True)
-    npcs_enabled = Column(Boolean, default=False)
-    handouts_enabled = Column(Boolean, default=False)
-    messages_enabled = Column(Boolean, default=False)
+    characters_enabled: Mapped[bool] = mapped_column(default=True, nullable=True)
+    npcs_enabled: Mapped[bool] = mapped_column(default=False, nullable=True)
+    handouts_enabled: Mapped[bool] = mapped_column(default=False, nullable=True)
+    messages_enabled: Mapped[bool] = mapped_column(default=False, nullable=True)
 
-    folder = relationship("Folder", backref="campaigns")
+    folder: Mapped["Folder"] = relationship(backref="campaigns")
 
     @property
     def players_by_id(self):
+        """Get all players as a dictionary by id."""
         return dict((player.id, player) for player in self.players)
 
     def __repr__(self):
-        return "<Campaign {}>".format(self.title)
+        return f"<Campaign {self.title}>"
 
     _default_fields = ["id", "title", "description", "NPCs", "handouts"]
 
@@ -87,6 +97,8 @@ player_handouts = Table(
 
 
 class HandoutStatus(enum.Enum):
+    """Status of a handout."""
+
     draft = "Draft"
     deleted = "Deleted"
     hidden = "Hidden"
@@ -94,12 +106,14 @@ class HandoutStatus(enum.Enum):
 
 
 class HandoutGroup(Base):
+    """A group of handouts."""
+
     __tablename__ = "campaign_handout_group"
-    id = Column(Integer, primary_key=True)
-    name = Column(String(256))
-    campaign_id = Column(Integer, ForeignKey("campaign.id"))
-    campaign = relationship("Campaign", back_populates="handout_groups")
-    handouts = relationship("Handout", lazy="dynamic", back_populates="group")
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(256), nullable=True)
+    campaign_id = mapped_column(ForeignKey("campaign.id"))
+    campaign: Mapped[Campaign] = relationship(back_populates="handout_groups")
+    handouts: Mapped["Handout"] = relationship(back_populates="group")
 
     def __repr__(self):
         return f"<Handout Group {self.name}>"
@@ -115,67 +129,84 @@ HandoutStatusType: Enum = Enum(
 
 
 class Handout(BaseModel):
-    __tablename__ = "campaign_handout"
-    id = Column(Integer, primary_key=True)
-    title = Column(String(256))
-    content = Column(Text)
-    campaign_id = Column(Integer, ForeignKey("campaign.id"))
-    campaign = relationship("Campaign", back_populates="handouts")
-    status = Column("status", Enum(HandoutStatus), default=HandoutStatus.draft)
+    """A handout."""
 
-    players = relationship(
-        "UserProfile",
+    __tablename__ = "campaign_handout"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(256), nullable=True)
+    content: Mapped[str] = mapped_column(Text, nullable=True)
+    campaign_id: Mapped[int] = mapped_column(ForeignKey("campaign.id"), nullable=True)
+    campaign: Mapped[Campaign] = relationship(back_populates="handouts")
+    status: Mapped[HandoutStatus] = mapped_column(
+        default=HandoutStatus.draft, nullable=True
+    )
+
+    players: Mapped[list[UserProfile]] = relationship(
         secondary=player_handouts,
         lazy="dynamic",
         backref=backref("campaign_handouts", lazy=True),
     )
-    group_id = Column(Integer, ForeignKey("campaign_handout_group.id"))
+    group_id: Mapped[int] = mapped_column(
+        ForeignKey("campaign_handout_group.id"), nullable=True
+    )
 
-    group = relationship("HandoutGroup")
+    group: Mapped[HandoutGroup] = relationship()
 
     def __repr__(self):
-        return "<Handout {}>".format(self.title)
+        return f"<Handout {self.title}>"
 
     _default_fields = ["id", "title"]
 
 
 class NPC(BaseModel):
+    """An NPC."""
+
     __tablename__ = "campaign_npc"
 
-    id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-    campaign_id = Column(Integer, ForeignKey("campaign.id"), nullable=False)
-    campaign = relationship("Campaign", back_populates="NPCs")
+    campaign_id: Mapped[int] = mapped_column(ForeignKey("campaign.id"), nullable=False)
+    campaign: Mapped[Campaign] = relationship(back_populates="NPCs")
 
-    character_id = Column(Integer, ForeignKey("charactersheet.id"), nullable=False)
-    character = relationship("Character", backref="npc", lazy=True)
+    character_id: Mapped[int] = mapped_column(
+        ForeignKey("charactersheet.id"), nullable=False
+    )
+    character: Mapped[Character] = relationship(backref="npc", lazy=True)
 
-    visible = Column(Boolean, default=False)
+    visible: Mapped[bool] = mapped_column(default=False, nullable=True)
 
     _default_fields = ["character", "visible"]
 
 
 class Message(BaseModel):
+    """A message."""
+
     __tablename__ = "campaign_message"
-    id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-    campaign_id = Column(Integer, ForeignKey("campaign.id"), nullable=False)
-    campaign = relationship("Campaign", backref=backref("messages", lazy="dynamic"))
+    campaign_id: Mapped[int] = mapped_column(ForeignKey("campaign.id"), nullable=False)
+    campaign: Mapped[Campaign] = relationship(
+        backref=backref("messages", lazy="dynamic")
+    )
 
-    to_id = Column(Integer, ForeignKey("user_profile.id"), nullable=True)
-    to = relationship("UserProfile", foreign_keys=[to_id])
-    from_id = Column(Integer, ForeignKey("user_profile.id"), nullable=False)
-    sender = relationship("UserProfile", foreign_keys=[from_id])
+    to_id: Mapped[int] = mapped_column(ForeignKey("user_profile.id"), nullable=True)
+    to: Mapped[UserProfile] = relationship(foreign_keys=[to_id])
+    from_id: Mapped[int] = mapped_column(ForeignKey("user_profile.id"), nullable=False)
+    sender: Mapped[UserProfile] = relationship(foreign_keys=[from_id])
 
-    message = Column(Text)
-    timestamp = Column(DateTime, index=True, default=datetime.utcnow)
+    message: Mapped[str] = mapped_column(Text, nullable=True)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime, index=True, default=datetime.utcnow, nullable=True
+    )
 
     _default_fields = ["timestamp", "sender_name", "to_name", "message", "id"]
 
     @property
     def sender_name(self):
+        """Name of message sender."""
         return self.sender.user.username
 
     @property
     def to_name(self):
+        """Name of message recipient."""
         return self.to.user.username if self.to and self.to.user else "All"

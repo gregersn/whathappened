@@ -1,42 +1,54 @@
+"""Character models."""
+
 import json
 import logging
 from typing import Any, Dict, Type
 from datetime import datetime
 
 from sqlalchemy.orm.attributes import flag_modified
-from sqlalchemy.orm import reconstructor, relationship, backref
-from sqlalchemy.sql.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import DateTime, Integer, JSON, String
+from sqlalchemy.orm import reconstructor, relationship, backref, Mapped, mapped_column
+from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.sql.sqltypes import DateTime, JSON, String
 
+from whathappened.models import UserProfile
 from whathappened.database.base import BaseModel
 from whathappened.sheets.mechanics.core import CharacterMechanics, MECHANICS
 from whathappened.content.mixins import BaseContent
+from whathappened.content.models import Folder
 
 logger = logging.getLogger(__name__)
 
 
 class Character(BaseContent, BaseModel):
-    __tablename__ = "charactersheet"
-    id = Column(Integer, primary_key=True)
-    title = Column(String(256))
-    body = Column(JSON)
-    timestamp = Column(
-        DateTime, index=True, default=datetime.utcnow, onupdate=datetime.utcnow
-    )
-    user_id = Column(Integer, ForeignKey("user_profile.id"))
-    player = relationship("UserProfile", backref=backref("characters", lazy="dynamic"))
+    """Character sheet storage."""
 
-    folder = relationship("Folder", backref="characters")
+    __tablename__ = "charactersheet"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(256), nullable=True)
+    body = mapped_column(JSON)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime,
+        index=True,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=True,
+    )
+    user_id: Mapped[int] = mapped_column(ForeignKey("user_profile.id"), nullable=True)
+    player: Mapped[UserProfile] = relationship(
+        backref=backref("characters", lazy="dynamic")
+    )
+
+    folder: Mapped[Folder] = relationship(backref="characters")
 
     _default_fields = ["id", "title", "body", "timestamp", "user_id"]
 
     def __repr__(self):
-        return "<Character {}>".format(self.title)
+        return f"<Character {self.title}>"
 
     def __init__(
-        self, mechanics: Type[CharacterMechanics] = CharacterMechanics, *args, **kwargs
+        self, *args, mechanics: Type[CharacterMechanics] = CharacterMechanics, **kwargs
     ):
-        super(Character, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._data = None
         # Add a subclass or something that
         # has the mechanics of the character.
@@ -44,24 +56,27 @@ class Character(BaseContent, BaseModel):
 
     @reconstructor
     def init_on_load(self):
+        """Initialize object on loading."""
         system = self.data.get("system", "")
-        logger.debug(f"Loading character of type {system}")
+        logger.debug("Loading character of type %s", system)
         system = self.system
         self.mechanics = MECHANICS.get(system, CharacterMechanics)(self)
 
     @property
     def data(self) -> Dict[str, Any]:
+        """Character data."""
         if isinstance(self.body, dict):
             logger.debug("%s: Character data is dict", self.id)
             return self.body
         if isinstance(self.body, str):
-            logger.warning(f"Character, id {self.id} body is string, not dictionary")
+            logger.warning("Character, id %s body is string, not dictionary", self.id)
             return json.loads(self.body)
         logger.error("Body is not a dictionary")
         return {}
 
     @property
     def system(self) -> str:
+        """Character system."""
         s = self.data.get("system", None)
         if s is not None:
             return s
@@ -76,33 +91,41 @@ class Character(BaseContent, BaseModel):
 
     @property
     def version(self):
+        """Character data version."""
         v = self.data.get("version", None)
         return v
 
     @property
     def game(self):
+        """Character sheet game."""
         return self.mechanics.game()
 
     def validate(self):
+        """Validate character."""
         return self.mechanics.validate()
 
     def get_sheet(self):
+        """Character sheet."""
         return self.data
 
     @property
     def name(self):
+        """Character name."""
         return self.mechanics.name
 
     @property
     def age(self):
+        """Character age."""
         return self.mechanics.age
 
     @property
     def portrait(self):
+        """Character portrait."""
         return self.mechanics.portrait
 
     @property
     def description(self):
+        """Character description."""
         return self.mechanics.description
 
     def set_attribute(self, attribute: Dict):
@@ -114,12 +137,14 @@ class Character(BaseContent, BaseModel):
         flag_modified(self, "body")
 
     def skill(self, *args, **kwargs):
+        """Get skill."""
         return self.mechanics.skill(*args, **kwargs)
 
-    def skills(self, *args):
+    def skills(self, *_):
         """Return a list of skills."""
         return self.data["skills"]
 
     @property
     def schema_version(self):
+        """Version of schema."""
         return self.data["meta"]["Version"]
