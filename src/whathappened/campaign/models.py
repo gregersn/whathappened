@@ -1,7 +1,7 @@
 import enum
 from datetime import datetime
 
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import backref, relationship, Mapped
 from sqlalchemy.sql.schema import ForeignKey, Table, Column
 from sqlalchemy.sql.sqltypes import Boolean, DateTime
 from sqlalchemy.sql.sqltypes import Enum, Integer, String, Text
@@ -16,12 +16,15 @@ campaign_players = Table(
     Column("campaign_id", Integer, ForeignKey("campaign.id"), primary_key=True),
 )
 
-campaign_characters = Table(
-    "campaign_characters",
-    Base.metadata,
-    Column("character_id", Integer, ForeignKey("charactersheet.id"), primary_key=True),
-    Column("campaign_id", Integer, ForeignKey("campaign.id"), primary_key=True),
-)
+
+class CampaignCharacters(BaseModel):
+    __tablename__ = "campaign_characters"
+
+    character_id = Column(Integer, ForeignKey("charactersheet.id"), primary_key=True)
+    campaign_id = Column(Integer, ForeignKey("campaign.id"), primary_key=True)
+    share_with_gm = Column(Boolean, default=True)
+    show_to_players = Column(Boolean, default=False)
+    community_sheet = Column(Boolean, default=False)
 
 
 class Campaign(BaseModel, BaseContent):
@@ -42,9 +45,7 @@ class Campaign(BaseModel, BaseContent):
         backref=backref("campaigns_as_player", lazy=True),
     )
     # Characters added to the campaign
-    characters = relationship(
-        "Character",
-        secondary=campaign_characters,
+    characters: Mapped[list["CampaignCharacters"]] = relationship(
         lazy="dynamic",
         backref=backref("campaigns", lazy=True),
     )

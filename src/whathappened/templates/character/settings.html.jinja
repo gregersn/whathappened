@@ -1,0 +1,18 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+  <h2>{% block title %}{{ title }}{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+  <div>
+    Adjust some settings for your character
+    
+    <table>
+    <tr><th>Campaign</th><th>Share with GM</th><th>Show to players</th><th>Community sheet</th></tr>
+     {% for campaign in character.campaigns %}
+     <tr><td>{{ campaign.title }}</td><td><input type="checkbox" /></td><td><input type="checkbox" /></td><td><input type="checkbox" /></td></tr>
+     {% endfor %}
+     </table>
+  </div>
+{% endblock %}

@@ -328,6 +328,15 @@ def export(id: int):
     return jsonify(data.get_sheet())
 
 
+@bp.route("/<int:id>/options", methods=("GET", "POST"))
+def options(id: int):
+    c = get_character(id, check_author=True)
+
+    return render_template(
+        "character/settings.html.jinja", title=f"Settings for {c.title}", character=c
+    )
+
+
 @bp.route("/<int:id>/editjson", methods=("GET", "POST"))
 def editjson(id: int):
     """Lets the user edit the raw json of the character."""
