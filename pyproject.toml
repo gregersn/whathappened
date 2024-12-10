@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "whathappened"
-version = "0.0.17"
+dynamic = ["version"]
 
 
 authors = [{ name = "Greger Stolt Nilsen", email = "gregersn@gmail.com" }]
@@ -58,6 +58,9 @@ development = [
 [project.urls]
 "Homepage" = "https://github.com/gregersn/whathappened"
 "Bug Tracker" = "https://github.com/gregersn/whathappened/issues"
+
+[tool.setuptools_scm]
+version_file = "src/whathappened/_version.py"
 
 [tool.pytest]
 testpaths = "tests"

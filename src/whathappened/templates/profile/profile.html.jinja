@@ -23,7 +23,7 @@
     {% if characters %}
     <h3>Characters</h3>
     <table>
-    <tr><th>Title</th><th>System</th><th>Actions</th><th>In campaigns</th></tr>
+    <tr><th>Title</th><th>System</th><th>Actions</th><th>In campaigns</th><th>As NPC in</th></tr>
     {% for character in characters %}
         <tr>
             <td><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }}</a></td>
@@ -31,6 +31,10 @@
             <td><a href="{{ url_for('character.editjson', id=character.id) }}">Edit</a></td>
             <td>{% if character.campaigns %}{% for campaign in character.campaigns %}
                 <a href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a> 
+                {% endfor %}{% endif %}
+            </td>
+            <td>{% if character.npc %}{% for npc in character.npc %}
+                <a href="{{ url_for('campaign.view', id=npc.campaign.id) }}">{{ npc.campaign.title }}</a> 
                 {% endfor %}{% endif %}
             </td>
         </tr>

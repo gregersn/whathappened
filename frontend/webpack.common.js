@@ -31,8 +31,6 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, "../src/whathappened/static/"),
         filename: "js/[name].[contenthash].js",
-        devtoolModuleFilenameTemplate: "file:///[absolute-resource-path]", // map to source with absolute file path not webpack:// protocol
     },
     plugins: [new WebpackManifestPlugin(options)],
-    devtool: "inline-source-map",
 };

@@ -18,6 +18,11 @@ from whathappened.email import mail
 
 from .database import init_db, session
 
+try:
+    from ._version import __version__
+except ModuleNotFoundError:
+    __version__ = "unknown"
+
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"  # type: ignore  # Not an error
 assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent / "static")
@@ -78,6 +83,7 @@ def create_app(test_config=None) -> Flask:
     login_manager.init_app(app)
     csrf.init_app(app)
     mail.init_app(app)
+    app.jinja_env.globals["whathappened_version"] = __version__
     app.jinja_env.add_extension("jinja2.ext.do")
     app.jinja_env.add_extension("webassets.ext.jinja2.AssetsExtension")
 
