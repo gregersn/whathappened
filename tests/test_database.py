@@ -1,4 +1,5 @@
 import pytest
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.schema import Column
 from sqlalchemy.sql.sqltypes import Integer, String
 from whathappened.auth.models import User
@@ -10,8 +11,8 @@ from whathappened.models import LogEntry
 
 class DataModel(Base):
     __tablename__ = "test_table"
-    id = Column(Integer, primary_key=True)
-    title = Column(String(256))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(256))
 
 
 def test_connect_db():
@@ -33,9 +34,9 @@ def test_connect_db():
 
 class SerializeModel(BaseModel):
     __tablename__ = "test_table_2"
-    id = Column(Integer, primary_key=True)
-    title = Column(String(256))
-    action = Column(String(256))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(256))
+    action: Mapped[str] = mapped_column(String(256))
 
     _default_fields = ["id", "title", "action"]
 

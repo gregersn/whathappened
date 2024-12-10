@@ -3,14 +3,14 @@ import uuid
 import logging
 
 from sqlalchemy import event
-from sqlalchemy.orm import backref, relationship
-from sqlalchemy.sql.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import Integer, String
+from sqlalchemy.orm import backref, relationship, Mapped, mapped_column
+from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.sql.sqltypes import String
 from flask import url_for, current_app
 from werkzeug.utils import secure_filename
 
 from whathappened.database import Base
-from whathappened.models import GUID
+from whathappened.models import GUID, UserProfile
 
 logger = logging.getLogger(__name__)
 
@@ -18,20 +18,21 @@ logger = logging.getLogger(__name__)
 class Asset(Base):
     ASSET_ORDER = "[Asset.folder_id, Asset.filename]"
     __tablename__ = "asset"
-    id = Column(GUID(), primary_key=True, default=uuid.uuid4)
-    filename = Column(String(128))
-    owner_id = Column(Integer, ForeignKey("user_profile.id"))
-    owner = relationship(
-        "UserProfile",
+    id: Mapped[str] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
+    filename: Mapped[str] = mapped_column(String(128), nullable=True)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("user_profile.id"), nullable=True)
+    owner: Mapped[UserProfile] = relationship(
         backref=backref(
             "assets", lazy="dynamic", order_by=ASSET_ORDER, cascade_backrefs=False
         ),
     )
-    folder_id = Column(GUID(), ForeignKey("asset_folder.id"))
-    folder = relationship("AssetFolder", back_populates="files")
+    folder_id: Mapped[str] = mapped_column(
+        GUID(), ForeignKey("asset_folder.id"), nullable=True
+    )
+    folder: Mapped["AssetFolder"] = relationship(back_populates="files")
 
     def __init__(self, *args, **kwargs):
-        super(Asset, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.loaded = False
         self.data = None
 
@@ -65,18 +66,19 @@ def before_asset_delete(mapper, connection, target):
 
 class AssetFolder(Base):
     __tablename__ = "asset_folder"
-    id = Column(GUID(), primary_key=True, default=uuid.uuid4)
-    owner_id = Column(Integer, ForeignKey("user_profile.id"))
-    owner = relationship(
-        "UserProfile",
+    id: Mapped[str] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("user_profile.id"), nullable=True)
+    owner: Mapped[UserProfile] = relationship(
         backref=backref("assetfolders", lazy="dynamic", cascade_backrefs=False),
     )
-    parent_id = Column(GUID(), ForeignKey("asset_folder.id"), default=None)
-    subfolders = relationship(
-        "AssetFolder", backref=backref("parent", remote_side=[id])
+    parent_id: Mapped[str] = mapped_column(
+        GUID(), ForeignKey("asset_folder.id"), default=None, nullable=True
     )
-    title = Column(String(128))
-    files = relationship("Asset", back_populates="folder")
+    subfolders: Mapped["AssetFolder"] = relationship(
+        backref=backref("parent", remote_side=[id])
+    )
+    title: Mapped[str] = mapped_column(String(128), nullable=True)
+    files: Mapped[Asset] = relationship(back_populates="folder")
 
     def get_path(self) -> Path:
         if self.parent:
