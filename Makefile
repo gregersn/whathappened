@@ -46,11 +46,11 @@ coverage: .venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
 	@cd frontend && npm test
 
 .PHONY: dist
-dist: setup_dependencies frontend
+dist: setup_dependencies
 	$(RMRF) build dist
 	$(RMRF) src/whathappened/static/js/
 	$(RMRF) src/whathappened/static/css/
-	@FLASK_APP=src/whathappened $(VENV_FLASK) main build
+	cd frontend; npm run dist
 	@FLASK_APP=src/whathappened $(VENV_FLASK) assets build
 	@$(VENV_PYTHON) -m build
 
