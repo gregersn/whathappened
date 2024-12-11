@@ -132,4 +132,21 @@ def revision(directory, message):
     command.revision(alembic_cfg, autogenerate=True, message=message)
 
 
+@db.command("check")
+@click.option(
+    "-d",
+    "--directory",
+    default=None,
+    help=('Migration script directory (default is "migrations")'),
+)
+@with_appcontext
+def check(directory):
+    """Check if migrations are needed."""
+    alembic_cfg = Config(directory or str(CONFIG_FILE))
+    alembic_cfg.set_main_option(
+        "sqlalchemy.url", current_app.config["SQLALCHEMY_DATABASE_URI"]
+    )
+    command.check(alembic_cfg)
+
+
 current_app.cli.add_command(db)
