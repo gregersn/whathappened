@@ -1,8 +1,7 @@
-pytest==8.3.4
-pytest-cov==6.0.0
-wheel==0.45.1
-yapf
-pylint
 build
-setuptools
+pylint==3.3.2
+pytest-cov==6.0.0
+pytest==8.3.4
 ruff
+setuptools
+wheel==0.45.1
