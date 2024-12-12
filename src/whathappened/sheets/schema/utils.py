@@ -25,6 +25,7 @@ def find_migration(version: SheetVersion, direction: int, migrations):
 
         if direction < 0 and parse(m["to"]) == version:
             return m
+    return None
 
 
 def find_version(data) -> str:

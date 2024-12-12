@@ -2,7 +2,7 @@
 
 {% block content %}
 <section id="move_to_folder">
-    <form action="{{ url_for('character.folder', id=character.id) }}" method="post">
+    <form action="{{ url_for('character.folder', character_id=character.id) }}" method="post">
         {{ form.hidden_tag() }}
         <p>
             {{ form.folder_id }}

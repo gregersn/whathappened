@@ -186,7 +186,7 @@ def build_from_schema_inner(
         if "$ref" in schema:
             sub = sub_schema(main_schema, schema["$ref"])
 
-            assert isinstance(sub, Dict) or isinstance(sub, List)
+            assert isinstance(sub, (Dict, List))
 
             return build_from_schema_inner(sub, main_schema)
         if "const" in schema:

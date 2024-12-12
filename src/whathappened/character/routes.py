@@ -5,7 +5,7 @@ from flask import render_template, request
 from flask import redirect, url_for, jsonify
 from werkzeug.exceptions import abort
 
-from whathappened.auth import login_required, current_user
+from whathappened.auth.utils import login_required, current_user
 from whathappened.content.forms import ChooseFolderForm
 from whathappened.database import session
 from whathappened.database.pagination import paginate
@@ -16,7 +16,7 @@ from whathappened.sheets.schema.build import flatten_schema, get_schema, sub_sch
 from whathappened.sheets.schema.coc7e import migrations, LATEST
 from whathappened.sheets.schema.utils import migrate
 
-from . import bp, api
+from .blueprints import bp, api
 from .models import Character
 from .forms import ImportForm, CreateForm
 from .forms import DeleteForm
@@ -30,11 +30,11 @@ from . import tftl  # noqa
 logger = logging.getLogger(__name__)
 
 
-def get_character(id: int, check_author: bool = True) -> Character:
-    character = session.get(Character, id)
+def get_character(character_id: int, check_author: bool = True) -> Character:
+    character = session.get(Character, character_id)
 
     if character is None:
-        abort(404, "Character id {0} doesn't exist.".format(id))
+        abort(404, f"Character id {character_id} doesn't exist.")
 
     if current_user.has_role("admin"):  # pyright: ignore[reportGeneralTypeIssues]
         return character
@@ -47,9 +47,10 @@ def get_character(id: int, check_author: bool = True) -> Character:
                 or campaign in current_user.profile.campaigns
             ):  # pyright: ignore[reportGeneralTypeIssues]
                 logger.debug(
-                    f"Character '{character.title}' "
-                    + f"is in '{campaign.title}' "
-                    + f"with '{current_user.username}''"
+                    "Character '%s' is in '%s' with '%s'",
+                    character.title,
+                    campaign.title,
+                    current_user.username,
                 )  # pyright: ignore[reportGeneralTypeIssues]
                 return character
 
@@ -74,7 +75,7 @@ def create(chartype: str):
     )
 
     if form.validate_on_submit():
-        logger.debug(f"Creating new character specified by {form.data}")
+        logger.debug("Creating new character specified by %s", form.data)
         char_data = character_module.new_character(**form.data)
         assert isinstance(char_data, dict)
         c = Character(
@@ -82,7 +83,7 @@ def create(chartype: str):
         )  # pyright: ignore[reportGeneralTypeIssues]
         session.add(c)
         session.commit()
-        return redirect(url_for("character.view", id=c.id))
+        return redirect(url_for("character.view", character_id=c.id))
 
     form.system.data = chartype
     return render_template(template, form=form, type=type)
@@ -100,12 +101,14 @@ def system_select(chartype=None):
 @bp.route("/import", methods=("GET", "POST"))
 @login_required
 def import_character(
-    type: Optional[str] = None, id: Optional[int] = None, code: Optional[str] = None
+    character_type: Optional[str] = None,
+    character_id: Optional[int] = None,
+    code: Optional[str] = None,
 ):
-    logger.debug(f"{type}, {code}, {id}")
+    logger.debug("%s, %s, %s", character_type, code, character_id)
     character = None
-    if id:
-        character = get_character(id, check_author=True)
+    if character_id:
+        character = get_character(character_id, check_author=True)
     elif code is not None:
         invite = session.get(Invite, code)
         if invite is None or invite.table != Character.__tablename__:
@@ -119,34 +122,36 @@ def import_character(
         )  # pyright: ignore[reportGeneralTypeIssues]
         session.add(c)
         session.commit()
-        return redirect(url_for("character.view", id=c.id))
+        return redirect(url_for("character.view", character_id=c.id))
     return render_template("character/import.html.jinja", form=form, type=None)
 
 
-@bp.route("/<int:id>/update", methods=("POST",))
+@bp.route("/<int:character_id>/update", methods=("POST",))
 @login_required
-def update(id: int):
-    character = get_character(id, check_author=True)
+def update(character_id: int):
+    character = get_character(character_id, check_author=True)
 
     if request.method == "POST":
-        update = request.get_json()
-        assert update is not None
-        for setting in update:
+        _update = request.get_json()
+        assert _update is not None
+        for setting in _update:
             name = character.set_attribute(setting)
             field = setting["field"]
             subfield = setting.get("subfield", "")
             value = setting["value"]
-            type = setting.get("type", "value")
-            if type == "portrait" and value is not None:
+            setting_type = setting.get("type", "value")
+            if setting_type == "portrait" and value is not None:
                 value = "[image]"
 
             log_subfield = ""
             if subfield is not None and subfield != "None":
                 log_subfield = " " + subfield
             if name is not None:
-                log_message = f"set {type} on {field}{log_subfield} ({name}): {value}"
+                log_message = (
+                    f"set {setting_type} on {field}{log_subfield} ({name}): {value}"
+                )
             else:
-                log_message = f"set {type} on {field}{log_subfield}: {value}"
+                log_message = f"set {setting_type} on {field}{log_subfield}: {value}"
 
             logentry = LogEntry(character, log_message, user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
             session.add(logentry)
@@ -161,7 +166,7 @@ def render_character(
     character: Character, editable: bool = False, code: Optional[str] = None
 ):
     if (character.system is None or character.validate()) and editable:
-        return redirect(url_for("character.editjson", id=character.id))
+        return redirect(url_for("character.editjson", character_id=character.id))
 
     character_module = (
         globals()[character.system] if character.system in globals() else core
@@ -198,10 +203,10 @@ def shared(code: str):
     return render_character(character, editable=False, code=code)
 
 
-@bp.route("/<int:id>/", methods=("GET", "POST"))
+@bp.route("/<int:character_id>/", methods=("GET", "POST"))
 @login_required
-def view(id: int):
-    character = get_character(id, check_author=True)
+def view(character_id: int):
+    character = get_character(character_id, check_author=True)
 
     editable = False
 
@@ -245,39 +250,39 @@ def render_general_view(
     )
 
 
-@bp.route("/<int:id>/tokens/", methods=("GET", "POST"))
+@bp.route("/<int:character_id>/tokens/", methods=("GET", "POST"))
 @login_required
-def tokens(id: int):
-    character = get_character(id, check_author=False)
+def tokens(character_id: int):
+    character = get_character(character_id, check_author=False)
 
     return render_template("character/tokens.html.jinja", picture=character.portrait)
 
 
-@api.route("/<int:id>/", methods=("GET",))
-def get(id: int):
+@api.route("/<int:character_id>/", methods=("GET",))
+def get(character_id: int):
     """API call to get all character data."""
-    data = get_character(id, check_author=True)
+    data = get_character(character_id, check_author=True)
     return jsonify(data.to_dict())
 
 
 @bp.route(
-    "/<int:id>/delete",
+    "/<int:character_id>/delete",
     methods=(
         "GET",
         "POST",
     ),
 )
 @api.route(
-    "/<int:id>/delete",
+    "/<int:character_id>/delete",
     methods=(
         "GET",
         "POST",
     ),
 )
 @login_required
-def delete(id: int):
+def delete(character_id: int):
     """Delete a character."""
-    character = get_character(id, check_author=True)
+    character = get_character(character_id, check_author=True)
 
     if current_user.profile.id != character.user_id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(404)
@@ -295,16 +300,16 @@ def delete(id: int):
     )
 
 
-@api.route("/<int:id>/share", methods=("GET",))
+@api.route("/<int:character_id>/share", methods=("GET",))
 @login_required
-def share(id: int):
+def share(character_id: int):
     """Share a character."""
-    character = get_character(id, check_author=True)
+    character = get_character(character_id, check_author=True)
     logger.debug("Finding previous invite")
     invite = Invite.query_for(character).first()
-    logger.debug(f"Invites found {invite}")
+    logger.debug("Invites found %s", invite)
     if not invite:
-        logger.debug(f"Creating an invite for character {character.id}")
+        logger.debug("Creating an invite for character %s", character.id)
         invite = Invite(character)
         invite.owner_id = character.user_id
         session.add(invite)
@@ -321,17 +326,17 @@ def share(id: int):
     return jsonify({"url": share_url, "html": html_response})
 
 
-@bp.route("/<int:id>/export", methods=("GET",))
-def export(id: int):
+@bp.route("/<int:character_id>/export", methods=("GET",))
+def export(character_id: int):
     """Exports charcter data to JSON."""
-    data = get_character(id, check_author=True)
+    data = get_character(character_id, check_author=True)
     return jsonify(data.get_sheet())
 
 
-@bp.route("/<int:id>/editjson", methods=("GET", "POST"))
-def editjson(id: int):
+@bp.route("/<int:character_id>/editjson", methods=("GET", "POST"))
+def editjson(character_id: int):
     """Lets the user edit the raw json of the character."""
-    c = get_character(id, check_author=True)
+    c = get_character(character_id, check_author=True)
     form = ImportForm(obj=c)
 
     if form.validate_on_submit():
@@ -352,7 +357,7 @@ def editjson(id: int):
         session.add(logentry)
 
         session.commit()
-        return redirect(url_for("character.view", id=c.id))
+        return redirect(url_for("character.view", character_id=c.id))
 
     form.submit.label.text = "Save"
 
@@ -375,7 +380,9 @@ def eventlog(character_id: int):
     entries_page = paginate(LogEntry.query_for(c), page, 50)
     next_url = (
         url_for(
-            "character.eventlog", character_id=character_id, page=entries_page.next_page
+            "character.eventlog",
+            character_id=character_id,
+            page=entries_page.next_page,
         )
         if entries_page.has_next
         else None
@@ -383,7 +390,9 @@ def eventlog(character_id: int):
 
     prev_url = (
         url_for(
-            "character.eventlog", character_id=character_id, page=entries_page.prev_page
+            "character.eventlog",
+            character_id=character_id,
+            page=entries_page.prev_page,
         )
         if entries_page.has_prev
         else None
@@ -399,10 +408,10 @@ def eventlog(character_id: int):
     )
 
 
-@bp.route("/<int:id>/folder", methods=("GET", "POST"))
+@bp.route("/<int:character_id>/folder", methods=("GET", "POST"))
 @login_required
-def folder(id: int):
-    c = get_character(id, check_author=True)
+def folder(character_id: int):
+    c = get_character(character_id, check_author=True)
     form = ChooseFolderForm()
     if form.validate_on_submit():
         c.folder = form.folder_id.data  # type: ignore

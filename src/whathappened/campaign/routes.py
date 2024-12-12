@@ -11,9 +11,9 @@ from whathappened.character.models import Character
 from whathappened.models import UserProfile, Invite
 from whathappened.database import session
 from whathappened.content.forms import ChooseFolderForm
-from whathappened.auth import login_required, current_user
+from whathappened.auth.utils import login_required, current_user
 
-from . import bp
+from .blueprints import bp
 from .models import Campaign
 from .forms import CreateForm, InvitePlayerForm, AddCharacterForm, AddNPCForm
 from .forms import JoinCampaignForm, EditForm, RemoveCharacterForm
@@ -42,7 +42,7 @@ def join(code: str):
             campaign.players.append(player)
             session.commit()
 
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     flash("Valid code")
 
@@ -54,11 +54,11 @@ def join(code: str):
     )
 
 
-@bp.route("/<int:id>", methods=("GET", "POST"))
+@bp.route("/<int:campaign_id>", methods=("GET", "POST"))
 @login_required
-def view(id: int):
+def view(campaign_id: int):
     invites = None
-    campaign: Campaign = session.get(Campaign, id)
+    campaign: Campaign = session.get(Campaign, campaign_id)
     assert campaign
 
     # Set up forms
@@ -79,9 +79,9 @@ def view(id: int):
     is_player = current_user.profile in campaign.players
     is_owner = current_user and current_user.profile.id == campaign.user_id
 
-    logger.debug(f"Viewing campagin {campaign.title}")
-    logger.debug(f"There are {campaign.players.count()} players")
-    logger.debug(f"There are {campaign.characters.count()} characters")
+    logger.debug("Viewing campagin %s", campaign.title)
+    logger.debug("There are %s players", campaign.players.count())
+    logger.debug("There are %s characters", campaign.characters.count())
 
     if not is_player and not is_owner:
         abort(404, "This is not the campaign your are looking for.")
@@ -97,7 +97,7 @@ def view(id: int):
             player = User.query.filter_by(email=inviteform.email.data).first().profile
             campaign.players.append(player)
             session.commit()
-            return redirect(url_for("campaign.view", id=id))
+            return redirect(url_for("campaign.view", campaign_id=campaign_id))
 
         invites = Invite.query_for(campaign)
 
@@ -108,7 +108,7 @@ def view(id: int):
             session.add(npc)
             session.commit()
 
-            return redirect(url_for("campaign.view", id=id))
+            return redirect(url_for("campaign.view", campaign_id=campaign_id))
 
     if characterform.submit.data and characterform.validate_on_submit():
         print("Adding character")
@@ -123,7 +123,7 @@ def view(id: int):
         else:
             flash("Character is already added to campaign")
 
-        return redirect(url_for("campaign.view", id=id))
+        return redirect(url_for("campaign.view", campaign_id=campaign_id))
 
     createinviteform.submit.label.text = "Create share link."
 
@@ -166,9 +166,9 @@ def view(id: int):
     )
 
 
-@bp.route("/<int:id>/edit", methods=("GET", "POST"))
-def edit(id: int):
-    campaign = session.get(Campaign, id)
+@bp.route("/<int:campaign_id>/edit", methods=("GET", "POST"))
+def edit(campaign_id: int):
+    campaign = session.get(Campaign, campaign_id)
     assert campaign
     form = EditForm(obj=campaign, prefix="campaign_edit")
     folderform = ChooseFolderForm(prefix="choose_folder")
@@ -177,23 +177,23 @@ def edit(id: int):
         form.populate_obj(campaign)
         session.add(campaign)
         session.commit()
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     if folderform.choose.data and folderform.validate_on_submit():
         print("Folder form submitted!")
         campaign.folder = folderform.folder_id.data
         session.commit()
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     folderform.folder_id.data = campaign.folder
 
     return render_template("campaign/edit.html.jinja", form=form, folderform=folderform)
 
 
-@bp.route("/<int:id>/export", methods=("GET",))
+@bp.route("/<int:campaign_id>/export", methods=("GET",))
 @login_required
-def export(id: int):
-    campaign: Campaign = session.get(Campaign, id)
+def export(campaign_id: int):
+    campaign: Campaign = session.get(Campaign, campaign_id)
     assert campaign
     return campaign.to_dict(_hide=[])
 
@@ -206,29 +206,28 @@ def create():
         c = Campaign(title=form.title.data, user_id=current_user.profile.id)
         session.add(c)
         session.commit()
-        return redirect(url_for("campaign.view", id=c.id))
+        return redirect(url_for("campaign.view", campaign_id=c.id))
     return render_template("campaign/create.html.jinja", form=form)
 
 
-@bp.route("/<int:id>/removecharacter/<int:characterid>", methods=("GET", "POST"))
+@bp.route(
+    "/<int:campaign_id>/removecharacter/<int:characterid>", methods=("GET", "POST")
+)
 @login_required
-def remove_character(id: int, characterid: int):
-    campaign = session.get(Campaign, id)
+def remove_character(campaign_id: int, characterid: int):
+    campaign = session.get(Campaign, campaign_id)
     assert campaign
     char = session.get(Character, characterid)
     assert char
 
-    if (
-        current_user.profile.id != campaign.user_id
-        and char.user_id != current_user.profile.id
-    ):
+    if current_user.profile.id not in (campaign.user_id, char.user_id):
         abort(404)
     form = RemoveCharacterForm()
 
     if form.validate_on_submit():
         campaign.characters.remove(char)
         session.commit()
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     form.id.data = campaign.id
     form.character.data = char.id
@@ -240,18 +239,18 @@ def remove_character(id: int, characterid: int):
     )
 
 
-@bp.route("/<int:id>/removenpc/<int:characterid>", methods=("GET", "POST"))
+@bp.route("/<int:campaign_id>/removenpc/<int:characterid>", methods=("GET", "POST"))
 @login_required
-def remove_npc(id: int, characterid: int):
+def remove_npc(campaign_id: int, characterid: int):
     npc = session.get(NPC, characterid)
     assert npc
     form = RemoveCharacterForm()
 
     if form.validate_on_submit():
-        if npc.campaign.id == id:
+        if npc.campaign.id == campaign_id:
             session.delete(npc)
             session.commit()
-        return redirect(url_for("campaign.view", id=id))
+        return redirect(url_for("campaign.view", campaign_id=campaign_id))
 
     form.id.data = npc.campaign.id
     form.character.data = npc.character.id
@@ -264,9 +263,9 @@ def remove_npc(id: int, characterid: int):
     )
 
 
-@bp.route("/<int:id>/npc/<int:npcid>", methods=("GET", "POST"))
+@bp.route("/<int:campaign_id>/npc/<int:npcid>", methods=("GET", "POST"))
 @login_required
-def manage_npc(id: int, npcid: int):
+def manage_npc(campaign_id: int, npcid: int):
     npc = session.get(NPC, npcid)
 
     transferform = NPCTransferForm(prefix="npctransfer", npc_id=npcid)
@@ -274,7 +273,7 @@ def manage_npc(id: int, npcid: int):
     if npc is None:
         return abort(404)
 
-    if npc.campaign_id != id:
+    if npc.campaign_id != campaign_id:
         return abort(404)
 
     if current_user.profile != npc.campaign.user:
@@ -302,7 +301,7 @@ def manage_npc(id: int, npcid: int):
             # Commit changes
             session.commit()
 
-            return redirect(url_for("campaign.view", id=campaign.id))
+            return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     transferform.player.choices = [
         (p.id, p.user.username) for p in npc.campaign.players
@@ -313,11 +312,11 @@ def manage_npc(id: int, npcid: int):
     )
 
 
-@bp.route("/<int:id>/removeplayer/<int:playerid>", methods=("GET", "POST"))
+@bp.route("/<int:campaign_id>/removeplayer/<int:playerid>", methods=("GET", "POST"))
 @login_required
-def remove_player(id: int, playerid: int):
+def remove_player(campaign_id: int, playerid: int):
     form = RemovePlayerForm()
-    campaign = session.get(Campaign, id)
+    campaign = session.get(Campaign, campaign_id)
     assert campaign
     player = session.get(UserProfile, playerid)
     assert player
@@ -325,7 +324,7 @@ def remove_player(id: int, playerid: int):
     if form.validate_on_submit():
         campaign.players.remove(player)
         session.commit()
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     form.id.data = campaign.id
     form.player.data = player.id
@@ -358,7 +357,7 @@ def message_player(campaign_id: int, player_id: Optional[int] = None):
         session.add(message)
         session.commit()
 
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     form.campaign_id.data = campaign.id
     form.to_id.data = player_id

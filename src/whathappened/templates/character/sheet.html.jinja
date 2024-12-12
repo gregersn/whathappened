@@ -17,17 +17,17 @@
 
 {% block menu %}
 {% if current_user.is_authenticated %}
-<a href="{{ url_for('character.export', id=character['id']) }}">Export</a>
+<a href="{{ url_for('character.export', character_id=character['id']) }}">Export</a>
 | <a
-    href="{{ url_for('character.import_character', id=character.id) if editable else url_for('character.import_character', code=code) }}">Copy</a>
+    href="{{ url_for('character.import_character', character_id=character.id) if editable else url_for('character.import_character', code=code) }}">Copy</a>
 {%- if editable %}
-| <a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>
-| <a href="{{ url_for('character.delete', id=character.id) }}">Delete</a>
+| <a href="{{ url_for('character.editjson', character_id=character.id) }}">Edit JSON</a>
+| <a href="{{ url_for('character.delete', character_id=character.id) }}">Delete</a>
 | <a href="#" id="sharebtn" data-id="{{ character.id }}">{% if not shared %}Share{% else %}Share link{% endif %}</a>
 | <a href="{{ url_for('character.eventlog', character_id=character.id) }}">Event log</a>
-| <a href="{{ url_for ('character.folder', id=character.id) }}">Choose folder</a>
+| <a href="{{ url_for ('character.folder', character_id=character.id) }}">Choose folder</a>
 {%- endif %}
-| <a href="{{ url_for('character.tokens', id=character.id) }}">Tokens</a>
+| <a href="{{ url_for('character.tokens', character_id=character.id) }}">Tokens</a>
 {% endif %}
 {% endblock %}
 

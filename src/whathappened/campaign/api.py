@@ -7,10 +7,10 @@ from flask import request, jsonify
 from sqlalchemy import or_
 from werkzeug.exceptions import abort
 
-from whathappened.auth import login_required, current_user
+from whathappened.auth.utils import login_required, current_user
 from whathappened.database import session
 
-from . import apibp
+from .blueprints import apibp
 from .models import Handout, Campaign, HandoutStatus, NPC, Message
 
 logger = logging.getLogger(__name__)
@@ -34,11 +34,11 @@ def handouts(campaignid: int):
     if current_user.profile not in campaign.players:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
 
-    handouts = campaign.handouts.filter_by(status=HandoutStatus.visible).filter(
+    handout_list = campaign.handouts.filter_by(status=HandoutStatus.visible).filter(
         Handout.players.contains(current_user.profile)
     )  # pyright: ignore[reportGeneralTypeIssues]
 
-    handouts_dict = [handout.to_dict(show=["url"]) for handout in handouts]
+    handouts_dict = [handout.to_dict(show=["url"]) for handout in handout_list]
 
     sha = hashlib.sha256()
     sha.update(json.dumps(handouts_dict).encode("utf-8"))
@@ -57,13 +57,13 @@ def message_player(campaignid: int, playerid: int):
 @login_required
 def messages(campaignid: int):
     after = int(request.args.get("after", "0"), 10)
-    logger.debug(f"Get all messages for campaign {campaignid} after {after}")
+    logger.debug("Get all messages for campaign %s after %s", campaignid, after)
     campaign = session.get(Campaign, campaignid)
 
     if campaign is None:
         abort(404)
 
-    messages = (
+    message_list = (
         campaign.messages.filter(
             or_(
                 Message.from_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
@@ -75,7 +75,7 @@ def messages(campaignid: int):
         .order_by("timestamp")
     )
 
-    message_list = [m.to_dict() for m in messages]
+    message_list = [m.to_dict() for m in message_list]
     return jsonify(message_list)
 
 
@@ -104,11 +104,11 @@ def handout_players(campaignid: int, handoutid: int):
         if player is not None:
             if data["state"]:
                 if player not in handout.players:
-                    logger.debug(f"Adding player {player} to {handout}")
+                    logger.debug("Adding player %s to %s", player, handout)
                     handout.players.append(player)
             else:
                 if player in handout.players:
-                    logger.debug(f"Removing player {player} to {handout}")
+                    logger.debug("Removing player %s from %s", player, handout)
                     handout.players.remove(player)
 
             session.commit()
@@ -131,7 +131,7 @@ def npcs(campaignid: int):
     if campaign is None:
         abort(404)
 
-    npcs = [
+    npc_list = [
         {
             "name": npc.character.name,
             "age": npc.character.age,
@@ -140,7 +140,7 @@ def npcs(campaignid: int):
         }
         for npc in campaign.NPCs.filter(NPC.visible).all()
     ]
-    response = {"npcs": npcs}
+    response = {"npcs": npc_list}
     return jsonify(response)
 
 
@@ -165,10 +165,10 @@ def npc_visibility(npcid: int, campaignid: int):
         assert data is not None
         logger.debug(data)
         if data["visibility"]:
-            logger.debug(f"Showing NPC {npc.character.title}")
+            logger.debug("Showing NPC %s", npc.character.title)
             npc.visible = True
         else:
-            logger.debug(f"Hiding NPC {npc.character.title}")
+            logger.debug("Hiding NPC %s", npc.character.title)
             npc.visible = False
 
         session.commit()

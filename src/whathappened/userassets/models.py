@@ -56,7 +56,7 @@ def before_asset_delete(mapper, connection, target):
     system_folder = Path(current_app.config["UPLOAD_FOLDER"])
     filepath: Path = target.folder.get_path()
     assetname = secure_filename(target.filename)
-    logger.debug(f"Deleting file from {filepath}, {assetname}")
+    logger.debug("Deleting file from %s, %s", filepath, assetname)
     full_dir = system_folder / filepath
     full_file_path = full_dir / assetname
     if full_file_path.is_file():
@@ -84,16 +84,14 @@ class AssetFolder(Base):
         if self.parent:
             parent = self.parent.get_path()
             return parent / secure_filename(str(self.title))
-        else:
-            return Path(str(self.id)) / secure_filename(str(self.title))
+        return Path(str(self.id)) / secure_filename(str(self.title))
 
     @property
     def path(self) -> Path:
         if self.parent:
             parent = self.parent.path
             return parent / self.title
-        else:
-            return Path(str(self.title))
+        return Path(str(self.title))
 
     @property
     def system_path(self) -> Path:

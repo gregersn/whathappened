@@ -8,7 +8,7 @@ from wtforms import StringField
 from wtforms.fields.simple import HiddenField
 from wtforms.validators import DataRequired
 
-from whathappened.auth import current_user
+from whathappened.auth.utils import current_user
 from whathappened.forms.fields import QuerySelectField
 from .models import Asset
 

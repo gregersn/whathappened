@@ -1,7 +1,7 @@
 {% extends 'base.html.jinja' %}
 
 {% block header %}
-  <h2>{% block title %}Event log for <a href="{{ url_for('character.view', id=character.id)}}">{{ character.title}}</a>{% endblock %}</h2>
+  <h2>{% block title %}Event log for <a href="{{ url_for('character.view', character_id=character.id)}}">{{ character.title}}</a>{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}

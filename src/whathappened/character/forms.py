@@ -21,9 +21,9 @@ class JsonString(object):
     def __call__(self, form: FlaskForm, field: Field):
         try:
             _ = json.loads(field.data)
-        except Exception:
+        except Exception as exc:
             logger.error("Could not verify JSON data", exc_info=True)
-            raise ValidationError(self.message)
+            raise ValidationError(self.message) from exc
 
 
 class ImportForm(FlaskForm):

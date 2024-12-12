@@ -1,3 +1,5 @@
+"""WhatHappened?"""
+
 import logging
 
 from whathappened import create_app

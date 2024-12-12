@@ -180,7 +180,7 @@ class QuerySelectMultipleField(QuerySelectField):
             for pk, obj in self._get_object_list():
                 if not formdata:
                     break
-                elif pk in formdata:
+                if pk in formdata:
                     formdata.remove(pk)
                     data.append(obj)
             if formdata:
@@ -204,7 +204,7 @@ class QuerySelectMultipleField(QuerySelectField):
     def pre_validate(self, form):
         if self._invalid_formdata:
             raise ValidationError(self.gettext("Not a valid choice"))
-        elif self.data:
+        if self.data:
             obj_list = list(x[1] for x in self._get_object_list())
             for v in self.data:
                 if v not in obj_list:

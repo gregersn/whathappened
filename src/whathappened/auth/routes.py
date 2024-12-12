@@ -4,15 +4,17 @@ import logging
 from urllib.parse import urlsplit
 
 from flask import flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_user, logout_user
+from flask_login import login_user, logout_user
 
 from whathappened.database import session
 
+from .utils import current_user
 from .forms import LoginForm, RegistrationForm
 from .forms import ResetPasswordRequestForm, ResetPasswordForm
 from .models import User
 
-from . import bp, send_password_reset_email
+from .utils import send_password_reset_email
+from .blueprints import bp
 
 logger = logging.getLogger(__name__)
 

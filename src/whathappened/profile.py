@@ -1,6 +1,6 @@
 import logging
 from flask import Blueprint, render_template
-from whathappened.auth import login_required, current_user
+from whathappened.auth.utils import login_required, current_user
 from whathappened.database import session
 
 bp = Blueprint("profile", __name__)
@@ -22,7 +22,7 @@ def index():
         session.add(user_profile)
         session.commit()
 
-    logger.info(f"Showing profile {user_profile.id}")
+    logger.info("Showing profile %s", user_profile.id)
 
     characters = user_profile.characters
     folders = user_profile.folders  # .filter(Folder.parent_id.__eq__(None))

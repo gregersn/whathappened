@@ -1,10 +1,5 @@
-from flask import Blueprint
 from webassets.env import Environment
 
-bp = Blueprint(
-    "campaign", __name__, template_folder="templates", static_folder="static"
-)
-apibp = Blueprint("campaignapi", __name__)
 
 from . import routes  # noqa: F401,E402 isort:skip
 from . import views  # noqa: F401, E402 isort:skip

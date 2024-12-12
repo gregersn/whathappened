@@ -138,7 +138,7 @@
 
 <div class="extrainfo">
     {% if editable and character.campaigns %}
-    In campaign(s): <a href="{{url_for('campaign.view', id=character.campaigns.0.id)}}">{{
+    In campaign(s): <a href="{{url_for('campaign.view', character_id=character.campaigns.0.id)}}">{{
         character.campaigns.0.title
         }}</a>
     {% endif %}

@@ -70,21 +70,21 @@ def convert_from_dholes(indata):
                     outskills.append(subskill)
                     skill_index[subskill["name"]] = subskill
                     continue
-                else:
-                    parent_skill = {
-                        "name": subskill["name"],
-                        "value": subskill["value"],
-                        "start_value": subskill["value"],
-                        "subskills": [
-                            {
-                                "name": subskill["subskill"],
-                                "value": subskill["value"],
-                                "start_value": subskill["value"],
-                            }
-                        ],
-                    }
-                    outskills.append(parent_skill)
-                    skill_index[parent_skill["name"]] = parent_skill
+
+                parent_skill = {
+                    "name": subskill["name"],
+                    "value": subskill["value"],
+                    "start_value": subskill["value"],
+                    "subskills": [
+                        {
+                            "name": subskill["subskill"],
+                            "value": subskill["value"],
+                            "start_value": subskill["value"],
+                        }
+                    ],
+                }
+                outskills.append(parent_skill)
+                skill_index[parent_skill["name"]] = parent_skill
 
         return outskills
 

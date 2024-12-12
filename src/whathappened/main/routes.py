@@ -6,10 +6,9 @@ from werkzeug.exceptions import abort
 
 from whathappened.models import Invite
 from whathappened.database import session, Base
-from whathappened.auth import login_required, current_user
+from whathappened.auth.utils import login_required, current_user
 
-from . import bp
-from . import api
+from .blueprints import bp, api
 
 from .forms import DeleteInviteForm
 
@@ -20,6 +19,8 @@ def get_class_by_tablename(tablename):
     for c in Base.registry._class_registry.values():
         if hasattr(c, "__tablename__") and c.__tablename__ == tablename:
             return c
+
+    return None
 
 
 @bp.route("/")
@@ -32,8 +33,8 @@ def index():
 
 @bp.route("/share/<uuid:id>/delete", methods=("GET", "POST"))
 @login_required
-def invite_delete(id):
-    invite = session.get(Invite, id)
+def invite_delete(invite_id):
+    invite = session.get(Invite, invite_id)
     if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
         logger.debug("Wrong user")
         abort(403)
@@ -58,8 +59,8 @@ def invite_delete(id):
 
 @api.route("/invite/<int:id>/delete", methods=("POST",))
 @login_required
-def api_invite_delete(id):
-    invite = session.get(Invite, id)
+def api_invite_delete(invite_id):
+    invite = session.get(Invite, invite_id)
     if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
     session.delete(invite)

@@ -9,9 +9,9 @@ import markdown2
 
 from whathappened.userassets.forms import AssetSelectForm
 from whathappened.database import session
-from whathappened.auth import login_required, current_user
+from whathappened.auth.utils import login_required, current_user
 
-from . import bp
+from .blueprints import bp
 from .models import Campaign, Handout, HandoutGroup
 from .forms import HandoutForm, DeleteHandoutForm, HandoutGroupForm
 
@@ -27,7 +27,7 @@ class HandoutView(View):
     def dispatch_request(
         self, campaign_id: int, handout_id: Optional[int] = None
     ) -> Union[Text, Response]:
-        logger.debug(f"dispatch_request({campaign_id}, {handout_id})")
+        logger.debug("dispatch_request(%s, %s)", campaign_id, handout_id)
 
         if request.method == "GET" and handout_id is None:
             return self.list_view(campaign_id)
@@ -64,9 +64,10 @@ class HandoutView(View):
             logger.debug("Form did not validate")
             for error, message in handoutform.errors.items():
                 logger.debug(
-                    f"Field: {error}, "
-                    f"value: {handoutform[error].data}, "
-                    f"errors: {', '.join(message)}"
+                    "Field: %s, value: %s, errors: %s",
+                    error,
+                    handoutform[error].data,
+                    ", ".join(message),
                 )
 
         return redirect(url_for("campaign.handout_view", campaign_id=campaign_id))
@@ -89,9 +90,10 @@ class HandoutView(View):
             logger.debug("Form did not validate")
             for error, message in form.errors.items():
                 logger.debug(
-                    f"Field: {error}, "
-                    f"value: {form[error].data}, "
-                    f"errors: {', '.join(message)}"
+                    "Field: %s, value: %s, errors: %s",
+                    error,
+                    form[error].data,
+                    ", ".join(message),
                 )
 
         return redirect(
@@ -101,7 +103,7 @@ class HandoutView(View):
         )
 
     def view(self, campaign_id: int, handout_id: int) -> Text:
-        logger.debug(f"view({campaign_id}, {handout_id})")
+        logger.debug("view(%s, %s)", campaign_id, handout_id)
         handout: Handout = session.get(Handout, handout_id)
 
         if not handout:
