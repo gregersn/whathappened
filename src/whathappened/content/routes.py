@@ -4,9 +4,9 @@ from whathappened.database import session
 
 from whathappened.character.models import Character
 from whathappened.campaign import models as campaignmodels
-from whathappened.auth import login_required, current_user
+from whathappened.auth.utils import login_required, current_user
 
-from . import bp
+from .blueprints import bp
 
 from .forms import NewFolderForm
 from .models import Folder

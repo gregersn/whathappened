@@ -1,15 +1,10 @@
 """Module for the interaction with character sheets in What Happened?"""
 
 import math
-from flask import Blueprint
 from webassets.env import Environment
 
-bp = Blueprint(
-    "character", __name__, template_folder="templates", static_folder="static"
-)
-api = Blueprint("characterapi", __name__, template_folder="templates")
-
 from . import routes  # noqa: E402, F401 isort:skip
+from .blueprints import bp
 
 
 @bp.app_template_filter("datetimeformat")

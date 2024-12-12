@@ -5,7 +5,7 @@ from flask import render_template, request
 from flask import redirect, url_for, jsonify
 from werkzeug.exceptions import abort
 
-from whathappened.auth import login_required, current_user
+from whathappened.auth.utils import login_required, current_user
 from whathappened.content.forms import ChooseFolderForm
 from whathappened.database import session
 from whathappened.database.pagination import paginate
@@ -16,7 +16,7 @@ from whathappened.sheets.schema.build import flatten_schema, get_schema, sub_sch
 from whathappened.sheets.schema.coc7e import migrations, LATEST
 from whathappened.sheets.schema.utils import migrate
 
-from . import bp, api
+from .blueprints import bp, api
 from .models import Character
 from .forms import ImportForm, CreateForm
 from .forms import DeleteForm

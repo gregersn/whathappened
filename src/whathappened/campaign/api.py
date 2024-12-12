@@ -7,10 +7,10 @@ from flask import request, jsonify
 from sqlalchemy import or_
 from werkzeug.exceptions import abort
 
-from whathappened.auth import login_required, current_user
+from whathappened.auth.utils import login_required, current_user
 from whathappened.database import session
 
-from . import apibp
+from .blueprints import apibp
 from .models import Handout, Campaign, HandoutStatus, NPC, Message
 
 logger = logging.getLogger(__name__)

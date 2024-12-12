@@ -9,7 +9,7 @@ from wtforms.validators import DataRequired, Email
 from wtforms.widgets.core import HiddenInput, TextArea
 
 from whathappened.forms.fields import QuerySelectField, QuerySelectMultipleField
-from whathappened.auth import current_user
+from whathappened.auth.utils import current_user
 
 from .models import HandoutStatus
 
@@ -174,7 +174,7 @@ class MessagePlayerForm(FlaskForm):
         *args,
         **kwargs,
     ):
-        super(MessagePlayerForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if hide_to_id:
             self.to_id.widget = HiddenInput()  # type: ignore  # Not an error
 
