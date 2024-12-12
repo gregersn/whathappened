@@ -6,10 +6,9 @@ from werkzeug.exceptions import abort
 
 from whathappened.models import Invite
 from whathappened.database import session, Base
-from whathappened.auth import login_required, current_user
+from whathappened.auth.utils import login_required, current_user
 
-from . import bp
-from . import api
+from .blueprints import bp, api
 
 from .forms import DeleteInviteForm
 

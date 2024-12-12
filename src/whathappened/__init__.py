@@ -100,10 +100,10 @@ def create_app(test_config=None) -> Flask:
     app.jinja_env.assets_environment = assets_env  # pyright: ignore[reportGeneralTypeIssues]
 
     # Register blueprints
-    from . import auth
+    from .auth.blueprints import bp as auth_bp
 
     logger.debug("Registering blueprint auth")
-    app.register_blueprint(auth.bp)
+    app.register_blueprint(auth_bp)
 
     from . import main
 
@@ -119,28 +119,30 @@ def create_app(test_config=None) -> Flask:
     logger.debug("Registering blueprint profile")
     app.register_blueprint(profile.bp, url_prefix="/profile")
 
-    from . import content
+    from .content.blueprints import bp as content_bp
 
     logger.debug("Registering blueprint content")
-    app.register_blueprint(content.bp, url_prefix="/content")
+    app.register_blueprint(content_bp, url_prefix="/content")
 
-    from . import userassets
+    from .userassets.blueprints import bp as userassets_bp, apibp as userassets_apibp
 
     logger.debug("Registering assets module")
-    app.register_blueprint(userassets.bp, url_prefix="/assets")
-    app.register_blueprint(userassets.apibp, url_prefix="/api/assets")
+    app.register_blueprint(userassets_bp, url_prefix="/assets")
+    app.register_blueprint(userassets_apibp, url_prefix="/api/assets")
 
+    from .character.blueprints import bp as character_bp, api as character_api
     from . import character
 
     logger.debug("Registering blueprint character")
-    app.register_blueprint(character.bp, url_prefix="/character")
-    app.register_blueprint(character.api, url_prefix="/api/character")
+    app.register_blueprint(character_bp, url_prefix="/character")
+    app.register_blueprint(character_api, url_prefix="/api/character")
     character.register_assets(assets_env)
 
+    from .campaign.blueprints import bp as campaign_bp, apibp as campaign_apibp
     from . import campaign
 
-    app.register_blueprint(campaign.bp, url_prefix="/campaign")
-    app.register_blueprint(campaign.apibp, url_prefix="/api/campaign")
+    app.register_blueprint(campaign_bp, url_prefix="/campaign")
+    app.register_blueprint(campaign_apibp, url_prefix="/api/campaign")
     campaign.register_assets(assets_env)
 
     app.add_url_rule("/", endpoint="profile.index")

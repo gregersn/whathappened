@@ -9,9 +9,9 @@ import markdown2
 
 from whathappened.userassets.forms import AssetSelectForm
 from whathappened.database import session
-from whathappened.auth import login_required, current_user
+from whathappened.auth.utils import login_required, current_user
 
-from . import bp
+from .blueprints import bp
 from .models import Campaign, Handout, HandoutGroup
 from .forms import HandoutForm, DeleteHandoutForm, HandoutGroupForm
 
