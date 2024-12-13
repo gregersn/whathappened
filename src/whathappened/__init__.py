@@ -68,10 +68,9 @@ def create_app(test_config=None) -> Flask:
         raise ValueError("Missing setting for UPLOAD_FOLDER")
 
     # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError as e:
-        logger.info(f"Exception occured: {e} ")
+    instance_path = Path(app.instance_path)
+    if not instance_path.exists():
+        instance_path.mkdir(parents=True)
 
     # Init addons
     init_db(app.config["SQLALCHEMY_DATABASE_URI"], nullpool=test_config is not None)
