@@ -1,19 +1,19 @@
-from typing import Literal
 import typing
 import pytest
 import yaml
 from pathlib import Path
 
 from whathappened import sheets
+from whathappened.sheets.schema.base import Gametag
 from whathappened.sheets.schema.build import get_schema
 from whathappened.sheets.utils import create_sheet
 
-System = Literal["landf", "dod", "tftl", "coc7e", "vaesen"]
-SYSTEMS: list[str] = list(typing.get_args(System))
+
+SYSTEMS: list[str] = list(typing.get_args(Gametag))
 
 
 @pytest.fixture
-def sheet(system: System):
+def sheet(system: Gametag):
     return create_sheet(system)
 
 
@@ -23,7 +23,7 @@ def write_yaml(data, filename: Path):
 
 
 @pytest.mark.parametrize("game", SYSTEMS)
-def test_schemas(game: str):
+def test_schemas(game: Gametag):
     current_schema = get_schema(game)
     assert current_schema
 
@@ -46,7 +46,7 @@ def test_schemas(game: str):
 
 
 @pytest.mark.parametrize("game", SYSTEMS)
-def test_create_sheet(game: System):
+def test_create_sheet(game: Gametag):
     character_module = sheets.find_system(game)
 
     assert character_module

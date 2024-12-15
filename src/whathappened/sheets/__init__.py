@@ -1,16 +1,15 @@
 """Game sheets handling."""
 
-from typing import Literal
 from whathappened.sheets.mechanics import core
 from whathappened.sheets.mechanics.core import register_game
 from whathappened.sheets.mechanics.coc7e.mechanics import CoCMechanics
 from whathappened.sheets.mechanics.dod.mechanics import DoDMechanics
 from whathappened.sheets.mechanics.tftl.mechanics import TftlMechanics
 
+from whathappened.sheets.schema.base import Gametag
+
 from .mechanics import coc7e  # noqa
 from .mechanics import tftl  # noqa
-
-Gametag = Literal["landf", "tftl", "coc7e", "dod"]
 
 
 def find_system(tag: Gametag):

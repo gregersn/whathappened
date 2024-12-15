@@ -10,6 +10,8 @@ from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 from jsonschema.exceptions import SchemaError
 from jsonschema.validators import Draft7Validator
 
+from whathappened.sheets.schema.base import Gametag
+
 CHARACTER_SCHEMA_DIR = Path(__file__).parent.parent / "schema"
 
 assert CHARACTER_SCHEMA_DIR.is_dir(), CHARACTER_SCHEMA_DIR
@@ -26,7 +28,7 @@ class UnsortedGenerateJsonSchema(GenerateJsonSchema):
         return value
 
 
-def get_schema(system: str):
+def get_schema(system: Gametag):
     """Get schema based on system name."""
     try:
         import importlib
@@ -100,7 +102,7 @@ def load_schema(filename: Path) -> Dict[str, Any]:
 SchemaValidationError = Dict[str, str]
 
 
-def validate(data: Dict, system: str) -> List[SchemaValidationError]:
+def validate(data: Dict, system: Gametag) -> List[SchemaValidationError]:
     """Validate a sheet against a system."""
     logger.debug("Getting schema")
     schema = get_schema(system)
