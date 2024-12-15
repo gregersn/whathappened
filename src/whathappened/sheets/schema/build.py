@@ -5,7 +5,6 @@ import logging
 from pathlib import Path
 import json
 import yaml
-import msgspec
 import pydantic
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 from jsonschema.exceptions import SchemaError
@@ -33,10 +32,6 @@ def get_schema(system: str):
         import importlib
 
         game_module = importlib.import_module(f"whathappened.sheets.schema.{system}")
-
-        if issubclass(game_module.CharacterSheet, msgspec.Struct):
-            logger.debug("Getting character sheet from imgspec")
-            return msgspec.json.schema(game_module.CharacterSheet)
 
         if issubclass(game_module.CharacterSheet, pydantic.BaseModel):
             logger.debug("Getting character sheet from pydantic")

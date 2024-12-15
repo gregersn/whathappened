@@ -40,7 +40,6 @@ dependencies = [
     "jinja2-webpack",
     "pydantic",
     "pydantic-settings",
-    "msgspec",
 ]
 
 

@@ -5,13 +5,13 @@ from typing_extensions import Annotated
 
 import yaml
 
-import msgspec
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class SheetInfo(msgspec.Struct):
+class SheetInfo(BaseModel):
     """Basic info about the sheet."""
 
-    gamename: str = "Drakar och Demoner"
+    gamename: Literal["Drakar och Demoner"] = "Drakar och Demoner"
     title: str = "Unknown"
 
 
@@ -34,32 +34,34 @@ Slakte = Literal["Människa", "Halvling", "Dvärg", "Alv", "Anka", "Vargfolk"]
 BasEgenskap = Literal["STY", "FYS", "SMI", "INT", "PSY", "KAR"]
 
 
-class Grundegenskaper(msgspec.Struct, frozen=True):
+class Grundegenskaper(BaseModel):
     """Attributes."""
 
-    STY: Annotated[int, msgspec.Meta(le=18, ge=0, title="Styrke (STY)")] = 0
-    FYS: Annotated[int, msgspec.Meta(le=18, ge=0, title="Fysik (FYS)")] = 0
-    SMI: Annotated[int, msgspec.Meta(le=18, ge=0, title="Smidighet (SMI)")] = 0
-    INT: Annotated[int, msgspec.Meta(le=18, ge=0, title="Intelligens (INT)")] = 0
-    PSY: Annotated[int, msgspec.Meta(le=18, ge=0, title="Psyke (PSY)")] = 0
-    KAR: Annotated[int, msgspec.Meta(le=18, ge=0, title="Karisma (KAR)")] = 0
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    STY: Annotated[int, Field(le=18, ge=0, title="Styrke (STY)")] = 0
+    FYS: Annotated[int, Field(le=18, ge=0, title="Fysik (FYS)")] = 0
+    SMI: Annotated[int, Field(le=18, ge=0, title="Smidighet (SMI)")] = 0
+    INT: Annotated[int, Field(le=18, ge=0, title="Intelligens (INT)")] = 0
+    PSY: Annotated[int, Field(le=18, ge=0, title="Psyke (PSY)")] = 0
+    KAR: Annotated[int, Field(le=18, ge=0, title="Karisma (KAR)")] = 0
     utmattad: bool = False
     krasslig: bool = False
-    omtocknad: Annotated[bool, msgspec.Meta(title="Omtöcknad")] = False
+    omtocknad: Annotated[bool, Field(title="Omtöcknad")] = False
     arg: bool = False
-    radd: Annotated[bool, msgspec.Meta(title="Rädd")] = False
+    radd: Annotated[bool, Field(title="Rädd")] = False
     uppgiven: bool = False
 
 
-class Fardighet(msgspec.Struct, frozen=True):
+class Fardighet(BaseModel):
     """Skill."""
 
-    checked: Annotated[bool, msgspec.Meta(extra_json_schema={"hide_heading": True})] = (
-        False
-    )
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    checked: Annotated[bool, Field(json_schema_extra={"hide_heading": True})] = False
     name: str = "namn"
     base: Annotated[
-        BasEgenskap, msgspec.Meta(extra_json_schema={"filter": "parenthesize"})
+        BasEgenskap, Field(json_schema_extra={"filter": "parenthesize"})
     ] = "STY"
     value: int = 0
 
@@ -101,13 +103,15 @@ VapenFardigheter: list[tuple[str, BasEgenskap]] = [
 ]
 
 
-class Fardigheter(msgspec.Struct, frozen=True):
+class Fardigheter(BaseModel):
     """Skills."""
+
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
     primar: Annotated[
         List[Fardighet],
-        msgspec.Meta(
-            extra_json_schema={
+        Field(
+            json_schema_extra={
                 "constant": True,
                 "widget": "table",
                 "heading": False,
@@ -115,22 +119,22 @@ class Fardigheter(msgspec.Struct, frozen=True):
                 "constant_fields": ["name", "base"],
             }
         ),
-    ] = msgspec.field(
+    ] = Field(
         default_factory=lambda: [
             Fardighet(name=name, base=base) for name, base in PrimaraFerdigheter
         ],
     )
     vapenfardigheter: Annotated[
         List[Fardighet],
-        msgspec.Meta(
-            extra_json_schema={
+        Field(
+            json_schema_extra={
                 "constant": True,
                 "widget": "table",
                 "constant_fields": ["name", "base"],
             },
             title="Vapenfärdigheter",
         ),
-    ] = msgspec.field(
+    ] = Field(
         default_factory=lambda: [
             Fardighet(name=name, base=base) for name, base in VapenFardigheter
         ],
@@ -138,57 +142,67 @@ class Fardigheter(msgspec.Struct, frozen=True):
 
     sekundarafardigheter: Annotated[
         List[Fardighet],
-        msgspec.Meta(
-            extra_json_schema={"constant": False, "widget": "table"},
+        Field(
+            json_schema_extra={"constant": False, "widget": "table"},
             title="Sekundära färdigheter",
         ),
-    ] = msgspec.field(default_factory=lambda: [])
+    ] = Field(default_factory=lambda: [])
 
 
-class Packning(msgspec.Struct, frozen=True):
+class Packning(BaseModel):
     """Inventory."""
 
-    barformoga: Annotated[int, msgspec.Meta(title="Bärformåga", ge=0, le=10)] = (
-        msgspec.field(default=0)
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    barformoga: Annotated[int, Field(title="Bärformåga", ge=0, le=10)] = Field(
+        default=0
     )
-    items: Annotated[List[str], msgspec.Meta(extra_json_schema={"constant": True})] = (
-        msgspec.field(default_factory=lambda: ["-" for _ in range(10)])
+    items: Annotated[List[str], Field(json_schema_extra={"constant": True})] = Field(
+        default_factory=lambda: ["-" for _ in range(10)]
     )
     minnessak: str = "-"
-    smaasaker: Annotated[List[str], msgspec.Meta(title="Småsaker")] = []
+    smaasaker: Annotated[List[str], Field(title="Småsaker")] = []
 
 
-class Pengar(msgspec.Struct, frozen=True):
+class Pengar(BaseModel):
     """Money."""
+
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
     guldmynt: int = 0
     silvermynt: int = 0
     kopparmynt: int = 0
 
 
-class Rustning(msgspec.Struct, frozen=True):
+class Rustning(BaseModel):
     """Armor."""
+
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
     typ: str = "Ingen"
     skyddsvärde: int = 0
     smyga: bool = False
     undvika: bool = False
-    hoppa_och_klattra: Annotated[bool, msgspec.Meta(title="Hoppa & klättra")] = False
+    hoppa_och_klattra: Annotated[bool, Field(title="Hoppa & klättra")] = False
 
 
-class Hjalm(msgspec.Struct, frozen=True):
+class Hjalm(BaseModel):
     """Helmet."""
+
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
     typ: str = "Ingen"
     skyddsvärde: int = 0
-    upptäcka_fara: Annotated[bool, msgspec.Meta(title="Upptäcka fara")] = False
+    upptäcka_fara: Annotated[bool, Field(title="Upptäcka fara")] = False
     avståndsattacker: bool = False
 
 
-class Vapen(msgspec.Struct, frozen=True):
+class Vapen(BaseModel):
     """Weapon."""
 
-    vapen: Annotated[str, msgspec.Meta(title="Vapen/sköld")] = "Obeväpnad"
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    vapen: Annotated[str, Field(title="Vapen/sköld")] = "Obeväpnad"
     grepp: Literal["-", "1H", "2H"] = "-"
     räckvidd: str = "2"
     skada: str = "T6"
@@ -196,127 +210,133 @@ class Vapen(msgspec.Struct, frozen=True):
     egenskaper: str = "Krossande"
 
 
-class Bevapning(msgspec.Struct, frozen=True):
+class Bevapning(BaseModel):
     """Armory."""
 
-    rustning: Annotated[
-        Rustning, msgspec.Meta(extra_json_schema={"subsection": True})
-    ] = msgspec.field(default_factory=Rustning)
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    rustning: Annotated[Rustning, Field(json_schema_extra={"subsection": True})] = (
+        Field(default_factory=Rustning)
+    )
     hjalm: Annotated[
-        Hjalm, msgspec.Meta(title="Hjälm", extra_json_schema={"subsection": True})
-    ] = msgspec.field(default_factory=Hjalm)
+        Hjalm, Field(title="Hjälm", json_schema_extra={"subsection": True})
+    ] = Field(default_factory=Hjalm)
     till_hands: Annotated[
         List[Vapen],
-        msgspec.Meta(
+        Field(
             title="Till hands",
-            extra_json_schema={"constant": True, "widget": "table", "header": True},
+            json_schema_extra={"constant": True, "widget": "table", "header": True},
         ),
-    ] = msgspec.field(default_factory=lambda: [Vapen() for _ in range(3)])
+    ] = Field(default_factory=lambda: [Vapen() for _ in range(3)])
 
 
-class Viljepoang(msgspec.Struct, frozen=True):
+class Viljepoang(BaseModel):
     """Willpower points."""
 
-    poang: Annotated[int, msgspec.Meta(title="Poäng", le=20)] = msgspec.field(default=0)
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    poang: Annotated[int, Field(title="Poäng", le=20)] = Field(default=0)
     anvanda: Annotated[
         int,
-        msgspec.Meta(
-            title="Använda", le=20, extra_json_schema=({"widget": "progress"})
-        ),
-    ] = msgspec.field(default=0)
+        Field(title="Använda", le=20, json_schema_extra=({"widget": "progress"})),
+    ] = Field(default=0)
 
 
-class Dodsslag(msgspec.Struct, frozen=True):
+class Dodsslag(BaseModel):
     """Death rolls."""
 
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
     lyckade: Annotated[
-        int, msgspec.Meta(le=3, ge=0, extra_json_schema={"widget": "progress"})
+        int, Field(le=3, ge=0, json_schema_extra={"widget": "progress"})
     ] = 0
     misslyckade: Annotated[
-        int, msgspec.Meta(le=3, ge=0, extra_json_schema={"widget": "progress"})
+        int, Field(le=3, ge=0, json_schema_extra={"widget": "progress"})
     ] = 0
 
 
-class Kroppspoang(Viljepoang, frozen=True):
+class Kroppspoang(Viljepoang):
     """Hit points."""
 
-    dodsslag: Annotated[Dodsslag, msgspec.Meta(title="Dödsslag")] = msgspec.field(
-        default=Dodsslag()
-    )
+    dodsslag: Annotated[Dodsslag, Field(title="Dödsslag")] = Field(default=Dodsslag())
 
 
-class Personalia(msgspec.Struct, frozen=True):
+class Personalia(BaseModel):
     """Personalia."""
 
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
     namn: str = "Inget namn"
-    slakte: Annotated[Slakte, msgspec.Meta(title="Släkte")] = msgspec.field(
-        default="Människa"
-    )
-    alder: Annotated[Alder, msgspec.Meta(title="Ålder")] = "Ung"
+    slakte: Annotated[Slakte, Field(title="Släkte")] = Field(default="Människa")
+    alder: Annotated[Alder, Field(title="Ålder")] = "Ung"
     yrke: Yrke = "Bard"
     svaghet: str = "Odefinerad"
     utseende: str = "Odefinerad"
 
 
-class SekundaraEgenskaper(msgspec.Struct, frozen=True):
+class SekundaraEgenskaper(BaseModel):
     """Secondary skills."""
+
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
     skadebonus_sty: Annotated[
         Bonus,
-        msgspec.Meta(title="Skadebonus STY", extra_json_schema={"block": "inline"}),
+        Field(title="Skadebonus STY", json_schema_extra={"block": "inline"}),
     ] = "-"
     skadebonus_smi: Annotated[
         Bonus,
-        msgspec.Meta(title="Skadebonus SMI", extra_json_schema={"block": "inline"}),
+        Field(title="Skadebonus SMI", json_schema_extra={"block": "inline"}),
     ] = "-"
     forflyttning: Annotated[
-        int, msgspec.Meta(extra_json_schema={"block": "inline"}, title="Förflyttning")
+        int, Field(json_schema_extra={"block": "inline"}, title="Förflyttning")
     ] = 0
     viljepoang: Annotated[
         Viljepoang,
-        msgspec.Meta(title="Viljepoäng", extra_json_schema={"subsection": True}),
-    ] = msgspec.field(default=Viljepoang())
+        Field(title="Viljepoäng", json_schema_extra={"subsection": True}),
+    ] = Field(default=Viljepoang())
     kroppspoang: Annotated[
         Kroppspoang,
-        msgspec.Meta(title="Kroppspoäng", extra_json_schema={"subsection": True}),
-    ] = msgspec.field(default=Kroppspoang())
+        Field(title="Kroppspoäng", json_schema_extra={"subsection": True}),
+    ] = Field(default=Kroppspoang())
 
 
-class Character(msgspec.Struct):
+class Character(BaseModel):
     """Character."""
 
-    personalia: Annotated[
-        Personalia, msgspec.Meta(extra_json_schema={"columns": 2})
-    ] = msgspec.field(default=Personalia())
-    egenskaper: Annotated[
-        Grundegenskaper, msgspec.Meta(extra_json_schema={"columns": 2})
-    ] = msgspec.field(default=Grundegenskaper())
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    personalia: Annotated[Personalia, Field(json_schema_extra={"columns": 2})] = Field(
+        default=Personalia()
+    )
+    egenskaper: Annotated[Grundegenskaper, Field(json_schema_extra={"columns": 2})] = (
+        Field(default=Grundegenskaper())
+    )
     sekundara_egenskaper: Annotated[
-        SekundaraEgenskaper, msgspec.Meta(title="Sekundära egenskaper")
-    ] = msgspec.field(default=SekundaraEgenskaper())
-    formagor_og_besvarjelser: List[str] = msgspec.field(
-        default=[], name="Förmågor & besvärjelser"
+        SekundaraEgenskaper, Field(title="Sekundära egenskaper")
+    ] = Field(default=SekundaraEgenskaper())
+    formagor_og_besvarjelser: List[str] = Field(
+        default=[], alias="Förmågor & besvärjelser"
     )
     fardigheter: Annotated[
         Fardigheter,
-        msgspec.Meta(title="Färdigheter", extra_json_schema={"columns": 2}),
-    ] = msgspec.field(default=Fardigheter())
-    packning: Packning = msgspec.field(default=Packning())
-    pengar: Pengar = msgspec.field(default=Pengar())
-    vapen: Annotated[Bevapning, msgspec.Meta(title="Beväpning")] = msgspec.field(
-        default=Bevapning()
-    )
+        Field(title="Färdigheter", json_schema_extra={"columns": 2}),
+    ] = Field(default=Fardigheter())
+    packning: Packning = Field(default=Packning())
+    pengar: Pengar = Field(default=Pengar())
+    vapen: Annotated[Bevapning, Field(title="Beväpning")] = Field(default=Bevapning())
 
 
-class DrakarOchDemoner(msgspec.Struct):
+class DrakarOchDemoner(BaseModel):
     """Character sheet."""
 
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
     system: str = "dod"
-    meta: SheetInfo = msgspec.field(default_factory=SheetInfo)
-    character_sheet: Character = msgspec.field(default_factory=Character)
+    meta: SheetInfo = Field(default_factory=SheetInfo)
+    character_sheet: Character = Field(default_factory=Character)
 
 
 CharacterSheet = DrakarOchDemoner
 
 if __name__ == "__main__":
-    print(yaml.dump(msgspec.json.schema(DrakarOchDemoner), allow_unicode=True))
+    print(yaml.dump(DrakarOchDemoner.model_json_schema()))
