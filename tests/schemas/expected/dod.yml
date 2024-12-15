@@ -17,7 +17,10 @@ $defs:
         title: Till hands
         type: array
         widget: table
-    required: []
+    required:
+    - rustning
+    - hjalm
+    - till_hands
     title: Bevapning
     type: object
   Character:
@@ -27,6 +30,7 @@ $defs:
         default: []
         items:
           type: string
+        title: "F\xF6rm\xE5gor & Besv\xE4rjelser"
         type: array
       egenskaper:
         $ref: '#/$defs/Grundegenskaper'
@@ -255,7 +259,15 @@ $defs:
             skada: T6
             vapen: "Obev\xE4pnad"
         title: "Bev\xE4pning"
-    required: []
+    required:
+    - personalia
+    - egenskaper
+    - sekundara_egenskaper
+    - "F\xF6rm\xE5gor & besv\xE4rjelser"
+    - fardigheter
+    - packning
+    - pengar
+    - vapen
     title: Character
     type: object
   Dodsslag:
@@ -265,29 +277,20 @@ $defs:
         default: 0
         maximum: 3
         minimum: 0
+        title: Lyckade
         type: integer
         widget: progress
       misslyckade:
         default: 0
         maximum: 3
         minimum: 0
+        title: Misslyckade
         type: integer
         widget: progress
-    required: []
+    required:
+    - lyckade
+    - misslyckade
     title: Dodsslag
-    type: object
-  DrakarOchDemoner:
-    description: Character sheet.
-    properties:
-      character_sheet:
-        $ref: '#/$defs/Character'
-      meta:
-        $ref: '#/$defs/SheetInfo'
-      system:
-        default: dod
-        type: string
-    required: []
-    title: DrakarOchDemoner
     type: object
   Fardighet:
     description: Skill.
@@ -295,24 +298,33 @@ $defs:
       base:
         default: STY
         enum:
-        - FYS
-        - INT
-        - KAR
-        - PSY
-        - SMI
         - STY
+        - FYS
+        - SMI
+        - INT
+        - PSY
+        - KAR
         filter: parenthesize
+        title: Base
+        type: string
       checked:
         default: false
         hide_heading: true
+        title: Checked
         type: boolean
       name:
         default: namn
+        title: Name
         type: string
       value:
         default: 0
+        title: Value
         type: integer
-    required: []
+    required:
+    - checked
+    - name
+    - base
+    - value
     title: Fardighet
     type: object
   Fardigheter:
@@ -327,6 +339,7 @@ $defs:
         hide_title: true
         items:
           $ref: '#/$defs/Fardighet'
+        title: Primar
         type: array
         widget: table
       sekundarafardigheter:
@@ -346,7 +359,10 @@ $defs:
         title: "Vapenf\xE4rdigheter"
         type: array
         widget: table
-    required: []
+    required:
+    - primar
+    - vapenfardigheter
+    - sekundarafardigheter
     title: Fardigheter
     type: object
   Grundegenskaper:
@@ -390,9 +406,11 @@ $defs:
         type: integer
       arg:
         default: false
+        title: Arg
         type: boolean
       krasslig:
         default: false
+        title: Krasslig
         type: boolean
       omtocknad:
         default: false
@@ -404,11 +422,25 @@ $defs:
         type: boolean
       uppgiven:
         default: false
+        title: Uppgiven
         type: boolean
       utmattad:
         default: false
+        title: Utmattad
         type: boolean
-    required: []
+    required:
+    - STY
+    - FYS
+    - SMI
+    - INT
+    - PSY
+    - KAR
+    - utmattad
+    - krasslig
+    - omtocknad
+    - arg
+    - radd
+    - uppgiven
     title: Grundegenskaper
     type: object
   Hjalm:
@@ -416,18 +448,25 @@ $defs:
     properties:
       "avst\xE5ndsattacker":
         default: false
+        title: "Avst\xE5ndsattacker"
         type: boolean
       "skyddsv\xE4rde":
         default: 0
+        title: "Skyddsv\xE4rde"
         type: integer
       typ:
         default: Ingen
+        title: Typ
         type: string
       "uppt\xE4cka_fara":
         default: false
         title: "Uppt\xE4cka fara"
         type: boolean
-    required: []
+    required:
+    - typ
+    - "skyddsv\xE4rde"
+    - "uppt\xE4cka_fara"
+    - "avst\xE5ndsattacker"
     title: Hjalm
     type: object
   Kroppspoang:
@@ -450,7 +489,10 @@ $defs:
         maximum: 20
         title: "Po\xE4ng"
         type: integer
-    required: []
+    required:
+    - poang
+    - anvanda
+    - dodsslag
     title: Kroppspoang
     type: object
   Packning:
@@ -466,9 +508,11 @@ $defs:
         constant: true
         items:
           type: string
+        title: Items
         type: array
       minnessak:
         default: '-'
+        title: Minnessak
         type: string
       smaasaker:
         default: []
@@ -476,7 +520,11 @@ $defs:
           type: string
         title: "Sm\xE5saker"
         type: array
-    required: []
+    required:
+    - barformoga
+    - items
+    - minnessak
+    - smaasaker
     title: Packning
     type: object
   Pengar:
@@ -484,14 +532,20 @@ $defs:
     properties:
       guldmynt:
         default: 0
+        title: Guldmynt
         type: integer
       kopparmynt:
         default: 0
+        title: Kopparmynt
         type: integer
       silvermynt:
         default: 0
+        title: Silvermynt
         type: integer
-    required: []
+    required:
+    - guldmynt
+    - silvermynt
+    - kopparmynt
     title: Pengar
     type: object
   Personalia:
@@ -500,28 +554,33 @@ $defs:
       alder:
         default: Ung
         enum:
-        - Gammal
-        - "Medel\xE5lders"
         - Ung
+        - "Medel\xE5lders"
+        - Gammal
         title: "\xC5lder"
+        type: string
       namn:
         default: Inget namn
+        title: Namn
         type: string
       slakte:
         default: "M\xE4nniska"
         enum:
+        - "M\xE4nniska"
+        - Halvling
+        - "Dv\xE4rg"
         - Alv
         - Anka
-        - "Dv\xE4rg"
-        - Halvling
-        - "M\xE4nniska"
         - Vargfolk
         title: "Sl\xE4kte"
+        type: string
       svaghet:
         default: Odefinerad
+        title: Svaghet
         type: string
       utseende:
         default: Odefinerad
+        title: Utseende
         type: string
       yrke:
         default: Bard
@@ -536,7 +595,15 @@ $defs:
         - Riddare
         - "Sj\xF6farare"
         - Tjuv
-    required: []
+        title: Yrke
+        type: string
+    required:
+    - namn
+    - slakte
+    - alder
+    - yrke
+    - svaghet
+    - utseende
     title: Personalia
     type: object
   Rustning:
@@ -548,17 +615,26 @@ $defs:
         type: boolean
       "skyddsv\xE4rde":
         default: 0
+        title: "Skyddsv\xE4rde"
         type: integer
       smyga:
         default: false
+        title: Smyga
         type: boolean
       typ:
         default: Ingen
+        title: Typ
         type: string
       undvika:
         default: false
+        title: Undvika
         type: boolean
-    required: []
+    required:
+    - typ
+    - "skyddsv\xE4rde"
+    - smyga
+    - undvika
+    - hoppa_och_klattra
     title: Rustning
     type: object
   SekundaraEgenskaper:
@@ -583,18 +659,20 @@ $defs:
         block: inline
         default: '-'
         enum:
+        - '-'
         - +T4
         - +T6
-        - '-'
         title: Skadebonus SMI
+        type: string
       skadebonus_sty:
         block: inline
         default: '-'
         enum:
+        - '-'
         - +T4
         - +T6
-        - '-'
         title: Skadebonus STY
+        type: string
       viljepoang:
         $ref: '#/$defs/Viljepoang'
         default:
@@ -602,19 +680,26 @@ $defs:
           poang: 0
         subsection: true
         title: "Viljepo\xE4ng"
-    required: []
+    required:
+    - skadebonus_sty
+    - skadebonus_smi
+    - forflyttning
+    - viljepoang
+    - kroppspoang
     title: SekundaraEgenskaper
     type: object
   SheetInfo:
     description: Basic info about the sheet.
     properties:
       gamename:
+        const: Drakar och Demoner
         default: Drakar och Demoner
+        title: Gamename
         type: string
       title:
         default: Unknown
+        title: Title
         type: string
-    required: []
     title: SheetInfo
     type: object
   Vapen:
@@ -622,9 +707,11 @@ $defs:
     properties:
       "brytv\xE4rde":
         default: '-'
+        title: "Brytv\xE4rde"
         type: string
       egenskaper:
         default: Krossande
+        title: Egenskaper
         type: string
       grepp:
         default: '-'
@@ -632,17 +719,27 @@ $defs:
         - '-'
         - 1H
         - 2H
+        title: Grepp
+        type: string
       "r\xE4ckvidd":
         default: '2'
+        title: "R\xE4ckvidd"
         type: string
       skada:
         default: T6
+        title: Skada
         type: string
       vapen:
         default: "Obev\xE4pnad"
         title: "Vapen/sk\xF6ld"
         type: string
-    required: []
+    required:
+    - vapen
+    - grepp
+    - "r\xE4ckvidd"
+    - skada
+    - "brytv\xE4rde"
+    - egenskaper
     title: Vapen
     type: object
   Viljepoang:
@@ -659,7 +756,24 @@ $defs:
         maximum: 20
         title: "Po\xE4ng"
         type: integer
-    required: []
+    required:
+    - poang
+    - anvanda
     title: Viljepoang
     type: object
-$ref: '#/$defs/DrakarOchDemoner'
+description: Character sheet.
+properties:
+  character_sheet:
+    $ref: '#/$defs/Character'
+  meta:
+    $ref: '#/$defs/SheetInfo'
+  system:
+    default: dod
+    title: System
+    type: string
+required:
+- system
+- meta
+- character_sheet
+title: DrakarOchDemoner
+type: object

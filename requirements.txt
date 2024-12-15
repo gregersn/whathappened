@@ -10,7 +10,6 @@
     Jinja2==3.1.4
     jsonschema==4.23.0
     markdown2==2.5.2
-    msgspec
     packaging==24.2
     Pillow==11.0.0
     pydantic-settings==2.6.1
