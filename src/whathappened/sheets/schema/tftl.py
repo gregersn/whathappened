@@ -1,7 +1,8 @@
-"""Vaesen schema."""
+"""Tales from the Loop schema."""
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import Annotated, Optional
 from pydantic import BaseModel, Field
 import yaml
 
@@ -139,33 +140,23 @@ class Miscellaneous(BaseModel):
     memento: str = Field("", description="Something that's a part of you.")
 
 
+class Pride(BaseModel):
+    description: str = "Unkown"
+    used: bool = False
+
+
 class Personality(BaseModel):
-    name: str = Field("", description="How should you be adressed?")
-    age: int = Field(
-        17, description="Young: 17-25 years, middle-aged: 26-50 years, old: 51+ years."
-    )
-    archetype: Archetype = Field(
-        title="Archetype",
-        default=Archetype.ACADEMIC,
-        description="The skeleton of your character.",
-    )
-    motivation: str = Field(
-        "",
-        description="Why are you willing to risk your own life to track down and fight vaesen?",
-    )
-    trauma: str = Field("", description="What event gave you the Sight?")
-    dark_secret: str = Field(
-        "", description="A problem you are ashamed of, and keep to yourself."
-    )
-    relationships: list[str] = Field(
-        title="Relationships",
-        default=["PC 1", "PC 2", "PC 3", "PC 4"],
-        min_length=4,
-        max_length=4,
-        json_schema_extra={"constant": True},
-        description="Your relationship to the other characters.",
-    )
-    description: str = ""
+    name: str = Field("Unknown", description="How should you be adressed?")
+    type: str = Field("Unknown")
+    age: str = Field("Unknown")
+    luck_points: int = Field(0, ge=0, le=5)
+    drive: str = Field("Unknown")
+    anchor: str = Field("Unknown")
+    problem: str = Field("Unknown")
+    pride: Pride = Field(default_factory=Pride)
+    description: str = Field("Unknown")
+    favorite_song: str = Field("Unknown")
+    portrait: Optional[str] = None
 
 
 class Characteristics(BaseModel):
@@ -193,27 +184,73 @@ class Characteristics(BaseModel):
     )
 
 
+class Relationships(BaseModel):
+    kids: list[str] = Field(default=["Unknown"])
+    npcs: list[str] = Field(default=["Unknown"])
+
+
+class Condition(BaseModel):
+    Upset: bool = False
+    Scared: bool = False
+    Exhausted: bool = False
+    Injured: bool = False
+    Broken: bool = False
+
+
+class Item(BaseModel):
+    name: str = "Pocket lint"
+    bonus: int = Field(default=1, ge=1, le=3)
+
+
+class Attributes(BaseModel):
+    Body: Annotated[int, Field(ge=1, le=5)] = 1
+    Tech: Annotated[int, Field(ge=1, le=5)] = 1
+    Heart: Annotated[int, Field(ge=1, le=5)] = 1
+    Mind: Annotated[int, Field(ge=1, le=5)] = 1
+
+
+class Skills(BaseModel):
+    Sneak: Annotated[int, Field(alias="Sneak (Body)", ge=0, le=5)] = 0
+    Force: Annotated[int, Field(alias="Force (Body)", ge=0, le=5)] = 0
+    Move: Annotated[int, Field(alias="Move (Body)", ge=0, le=5)] = 0
+    Tinker: Annotated[int, Field(alias="Tinker (Tech)", ge=0, le=5)] = 0
+    Program: Annotated[int, Field(alias="Program (Tech)", ge=0, le=5)] = 0
+    Calculate: Annotated[int, Field(alias="Calculate (Tech)", ge=0, le=5)] = 0
+    Contact: Annotated[int, Field(alias="Contact (Heart)", ge=0, le=5)] = 0
+    Charm: Annotated[int, Field(alias="Charm (Heart)", ge=0, le=5)] = 0
+    Lead: Annotated[int, Field(alias="Lead (Heart)", ge=0, le=5)] = 0
+    Investigate: Annotated[int, Field(alias="Investigate (Mind)", ge=0, le=5)] = 0
+    Comprehend: Annotated[int, Field(alias="Comprehend (Mind)", ge=0, le=5)] = 0
+    Empathize: Annotated[int, Field(alias="Empathize (Mind)", ge=0, le=5)] = 0
+
+
 class Character(BaseModel):
     """Character information."""
 
     personalia: Personality = Field(title="Personalia", default_factory=Personality)
-    miscellaneous: Miscellaneous = Field(
-        title="Miscellaneous", default_factory=Miscellaneous
+    relationships: Relationships = Field(
+        default_factory=Relationships, serialization_alias="relationships"
     )
-    characteristics: Characteristics = Field(
-        title="Characteristics", default_factory=Characteristics
+    items: list[Item] = Field(default_factory=lambda: [Item()])
+    hideout: str = "Tree hut"
+    notes: str = ""
+    attributes: Attributes = Attributes()
+    conditions: Conditions = Field(default_factory=Conditions)
+    skills: Skills = Skills()
+    experience: int = Field(0, ge=0, le=10)
+
+
+class TalesFromTheLoop(BaseSheet):
+    """Charactersheet for Tales from the Loop."""
+
+    system: Gametag = "tftl"
+    meta: SheetInfo = SheetInfo(gamename="Tales from the Loop")
+    character_sheet: Character = Field(
+        title="Tales from the Loop", default_factory=Character
     )
 
 
-class Vaesen(BaseSheet):
-    """Charactersheet for Vaesen."""
-
-    system: Gametag = "vaesen"
-    meta: SheetInfo = SheetInfo(gamename="Vaesen")
-    character_sheet: Character = Field(title="Vaesen", default_factory=Character)
-
-
-CharacterSheet = Vaesen
+CharacterSheet = TalesFromTheLoop
 
 if __name__ == "__main__":
-    print(yaml.dump(Vaesen.model_json_schema()))
+    print(yaml.dump(TalesFromTheLoop.model_json_schema()))

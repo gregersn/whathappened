@@ -1,0 +1,38 @@
+$defs:
+  SheetInfo:
+    properties:
+      gamename:
+        title: Gamename
+        type: string
+      title:
+        default: Unknown
+        title: Title
+        type: string
+    required:
+    - gamename
+    - title
+    title: SheetInfo
+    type: object
+description: Basic info about the sheet.
+properties:
+  meta:
+    $ref: '#/$defs/SheetInfo'
+  system:
+    enum:
+    - landf
+    - tftl
+    - coc7e
+    - dod
+    - vaesen
+    title: System
+    type: string
+  version:
+    default: 0.0.19.dev0+g68f8247.d20241215
+    title: Version
+    type: string
+required:
+- system
+- version
+- meta
+title: BaseSheet
+type: object

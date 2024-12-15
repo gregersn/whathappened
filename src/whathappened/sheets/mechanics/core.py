@@ -7,6 +7,7 @@ import base64
 import io
 from PIL import Image
 
+from whathappened.sheets.schema.base import Gametag
 from whathappened.sheets.schema.build import get_schema, build_from_schema, validate
 
 logger = logging.getLogger(__name__)
@@ -199,7 +200,7 @@ class CharacterMechanics:
 
 
 def register_game(
-    tag: str, name: str, mechanics: Type[CharacterMechanics] = CharacterMechanics
+    tag: Gametag, name: str, mechanics: Type[CharacterMechanics] = CharacterMechanics
 ):
     """Register a game system."""
     global GameSystems
@@ -210,7 +211,12 @@ def register_game(
     GameSystems += [(k, v) for k, v in GAMES.items()]
 
 
-def new_character(title: str, system: Optional[str] = None, **kwargs):
+def new_character(
+    title: str,
+    system: Optional[Gametag] = None,
+    version: Optional[str] = None,
+    **kwargs,
+):
     """Create new character."""
     if system is None:
         raise SyntaxError("new_character: System not specified")
@@ -219,5 +225,6 @@ def new_character(title: str, system: Optional[str] = None, **kwargs):
     schema_data = get_schema(system)
     new_character_data = build_from_schema(schema_data)
     new_character_data["title"] = title
+    new_character_data["version"] = version
 
     return new_character_data
