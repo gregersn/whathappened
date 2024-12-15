@@ -19,7 +19,7 @@ def sheet(system: System):
 
 def write_yaml(data, filename: Path):
     with open(filename, "w", encoding="utf8") as f:
-        yaml.safe_dump(data, f, sort_keys=False)
+        yaml.safe_dump(data, f, sort_keys=True)
 
 
 @pytest.mark.parametrize("game", SYSTEMS)
@@ -41,7 +41,7 @@ def test_schemas(game: str):
     if not current_schema == expected_schema:
         current_file.parent.mkdir(parents=True, exist_ok=True)
         with open(current_file, "w", encoding="utf8") as f:
-            yaml.safe_dump(current_schema, f, sort_keys=False)
+            yaml.safe_dump(current_schema, f, sort_keys=True)
         assert current_schema == expected_schema
 
 
@@ -70,5 +70,5 @@ def test_create_sheet(game: System):
     if not test_sheet == expected_sheet:
         current_file.parent.mkdir(parents=True, exist_ok=True)
         with open(current_file, "w", encoding="utf8") as f:
-            yaml.safe_dump(test_sheet, f, sort_keys=False)
+            yaml.safe_dump(test_sheet, f, sort_keys=True)
         assert test_sheet == expected_sheet

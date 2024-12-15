@@ -1,59 +1,59 @@
-system: vaesen
-meta:
-  gamename: Vaesen
-  title: Unknown
 character_sheet:
+  characteristics:
+    attributes:
+      empathy: 2
+      logic: 2
+      physique: 2
+      precision: 2
+    conditions:
+      mental:
+        angry: false
+        broken: false
+        frightened: false
+        hopeless: false
+      physical:
+        battered: false
+        broken: false
+        exhausted: false
+        wounded: false
+    experience: 0
+    resources: 1
+    skills:
+      agility: 0
+      close_combat: 0
+      force: 0
+      inspiration: 0
+      investigation: 0
+      learning: 0
+      manipulation: 0
+      medicine: 0
+      observation: 0
+      ranged_combat: 0
+      stealth: 0
+      vigilance: 0
+  miscellaneous:
+    advantages: ''
+    armor: none
+    equipment: []
+    insights: []
+    memento: ''
+    talents: []
+    weapons: []
   personalia:
-    name: ''
     age: 17
     archetype: Academic
-    motivation: ''
-    trauma: ''
     dark_secret: ''
+    description: ''
+    motivation: ''
+    name: ''
     relationships:
     - PC 1
     - PC 2
     - PC 3
     - PC 4
-    description: ''
-  miscellaneous:
-    talents: []
-    insights: []
-    advantages: ''
-    equipment: []
-    armor: none
-    weapons: []
-    memento: ''
-  characteristics:
-    attributes:
-      physique: 2
-      precision: 2
-      logic: 2
-      empathy: 2
-    resources: 1
-    conditions:
-      physical:
-        exhausted: false
-        battered: false
-        wounded: false
-        broken: false
-      mental:
-        angry: false
-        frightened: false
-        hopeless: false
-        broken: false
-    skills:
-      agility: 0
-      close_combat: 0
-      force: 0
-      medicine: 0
-      ranged_combat: 0
-      stealth: 0
-      investigation: 0
-      learning: 0
-      vigilance: 0
-      inspiration: 0
-      manipulation: 0
-      observation: 0
-    experience: 0
+    trauma: ''
+meta:
+  gamename: Vaesen
+  title: Unknown
+system: vaesen
 title: Test character

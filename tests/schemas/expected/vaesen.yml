@@ -1,37 +1,5 @@
-type: object
-properties:
-  system:
-    const: vaesen
-    type: string
-    default: vaesen
-    title: System
-  meta:
-    $ref: '#/$defs/SheetInfo'
-    default:
-      gamename: Vaesen
-      title: Unknown
-  character_sheet:
-    $ref: '#/$defs/Character'
-    title: Vaesen
-title: Vaesen
-description: Charactersheet for Vaesen.
 $defs:
-  SheetInfo:
-    type: object
-    properties:
-      gamename:
-        const: Vaesen
-        type: string
-        default: Vaesen
-        title: Gamename
-      title:
-        type: string
-        default: Unknown
-        title: Title
-    title: SheetInfo
-    description: Basic information about the character sheet.
   Archetype:
-    title: Archetype
     description: Character archetype
     enum:
     - Academic
@@ -44,348 +12,380 @@ $defs:
     - Servant
     - Vagabond
     - Writer
+    title: Archetype
     type: string
-  Personality:
-    type: object
-    properties:
-      name:
-        type: string
-        default: ''
-        description: How should you be adressed?
-        title: Name
-      age:
-        type: integer
-        default: 17
-        description: 'Young: 17-25 years, middle-aged: 26-50 years, old: 51+ years.'
-        title: Age
-      archetype:
-        $ref: '#/$defs/Archetype'
-        default: Academic
-        description: The skeleton of your character.
-      motivation:
-        type: string
-        default: ''
-        description: Why are you willing to risk your own life to track down and fight
-          vaesen?
-        title: Motivation
-      trauma:
-        type: string
-        default: ''
-        description: What event gave you the Sight?
-        title: Trauma
-      dark_secret:
-        type: string
-        default: ''
-        description: A problem you are ashamed of, and keep to yourself.
-        title: Dark Secret
-      relationships:
-        type: array
-        items:
-          type: string
-        minItems: 4
-        maxItems: 4
-        default:
-        - PC 1
-        - PC 2
-        - PC 3
-        - PC 4
-        title: Relationships
-        description: Your relationship to the other characters.
-        constant: true
-      description:
-        type: string
-        default: ''
-        title: Description
-    title: Personality
-  Equipment:
-    type: object
-    properties:
-      description:
-        type: string
-        default: Pocket lint
-        title: Description
-      bonus:
-        type: integer
-        default: 0
-        title: Bonus
-    title: Equipment
   Armors:
-    title: Armors
     enum:
     - none
     - light
     - medium
     - heavy
+    title: Armors
     type: string
-  Weapon:
-    type: object
-    properties:
-      weapon:
-        type: string
-        default: Pocket lint
-        title: Weapon
-      damage:
-        type: integer
-        default: 0
-        title: Damage
-      range:
-        type: string
-        default: None
-        title: Range
-      bonus:
-        type: integer
-        default: 0
-        title: Bonus
-    title: Weapon
-  Miscellaneous:
-    type: object
-    properties:
-      talents:
-        type: array
-        items:
-          type: string
-        default: []
-        description: Tricks, traits and abilities that can benefit you in various
-          situations.
-        title: Talents
-      insights:
-        type: array
-        items:
-          type: string
-        default: []
-        title: Insights & defects
-      advantages:
-        type: string
-        default: ''
-        description: What can help you on your current adventure?
-        title: Advantages
-      equipment:
-        type: array
-        items:
-          $ref: '#/$defs/Equipment'
-        default: []
-        description: All your things.
-        widget: table
-        header: true
-        title: Equipment
-      armor:
-        $ref: '#/$defs/Armors'
-        default: none
-        title: Armor
-        choice_values:
-          none: '(none), protection: 0, agility: 0'
-          light: 'Light, protection: 2, agility: -1'
-          medium: 'Medium, protection: 4, agility: -2'
-          heavy: 'Heavy, protection: 6, agility: -3'
-      weapons:
-        type: array
-        items:
-          $ref: '#/$defs/Weapon'
-        widget: table
-        header: true
-        hide_title: true
-        title: Weapons
-      memento:
-        type: string
-        default: ''
-        description: Something that's a part of you.
-        title: Memento
-    title: Miscellaneous
   Attributes:
-    type: object
     properties:
-      physique:
-        type: integer
-        maximum: 5
-        minimum: 2
-        default: 2
-        description: How big and strong you are.
-        title: Physique
-      precision:
-        type: integer
-        maximum: 5
-        minimum: 2
-        default: 2
-        description: Coordination and motor skills.
-        title: Precision
-      logic:
-        type: integer
-        maximum: 5
-        minimum: 2
-        default: 2
-        description: Intellectual capacity.
-        title: Logic
       empathy:
-        type: integer
-        maximum: 5
-        minimum: 2
         default: 2
         description: Your ability to understand other people.
+        maximum: 5
+        minimum: 2
         title: Empathy
+        type: integer
+      logic:
+        default: 2
+        description: Intellectual capacity.
+        maximum: 5
+        minimum: 2
+        title: Logic
+        type: integer
+      physique:
+        default: 2
+        description: How big and strong you are.
+        maximum: 5
+        minimum: 2
+        title: Physique
+        type: integer
+      precision:
+        default: 2
+        description: Coordination and motor skills.
+        maximum: 5
+        minimum: 2
+        title: Precision
+        type: integer
     title: Attributes
-  PhysicalConditions:
     type: object
+  Character:
+    description: Character information.
     properties:
-      exhausted:
-        type: boolean
-        default: false
-        title: Exhausted
-      battered:
-        type: boolean
-        default: false
-        title: Battered
-      wounded:
-        type: boolean
-        default: false
-        title: Wounded
-      broken:
-        type: boolean
-        default: false
-        title: Broken
-    title: PhysicalConditions
-  MentalConditions:
+      characteristics:
+        $ref: '#/$defs/Characteristics'
+      miscellaneous:
+        $ref: '#/$defs/Miscellaneous'
+      personalia:
+        $ref: '#/$defs/Personality'
+        title: Personalia
+    title: Character
     type: object
-    properties:
-      angry:
-        type: boolean
-        default: false
-        title: Angry
-      frightened:
-        type: boolean
-        default: false
-        title: Frightened
-      hopeless:
-        type: boolean
-        default: false
-        title: Hopeless
-      broken:
-        type: boolean
-        default: false
-        title: Broken
-    title: MentalConditions
-  Conditions:
-    type: object
-    properties:
-      physical:
-        $ref: '#/$defs/PhysicalConditions'
-        title: Physical
-      mental:
-        $ref: '#/$defs/MentalConditions'
-        title: Mental
-    title: Conditions
-  Skills:
-    type: object
-    properties:
-      agility:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Agility (Physique)
-      close_combat:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Close combat (Physique)
-      force:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Force (Physique)
-      medicine:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Medicine (Precision)
-      ranged_combat:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Ranged combat (Precision)
-      stealth:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Stealth (Precision)
-      investigation:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Investigation (Logic)
-      learning:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Learning (Logic)
-      vigilance:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Vigilance (Logic)
-      inspiration:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Inspiration (Empathy)
-      manipulation:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Manipulation (Empathy)
-      observation:
-        type: integer
-        maximum: 5
-        minimum: 0
-        default: 0
-        title: Observation (Empathy)
-    title: Skills
   Characteristics:
-    type: object
     properties:
       attributes:
         $ref: '#/$defs/Attributes'
         description: Each attribute has a value between 2 and 5 and determines the
           number of dice you roll when attempting things that depend on the attribute
           in question.
-      resources:
+      conditions:
+        $ref: '#/$defs/Conditions'
+      experience:
+        default: 0
+        maximum: 20
+        minimum: 0
+        title: Experience
         type: integer
+        widget: progress
+      resources:
         default: 1
         description: How much capital you have at your disposal. 1 - destitude, 8
           - filthy rich.
         title: Resources
-      conditions:
-        $ref: '#/$defs/Conditions'
+        type: integer
       skills:
         $ref: '#/$defs/Skills'
         description: Acquired knowledge, training and experience. Value between 0
           and 5.
-      experience:
-        type: integer
-        maximum: 20
-        minimum: 0
-        default: 0
-        title: Experience
-        widget: progress
     title: Characteristics
-  Character:
     type: object
+  Conditions:
     properties:
-      personalia:
-        $ref: '#/$defs/Personality'
-        title: Personalia
-      miscellaneous:
-        $ref: '#/$defs/Miscellaneous'
-      characteristics:
-        $ref: '#/$defs/Characteristics'
-    title: Character
-    description: Character information.
+      mental:
+        $ref: '#/$defs/MentalConditions'
+        title: Mental
+      physical:
+        $ref: '#/$defs/PhysicalConditions'
+        title: Physical
+    title: Conditions
+    type: object
+  Equipment:
+    properties:
+      bonus:
+        default: 0
+        title: Bonus
+        type: integer
+      description:
+        default: Pocket lint
+        title: Description
+        type: string
+    title: Equipment
+    type: object
+  MentalConditions:
+    properties:
+      angry:
+        default: false
+        title: Angry
+        type: boolean
+      broken:
+        default: false
+        title: Broken
+        type: boolean
+      frightened:
+        default: false
+        title: Frightened
+        type: boolean
+      hopeless:
+        default: false
+        title: Hopeless
+        type: boolean
+    title: MentalConditions
+    type: object
+  Miscellaneous:
+    properties:
+      advantages:
+        default: ''
+        description: What can help you on your current adventure?
+        title: Advantages
+        type: string
+      armor:
+        $ref: '#/$defs/Armors'
+        choice_values:
+          heavy: 'Heavy, protection: 6, agility: -3'
+          light: 'Light, protection: 2, agility: -1'
+          medium: 'Medium, protection: 4, agility: -2'
+          none: '(none), protection: 0, agility: 0'
+        default: none
+        title: Armor
+      equipment:
+        default: []
+        description: All your things.
+        header: true
+        items:
+          $ref: '#/$defs/Equipment'
+        title: Equipment
+        type: array
+        widget: table
+      insights:
+        default: []
+        items:
+          type: string
+        title: Insights & defects
+        type: array
+      memento:
+        default: ''
+        description: Something that's a part of you.
+        title: Memento
+        type: string
+      talents:
+        default: []
+        description: Tricks, traits and abilities that can benefit you in various
+          situations.
+        items:
+          type: string
+        title: Talents
+        type: array
+      weapons:
+        header: true
+        hide_title: true
+        items:
+          $ref: '#/$defs/Weapon'
+        title: Weapons
+        type: array
+        widget: table
+    title: Miscellaneous
+    type: object
+  Personality:
+    properties:
+      age:
+        default: 17
+        description: 'Young: 17-25 years, middle-aged: 26-50 years, old: 51+ years.'
+        title: Age
+        type: integer
+      archetype:
+        $ref: '#/$defs/Archetype'
+        default: Academic
+        description: The skeleton of your character.
+      dark_secret:
+        default: ''
+        description: A problem you are ashamed of, and keep to yourself.
+        title: Dark Secret
+        type: string
+      description:
+        default: ''
+        title: Description
+        type: string
+      motivation:
+        default: ''
+        description: Why are you willing to risk your own life to track down and fight
+          vaesen?
+        title: Motivation
+        type: string
+      name:
+        default: ''
+        description: How should you be adressed?
+        title: Name
+        type: string
+      relationships:
+        constant: true
+        default:
+        - PC 1
+        - PC 2
+        - PC 3
+        - PC 4
+        description: Your relationship to the other characters.
+        items:
+          type: string
+        maxItems: 4
+        minItems: 4
+        title: Relationships
+        type: array
+      trauma:
+        default: ''
+        description: What event gave you the Sight?
+        title: Trauma
+        type: string
+    title: Personality
+    type: object
+  PhysicalConditions:
+    properties:
+      battered:
+        default: false
+        title: Battered
+        type: boolean
+      broken:
+        default: false
+        title: Broken
+        type: boolean
+      exhausted:
+        default: false
+        title: Exhausted
+        type: boolean
+      wounded:
+        default: false
+        title: Wounded
+        type: boolean
+    title: PhysicalConditions
+    type: object
+  SheetInfo:
+    description: Basic information about the character sheet.
+    properties:
+      gamename:
+        const: Vaesen
+        default: Vaesen
+        title: Gamename
+        type: string
+      title:
+        default: Unknown
+        title: Title
+        type: string
+    title: SheetInfo
+    type: object
+  Skills:
+    properties:
+      agility:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Agility (Physique)
+        type: integer
+      close_combat:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Close combat (Physique)
+        type: integer
+      force:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Force (Physique)
+        type: integer
+      inspiration:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Inspiration (Empathy)
+        type: integer
+      investigation:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Investigation (Logic)
+        type: integer
+      learning:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Learning (Logic)
+        type: integer
+      manipulation:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Manipulation (Empathy)
+        type: integer
+      medicine:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Medicine (Precision)
+        type: integer
+      observation:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Observation (Empathy)
+        type: integer
+      ranged_combat:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Ranged combat (Precision)
+        type: integer
+      stealth:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Stealth (Precision)
+        type: integer
+      vigilance:
+        default: 0
+        maximum: 5
+        minimum: 0
+        title: Vigilance (Logic)
+        type: integer
+    title: Skills
+    type: object
+  Weapon:
+    properties:
+      bonus:
+        default: 0
+        title: Bonus
+        type: integer
+      damage:
+        default: 0
+        title: Damage
+        type: integer
+      range:
+        default: None
+        title: Range
+        type: string
+      weapon:
+        default: Pocket lint
+        title: Weapon
+        type: string
+    title: Weapon
+    type: object
+description: Charactersheet for Vaesen.
+properties:
+  character_sheet:
+    $ref: '#/$defs/Character'
+    title: Vaesen
+  meta:
+    $ref: '#/$defs/SheetInfo'
+    default:
+      gamename: Vaesen
+      title: Unknown
+  system:
+    const: vaesen
+    default: vaesen
+    title: System
+    type: string
+title: Vaesen
+type: object
