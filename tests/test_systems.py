@@ -3,9 +3,11 @@ import pytest
 import yaml
 from pathlib import Path
 
+from pytest_dependency import depends
+
 from whathappened import sheets
 from whathappened.sheets.schema.base import Gametag
-from whathappened.sheets.schema.build import get_schema
+from whathappened.sheets.schema.build import get_schema, flatten_schema, validate
 from whathappened.sheets.utils import create_sheet
 
 
@@ -23,7 +25,9 @@ def write_yaml(data, filename: Path):
 
 
 @pytest.mark.parametrize("game", SYSTEMS)
-def test_schemas(game: Gametag):
+@pytest.mark.dependency()
+def test_expected_schema(request, game: Gametag):
+    """Checks to see if we expect a schema."""
     current_schema = get_schema(game)
     assert current_schema
 
@@ -31,9 +35,54 @@ def test_schemas(game: Gametag):
     current_file = Path(f"tests/schemas/current/{game}.yml")
 
     if not expected_file.is_file():
-        expected_file.parent.mkdir(parents=True, exist_ok=True)
-        write_yaml(current_schema, expected_file)
+        current_file.parent.mkdir(parents=True, exist_ok=True)
+        write_yaml(current_schema, current_file)
         assert False, "No expected schema, wrote one to file."
+
+
+@pytest.mark.parametrize("game", SYSTEMS)
+@pytest.mark.dependency()
+def test_flattened_schemas(request, game: Gametag):
+    """Checks that the current schema is similar-ish to the expected."""
+
+    depends(request, [f"test_expected_schema[{game}]"])
+    current_schema = get_schema(game)
+    assert current_schema
+
+    expected_file = Path(f"tests/schemas/expected/{game}.yml")
+    current_file = Path(f"tests/schemas/current/{game}.yml")
+
+    with open(expected_file, "r", encoding="utf8") as f:
+        expected_schema = yaml.safe_load(f)
+
+    flat_current = flatten_schema(current_schema)
+    flat_expected = flatten_schema(expected_schema)
+
+    if "$defs" in flat_current:
+        del flat_current["$defs"]
+
+    if "$defs" in flat_expected:
+        del flat_expected["$defs"]
+
+    if flat_current != flat_expected:
+        current_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(current_file, "w", encoding="utf8") as f:
+            yaml.safe_dump(current_schema, f, sort_keys=True)
+        assert flat_current == flat_expected
+
+
+@pytest.mark.parametrize("game", SYSTEMS)
+@pytest.mark.dependency()
+def test_written_schemas(request, game: Gametag):
+    """Checks that the current schema is idnetical to the expected."""
+
+    depends(request, [f"test_flattened_schemas[{game}]"])
+
+    current_schema = get_schema(game)
+    assert current_schema
+
+    expected_file = Path(f"tests/schemas/expected/{game}.yml")
+    current_file = Path(f"tests/schemas/current/{game}.yml")
 
     with open(expected_file, "r", encoding="utf8") as f:
         expected_schema = yaml.safe_load(f)
@@ -46,7 +95,8 @@ def test_schemas(game: Gametag):
 
 
 @pytest.mark.parametrize("game", SYSTEMS)
-def test_create_sheet(game: Gametag):
+@pytest.mark.dependency()
+def test_expected_sheet(request, game: Gametag):
     character_module = sheets.find_system(game)
 
     assert character_module
@@ -60,9 +110,37 @@ def test_create_sheet(game: Gametag):
     current_file = Path(f"tests/sheets/current/{game}.yml")
 
     if not expected_file.is_file():
-        expected_file.parent.mkdir(parents=True, exist_ok=True)
-        write_yaml(test_sheet, expected_file)
+        current_file.parent.mkdir(parents=True, exist_ok=True)
+        write_yaml(test_sheet, current_file)
         assert False, "No expected sheet, wrote one to file."
+
+
+@pytest.mark.parametrize("game", SYSTEMS)
+@pytest.mark.dependency()
+def test_validate_sheet(request, game: Gametag):
+    depends(request, [f"test_expected_sheet[{game}]"])
+
+    character_module = sheets.find_system(game)
+    test_sheet = character_module.new_character(
+        "Test character", system=game, timestamp=1733213970
+    )
+
+    assert not validate(test_sheet, game)
+
+
+@pytest.mark.parametrize("game", SYSTEMS)
+@pytest.mark.dependency()
+def test_create_sheet(request, game: Gametag):
+    depends(request, [f"test_validate_sheet[{game}]"])
+
+    character_module = sheets.find_system(game)
+
+    test_sheet = character_module.new_character(
+        "Test character", system=game, timestamp=1733213970
+    )
+
+    expected_file = Path(f"tests/sheets/expected/{game}.yml")
+    current_file = Path(f"tests/sheets/current/{game}.yml")
 
     with open(expected_file, "r", encoding="utf8") as f:
         expected_sheet = yaml.safe_load(f)
