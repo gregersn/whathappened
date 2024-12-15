@@ -3,10 +3,7 @@
 from pathlib import Path
 import pytest
 
-from jsonschema import validate
 
-from whathappened.sheets.schema.build import load_schema
-from whathappened.sheets.mechanics.tftl import CHARACTER_SCHEMA
 from whathappened.sheets.mechanics.tftl import new_character
 from whathappened.character.models import Character
 
@@ -19,9 +16,3 @@ def fixture_test_character() -> Character:
     c = Character(title="Test Character", body=nc)
 
     return c
-
-
-def test_validate():
-    nc = new_character("Test Character")
-    schema = load_schema(CHARACTER_SCHEMA)
-    validate(nc, schema=schema)

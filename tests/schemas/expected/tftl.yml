@@ -1,226 +1,340 @@
-$schema: http://json-schema.org/draft-07/schema#
-properties:
-  attributes:
+$defs:
+  Attributes:
     properties:
       Body:
         default: 1
         maximum: 5
         minimum: 1
+        title: Body
         type: integer
       Heart:
         default: 1
         maximum: 5
         minimum: 1
+        title: Heart
         type: integer
       Mind:
         default: 1
         maximum: 5
         minimum: 1
+        title: Mind
         type: integer
       Tech:
         default: 1
         maximum: 5
         minimum: 1
+        title: Tech
         type: integer
+    title: Attributes
     type: object
-  conditions:
+  Conditions:
     properties:
       Broken:
         default: false
+        title: Broken
         type: boolean
       Exhausted:
         default: false
+        title: Exhausted
         type: boolean
       Injured:
         default: false
+        title: Injured
         type: boolean
       Scared:
         default: false
+        title: Scared
         type: boolean
       Upset:
         default: false
+        title: Upset
         type: boolean
+    title: Conditions
     type: object
-  experience:
-    default: 0
-    maximum: 10
-    minimum: 0
-    type: integer
-  hideout:
-    default: Tree hut
-    type: string
-  items:
-    items:
-      default:
-      - bonus: 1
-        name: A precious thing
-      properties:
-        bonus:
-          anyOf:
-          - maximum: 3
-            minimum: 1
-            type: integer
-          - type: 'null'
-        name:
-          type: string
-      type: object
-    type: array
-    uniqueItems: true
-  meta:
+  Item:
+    properties:
+      bonus:
+        anyOf:
+        - maximum: 3
+          minimum: 1
+          type: integer
+        - type: 'null'
+        default: 1
+        title: Bonus
+      name:
+        default: Pocket lint
+        title: Name
+        type: string
+    title: Item
+    type: object
+  Meta:
     properties:
       CreateDate:
         default: ''
+        title: CreateDate
         type: string
       Creator:
         default: What happened? A TTRPG utility
+        title: Creator
         type: string
       Disclaimer:
         default: We're not gonna take it!
+        title: Disclaimer
         type: string
       GameName:
-        const: Tales From The Loop
+        default: Tales From The Loop
+        title: GameName
+        type: string
       GameType:
         default: ''
+        title: GameType
         type: string
       GameVersion:
         default: ''
+        title: GameVersion
         type: string
       Title:
         default: New character
+        title: Title
         type: string
+    title: Meta
     type: object
-  notes:
-    default: ''
-    type: string
-  personalia:
+  Personalia:
     properties:
       age:
         default: Unknown
+        title: Age
         type: string
       anchor:
         default: Unknown
+        title: Anchor
         type: string
       description:
         default: Unknown
+        title: Description
         type: string
       drive:
         default: Unknown
+        title: Drive
         type: string
       favorite_song:
         default: Unknown
+        title: Favorite Song
         type: string
       luck_points:
         default: 0
         maximum: 5
         minimum: 0
+        title: Luck Points
         type: integer
       name:
         default: Unknown
+        description: How should you be adressed?
+        title: Name
         type: string
       portrait:
         anyOf:
         - type: string
         - type: 'null'
+        default: ''
+        title: Portrait
       pride:
-        properties:
-          description:
-            default: Unknown
-            type: string
-          used:
-            default: false
-            type: boolean
-        type: object
+        $ref: '#/$defs/Pride'
       problem:
         default: Unknown
+        title: Problem
         type: string
       type:
         default: Unknown
+        title: Type
         type: string
+    title: Personalia
     type: object
-  relationships:
+  Pride:
+    properties:
+      description:
+        default: Unknown
+        title: Description
+        type: string
+      used:
+        default: false
+        title: Used
+        type: boolean
+    title: Pride
+    type: object
+  Relationships:
     properties:
       kids:
         default:
         - Unknown
         items:
           type: string
+        title: Kids
         type: array
       npcs:
         default:
         - Unknown
         items:
           type: string
+        title: Npcs
         type: array
+    title: Relationships
     type: object
-  skills:
+  Skills:
     properties:
       Calculate (Tech):
         default: 0
         maximum: 5
         minimum: 0
+        title: Calculate (Tech)
         type: integer
       Charm (Heart):
         default: 0
         maximum: 5
         minimum: 0
+        title: Charm (Heart)
         type: integer
       Comprehend (Mind):
         default: 0
         maximum: 5
         minimum: 0
+        title: Comprehend (Mind)
         type: integer
       Contact (Heart):
         default: 0
         maximum: 5
         minimum: 0
+        title: Contact (Heart)
         type: integer
       Empathize (Mind):
         default: 0
         maximum: 5
         minimum: 0
+        title: Empathize (Mind)
         type: integer
       Force (Body):
         default: 0
         maximum: 5
         minimum: 0
+        title: Force (Body)
         type: integer
       Investigate (Mind):
         default: 0
         maximum: 5
         minimum: 0
+        title: Investigate (Mind)
         type: integer
       Lead (Heart):
         default: 0
         maximum: 5
         minimum: 0
+        title: Lead (Heart)
         type: integer
       Move (Body):
         default: 0
         maximum: 5
         minimum: 0
+        title: Move (Body)
         type: integer
       Program (Tech):
         default: 0
         maximum: 5
         minimum: 0
+        title: Program (Tech)
         type: integer
       Sneak (Body):
         default: 0
         maximum: 5
         minimum: 0
+        title: Sneak (Body)
         type: integer
       Tinker (Tech):
         default: 0
         maximum: 5
         minimum: 0
+        title: Tinker (Tech)
         type: integer
+    title: Skills
     type: object
+description: Tales from the Loop sheet.
+properties:
+  attributes:
+    $ref: '#/$defs/Attributes'
+    default:
+      Body: 1
+      Heart: 1
+      Mind: 1
+      Tech: 1
+  conditions:
+    $ref: '#/$defs/Conditions'
+    default:
+      Broken: false
+      Exhausted: false
+      Injured: false
+      Scared: false
+      Upset: false
+  experience:
+    default: 0
+    maximum: 10
+    minimum: 0
+    title: Experience
+    type: integer
+  hideout:
+    default: Tree hut
+    title: Hideout
+    type: string
+  items:
+    items:
+      $ref: '#/$defs/Item'
+    title: Items
+    type: array
+  meta:
+    $ref: '#/$defs/Meta'
+  notes:
+    default: ''
+    title: Notes
+    type: string
+  personalia:
+    $ref: '#/$defs/Personalia'
+  relationships:
+    $ref: '#/$defs/Relationships'
+  skills:
+    $ref: '#/$defs/Skills'
+    default:
+      Calculate (Tech): 0
+      Charm (Heart): 0
+      Comprehend (Mind): 0
+      Contact (Heart): 0
+      Empathize (Mind): 0
+      Force (Body): 0
+      Investigate (Mind): 0
+      Lead (Heart): 0
+      Move (Body): 0
+      Program (Tech): 0
+      Sneak (Body): 0
+      Tinker (Tech): 0
   system:
     const: tftl
+    default: tftl
+    title: System
+    type: string
   version:
     const: 0.0.1
+    default: 0.0.1
+    title: Version
+    type: string
 required:
 - system
 - version
+- meta
+- personalia
+- relationships
+- items
+- hideout
+- notes
+- attributes
+- conditions
+- skills
+- experience
+title: TalesFromTheLoop
 type: object
-version: 0.0.1

@@ -4,9 +4,6 @@ from whathappened.sheets.schema.build import validate
 
 from ..core import CharacterMechanics
 
-CHARACTER_SCHEMA = Path(__file__).parent.parent.parent / "schema" / "tftl.json"
-assert CHARACTER_SCHEMA.is_file(), CHARACTER_SCHEMA
-
 
 class TftlMechanics(CharacterMechanics):
     def validate(self):
