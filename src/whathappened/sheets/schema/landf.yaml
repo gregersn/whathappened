@@ -10,7 +10,7 @@ properties:
                 type: string
                 default: Unknown
             gamename:
-                const: "Lasers and feelings"
+                const: "Lasers and Feelings"
         required:
             - title
             - gamename

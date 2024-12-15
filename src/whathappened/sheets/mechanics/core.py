@@ -211,7 +211,12 @@ def register_game(
     GameSystems += [(k, v) for k, v in GAMES.items()]
 
 
-def new_character(title: str, system: Optional[Gametag] = None, **kwargs):
+def new_character(
+    title: str,
+    system: Optional[Gametag] = None,
+    version: Optional[str] = None,
+    **kwargs,
+):
     """Create new character."""
     if system is None:
         raise SyntaxError("new_character: System not specified")
@@ -220,5 +225,6 @@ def new_character(title: str, system: Optional[Gametag] = None, **kwargs):
     schema_data = get_schema(system)
     new_character_data = build_from_schema(schema_data)
     new_character_data["title"] = title
+    new_character_data["version"] = version
 
     return new_character_data

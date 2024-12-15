@@ -6,6 +6,8 @@ import yaml
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from whathappened.sheets.schema.base import BaseSheet, SheetInfo, Gametag
+
 
 class CharacterStyle(str, Enum):
     """What style of character being played."""
@@ -31,15 +33,6 @@ class CharacterRole(str, Enum):
     SOLDIER = "Soldier"
 
 
-class SheetInfo(BaseModel):
-    """Basic info about the sheet."""
-
-    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
-
-    gamename: Literal["Lasers and feelings"] = "Lasers and feelings"
-    title: str = "Unknown"
-
-
 class LasersAndFeelingsCharacter(BaseModel):
     """Character information."""
 
@@ -63,18 +56,14 @@ class LasersAndFeelingsCharacter(BaseModel):
     )
 
 
-class LasersAndFeelings(BaseModel):
+class LasersAndFeelings(BaseSheet):
     """Character sheet."""
 
-    model_config = ConfigDict(
-        frozen=True, json_schema_serialization_defaults_required=True
-    )
-
-    system: Literal["landf"] = "landf"
-    meta: SheetInfo = SheetInfo()
+    system: Gametag = "landf"
+    meta: SheetInfo = SheetInfo(gamename="Lasers and Feelings")
 
     character_sheet: LasersAndFeelingsCharacter = Field(
-        title="Lasers And Feelings", default_factory=LasersAndFeelingsCharacter
+        default_factory=LasersAndFeelingsCharacter
     )
 
 

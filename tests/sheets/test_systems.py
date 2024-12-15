@@ -1,25 +1,17 @@
-import typing
 import pytest
 import yaml
 from pathlib import Path
 
+from tests.sheets.utils import write_yaml
 from whathappened import sheets
-from whathappened.sheets.schema.base import Gametag
-from whathappened.sheets.schema.build import get_schema
+from whathappened.sheets.schema.base import Gametag, SYSTEMS
+from whathappened.sheets.schema.build import get_schema, validate
 from whathappened.sheets.utils import create_sheet
-
-
-SYSTEMS: list[str] = list(typing.get_args(Gametag))
 
 
 @pytest.fixture
 def sheet(system: Gametag):
     return create_sheet(system)
-
-
-def write_yaml(data, filename: Path):
-    with open(filename, "w", encoding="utf8") as f:
-        yaml.safe_dump(data, f, sort_keys=True)
 
 
 @pytest.mark.parametrize("game", SYSTEMS)
@@ -52,7 +44,7 @@ def test_create_sheet(game: Gametag):
     assert character_module
 
     test_sheet = character_module.new_character(
-        "Test character", system=game, timestamp=1733213970
+        "Test character", system=game, timestamp=1733213970, version="v0.0.19"
     )
     assert test_sheet
 
@@ -66,6 +58,8 @@ def test_create_sheet(game: Gametag):
 
     with open(expected_file, "r", encoding="utf8") as f:
         expected_sheet = yaml.safe_load(f)
+
+    assert not validate(test_sheet, game)
 
     if not test_sheet == expected_sheet:
         current_file.parent.mkdir(parents=True, exist_ok=True)

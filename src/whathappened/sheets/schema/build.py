@@ -60,7 +60,7 @@ def get_schema(system: Gametag):
 
     logger.debug("No character schema: %s", CHARACTER_SCHEMA)
 
-    raise SchemaError("Missing schema")
+    raise SchemaError(f"Missing schema: {system}")
 
 
 def flatten_schema(

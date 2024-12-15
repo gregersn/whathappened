@@ -18,7 +18,7 @@ def test_load_schema():
     assert schema["type"] == "object"
     assert (
         schema["properties"]["meta"]["properties"]["gamename"]["const"]
-        == "Lasers and feelings"
+        == "Lasers and Feelings"
     ), schema
 
 
@@ -29,7 +29,7 @@ def test_build_from_schema():
 
     assert data
 
-    assert data["meta"]["gamename"] == "Lasers and feelings"
+    assert data["meta"]["gamename"] == "Lasers and Feelings"
     assert data["character_sheet"]["name"] == "Ace"
 
 
