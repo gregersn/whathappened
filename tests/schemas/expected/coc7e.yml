@@ -1,127 +1,134 @@
-$schema: http://json-schema.org/draft-07/schema#
-definitions:
-  skill:
-    $id: '#skill'
-    properties:
-      checked:
-        type: boolean
-      name:
-        type: string
-      occupation:
-        type: boolean
-      start_value:
-        anyOf:
-        - type: string
-        - type: integer
-      value:
-        anyof:
-        - type: integer
-        - type: 'null'
-    required:
-    - name
-    - value
-    - start_value
-    type: object
-properties:
-  assets:
-    anyOf:
-    - type: string
-    - type: 'null'
-  backstory:
+$defs:
+  Backstory:
     properties:
       description:
         anyOf:
         - type: string
         - type: 'null'
+        title: Description
       encounters:
         anyOf:
         - type: string
         - type: 'null'
+        title: Encounters
       ideology:
         anyOf:
         - type: string
         - type: 'null'
+        title: Ideology
       injurues:
         anyOf:
         - type: string
         - type: 'null'
+        title: Injurues
       locations:
         anyOf:
         - type: string
         - type: 'null'
+        title: Locations
       people:
         anyOf:
         - type: string
         - type: 'null'
+        title: People
       phobias:
         anyOf:
         - type: string
         - type: 'null'
+        title: Phobias
       possessions:
         anyOf:
         - type: string
         - type: 'null'
+        title: Possessions
       tomes:
         anyOf:
         - type: string
         - type: 'null'
+        title: Tomes
       traits:
         anyOf:
         - type: string
         - type: 'null'
+        title: Traits
+    required: []
+    title: Backstory
     type: object
-  cash:
+  Cash:
     properties:
       assets:
         anyOf:
         - type: string
         - type: integer
+        title: Assets
       cash:
         anyOf:
         - type: string
         - type: integer
+        title: Cash
       spending:
         anyOf:
         - type: string
         - type: integer
+        title: Spending
+    required: []
+    title: Cash
     type: object
-  characteristics:
+  Characteristics:
     properties:
       APP:
+        title: App
         type: integer
       CON:
+        title: Con
         type: integer
       DEX:
+        title: Dex
         type: integer
       EDU:
+        title: Edu
         type: integer
       HitPts:
+        title: Hitpts
         type: integer
       HitPtsMax:
+        title: Hitptsmax
         type: integer
       INT:
+        title: Int
         type: integer
       Luck:
+        title: Luck
         type: integer
       LuckMax:
+        title: Luckmax
         type: integer
       MagicPts:
+        title: Magicpts
         type: integer
       MagicPtsMax:
+        title: Magicptsmax
         type: integer
       Move:
+        title: Move
         type: integer
       POW:
+        title: Pow
         type: integer
       SIZ:
+        title: Siz
         type: integer
       STR:
+        title: Str
         type: integer
       Sanity:
+        title: Sanity
         type: integer
       SanityMax:
+        title: Sanitymax
         type: integer
       SanityStart:
+        title: Sanitystart
         type: integer
     required:
     - STR
@@ -140,132 +147,228 @@ properties:
     - MagicPtsMax
     - HitPts
     - HitPtsMax
+    title: Characteristics
     type: object
-  combat:
+  Combat:
     properties:
       Build:
         anyOf:
         - type: string
         - type: integer
+        title: Build
       DamageBonus:
         anyOf:
         - type: string
         - type: integer
+        title: Damagebonus
       Dodge:
         anyOf:
         - type: string
         - type: integer
+        title: Dodge
     required:
     - DamageBonus
     - Build
     - Dodge
+    title: Combat
     type: object
-  meta:
+  Meta:
     properties:
       CreateDate:
+        title: CreateDate
         type: string
       Creator:
+        title: Creator
         type: string
       Disclaimer:
+        title: Disclaimer
         type: string
       GameName:
         const: Call of Cthulhu TM
+        title: GameName
+        type: string
       GameType:
         enum:
         - Classic (1920's)
         - Modern
+        title: GameType
         type: string
       GameVersion:
         const: 7th Edition
+        title: GameVersion
+        type: string
       Title:
+        title: Title
         type: string
     required:
     - Title
     - GameName
     - GameVersion
     - GameType
+    title: Meta
     type: object
-  personalia:
+  Personalia:
     properties:
       Age:
+        title: Age
         type: string
       Birthplace:
+        title: Birthplace
         type: string
       Gender:
+        title: Gender
         type: string
       Name:
+        title: Name
         type: string
       Occupation:
+        title: Occupation
         type: string
       Portrait:
         anyOf:
         - type: string
         - type: 'null'
+        title: Portrait
       Residence:
+        title: Residence
         type: string
+    required: []
+    title: Personalia
     type: object
+  Skill:
+    properties:
+      checked:
+        title: Checked
+        type: boolean
+      name:
+        title: Name
+        type: string
+      occupation:
+        title: Occupation
+        type: boolean
+      specializations:
+        title: Specializations
+        type: boolean
+      start_value:
+        anyOf:
+        - type: string
+        - type: integer
+        title: Start Value
+      subskills:
+        anyOf:
+        - items:
+            $ref: '#/$defs/Skill'
+          type: array
+        - type: 'null'
+        default: null
+        title: Subskills
+        unique_items: true
+      value:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        title: Value
+    required:
+    - name
+    - value
+    - start_value
+    title: Skill
+    type: object
+  Weapon:
+    properties:
+      ammo:
+        anyOf:
+        - const: '-'
+          type: string
+        - type: integer
+        default: '-'
+        title: Ammo
+      attacks:
+        anyOf:
+        - type: integer
+        - type: string
+        title: Attacks
+      damage:
+        title: Damage
+        type: string
+      malf:
+        anyOf:
+        - const: '-'
+          type: string
+        - type: integer
+        default: '-'
+        title: Malf
+      name:
+        title: Name
+        type: string
+      range:
+        title: Range
+        type: string
+      regular:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        title: Regular
+    required:
+    - name
+    - regular
+    - damage
+    - range
+    - attacks
+    - ammo
+    - malf
+    title: Weapon
+    type: object
+description: Call of Cthulhu 7e sheet.
+properties:
+  assets:
+    anyOf:
+    - type: string
+    - type: 'null'
+    default: null
+    title: Assets
+  backstory:
+    $ref: '#/$defs/Backstory'
+  cash:
+    $ref: '#/$defs/Cash'
+  characteristics:
+    $ref: '#/$defs/Characteristics'
+  combat:
+    $ref: '#/$defs/Combat'
+  meta:
+    $ref: '#/$defs/Meta'
+  personalia:
+    $ref: '#/$defs/Personalia'
   possessions:
     anyOf:
-    - type: array
+    - items:
+        type: string
+      type: array
     - type: 'null'
+    title: Possessions
   skills:
+    default: []
     items:
-      allOf:
-      - $ref: '#/definitions/skill'
-      - if:
-          properties:
-            specialization:
-              const: true
-        properties:
-          specializations:
-            type: boolean
-        then:
-          properties:
-            subskills:
-              items:
-                $ref: '#/definitions/skill'
-              type: array
-            uniqueItems: true
+      $ref: '#/$defs/Skill'
+    title: Skills
     type: array
-    uniqueItems: true
+    unique_items: true
   system:
     const: coc7e
+    default: coc7e
+    title: System
+    type: string
   version:
     const: 0.0.4
+    default: 0.0.4
+    title: Version
+    type: string
   weapons:
+    default: []
     items:
-      properties:
-        ammo:
-          anyOf:
-          - const: '-'
-          - type: integer
-        attacks:
-          anyOf:
-          - type: string
-          - type: integer
-        damage:
-          type: string
-        malf:
-          anyOf:
-          - const: '-'
-          - type: integer
-        name:
-          type: string
-        range:
-          type: string
-        regular:
-          anyOf:
-          - type: integer
-          - type: 'null'
-      required:
-      - name
-      - regular
-      - damage
-      - range
-      - attacks
-      - ammo
-      - malf
-      type: object
+      $ref: '#/$defs/Weapon'
+    title: Weapons
     type: array
 required:
 - version
@@ -273,4 +376,5 @@ required:
 - meta
 - personalia
 - characteristics
+title: CallofCthulhu7e
 type: object

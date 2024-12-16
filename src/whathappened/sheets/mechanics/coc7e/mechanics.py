@@ -4,9 +4,6 @@ import logging
 from whathappened.sheets.mechanics.core import CharacterMechanics
 from whathappened.sheets.schema.build import validate
 
-CHARACTER_SCHEMA = Path(__file__).parent / "../../schema/coc7e.json"
-assert CHARACTER_SCHEMA.is_file()
-
 logger = logging.getLogger(__name__)
 
 
