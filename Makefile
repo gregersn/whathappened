@@ -54,6 +54,15 @@ dist: setup_dependencies
 	@FLASK_APP=src/whathappened $(VENV_FLASK) assets build
 	@$(VENV_PYTHON) -m build
 
+
+.PHONY: update_schemas
+update_schemas:
+	cp tests/schemas/current/* tests/schemas/expected/
+
+.PHONY: update_sheets
+update_sheets:
+	cp tests/sheets/current/* tests/sheets/expected/
+
 # Clean out build artefacts:
 clean:
 	$(RMRF) .venv
