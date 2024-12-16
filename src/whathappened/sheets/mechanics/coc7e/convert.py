@@ -33,6 +33,9 @@ def convert_from_dholes(indata):
 
     def convert_header(header):
         del header["Version"]
+        if "Discalimer" in header:
+            header["Disclaimer"] = header["Discalimer"]
+            del header["Discalimer"]
         return header
 
     def convert_skills(skills):
@@ -45,6 +48,7 @@ def convert_from_dholes(indata):
         for skill in inskills:
             skill.pop("fifth", None)
             skill.pop("half", None)
+            skill.pop("None", None)
 
             skill["value"] = int(skill["value"])
             skill["start_value"] = skill["value"]
