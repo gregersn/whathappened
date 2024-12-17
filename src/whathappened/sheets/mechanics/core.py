@@ -48,13 +48,13 @@ class CharacterMechanics:
         return validate(self.parent.body, self.parent.system)
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Name of the character."""
         logger.error("name: Not implemented")
         return "Unknown property, name"
 
     @property
-    def age(self):
+    def age(self) -> Optional[str]:
         """Age of character."""
         logger.error("age: Not implemented")
         return "Unknown property, age"
@@ -69,7 +69,7 @@ class CharacterMechanics:
     def portrait(self):
         """Character portrait."""
         logger.error("portrait: Not implemented")
-        return lambda: None
+        return None
 
     def store_data(self):
         """Store character data."""
