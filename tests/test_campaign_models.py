@@ -1,4 +1,4 @@
-from whathappened.campaign.models import Campaign, NPC
+from whathappened.campaign.models import Campaign, NPC, CampaignCharacter
 from whathappened.models import UserProfile
 from whathappened.character.models import Character
 
@@ -20,6 +20,19 @@ def test_campaign_player_list(db):
     campaign.players.add(player1)
 
     assert campaign.players_by_id == {None: player1}
+
+
+def test_campaign_character(db):
+    campaign = Campaign(title="test_campaign", characters_enabled=True)
+    character1 = Character(title="test_character")
+    assert campaign.characters_enabled == True
+
+    assert not campaign.characters.all()
+
+    campaign_character = CampaignCharacter()
+    campaign_character.character = character1
+
+    campaign.character_associations.append(campaign_character)
 
 
 def test_campaign_npc_list(db):

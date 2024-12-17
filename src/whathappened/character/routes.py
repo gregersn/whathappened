@@ -39,16 +39,16 @@ def get_character(id: int, check_author: bool = True) -> Character:
     if current_user.has_role("admin"):  # pyright: ignore[reportGeneralTypeIssues]
         return character
 
-    if character.campaigns:
+    if character.campaign_associations:
         logger.debug("Checking if character is in same campaign as user")
-        for campaign in character.campaigns:
+        for campaign_association in character.campaign_associations:
             if (
-                current_user.profile in campaign.players
-                or campaign in current_user.profile.campaigns
+                current_user.profile in campaign_association.campaign.players
+                or campaign_association.campaign in current_user.profile.campaigns
             ):  # pyright: ignore[reportGeneralTypeIssues]
                 logger.debug(
                     f"Character '{character.title}' "
-                    + f"is in '{campaign.title}' "
+                    + f"is in '{campaign_association.campaign.title}' "
                     + f"with '{current_user.username}''"
                 )  # pyright: ignore[reportGeneralTypeIssues]
                 return character
@@ -212,9 +212,9 @@ def view(id: int):
     ):
         editable = True
 
-    for campaign in character.campaigns:
+    for campaign_association in character.campaign_associations:
         if (
-            campaign.user_id == current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
+            campaign_association.campaign.user_id == current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
         ):
             editable = True
             break

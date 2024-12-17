@@ -29,8 +29,8 @@
             <td><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }}</a></td>
             <td>{{ character.system }}</td>
             <td><a href="{{ url_for('character.editjson', id=character.id) }}">Edit</a></td>
-            <td>{% if character.campaigns %}{% for campaign in character.campaigns %}
-                <a href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a> 
+            <td>{% if character.campaign_associations %}{% for campaign_association in character.campaign_associations %}
+                <a href="{{ url_for('campaign.view', id=campaign_association.campaign.id) }}">{{ campaign_association.campaign.title }}</a> 
                 {% endfor %}{% endif %}
             </td>
             <td>{% if character.npc %}{% for npc in character.npc %}

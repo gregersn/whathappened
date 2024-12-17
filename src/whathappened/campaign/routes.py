@@ -14,7 +14,7 @@ from whathappened.content.forms import ChooseFolderForm
 from whathappened.auth.utils import login_required, current_user
 
 from .blueprints import bp
-from .models import Campaign
+from .models import Campaign, CampaignCharacter
 from .forms import CreateForm, InvitePlayerForm, AddCharacterForm, AddNPCForm
 from .forms import JoinCampaignForm, EditForm, RemoveCharacterForm
 from .forms import RemovePlayerForm, NPCTransferForm, MessagePlayerForm
@@ -81,7 +81,7 @@ def view(id: int):
 
     logger.debug(f"Viewing campagin {campaign.title}")
     logger.debug(f"There are {campaign.players.count()} players")
-    logger.debug(f"There are {campaign.characters.count()} characters")
+    logger.debug(f"There are {len(campaign.character_associations)} characters")
 
     if not is_player and not is_owner:
         abort(404, "This is not the campaign your are looking for.")
@@ -118,7 +118,9 @@ def view(id: int):
             and character
             and character.user_id == current_user.profile.id
         ):
-            campaign.characters.append(character)
+            campaign_character = CampaignCharacter()
+            campaign_character.character = character
+            campaign.character_associations.append(campaign_character)
             session.commit()
         else:
             flash("Character is already added to campaign")
@@ -144,7 +146,7 @@ def view(id: int):
         .order_by("title")
     )
 
-    added_character_ids = [c.id for c in campaign.characters]
+    added_character_ids = [c.character_id for c in campaign.character_associations]
     characterform.character.query = (
         current_user.profile.characters.filter(Character.id.notin_(added_character_ids))
         .order_by(desc(Character.folder_id.__eq__(campaign.folder_id)))
@@ -217,7 +219,6 @@ def remove_character(id: int, characterid: int):
     assert campaign
     char = session.get(Character, characterid)
     assert char
-
     if (
         current_user.profile.id != campaign.user_id
         and char.user_id != current_user.profile.id

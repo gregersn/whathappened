@@ -21,12 +21,23 @@ campaign_players = Table(
     Column("campaign_id", Integer, ForeignKey("campaign.id"), primary_key=True),
 )
 
-campaign_characters = Table(
-    "campaign_characters",
-    Base.metadata,
-    Column("character_id", Integer, ForeignKey("charactersheet.id"), primary_key=True),
-    Column("campaign_id", Integer, ForeignKey("campaign.id"), primary_key=True),
-)
+
+class CampaignCharacter(BaseModel):
+    """How a character is associated with a campaign."""
+
+    __tablename__ = "campaign_characters"
+
+    character_id: Mapped[int] = mapped_column(
+        ForeignKey("charactersheet.id"), primary_key=True
+    )
+    campaign_id: Mapped[int] = mapped_column(
+        ForeignKey("campaign.id"), primary_key=True
+    )
+
+    character: Mapped[Character] = relationship(
+        backref=backref("campaign_associations")
+    )
+    campaign: Mapped["Campaign"] = relationship(back_populates="character_associations")
 
 
 class Campaign(BaseModel, BaseContent):
@@ -50,10 +61,13 @@ class Campaign(BaseModel, BaseContent):
         backref=backref("campaigns_as_player", lazy=True),
     )
     # Characters added to the campaign
-    characters: Mapped[list[Character]] = relationship(
-        secondary=campaign_characters,
+    characters: Mapped[list["Character"]] = relationship(
+        secondary="campaign_characters",
         lazy="dynamic",
-        backref=backref("campaigns", lazy=True),
+        backref=backref("campaigns_as_character", lazy=True),
+    )
+    character_associations: Mapped[list["CampaignCharacter"]] = relationship(
+        back_populates="campaign"
     )
 
     # NPCs added to campaign
