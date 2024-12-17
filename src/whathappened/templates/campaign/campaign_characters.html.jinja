@@ -1,9 +1,27 @@
+{%- macro character_info(character_association) %}
+                <div class="characterinfo splitcontainer">
+                    <div class="personalia">
+                    {{ character_association.character.name }} ({{ character_association.character.age }})<br />
+                    {{ character_association.character.description }}<br />
+                    <em>{{ character_association.character.player.user.username }}</em><br />
+                    [<a href="{{url_for('character.view', id=character_association.character.id)}}" {%- if character_association.character.player.user == current_user %} class="strong"{%- endif %}>View</a>]
+                    {%- if editable or character_association.character.player.user == current_user %}
+                        [<a href="{{ url_for('campaign.remove_character', id=campaign.id, characterid=character_association.character.id) }}">Remove</a>]
+                    {%- endif %}
+                    </div>
+                    <div class="portrait">
+                    {% if character_association.character.portrait %}<img src="data:image/jpg;base64, {{ character_association.character.portrait }}" />{% else %}<img src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
+                    </div>
+                </div>
+{%- endmacro %}
+
+
 <section class="characters box">
 <h3>Characters</h3>
     <div>
-    {% if campaign.characters %}
-        {% for character in campaign.characters %}
-            {{ character_info(character) }}          
+    {% if campaign.character_associations %}
+        {% for association in campaign.character_associations %}
+            {{ character_info(association) }}          
         {% endfor %}
     {% else %}
         There are no characters.
