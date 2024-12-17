@@ -1,0 +1,32 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+  <h2>{% block title %}Update campaign association settings.{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+      <form action="" method="post">
+    {{ form.hidden_tag() }}
+
+    <p>
+    {{ form.editable_by_gm.label }}
+    {{ form.editable_by_gm }}<br>
+    {% for error in form.editable_by_gm.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+    {{ form.share_with_players.label }}
+    {{ form.share_with_players }}<br>
+    {% for error in form.share_with_players.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+
+    {{ form.group_sheet.label }}
+    {{ form.group_sheet }}<br>
+    {% for error in form.group_sheet.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+    </p>
+
+      <p>{{ form.submit() }}</p>
+  </form>
+{% endblock %}

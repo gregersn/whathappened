@@ -40,12 +40,28 @@ def get_character(id: int, check_author: bool = True) -> Character:
         return character
 
     if character.campaign_associations:
-        logger.debug("Checking if character is in same campaign as user")
+        logger.debug("Checking if character is viewable by user")
         for campaign_association in character.campaign_associations:
+            # Check if character is in same campaign as current user, and is group sheet or shared with players
             if (
                 current_user.profile in campaign_association.campaign.players
                 or campaign_association.campaign in current_user.profile.campaigns
+            ) and (
+                campaign_association.share_with_players
+                or campaign_association.group_sheet
             ):  # pyright: ignore[reportGeneralTypeIssues]
+                logger.debug(
+                    f"Character '{character.title}' "
+                    + f"is in '{campaign_association.campaign.title}' "
+                    + f"with '{current_user.username}''"
+                )  # pyright: ignore[reportGeneralTypeIssues]
+                return character
+
+            # Check if character is in same campaign as current user, and current user is GM
+            if (
+                current_user.profile in campaign_association.campaign.players
+                or campaign_association.campaign in current_user.profile.campaigns
+            ) and (campaign_association.campaign.user_id == current_user.id):
                 logger.debug(
                     f"Character '{character.title}' "
                     + f"is in '{campaign_association.campaign.title}' "
@@ -215,7 +231,14 @@ def view(id: int):
     for campaign_association in character.campaign_associations:
         if (
             campaign_association.campaign.user_id == current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
-        ):
+        ) and (campaign_association.editable_by_gm):
+            editable = True
+            break
+
+        if (
+            current_user.profile in campaign_association.campaign.players
+            or campaign_association.campaign in current_user.profile.campaigns
+        ) and (campaign_association.group_sheet):  # pyright: ignore[reportGeneralTypeIssues]
             editable = True
             break
 

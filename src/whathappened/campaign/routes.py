@@ -16,7 +16,12 @@ from whathappened.auth.utils import login_required, current_user
 from .blueprints import bp
 from .models import Campaign, CampaignCharacter
 from .forms import CreateForm, InvitePlayerForm, AddCharacterForm, AddNPCForm
-from .forms import JoinCampaignForm, EditForm, RemoveCharacterForm
+from .forms import (
+    JoinCampaignForm,
+    EditForm,
+    RemoveCharacterForm,
+    CampaignAssociationForm,
+)
 from .forms import RemovePlayerForm, NPCTransferForm, MessagePlayerForm
 from .models import HandoutStatus, NPC, Message
 
@@ -237,6 +242,38 @@ def remove_character(id: int, characterid: int):
         "campaign/removecharacter.html.jinja",
         character=char,
         campaign=campaign,
+        form=form,
+    )
+
+
+@bp.route("/<int:id>/association_settings/<int:characterid>", methods=("GET", "POST"))
+@login_required
+def association_settings(id: int, characterid: int):
+    """Character-campaign association settings view."""
+    association = session.get(CampaignCharacter, (characterid, id))
+    assert association
+
+    if current_user.profile.id != association.character.user_id:
+        abort(403)
+
+    form = CampaignAssociationForm(obj=association)
+
+    if form.validate_on_submit():
+        form.populate_obj(association)
+        session.add(association)
+        session.commit()
+        return redirect(url_for("campaign.view", id=association.campaign_id))
+
+    form.campaign_id.data = association.campaign_id
+    form.character_id.data = association.character_id
+
+    logger.debug(association)
+
+    return render_template(
+        "campaign/campaign_association.html.jinja",
+        association=association,
+        character=association.character,
+        campaign=association.campaign,
         form=form,
     )
 
