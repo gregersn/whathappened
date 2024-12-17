@@ -67,6 +67,9 @@ testpaths = "tests"
 [tool.pytest.ini_options]
 pythonpath = ['src']
 
+[tool.pyright]
+typeCheckingMode = "standard"
+
 [coverage.run]
 branch = true
 source = "whathappened"

@@ -13,7 +13,5 @@
     "python.testing.pytestEnabled": true,
     "python.testing.nosetestArgs": ["test"],
     "python.pythonPath": ".venv/bin/python",
-    "python.analysis.stubPath": "typings",
-    "python.analysis.typeCheckingMode": "basic",
     "python.analysis.diagnosticMode": "workspace"
 }
