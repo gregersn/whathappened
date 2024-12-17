@@ -100,4 +100,16 @@
 </span>
 {%- endmacro %}
 
-
+{% macro extra_info(character, campaign, editable=False) %}
+    {% if editable and character.campaign_associations %}
+    In campaign(s): 
+    <ul>
+    {% for association in character.campaign_associations %}
+    <li><a href="{{url_for('campaign.view', id=association.campaign.id)}}">{{
+        association.campaign.title
+        }}</a>{%- if association.editable_by_gm %}, editable by GM
+        {%- endif %}{%- if association.share_with_players %}, viewable by players {%- endif %}{%- if association.group_sheet %}, editable by group {%- endif %}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+{% endmacro %}

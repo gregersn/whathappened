@@ -34,6 +34,10 @@ class CampaignCharacter(BaseModel):
         ForeignKey("campaign.id"), primary_key=True
     )
 
+    editable_by_gm: Mapped[bool] = mapped_column(default=False)
+    share_with_players: Mapped[bool] = mapped_column(default=False)
+    group_sheet: Mapped[bool] = mapped_column(default=False)
+
     character: Mapped[Character] = relationship(
         backref=backref("campaign_associations")
     )

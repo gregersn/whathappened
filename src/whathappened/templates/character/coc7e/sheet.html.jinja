@@ -27,11 +27,7 @@
 
 </div>
 <div class="extrainfo">
-    {% if editable and character.campaign_associations %}
-    In campaign(s): <a href="{{url_for('campaign.view', id=character.campaign_associations.0.campaign_id)}}">{{ character.campaign_associations.0.campaign.title
-        }}</a>
-    {% endif %}
-
+    {{ extra_info(character, campaign, editable) }}
 </div>
 
 <div class="charactersheet">

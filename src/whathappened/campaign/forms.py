@@ -49,6 +49,17 @@ class AddNPCForm(AddCharacterForm):
     visible = BooleanField("Visible", default=False)
 
 
+class CampaignAssociationForm(FlaskForm):
+    """Edit settings for a character-campaign association."""
+
+    campaign_id = IntegerField(widget=HiddenInput())
+    character_id = IntegerField(widget=HiddenInput())
+    editable_by_gm = BooleanField("Editable by GM", default=False)
+    share_with_players = BooleanField("Share with players", default=False)
+    group_sheet = BooleanField("Group sheet", default=False)
+    submit = SubmitField("Update settings")
+
+
 class RemoveCharacterForm(FlaskForm):
     id = IntegerField(widget=HiddenInput())
     character = IntegerField(widget=HiddenInput())

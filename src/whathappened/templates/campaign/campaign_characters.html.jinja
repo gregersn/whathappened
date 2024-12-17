@@ -8,6 +8,9 @@
                     {%- if editable or character_association.character.player.user == current_user %}
                         [<a href="{{ url_for('campaign.remove_character', id=campaign.id, characterid=character_association.character.id) }}">Remove</a>]
                     {%- endif %}
+                    {%- if editable or character_association.character.player.user == current_user %}
+                        [<a href="{{ url_for('campaign.association_settings', id=campaign.id, characterid=character_association.character.id)}}">Sharing</a>]
+                    {%- endif %}
                     </div>
                     <div class="portrait">
                     {% if character_association.character.portrait %}<img src="data:image/jpg;base64, {{ character_association.character.portrait }}" />{% else %}<img src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
