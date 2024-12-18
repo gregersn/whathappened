@@ -8,7 +8,7 @@
                     {%- if editable or character_association.character.player.user == current_user %}
                         [<a href="{{ url_for('campaign.remove_character', id=campaign.id, characterid=character_association.character.id) }}">Remove</a>]
                     {%- endif %}
-                    {%- if editable or character_association.character.player.user == current_user %}
+                    {%- if character_association.character.player.user == current_user %}
                         [<a href="{{ url_for('campaign.association_settings', id=campaign.id, characterid=character_association.character.id)}}">Sharing</a>]
                     {%- endif %}
                     </div>
