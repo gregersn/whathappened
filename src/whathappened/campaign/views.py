@@ -157,6 +157,7 @@ class HandoutView(View):
                 )
             )  # pyright: ignore[reportGeneralTypeIssues]
             for group in campaign.handout_groups
+            if group.handouts
         }
 
         handoutform = HandoutForm(prefix="handout")
