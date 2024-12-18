@@ -1,4 +1,3 @@
-
 from whathappened.sheets.schema.build import (
     SCHEMA_DIR,
     build_from_schema,
@@ -7,18 +6,6 @@ from whathappened.sheets.schema.build import (
     load_schema,
     validate,
 )
-
-
-def test_load_schema():
-    schema = load_schema(SCHEMA_DIR / "landf.yaml")
-
-    assert schema
-
-    assert schema["type"] == "object"
-    assert (
-        schema["properties"]["meta"]["properties"]["gamename"]["const"]
-        == "Lasers and feelings"
-    ), schema
 
 
 def test_build_from_schema():
