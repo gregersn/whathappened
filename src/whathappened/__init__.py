@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 from pathlib import Path
 import logging
 
@@ -151,7 +150,7 @@ def create_app(test_config=None) -> Flask:
         return "Hello, World!"
 
     with app.app_context():
-        from .database import cli  # noqa, Add some commands for database handling.
+        from .database import cli  # noqa: F401, Add some commands for database handling.
 
         logger.debug("Registering assets")
         assets_env.url = app.static_url_path

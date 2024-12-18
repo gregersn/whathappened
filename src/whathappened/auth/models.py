@@ -18,7 +18,7 @@ from whathappened.models import UserProfile
 logger = logging.getLogger(__name__)
 
 
-class User(UserMixin, Base):
+class User(Base, UserMixin):
     """User account."""
 
     __tablename__ = "user_account"

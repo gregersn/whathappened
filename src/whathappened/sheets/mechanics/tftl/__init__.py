@@ -1,6 +1,5 @@
 """Tales from the Loops sheet mechanics."""
 
-from pathlib import Path
 import logging
 
 from whathappened.sheets.mechanics.tftl.mechanics import TftlMechanics

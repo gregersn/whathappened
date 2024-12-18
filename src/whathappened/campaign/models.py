@@ -69,6 +69,7 @@ class Campaign(BaseModel, BaseContent):
         secondary="campaign_characters",
         lazy="dynamic",
         backref=backref("campaigns_as_character", lazy=True),
+        viewonly=True,
     )
     character_associations: Mapped[list["CampaignCharacter"]] = relationship(
         back_populates="campaign"

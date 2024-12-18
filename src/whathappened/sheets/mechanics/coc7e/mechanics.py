@@ -1,4 +1,3 @@
-from pathlib import Path
 import logging
 
 from whathappened.sheets.mechanics.core import CharacterMechanics

@@ -1,4 +1,3 @@
-import pytest
 
 from whathappened.sheets.schema.build import (
     SCHEMA_DIR,
