@@ -1,0 +1,15 @@
+[[actions]]
+name = "dist"
+description = "Create dist build"
+shell = "make dist"
+
+[[actions]]
+name="update_sheets"
+description = "Copy current sheets to expected"
+shell = "cp tests/sheets/current/* tests/sheets/expected/"
+
+[[actions]]
+name="update_schemas"
+description = "Copy current schemas to expected"
+shell = "cp tests/schemas/current/* tests/schemas/expected/"
+

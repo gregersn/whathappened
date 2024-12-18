@@ -1,4 +1,5 @@
 .venv/
+.bygg/
 
 *.pyc
 __pycache__/
