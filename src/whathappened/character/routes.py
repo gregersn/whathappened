@@ -39,35 +39,8 @@ def get_character(id: int, check_author: bool = True) -> Character:
     if current_user.has_role("admin"):  # pyright: ignore[reportGeneralTypeIssues]
         return character
 
-    if character.campaign_associations:
-        logger.debug("Checking if character is viewable by user")
-        for campaign_association in character.campaign_associations:
-            # Check if character is in same campaign as current user, and is group sheet or shared with players
-            if (
-                current_user.profile in campaign_association.campaign.players
-                or campaign_association.campaign in current_user.profile.campaigns
-            ) and (
-                campaign_association.share_with_players
-                or campaign_association.group_sheet
-            ):  # pyright: ignore[reportGeneralTypeIssues]
-                logger.debug(
-                    f"Character '{character.title}' "
-                    + f"is in '{campaign_association.campaign.title}' "
-                    + f"with '{current_user.username}''"
-                )  # pyright: ignore[reportGeneralTypeIssues]
-                return character
-
-            # Check if character is in same campaign as current user, and current user is GM
-            if (
-                current_user.profile in campaign_association.campaign.players
-                or campaign_association.campaign in current_user.profile.campaigns
-            ) and (campaign_association.campaign.user_id == current_user.id):
-                logger.debug(
-                    f"Character '{character.title}' "
-                    + f"is in '{campaign_association.campaign.title}' "
-                    + f"with '{current_user.username}''"
-                )  # pyright: ignore[reportGeneralTypeIssues]
-                return character
+    if character.viewable_by(current_user.profile):
+        return character
 
     if check_author and character.user_id != current_user.profile.id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
@@ -219,28 +192,9 @@ def shared(code: str):
 def view(id: int):
     character = get_character(id, check_author=True)
 
-    editable = False
-
-    if (
-        current_user.is_authenticated  # pyright: ignore[reportGeneralTypeIssues]
-        and current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
-        == character.user_id
-    ):
-        editable = True
-
-    for campaign_association in character.campaign_associations:
-        if (
-            campaign_association.campaign.user_id == current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
-        ) and (campaign_association.editable_by_gm):
-            editable = True
-            break
-
-        if (
-            current_user.profile in campaign_association.campaign.players
-            or campaign_association.campaign in current_user.profile.campaigns
-        ) and (campaign_association.group_sheet):  # pyright: ignore[reportGeneralTypeIssues]
-            editable = True
-            break
+    editable = current_user.is_authenticated and character.editable_by(
+        current_user.profile
+    )
 
     return render_character(character, editable=editable)
 

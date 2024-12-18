@@ -23,7 +23,7 @@ class UserProfile(Base):
     user: Mapped["User"] = relationship(back_populates="profile")
 
     def __repr__(self):
-        return f"<UserProfile {self.user_id}>"
+        return f"<UserProfile {self.user_id}: {self.user.username}>"
 
 
 class Invite(Base):
