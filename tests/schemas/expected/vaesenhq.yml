@@ -1,0 +1,112 @@
+$defs:
+  Headquarters:
+    description: Headquarters.
+    properties:
+      information:
+        $ref: '#/$defs/Information'
+      upgrades:
+        $ref: '#/$defs/Upgrades'
+    title: Headquarters
+    type: object
+  Information:
+    description: Basic information about headquarters.
+    properties:
+      development_points:
+        default: 0
+        title: Development Points
+        type: integer
+      location:
+        default: Somewhere
+        title: Location
+        type: string
+      name:
+        default: Unknown
+        title: Name
+        type: string
+      type_of_building:
+        default: Unknown
+        title: Type Of Building
+        type: string
+    title: Information
+    type: object
+  SheetInfo:
+    description: Basic information about the character sheet.
+    properties:
+      gamename:
+        const: Vaesen
+        default: Vaesen
+        title: Gamename
+        type: string
+      title:
+        default: Unknown
+        title: Title
+        type: string
+    title: SheetInfo
+    type: object
+  Upgrade:
+    description: Information about an upgrade.
+    properties:
+      asset:
+        default: No asset
+        title: Asset
+        type: string
+      function:
+        default: No function
+        title: Function
+        type: string
+    title: Upgrade
+    type: object
+  Upgrades:
+    description: Upgrades to headquarters.
+    properties:
+      contacts:
+        default: []
+        header: true
+        items:
+          $ref: '#/$defs/Upgrade'
+        title: Contacts
+        type: array
+        widget: table
+      discovered_facilities:
+        default: []
+        header: true
+        items:
+          $ref: '#/$defs/Upgrade'
+        title: Discovered Facilities
+        type: array
+        widget: table
+      facilities:
+        default: []
+        header: true
+        items:
+          $ref: '#/$defs/Upgrade'
+        title: Facilities
+        type: array
+        widget: table
+      personell:
+        default: []
+        header: true
+        items:
+          $ref: '#/$defs/Upgrade'
+        title: Personell
+        type: array
+        widget: table
+    title: Upgrades
+    type: object
+description: Charactersheet for Vaesen.
+properties:
+  character_sheet:
+    $ref: '#/$defs/Headquarters'
+    title: Vaesen Headquarters
+  meta:
+    $ref: '#/$defs/SheetInfo'
+    default:
+      gamename: Vaesen
+      title: Unknown
+  system:
+    const: vaesenhq
+    default: vaesenhq
+    title: System
+    type: string
+title: Vaesen
+type: object
