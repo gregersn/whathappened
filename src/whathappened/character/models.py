@@ -148,3 +148,40 @@ class Character(BaseContent, BaseModel):
     def schema_version(self):
         """Version of schema."""
         return self.data["meta"]["Version"]
+
+    def viewable_by(self, player: UserProfile):
+        """Check if character is viewable."""
+        if self.player == player:
+            return True
+
+        for campaign_association in self.campaign_associations:
+            if campaign_association.campaign.user == player:
+                return True
+
+            if (
+                campaign_association.share_with_players
+                or campaign_association.group_sheet
+            ) and player in campaign_association.campaign.players:
+                return True
+
+        return False
+
+    def editable_by(self, player: UserProfile):
+        """Check if character is editable."""
+        if self.player == player:
+            return True
+
+        for campaign_association in self.campaign_associations:
+            if (
+                campaign_association.editable_by_gm
+                and campaign_association.campaign.user == player
+            ):
+                return True
+
+            if (
+                campaign_association.group_sheet
+                and player in campaign_association.campaign.players
+            ):
+                return True
+
+        return False
