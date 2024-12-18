@@ -8,6 +8,7 @@ from pytest_dependency import depends
 from whathappened import sheets
 from whathappened.sheets.schema.base import Gametag
 from whathappened.sheets.schema.build import get_schema, flatten_schema, validate
+from whathappened.sheets.schema.utils import find_version
 from whathappened.sheets.utils import create_sheet
 
 
@@ -106,8 +107,11 @@ def test_expected_sheet(request, game: Gametag):
     )
     assert test_sheet
 
-    expected_file = Path(f"tests/sheets/expected/{game}.yml")
-    current_file = Path(f"tests/sheets/current/{game}.yml")
+    version = find_version(test_sheet)
+    assert version
+
+    expected_file = Path(f"tests/sheets/expected/{game}-{version}.yml")
+    current_file = Path(f"tests/sheets/current/{game}-{version}.yml")
 
     if not expected_file.is_file():
         current_file.parent.mkdir(parents=True, exist_ok=True)
@@ -139,8 +143,11 @@ def test_create_sheet(request, game: Gametag):
         "Test character", system=game, timestamp=1733213970
     )
 
-    expected_file = Path(f"tests/sheets/expected/{game}.yml")
-    current_file = Path(f"tests/sheets/current/{game}.yml")
+    version = find_version(test_sheet)
+    assert version
+
+    expected_file = Path(f"tests/sheets/expected/{game}-{version}.yml")
+    current_file = Path(f"tests/sheets/current/{game}-{version}.yml")
 
     with open(expected_file, "r", encoding="utf8") as f:
         expected_sheet = yaml.safe_load(f)
