@@ -232,7 +232,7 @@ def remove_character(id: int, characterid: int):
     form = RemoveCharacterForm()
 
     if form.validate_on_submit():
-        campaign.characters.remove(char)
+        session.delete(session.get(CampaignCharacter, (char.id, campaign.id)))
         session.commit()
         return redirect(url_for("campaign.view", id=campaign.id))
 

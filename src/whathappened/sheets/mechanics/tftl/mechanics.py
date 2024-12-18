@@ -1,4 +1,3 @@
-from pathlib import Path
 
 from whathappened.sheets.schema.build import validate
 

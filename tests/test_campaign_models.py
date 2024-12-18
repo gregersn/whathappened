@@ -25,7 +25,7 @@ def test_campaign_player_list(db):
 def test_campaign_character(db):
     campaign = Campaign(title="test_campaign", characters_enabled=True)
     character1 = Character(title="test_character")
-    assert campaign.characters_enabled == True
+    assert campaign.characters_enabled
 
     assert not campaign.characters.all()
 

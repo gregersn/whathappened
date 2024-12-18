@@ -1,10 +1,12 @@
+"""Special cases for Call of Cthulhu."""
+
 import logging
+from whathappened.sheets.mechanics.coc7e import new_character
+from .forms import CreateForm
+from .routes import view
 
 logger = logging.getLogger(__name__)
 
-from .forms import CreateForm  # noqa F401
-from .routes import view  # noqa F401
-
 CREATE_TEMPLATE = "character/coc7e/create.html.jinja"
 
-from whathappened.sheets.mechanics.coc7e import new_character
+__all__ = ["CreateForm", "view", "new_character"]
