@@ -7,6 +7,7 @@ from whathappened.sheets.schema.utils import (
     up_or_down,
     find_migration,
     find_version,
+    Migration,
 )
 
 BASEDIR = Path(__file__).parent.absolute()
@@ -33,7 +34,7 @@ def test_find_version():
 def test_migrate_same():
     data = {"meta": {"Version": "1.0.0"}}
 
-    migrated = migrate(data, "1.0.0")
+    migrated = migrate(data, "1.0.0", [])
 
     assert migrated == data
 
@@ -51,9 +52,14 @@ def v1_0_1_to_v1_0_0(data):
 
 
 migrations = [
-    {"from": "0.9", "to": "1.0.0"},
-    {"from": "1.0.0", "to": "1.0.1", "up": v1_0_0_to_v1_0_1, "down": v1_0_1_to_v1_0_0},
-    {"from": "1.0.1", "to": "1.0.2"},
+    Migration("0.9", "1.0.0"),
+    Migration(
+        "1.0.0",
+        "1.0.1",
+        v1_0_0_to_v1_0_1,
+        v1_0_1_to_v1_0_0,
+    ),
+    Migration("1.0.1", "1.0.2"),
 ]
 
 

@@ -17,13 +17,6 @@ class CoCMechanics(CharacterMechanics):
             logger.warning(e)
             return None
 
-    def validate(self, *args, **kwargs):
-        return validate(self.parent.body, "coc7e")
-
-    def version(self):
-        """Return schema version."""
-        return "0.0.4"
-
     @property
     def name(self):
         return self.parent.body["personalia"]["Name"]

@@ -360,7 +360,6 @@ properties:
     title: System
     type: string
   version:
-    const: 0.0.4
     default: 0.0.4
     title: Version
     type: string
