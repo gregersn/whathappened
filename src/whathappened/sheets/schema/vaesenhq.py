@@ -4,6 +4,8 @@ from typing import Literal
 from pydantic import BaseModel, Field
 import yaml
 
+from whathappened.sheets.schema.base import BaseSchema
+
 
 class SheetInfo(BaseModel):
     """Basic information about the character sheet."""
@@ -52,7 +54,7 @@ class Headquarters(BaseModel):
     upgrades: Upgrades = Field(title="Upgrades", default_factory=Upgrades)
 
 
-class Vaesen(BaseModel):
+class Vaesen(BaseSchema):
     """Charactersheet for Vaesen."""
 
     system: Literal["vaesenhq"] = "vaesenhq"

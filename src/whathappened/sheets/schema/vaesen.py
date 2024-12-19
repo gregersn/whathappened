@@ -6,6 +6,8 @@ from typing import Literal
 from pydantic import BaseModel, Field
 import yaml
 
+from whathappened.sheets.schema.base import BaseSchema
+
 
 class Archetype(str, Enum):
     """Character archetype"""
@@ -211,7 +213,7 @@ class Character(BaseModel):
     )
 
 
-class Vaesen(BaseModel):
+class Vaesen(BaseSchema):
     """Charactersheet for Vaesen."""
 
     system: Literal["vaesen"] = "vaesen"
