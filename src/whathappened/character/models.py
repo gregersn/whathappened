@@ -90,12 +90,6 @@ class Character(BaseContent, BaseModel):
         return "Unknown"
 
     @property
-    def version(self):
-        """Character data version."""
-        v = self.data.get("version", None)
-        return v
-
-    @property
     def game(self):
         """Character sheet game."""
         return self.mechanics.game()
