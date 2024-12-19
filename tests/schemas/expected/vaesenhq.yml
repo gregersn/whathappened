@@ -108,5 +108,15 @@ properties:
     default: vaesenhq
     title: System
     type: string
+  version:
+    const: 0.0.4
+    default: 0.0.4
+    title: Version
+    type: string
+required:
+- version
+- system
+- meta
+- character_sheet
 title: Vaesen
 type: object

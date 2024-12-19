@@ -12,8 +12,8 @@ from whathappened.database.pagination import paginate
 from whathappened.models import Invite, LogEntry
 from whathappened.sheets.mechanics import core
 from whathappened.sheets.mechanics.core import GameSystems
+from whathappened.sheets.schema.base import CURRENT_SCHEMA_VERSION
 from whathappened.sheets.schema.build import flatten_schema, get_schema, sub_schema
-from whathappened.sheets.schema.coc7e import migrations, LATEST
 from whathappened.sheets.schema.utils import migrate
 
 from .blueprints import bp, api
@@ -149,8 +149,22 @@ def update(id: int):
 def render_character(
     character: Character, editable: bool = False, code: Optional[str] = None
 ):
-    if (character.system is None or character.validate()) and editable:
-        return redirect(url_for("character.editjson", id=character.id))
+    if editable:
+        if character.validate():
+            logger.debug("Character sheet invalid, trying migration.")
+            data = character.body
+            character.body = migrate(data, CURRENT_SCHEMA_VERSION)
+            if not character.validate():
+                logentry = LogEntry(
+                    character,
+                    "Character was automatically migrated.",
+                    user_id=current_user.id,
+                )  # pyright: ignore[reportGeneralTypeIssues]
+                session.add(logentry)
+                session.commit()
+
+        if character.system is None or character.validate():
+            return redirect(url_for("character.editjson", id=character.id))
 
     character_module = (
         globals()[character.system] if character.system in globals() else core
@@ -319,7 +333,7 @@ def editjson(id: int):
         if form.migration.data:
             logger.debug("Trying to migrate data")
             data = form.body.data
-            c.body = migrate(data, LATEST, migrations=migrations)
+            c.body = migrate(data, CURRENT_SCHEMA_VERSION)
         elif form.conversion.data:
             logger.debug("Conversion is checked")
             data = form.body.data

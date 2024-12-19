@@ -7,6 +7,8 @@ import yaml
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from whathappened.sheets.schema.base import BaseSchema
+
 
 class SheetInfo(BaseModel):
     """Basic info about the sheet."""
@@ -326,7 +328,7 @@ class Character(BaseModel):
     vapen: Annotated[Bevapning, Field(title="Beväpning")] = Field(default=Bevapning())
 
 
-class DrakarOchDemoner(BaseModel):
+class DrakarOchDemoner(BaseSchema):
     """Character sheet."""
 
     model_config = ConfigDict(json_schema_serialization_defaults_required=True)

@@ -1,16 +1,9 @@
-
 from whathappened.sheets.schema.build import validate
 
 from ..core import CharacterMechanics
 
 
 class TftlMechanics(CharacterMechanics):
-    def validate(self):
-        return validate(self.parent.body, "tftl")
-
-    def version(self):
-        return "0.0.1"
-
     @property
     def name(self):
         return self.parent.body["personalia"]["name"]

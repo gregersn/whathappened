@@ -319,13 +319,13 @@ properties:
     title: System
     type: string
   version:
-    const: 0.0.1
-    default: 0.0.1
+    const: 0.0.4
+    default: 0.0.4
     title: Version
     type: string
 required:
-- system
 - version
+- system
 - meta
 - personalia
 - relationships

@@ -2,6 +2,23 @@ from typing import Annotated, Literal, Optional
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
+from whathappened.sheets.schema.base import BaseSchema, Migration
+
+
+def v001_to_004(data):
+    data = data.copy()
+    data["version"] = "0.0.4"
+    return data
+
+
+def v004_to_001(data):
+    data = data.copy()
+    data["version"] = "0.0.1"
+    return data
+
+
+migrations = [Migration("0.0.1", "0.0.4", v001_to_004, v004_to_001)]
+
 
 class Meta(BaseModel):
     Title: str = "New character"
@@ -72,7 +89,7 @@ class Conditions(BaseModel):
     Broken: bool = False
 
 
-class TalesFromTheLoop(BaseModel):
+class TalesFromTheLoop(BaseSchema):
     """Tales from the Loop sheet."""
 
     model_config = ConfigDict(
@@ -80,7 +97,6 @@ class TalesFromTheLoop(BaseModel):
     )
 
     system: Annotated[Literal["tftl"], Field(frozen=True)] = "tftl"
-    version: Annotated[Literal["0.0.1"], Field(frozen=True)] = "0.0.1"
     meta: Annotated[Meta, Field(default_factory=Meta)]
     personalia: Annotated[Personalia, Field(default_factory=Personalia)]
     relationships: Annotated[Relationships, Field(default_factory=Relationships)]
