@@ -6,9 +6,9 @@ from pydantic import BaseModel, ConfigDict, Field
 import yaml
 
 from whathappened.sheets.mechanics.coc7e import new_character
+from whathappened.sheets.schema.base import BaseSchema
 from whathappened.sheets.schema.build import get_schema
-
-LATEST = "0.0.4"
+from whathappened.sheets.schema.utils import Migration
 
 
 def v003_to_v004(data):
@@ -172,24 +172,24 @@ def v002_to_001(data):
 
 
 migrations = [
-    {
-        "from": "0.0.1",
-        "to": "0.0.2",
-        "up": v001_to_002,
-        "down": v002_to_001,
-    },
-    {
-        "from": "0.0.2",
-        "to": "0.0.3",
-        "up": v002_to_v003,
-        "down": v003_to_v002,
-    },
-    {
-        "from": "0.0.3",
-        "to": "0.0.4",
-        "up": v003_to_v004,
-        "down": v004_to_v003,
-    },
+    Migration(
+        "0.0.1",
+        "0.0.2",
+        v001_to_002,
+        v002_to_001,
+    ),
+    Migration(
+        "0.0.2",
+        "0.0.3",
+        v002_to_v003,
+        v003_to_v002,
+    ),
+    Migration(
+        "0.0.3",
+        "0.0.4",
+        v003_to_v004,
+        v004_to_v003,
+    ),
 ]
 
 
@@ -336,7 +336,7 @@ class Cash(BaseModel):
     assets: Union[str, int]
 
 
-class CallofCthulhu7e(BaseModel):
+class CallofCthulhu7e(BaseSchema):
     """Call of Cthulhu 7e sheet."""
 
     model_config = ConfigDict(
@@ -354,7 +354,6 @@ class CallofCthulhu7e(BaseModel):
     )
 
     system: Annotated[Literal["coc7e"], Field(frozen=True)] = "coc7e"
-    version: Annotated[Literal["0.0.4"], Field(frozen=True)] = "0.0.4"
     meta: Annotated[Meta, Field()]
     personalia: Annotated[Personalia, Field()]
     characteristics: Annotated[Characteristics, Field()]

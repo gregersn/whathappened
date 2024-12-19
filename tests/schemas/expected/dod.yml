@@ -771,7 +771,12 @@ properties:
     default: dod
     title: System
     type: string
+  version:
+    default: 0.0.4
+    title: Version
+    type: string
 required:
+- version
 - system
 - meta
 - character_sheet

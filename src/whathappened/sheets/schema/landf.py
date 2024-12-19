@@ -6,6 +6,8 @@ import yaml
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from whathappened.sheets.schema.base import BaseSchema
+
 
 class CharacterStyle(str, Enum):
     """What style of character being played."""
@@ -63,7 +65,7 @@ class LasersAndFeelingsCharacter(BaseModel):
     )
 
 
-class LasersAndFeelings(BaseModel):
+class LasersAndFeelings(BaseSchema):
     """Character sheet."""
 
     model_config = ConfigDict(
