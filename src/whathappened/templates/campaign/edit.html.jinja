@@ -48,6 +48,7 @@
   <form action="" method="post">
     {{ folderform.hidden_tag() }}
         <p>
+        Put in folder: 
             {{ folderform.folder_id }}
             {% for error in folderform.folder_id.errors %}
             <span style="color: red;">[{{ error }}]</span>
@@ -57,4 +58,30 @@
         </p>
 
   </form>
+  <section>
+  <h3>Numbers</h3>
+  <ul>
+  <li>Players: {{ campaign.players.count() }}</li>
+  <li>Characters: {{ campaign.characters.count() }}</li>
+  <li>NPCs: {{ campaign.NPCs.count() }} </li>
+  <li>Handouts: {{ campaign.handouts.count() }}</li>
+  <li>Handout groups: {{ campaign.handout_groups.count() }}</li>
+  <li>Messages: {{ campaign.messages.count() }}</li>
+  <li>Invites: {{ invites }}</li>
+  
+  </ul>
+  </section>
+  <section>
+  <h3>Danger zone</h3>
+  <form action="" method="post">
+  {{ deleteform.hidden_tag() }}
+  <p>
+    {{ deleteform.id }}
+    To delete the campaign, write CONFIRM in the input field, then press Delete.
+    It will immediatly delete the campaign, all associated handouts, messages and invites, and it can not be undone!
+    {{ deleteform.confirm }}
+    {{ deleteform.submit }}
+  </p>
+  </form>
+  </section>
 {% endblock %}

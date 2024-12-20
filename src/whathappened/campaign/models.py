@@ -72,20 +72,22 @@ class Campaign(BaseModel, BaseContent):
         viewonly=True,
     )
     character_associations: Mapped[list["CampaignCharacter"]] = relationship(
-        back_populates="campaign"
+        back_populates="campaign", cascade="all, delete"
     )
 
     # NPCs added to campaign
-    NPCs: Mapped[list["NPC"]] = relationship(back_populates="campaign", lazy="dynamic")
+    NPCs: Mapped[list["NPC"]] = relationship(
+        back_populates="campaign", lazy="dynamic", cascade="all, delete"
+    )
 
     # Handouts added to campaign
     handouts: Mapped[list["Handout"]] = relationship(
-        back_populates="campaign", lazy="dynamic"
+        back_populates="campaign", lazy="dynamic", cascade="all, delete"
     )
 
     # Handout groups for the campaign
     handout_groups: Mapped[list["HandoutGroup"]] = relationship(
-        back_populates="campaign", lazy="dynamic"
+        back_populates="campaign", lazy="dynamic", cascade="all, delete"
     )
 
     # Features used for campaign
@@ -205,7 +207,7 @@ class Message(BaseModel):
 
     campaign_id: Mapped[int] = mapped_column(ForeignKey("campaign.id"), nullable=False)
     campaign: Mapped[Campaign] = relationship(
-        backref=backref("messages", lazy="dynamic")
+        backref=backref("messages", lazy="dynamic", cascade="all, delete")
     )
 
     to_id: Mapped[int] = mapped_column(ForeignKey("user_profile.id"), nullable=True)

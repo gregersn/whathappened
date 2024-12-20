@@ -29,6 +29,12 @@ class EditForm(CreateForm):
     submit = SubmitField("Save")
 
 
+class DeleteForm(FlaskForm):
+    id = IntegerField(widget=HiddenInput())
+    confirm = StringField("Confirm", validators=[DataRequired()])
+    submit = SubmitField("Delete")
+
+
 class InvitePlayerForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     submit = SubmitField("Invite")
