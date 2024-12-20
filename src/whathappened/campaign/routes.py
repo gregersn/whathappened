@@ -15,7 +15,13 @@ from whathappened.auth.utils import login_required, current_user
 
 from .blueprints import bp
 from .models import Campaign, CampaignCharacter
-from .forms import CreateForm, InvitePlayerForm, AddCharacterForm, AddNPCForm
+from .forms import (
+    CreateForm,
+    DeleteForm,
+    InvitePlayerForm,
+    AddCharacterForm,
+    AddNPCForm,
+)
 from .forms import (
     JoinCampaignForm,
     EditForm,
@@ -64,7 +70,8 @@ def join(code: str):
 def view(id: int):
     invites = None
     campaign: Campaign = session.get(Campaign, id)
-    assert campaign
+    if not campaign:
+        abort(404)
 
     # Set up forms
     inviteform = InvitePlayerForm(prefix="inviteform")
@@ -179,6 +186,20 @@ def edit(id: int):
     assert campaign
     form = EditForm(obj=campaign, prefix="campaign_edit")
     folderform = ChooseFolderForm(prefix="choose_folder")
+    deleteform = DeleteForm(obj=campaign, prefix="delete_campaign")
+
+    if deleteform.submit.data and deleteform.validate_on_submit():
+        if deleteform.confirm.data == "CONFIRM":
+            print("DELETE CAMPAIGN!")
+            invites = Invite.query_for(campaign)
+            if invites:
+                invites.delete()
+
+            session.delete(campaign)
+            session.commit()
+            return redirect("/")
+        else:
+            return redirect(url_for("campaign.edit", id=campaign.id))
 
     if form.submit.data and form.validate_on_submit():
         form.populate_obj(campaign)
@@ -193,8 +214,15 @@ def edit(id: int):
         return redirect(url_for("campaign.view", id=campaign.id))
 
     folderform.folder_id.data = campaign.folder
-
-    return render_template("campaign/edit.html.jinja", form=form, folderform=folderform)
+    invites = Invite.query_for(campaign).count()
+    return render_template(
+        "campaign/edit.html.jinja",
+        form=form,
+        folderform=folderform,
+        deleteform=deleteform,
+        campaign=campaign,
+        invites=invites,
+    )
 
 
 @bp.route("/<int:id>/export", methods=("GET",))
