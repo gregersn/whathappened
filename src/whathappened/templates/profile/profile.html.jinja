@@ -9,7 +9,8 @@
 
 {% block menu %}
     {% if current_user.is_authenticated %}
-        <a href="{{ url_for('content.folders') }}">Content</a>
+        <a href="{{ url_for('content.folders') }}">Content</a> |
+        <a href="{{ url_for('profile.settings') }}">User settings</a>
     {% endif %}
 {% endblock %}
 

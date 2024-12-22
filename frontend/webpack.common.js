@@ -15,6 +15,7 @@ module.exports = {
         tftl: "./src/tftl/index.ts",
         tokens: "./src/tokens/index.ts",
         general: "./src/general/index.ts",
+        system: "./src/system/index.ts",
     },
     module: {
         rules: [

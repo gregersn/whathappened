@@ -1,0 +1,44 @@
+{% extends 'base.html.jinja' %}
+
+{%- macro editable_field(value, field, default='', type='string', minimum=None, maximum=None, filter="", constant=False) %}
+<span {%- if not constant %} class="editable" {%- endif %} data-field="{{ field }}" data-type="{{ type }}"
+    {%- if minimum %}data-min="{{minimum}}" {%- endif %} {%- if maximum %}data-max="{{maximum}}"
+    {%- endif %} title="{{type|capitalize}}{%- if minimum %} Minimum: {{minimum}}{%- endif %}{%- if maximum %} Maximum: {{maximum}}{%- endif%}">{{
+    value }}</span>
+{%- endmacro %}
+
+{% block head %}
+{{ super() }}
+    {% assets "scss_profile" %}
+    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+    {% endassets %}
+    <script src="{{ 'system.js' | webpack}}"></script>
+
+{% endblock %}
+
+{% block menu %}
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('content.folders') }}">Content</a> |
+        <a href="{{ url_for('profile.settings') }}">User settings</a>
+    {% endif %}
+{% endblock %}
+
+
+{% block content %}
+<section id="user">
+<h3>User information</h3>
+<ul>
+<li>Username: {{ user.username }}</li>
+<li>e-mail: {{ user.email }}</li>
+<li>User id: {{ user.id }}</li>
+</ul>
+</section>
+<section id="user_profile">
+<h3>User profile</h3>
+<ul>
+<li>Display name: {{ editable_field(profile.display_name, "profile/settings.display_name") }}</li>
+<li>Profile id: {{ profile.id }} </li>
+</ul>
+</section>
+{% endblock%}
+
