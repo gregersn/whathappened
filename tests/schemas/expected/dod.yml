@@ -205,6 +205,7 @@ $defs:
         default:
           alder: Ung
           namn: Inget namn
+          portrait: ''
           slakte: "M\xE4nniska"
           svaghet: Odefinerad
           utseende: Odefinerad
@@ -563,6 +564,13 @@ $defs:
         default: Inget namn
         title: Namn
         type: string
+      portrait:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: ''
+        title: Portrait
+        widget: portrait
       slakte:
         default: "M\xE4nniska"
         enum:
@@ -604,6 +612,7 @@ $defs:
     - yrke
     - svaghet
     - utseende
+    - portrait
     title: Personalia
     type: object
   Rustning:
@@ -772,7 +781,7 @@ properties:
     title: System
     type: string
   version:
-    default: 0.0.4
+    default: 0.0.5
     title: Version
     type: string
 required:

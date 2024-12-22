@@ -68,6 +68,15 @@ class CharacterMechanics:
     @property
     def portrait(self):
         """Character portrait."""
+        if res := self.attribute("character_sheet.personalia.portrait"):
+            return res
+
+        if res := self.attribute("character_sheet.portrait"):
+            return res
+
+        if res := self.attribute("character_sheet.information.picture"):
+            return res
+
         logger.error("portrait: Not implemented")
         return None
 
@@ -145,7 +154,10 @@ class CharacterMechanics:
             logger.debug("Set portrait")
             data = attribute.get("value", None)
             if data is not None:
-                self.set_portrait(fix_image(data))
+                # self.set_portrait(fix_image(data))
+                self.set_attribute(
+                    {"value": fix_image(data), "field": attribute.get("field", None)}
+                )
         else:
             logger.debug("Set '%s' to '%s'", attribute["field"], attribute["value"])
 

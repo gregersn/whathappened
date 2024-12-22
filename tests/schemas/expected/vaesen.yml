@@ -221,6 +221,13 @@ $defs:
         description: How should you be adressed?
         title: Name
         type: string
+      portrait:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: ''
+        title: Portrait
+        widget: portrait
       relationships:
         constant: true
         default:
@@ -388,7 +395,7 @@ properties:
     title: System
     type: string
   version:
-    default: 0.0.4
+    default: 0.0.5
     title: Version
     type: string
 required:

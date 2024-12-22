@@ -1,6 +1,6 @@
 """Character sheet data for DoD."""
 
-from typing import List, Literal
+from typing import List, Literal, Optional
 from typing_extensions import Annotated
 
 import yaml
@@ -274,6 +274,9 @@ class Personalia(BaseModel):
     yrke: Yrke = "Bard"
     svaghet: str = "Odefinerad"
     utseende: str = "Odefinerad"
+    portrait: Annotated[
+        Optional[str], Field(json_schema_extra={"widget": "portrait"})
+    ] = ""
 
 
 class SekundaraEgenskaper(BaseModel):

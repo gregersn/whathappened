@@ -58,11 +58,19 @@
 </section>
 {%- endmacro %}
 
+{%- macro render_portrait(object, path='', key=None) %}
+    <div class="box portrait {%- if editable %} editable{%- endif %}" data-type="picture" data-field="{{ path }}">
+        {% if character.mechanics.attribute(path) %}<img src="data:image/jpg;base64, {{ character.mechanics.attribute(path) }}" />{% else %}<img src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
+    </div>
+{%- endmacro %}
+
 {%- macro render_widget(widget, object, path='', key=None) %}
 {% if widget == "table"%}
 {{ render_table(object, path, key) }}
 {% elif widget == "progress" %}
 {{ render_progress(path, character.mechanics.attribute(path), object.maximum) }}
+{% elif widget == "portrait" %}
+{{ render_portrait(object, path, key)}}
 {% else %}
 <div>Missing widget: {{ widget }}</div>
 {% endif %}

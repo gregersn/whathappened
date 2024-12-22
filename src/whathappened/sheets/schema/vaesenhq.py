@@ -1,10 +1,29 @@
 """Vaesen Headquarters sheet."""
 
-from typing import Literal
+from typing import Annotated, Literal, Optional
 from pydantic import BaseModel, Field
 import yaml
 
-from whathappened.sheets.schema.base import BaseSchema
+from whathappened.sheets.schema.base import BaseSchema, Migration
+
+
+def v004_to_v005(data):
+    data = data.copy()
+    data["character_sheet"]["information"]["picture"] = None
+    data["version"] = "0.0.5"
+    return data
+
+
+def v005_to_v004(data):
+    data = data.copy()
+    del data["character_sheet"]["information"]["picture"]
+    data["version"] = "0.0.4"
+    return data
+
+
+migrations = [
+    Migration("0.0.4", "0.0.5", v004_to_v005, v005_to_v004),
+]
 
 
 class SheetInfo(BaseModel):
@@ -21,6 +40,9 @@ class Information(BaseModel):
     type_of_building: str = "Unknown"
     location: str = "Somewhere"
     development_points: int = 0
+    picture: Annotated[
+        Optional[str], Field(json_schema_extra={"widget": "portrait"})
+    ] = ""
 
 
 class Upgrade(BaseModel):

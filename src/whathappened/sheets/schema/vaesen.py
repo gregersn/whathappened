@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Literal
+from typing import Annotated, Literal, Optional
 from pydantic import BaseModel, Field
 import yaml
 
@@ -174,6 +174,9 @@ class Personality(BaseModel):
         description="Your relationship to the other characters.",
     )
     description: str = ""
+    portrait: Annotated[
+        Optional[str], Field(json_schema_extra={"widget": "portrait"})
+    ] = ""
 
 
 class Characteristics(BaseModel):
