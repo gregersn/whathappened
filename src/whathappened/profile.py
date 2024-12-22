@@ -1,5 +1,5 @@
 import logging
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from whathappened.auth.utils import login_required, current_user
 from whathappened.database import session
 
@@ -32,3 +32,30 @@ def index():
         characters=characters,
         folders=folders,
     )
+
+
+@bp.get("/settings")
+@login_required
+def settings():
+    assert current_user is not None
+    user_profile = session.get(UserProfile, current_user.id)
+
+    return render_template(
+        "profile/settings.html.jinja", profile=user_profile, user=current_user
+    )
+
+
+@bp.post("/settings")
+@login_required
+def settings_post():
+    assert current_user is not None
+    user_profile = session.get(UserProfile, current_user.id)
+
+    for field_change in request.get_json():
+        if hasattr(user_profile, field_change["field_name"]):
+            setattr(
+                user_profile, field_change["field_name"], str(field_change["value"])
+            )
+    session.commit()
+
+    return "Good"
