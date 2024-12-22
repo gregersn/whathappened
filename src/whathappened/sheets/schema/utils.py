@@ -76,6 +76,12 @@ def find_migrations(system: Gametag) -> list[Migration]:
     return system_migrations + base_migrations
 
 
+def set_version(data, version: str):
+    data = data.copy()
+    data["version"] = version
+    return data
+
+
 def migrate(data, to_version: str, migrations: Optional[list[Migration]] = None):
     """Do the migration."""
     data = copy.deepcopy(data)
@@ -95,10 +101,16 @@ def migrate(data, to_version: str, migrations: Optional[list[Migration]] = None)
             f"Migrator not found for {system} from {from_version} to {to_version}"
         )
 
-    if direction < 0 and migrator.down:
-        data = migrator.down(data)
+    if direction < 0:
+        if migrator.down:
+            data = migrator.down(data)
+        else:
+            data = set_version(data, to_version)
 
-    if direction > 0 and migrator.up:
-        data = migrator.up(data)
+    if direction > 0:
+        if migrator.up:
+            data = migrator.up(data)
+        else:
+            data = set_version(data, to_version)
 
     return migrate(data, to_version=to_version, migrations=migrations)

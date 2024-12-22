@@ -5,19 +5,9 @@ from pydantic import BaseModel, ConfigDict, Field
 from whathappened.sheets.schema.base import BaseSchema, Migration
 
 
-def v001_to_004(data):
-    data = data.copy()
-    data["version"] = "0.0.4"
-    return data
-
-
-def v004_to_001(data):
-    data = data.copy()
-    data["version"] = "0.0.1"
-    return data
-
-
-migrations = [Migration("0.0.1", "0.0.4", v001_to_004, v004_to_001)]
+migrations = [
+    Migration("0.0.1", "0.0.4"),
+]
 
 
 class Meta(BaseModel):
