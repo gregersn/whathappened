@@ -172,24 +172,9 @@ def v002_to_001(data):
 
 
 migrations = [
-    Migration(
-        "0.0.1",
-        "0.0.2",
-        v001_to_002,
-        v002_to_001,
-    ),
-    Migration(
-        "0.0.2",
-        "0.0.3",
-        v002_to_v003,
-        v003_to_v002,
-    ),
-    Migration(
-        "0.0.3",
-        "0.0.4",
-        v003_to_v004,
-        v004_to_v003,
-    ),
+    Migration("0.0.1", "0.0.2", v001_to_002, v002_to_001),
+    Migration("0.0.2", "0.0.3", v002_to_v003, v003_to_v002),
+    Migration("0.0.3", "0.0.4", v003_to_v004, v004_to_v003),
 ]
 
 
