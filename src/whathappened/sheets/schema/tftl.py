@@ -7,6 +7,7 @@ from whathappened.sheets.schema.base import BaseSchema, Migration
 
 migrations = [
     Migration("0.0.1", "0.0.4"),
+    Migration("0.0.4", "0.0.5"),
 ]
 
 

@@ -3,6 +3,7 @@ import {
     saveCheck,
     show_message,
     default_for_type,
+    init_set_portrait,
 } from "../common";
 import { send_update, Datamap, Elementdata, Tabledata } from "../common";
 import {
@@ -64,6 +65,7 @@ function init_editable() {
                 make_element_editable(element, save, "area");
                 break;
             case "picture":
+                init_set_portrait(element.getAttribute("data-field"));
                 break;
             default:
                 make_element_editable(element, save, dataType as edit_type);

@@ -1,12 +1,31 @@
 """Lasers and Feelings schema."""
 
 from enum import Enum
-from typing import Literal
+from typing import Annotated, Literal, Optional
 import yaml
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from whathappened.sheets.schema.base import BaseSchema
+from whathappened.sheets.schema.base import BaseSchema, Migration
+
+
+def v004_to_005(data):
+    data = data.copy()
+    data["version"] = "0.0.5"
+    data["character_sheet"]["portrait"] = None
+    return data
+
+
+def v005_to_004(data):
+    data = data.copy()
+    data["version"] = "0.0.4"
+    del data["character_sheet"]["portrait"]
+    return data
+
+
+migrations: list[Migration] = [
+    Migration("0.0.4", "0.0.5", v004_to_005, v005_to_004),
+]
 
 
 class CharacterStyle(str, Enum):
@@ -63,6 +82,9 @@ class LasersAndFeelingsCharacter(BaseModel):
         title="Lasers or feelings",
         default=4,
     )
+    portrait: Annotated[
+        Optional[str], Field(json_schema_extra={"widget": "portrait"})
+    ] = ""
 
 
 class LasersAndFeelings(BaseSchema):

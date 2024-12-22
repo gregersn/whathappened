@@ -171,10 +171,23 @@ def v002_to_001(data):
     return data
 
 
+def v004_to_v005(data):
+    data = data.copy()
+    data["version"] = "0.0.5"
+    return data
+
+
+def v005_to_v004(data):
+    data = data.copy()
+    data["version"] = "0.0.4"
+    return data
+
+
 migrations = [
     Migration("0.0.1", "0.0.2", v001_to_002, v002_to_001),
     Migration("0.0.2", "0.0.3", v002_to_v003, v003_to_v002),
     Migration("0.0.3", "0.0.4", v003_to_v004, v004_to_v003),
+    Migration("0.0.4", "0.0.5"),
 ]
 
 
