@@ -10,7 +10,7 @@ current_folder = Path(__file__).parent
 CHARACTER_TEMPLATE = "character/coc7e/blank_character.json.jinja"
 
 
-def new_character(
+def new_character_v1(
     title: str,
     gametype: GameType = "Classic (1920's)",
     timestamp: Optional[float] = None,
@@ -26,3 +26,12 @@ def new_character(
     return json.loads(
         template.render(title=title, timestamp=timestamp or time.time(), gametype=gtype)
     )
+
+
+def new_character(
+    title: str,
+    gametype: GameType = "Classic (1920's)",
+    timestamp: Optional[float] = None,
+    **kwargs,
+):
+    return CharacterSheet.model_construct()

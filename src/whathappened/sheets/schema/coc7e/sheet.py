@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 import yaml
 
 from whathappened.sheets.schema.base import BaseSchema
+from whathappened.sheets.schema.coc7e.skills import SKILLS
 
 
 class Meta(BaseModel):
@@ -163,6 +164,7 @@ class CallofCthulhu7e(BaseSchema):
                 "meta",
                 "personalia",
                 "characteristics",
+                "skills",
             ]
         },
     )
@@ -172,8 +174,23 @@ class CallofCthulhu7e(BaseSchema):
     personalia: Annotated[Personalia, Field()]
     characteristics: Annotated[Characteristics, Field()]
     skills: Annotated[
-        list[Skill], Field(default=[], json_schema_extra={"unique_items": True})
-    ]
+        list[Skill],
+        Field(
+            json_schema_extra={"unique_items": True},
+        ),
+    ] = Field(
+        default_factory=lambda: [
+            Skill(
+                name=skill.get("name", "Unknown"),
+                start_value=skill.get("start_value", 0),
+                value=skill.get("value", 0),
+                specializations=skill.get("specializations", False),
+                checked=False,
+                occupation=False,
+            )
+            for skill in SKILLS
+        ]
+    )
     weapons: Annotated[list[Weapon], Field(default=[])]
     combat: Annotated[Combat, Field()]
     backstory: Backstory

@@ -7,7 +7,7 @@ import pytest
 from whathappened.auth.models import User  # noqa
 from whathappened.campaign.models import Campaign  # noqa
 
-from whathappened.sheets.mechanics.coc7e import new_character
+from whathappened.sheets.mechanics.coc7e import new_character_v1
 from whathappened.sheets.mechanics.coc7e.mechanics import CoCMechanics
 from whathappened.sheets.schema.base import CURRENT_SCHEMA_VERSION
 from whathappened.sheets.schema.build import validate
@@ -51,14 +51,14 @@ def fixture_test_sheet() -> dict:
 
 @pytest.fixture(name="newly_created_character")
 def fixture_test_character() -> Character:
-    nc = new_character("Test Character", "Classic (1920's)")
+    nc = new_character_v1("Test Character", "Classic (1920's)")
     c = Character(title="Test Character", body=nc, mechanics=CoCMechanics)
 
     return c
 
 
 def test_validate(test_sheet: dict, app):
-    nc = new_character("Test Character", "Classic (1920's)")
+    nc = new_character_v1("Test Character", "Classic (1920's)")
     errors = validate(nc, "coc7e")
     assert len(errors) == 0
 

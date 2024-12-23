@@ -2,7 +2,7 @@
 
 from jsonschema import validate
 
-from whathappened.sheets.mechanics.coc7e import new_character
+from whathappened.sheets.mechanics.coc7e import new_character_v1
 from whathappened.sheets.schema.build import get_schema
 from whathappened.sheets.schema.utils import Migration
 
@@ -95,7 +95,7 @@ def v003_to_v002(data):
 
 
 def v001_to_002(data):
-    nc = new_character("Test Character", "Classic (1920's)")
+    nc = new_character_v1("Test Character", "Classic (1920's)")
     schema = get_schema("coc7e")
     validate(nc, schema=schema)
 
