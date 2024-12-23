@@ -21,9 +21,19 @@ depends_on = None
 def upgrade():
     HandoutStatusType.create(op.get_bind(), checkfirst=True)
 
-    op.add_column(
-        "campaign_handout", sa.Column("status", HandoutStatusType, nullable=True)
-    )
+    ctx = op.get_context()
+    dialect = ctx.dialect.name
+
+    new_col = sa.Column("status", HandoutStatusType, nullable=True)
+
+    # To eliminate 'Skipping unsupported ALTER for creation of implicit
+    # constraint' warning we use batch operation to create the new column in
+    # case of SQLite.
+    if dialect == "sqlite":
+        with op.batch_alter_table("campaign_handout") as batch_op:
+            batch_op.add_column(new_col)
+    else:
+        op.add_column("campaign_handout", new_col)
 
 
 def downgrade():
