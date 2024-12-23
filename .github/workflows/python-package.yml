@@ -109,6 +109,10 @@ jobs:
               run: |
                   pytest -vvv
               continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
+            - name: Setup database
+              run: |
+                  make setup
+
             - name: Run package creation
               run: |
                   make dist
