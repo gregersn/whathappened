@@ -105,12 +105,12 @@ def migrate(data, to_version: str, migrations: Optional[list[Migration]] = None)
             if migrator.down:
                 data = migrator.down(data)
             else:
-                data = set_version(data, to_version)
+                data = set_version(data, migrator.from_version)
 
         if direction > 0:
             if migrator.up:
                 data = migrator.up(data)
             else:
-                data = set_version(data, to_version)
+                data = set_version(data, migrator.to)
 
     return data
