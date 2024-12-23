@@ -22,6 +22,8 @@ class UserProfile(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"), nullable=True)
     user: Mapped["User"] = relationship(back_populates="profile")
 
+    display_name: Mapped[typing.Optional[str]]
+
     def __repr__(self):
         return f"<UserProfile {self.user_id}: {self.user.username}>"
 

@@ -6,7 +6,7 @@
                         {{ character_association.character.description }}<br />
                         </div>
                         <div class="userinfo">
-                        <em>Owner: {{ character_association.character.player.user.username }}</em><br />
+                        <em>Owner: {{ character_association.character.player.display_name or character_association.character.player.user.username }}</em><br />
                         {% if character_association.character.viewable_by(current_user.profile)%}
                         [<a href="{{url_for('character.view', id=character_association.character.id)}}" {%- if character_association.character.player.user == current_user %} class="strong"{%- endif %}>View</a>]{%endif %}
                         {%- if editable or character_association.character.player.user == current_user %}
