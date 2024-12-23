@@ -1,21 +1,10 @@
 """Tales from the Loops sheet mechanics."""
 
 import logging
-
+from whathappened.sheets.mechanics.core import new_character
 from whathappened.sheets.mechanics.tftl.mechanics import TftlMechanics
 
-from whathappened.sheets.schema.build import get_schema, build_from_schema
 
-__all__ = ["TftlMechanics"]
+__all__ = ["TftlMechanics", "new_character"]
 
 logger = logging.getLogger(__name__)
-
-
-def new_character(title: str, **kwargs):
-    """Create a new character."""
-    schema = get_schema("tftl")
-
-    nc = build_from_schema(schema)
-    nc["title"] = title
-
-    return nc
