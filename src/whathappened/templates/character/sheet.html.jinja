@@ -113,3 +113,5 @@
     </ul>
     {% endif %}
 {% endmacro %}
+
+{% block footer %} - {{ character.data.meta.gamename }} ({{ character.data.system }}@{{ character.data.version }}) {% endblock %}
