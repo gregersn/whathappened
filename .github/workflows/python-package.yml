@@ -83,10 +83,11 @@ jobs:
                   cd frontend; npm install; npm run test
 
     build:
-        runs-on: ubuntu-latest
         strategy:
             matrix:
                 python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+                os: [ubuntu-24.04, macos-14]
+        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v3
             - name: Set up Python ${{ matrix.python-version }}
@@ -119,5 +120,5 @@ jobs:
             - name: Archive package
               uses: actions/upload-artifact@v4
               with:
-                  name: whathappened-${{ matrix.python-version }}
+                  name: whathappened-${{ matrix.os }}-${{ matrix.python-version }}
                   path: dist
