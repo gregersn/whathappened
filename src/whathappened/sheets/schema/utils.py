@@ -77,7 +77,6 @@ def find_migrations(system: Gametag) -> list[Migration]:
 
 
 def set_version(data, version: str):
-    data = data.copy()
     data["version"] = version
     return data
 
@@ -89,28 +88,29 @@ def migrate(data, to_version: str, migrations: Optional[list[Migration]] = None)
     if migrations is None:
         migrations = find_migrations(system)
     assert system
-    from_version = parse(find_version(data))
-    direction = up_or_down(from_version, parse(to_version))
-    if direction == 0:
-        return data
 
-    migrator = find_migration(from_version, direction, migrations)
+    while (from_version := parse(find_version(data))) != to_version:
+        direction = up_or_down(from_version, parse(to_version))
+        if direction == 0:
+            return data
 
-    if migrator is None:
-        raise NotImplementedError(
-            f"Migrator not found for {system} from {from_version} to {to_version}"
-        )
+        migrator = find_migration(from_version, direction, migrations)
 
-    if direction < 0:
-        if migrator.down:
-            data = migrator.down(data)
-        else:
-            data = set_version(data, to_version)
+        if migrator is None:
+            raise NotImplementedError(
+                f"Migrator not found for {system} from {from_version} to {to_version}"
+            )
 
-    if direction > 0:
-        if migrator.up:
-            data = migrator.up(data)
-        else:
-            data = set_version(data, to_version)
+        if direction < 0:
+            if migrator.down:
+                data = migrator.down(data)
+            else:
+                data = set_version(data, to_version)
 
-    return migrate(data, to_version=to_version, migrations=migrations)
+        if direction > 0:
+            if migrator.up:
+                data = migrator.up(data)
+            else:
+                data = set_version(data, to_version)
+
+    return data
