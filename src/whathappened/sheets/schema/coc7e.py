@@ -12,7 +12,6 @@ from whathappened.sheets.schema.utils import Migration
 
 
 def v003_to_v004(data):
-    data = data.copy()
     data["version"] = "0.0.4"
     for k, v in data["characteristics"].items():
         data["characteristics"][k] = int(v)
@@ -63,7 +62,6 @@ def v003_to_v004(data):
 
 
 def v004_to_v003(data):
-    data = data.copy()
     data["version"] = "0.0.3"
     for k, v in data["characteristics"].items():
         data["characteristics"][k] = str(v)
@@ -87,7 +85,6 @@ def v004_to_v003(data):
 
 
 def v002_to_v003(data):
-    data = data.copy()
     data["system"] = "coc7e"
     data["version"] = "0.0.3"
     del data["meta"]["Version"]
@@ -95,7 +92,6 @@ def v002_to_v003(data):
 
 
 def v003_to_v002(data):
-    data = data.copy()
     del data["version"]
     del data["system"]
     data["meta"]["Version"] = "0.0.2"
@@ -103,7 +99,6 @@ def v003_to_v002(data):
 
 
 def v001_to_002(data):
-    data = data.copy()
     nc = new_character("Test Character", "Classic (1920's)")
     schema = get_schema("coc7e")
     validate(nc, schema=schema)
@@ -152,7 +147,6 @@ def v001_to_002(data):
 
 
 def v002_to_001(data):
-    data = data.copy()
     data["meta"]["Version"] = "0.0.1"
 
     outskills = []
@@ -172,13 +166,11 @@ def v002_to_001(data):
 
 
 def v004_to_v005(data):
-    data = data.copy()
     data["version"] = "0.0.5"
     return data
 
 
 def v005_to_v004(data):
-    data = data.copy()
     data["version"] = "0.0.4"
     return data
 

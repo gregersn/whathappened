@@ -8,14 +8,12 @@ from whathappened.sheets.schema.base import BaseSchema, Migration
 
 
 def v004_to_v005(data):
-    data = data.copy()
     data["character_sheet"]["information"]["picture"] = None
     data["version"] = "0.0.5"
     return data
 
 
 def v005_to_v004(data):
-    data = data.copy()
     del data["character_sheet"]["information"]["picture"]
     data["version"] = "0.0.4"
     return data

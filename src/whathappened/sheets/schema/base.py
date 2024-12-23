@@ -22,26 +22,22 @@ Gametag = Literal["landf", "tftl", "coc7e", "dod", "vaesen", "vaesenhq"]
 
 
 def v000_to_004(data):
-    data = data.copy()
     data["version"] = "0.0.4"
     return data
 
 
 def v004_to_000(data):
-    data = data.copy()
     del data["version"]
     return data
 
 
 def v004_to_005(data):
-    data = data.copy()
     data["version"] = "0.0.5"
     data["character_sheet"]["personalia"]["portrait"] = None
     return data
 
 
 def v005_to_004(data):
-    data = data.copy()
     data["version"] = "0.0.4"
     del data["character_sheet"]["personalia"]["portrait"]
     return data
