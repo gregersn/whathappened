@@ -1,0 +1,216 @@
+character_sheet:
+  "F\xF6rm\xE5gor & besv\xE4rjelser": []
+  egenskaper:
+    FYS: 0
+    INT: 0
+    KAR: 0
+    PSY: 0
+    SMI: 0
+    STY: 0
+    arg: false
+    krasslig: false
+    omtocknad: false
+    radd: false
+    uppgiven: false
+    utmattad: false
+  fardigheter:
+    primar:
+    - base: INT
+      checked: false
+      name: Bestiologi
+      value: 0
+    - base: KAR
+      checked: false
+      name: Bluffa
+      value: 0
+    - base: SMI
+      checked: false
+      name: "Fingerf\xE4rdighet"
+      value: 0
+    - base: INT
+      checked: false
+      name: Finna dolda ting
+      value: 0
+    - base: INT
+      checked: false
+      name: "Fr\xE4mmande spr\xE5k"
+      value: 0
+    - base: STY
+      checked: false
+      name: Hantverk
+      value: 0
+    - base: SMI
+      checked: false
+      name: "Hoppa & kl\xE4ttra"
+      value: 0
+    - base: SMI
+      checked: false
+      name: Jakt & fiske
+      value: 0
+    - base: KAR
+      checked: false
+      name: "K\xF6psl\xE5"
+      value: 0
+    - base: INT
+      checked: false
+      name: "L\xE4kekonst"
+      value: 0
+    - base: INT
+      checked: false
+      name: Myter & legender
+      value: 0
+    - base: SMI
+      checked: false
+      name: Rida
+      value: 0
+    - base: SMI
+      checked: false
+      name: Simma
+      value: 0
+    - base: INT
+      checked: false
+      name: "Sj\xF6kunnighet"
+      value: 0
+    - base: SMI
+      checked: false
+      name: Smyga
+      value: 0
+    - base: SMI
+      checked: false
+      name: Undvika
+      value: 0
+    - base: KAR
+      checked: false
+      name: "Upptr\xE4da"
+      value: 0
+    - base: INT
+      checked: false
+      name: "Uppt\xE4cka fara"
+      value: 0
+    - base: INT
+      checked: false
+      name: Vildmarksvana
+      value: 0
+    - base: KAR
+      checked: false
+      name: "\xD6vertala"
+      value: 0
+    sekundarafardigheter: []
+    vapenfardigheter:
+    - base: SMI
+      checked: false
+      name: Armborst
+      value: 0
+    - base: STY
+      checked: false
+      name: Hammare
+      value: 0
+    - base: SMI
+      checked: false
+      name: Kniv
+      value: 0
+    - base: SMI
+      checked: false
+      name: "Pilb\xE5ge"
+      value: 0
+    - base: STY
+      checked: false
+      name: "Slagsm\xE5l"
+      value: 0
+    - base: SMI
+      checked: false
+      name: Slunga
+      value: 0
+    - base: STY
+      checked: false
+      name: Spjut
+      value: 0
+    - base: SMI
+      checked: false
+      name: Stav
+      value: 0
+    - base: STY
+      checked: false
+      name: "Sv\xE4rd"
+      value: 0
+    - base: STY
+      checked: false
+      name: Yxa
+      value: 0
+  packning:
+    barformoga: 0
+    items:
+    - '-'
+    - '-'
+    - '-'
+    - '-'
+    - '-'
+    - '-'
+    - '-'
+    - '-'
+    - '-'
+    - '-'
+    minnessak: '-'
+    smaasaker: []
+  pengar:
+    guldmynt: 0
+    kopparmynt: 0
+    silvermynt: 0
+  personalia:
+    alder: Ung
+    namn: Inget namn
+    portrait: ''
+    slakte: "M\xE4nniska"
+    svaghet: Odefinerad
+    utseende: Odefinerad
+    yrke: Bard
+  sekundara_egenskaper:
+    forflyttning: 0
+    kroppspoang:
+      anvanda: 0
+      dodsslag:
+        lyckade: 0
+        misslyckade: 0
+      poang: 0
+    skadebonus_smi: '-'
+    skadebonus_sty: '-'
+    viljepoang:
+      anvanda: 0
+      poang: 0
+  vapen:
+    hjalm:
+      "avst\xE5ndsattacker": false
+      "skyddsv\xE4rde": 0
+      typ: Ingen
+      "uppt\xE4cka_fara": false
+    rustning:
+      hoppa_och_klattra: false
+      "skyddsv\xE4rde": 0
+      smyga: false
+      typ: Ingen
+      undvika: false
+    till_hands:
+    - "brytv\xE4rde": '-'
+      egenskaper: Krossande
+      grepp: '-'
+      "r\xE4ckvidd": '2'
+      skada: T6
+      vapen: "Obev\xE4pnad"
+    - "brytv\xE4rde": '-'
+      egenskaper: Krossande
+      grepp: '-'
+      "r\xE4ckvidd": '2'
+      skada: T6
+      vapen: "Obev\xE4pnad"
+    - "brytv\xE4rde": '-'
+      egenskaper: Krossande
+      grepp: '-'
+      "r\xE4ckvidd": '2'
+      skada: T6
+      vapen: "Obev\xE4pnad"
+meta:
+  gamename: Drakar och Demoner
+  title: Unknown
+system: dod
+title: Test character
+version: 0.0.7

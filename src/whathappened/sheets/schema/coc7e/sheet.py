@@ -7,25 +7,25 @@ import yaml
 from whathappened.sheets.schema.base import BaseSchema
 
 
-class Meta(BaseModel):
+class SheetInfo(BaseModel):
     model_config = ConfigDict(
         extra="ignore",
         json_schema_extra={
-            "required": ["Title", "GameName", "GameVersion", "GameType"]
+            "required": ["title", "gamename", "gameversion", "gametype"]
         },
     )
 
-    Title: str
-    Creator: str
-    CreateDate: Annotated[str, Field(title="CreateDate")]
-    GameName: Annotated[
+    title: str
+    creator: str
+    createdate: Annotated[str, Field(title="CreateDate")]
+    gamename: Annotated[
         Literal["Call of Cthulhu TM"], Field(title="GameName", frozen=True)
     ]
-    GameVersion: Annotated[
+    gameversion: Annotated[
         Literal["7th Edition"], Field(title="GameVersion", frozen=True)
     ]
-    GameType: Annotated[Literal["Classic (1920's)", "Modern"], Field(title="GameType")]
-    Disclaimer: str
+    gametype: Annotated[Literal["Classic (1920's)", "Modern"], Field(title="GameType")]
+    disclaimer: str
 
 
 class Personalia(BaseModel):
@@ -168,7 +168,7 @@ class CallofCthulhu7e(BaseSchema):
     )
 
     system: Annotated[Literal["coc7e"], Field(frozen=True)] = "coc7e"
-    meta: Annotated[Meta, Field()]
+    meta: Annotated[SheetInfo, Field()]
     personalia: Annotated[Personalia, Field()]
     characteristics: Annotated[Characteristics, Field()]
     skills: Annotated[
