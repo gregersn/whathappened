@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Literal, Optional
 import jinja2
 
-
 GameType = Literal["Classic (1920's)", "Modern"]
 GameTypes = ["Classic (1920's)", "Modern"]
 current_folder = Path(__file__).parent
