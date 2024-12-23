@@ -1,0 +1,61 @@
+character_sheet:
+  characteristics:
+    attributes:
+      empathy: 2
+      logic: 2
+      physique: 2
+      precision: 2
+    conditions:
+      mental:
+        angry: false
+        broken: false
+        frightened: false
+        hopeless: false
+      physical:
+        battered: false
+        broken: false
+        exhausted: false
+        wounded: false
+    experience: 0
+    resources: 1
+    skills:
+      agility: 0
+      close_combat: 0
+      force: 0
+      inspiration: 0
+      investigation: 0
+      learning: 0
+      manipulation: 0
+      medicine: 0
+      observation: 0
+      ranged_combat: 0
+      stealth: 0
+      vigilance: 0
+  miscellaneous:
+    advantages: ''
+    armor: none
+    equipment: []
+    insights: []
+    memento: ''
+    talents: []
+    weapons: []
+  personalia:
+    age: 17
+    archetype: Academic
+    dark_secret: ''
+    description: ''
+    motivation: ''
+    name: ''
+    portrait: ''
+    relationships:
+    - PC 1
+    - PC 2
+    - PC 3
+    - PC 4
+    trauma: ''
+meta:
+  gamename: Vaesen
+  title: Unknown
+system: vaesen
+title: Test character
+version: 0.0.7

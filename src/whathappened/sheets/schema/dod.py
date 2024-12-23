@@ -13,6 +13,8 @@ from whathappened.sheets.schema.base import BaseSchema
 class SheetInfo(BaseModel):
     """Basic info about the sheet."""
 
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
     gamename: Literal["Drakar och Demoner"] = "Drakar och Demoner"
     title: str = "Unknown"
 

@@ -1,7 +1,7 @@
 """Vaesen Headquarters sheet."""
 
 from typing import Annotated, Literal, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 import yaml
 
 from whathappened.sheets.schema.base import BaseSchema, Migration
@@ -26,6 +26,8 @@ migrations = [
 
 class SheetInfo(BaseModel):
     """Basic information about the character sheet."""
+
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
     gamename: Literal["Vaesen"] = "Vaesen"
     title: str = "Unknown"

@@ -172,41 +172,6 @@ $defs:
     - Dodge
     title: Combat
     type: object
-  Meta:
-    properties:
-      CreateDate:
-        title: CreateDate
-        type: string
-      Creator:
-        title: Creator
-        type: string
-      Disclaimer:
-        title: Disclaimer
-        type: string
-      GameName:
-        const: Call of Cthulhu TM
-        title: GameName
-        type: string
-      GameType:
-        enum:
-        - Classic (1920's)
-        - Modern
-        title: GameType
-        type: string
-      GameVersion:
-        const: 7th Edition
-        title: GameVersion
-        type: string
-      Title:
-        title: Title
-        type: string
-    required:
-    - Title
-    - GameName
-    - GameVersion
-    - GameType
-    title: Meta
-    type: object
   Personalia:
     properties:
       Age:
@@ -234,6 +199,41 @@ $defs:
         type: string
     required: []
     title: Personalia
+    type: object
+  SheetInfo:
+    properties:
+      createdate:
+        title: CreateDate
+        type: string
+      creator:
+        title: Creator
+        type: string
+      disclaimer:
+        title: Disclaimer
+        type: string
+      gamename:
+        const: Call of Cthulhu TM
+        title: GameName
+        type: string
+      gametype:
+        enum:
+        - Classic (1920's)
+        - Modern
+        title: GameType
+        type: string
+      gameversion:
+        const: 7th Edition
+        title: GameVersion
+        type: string
+      title:
+        title: Title
+        type: string
+    required:
+    - title
+    - gamename
+    - gameversion
+    - gametype
+    title: SheetInfo
     type: object
   Skill:
     properties:
@@ -337,7 +337,7 @@ properties:
   combat:
     $ref: '#/$defs/Combat'
   meta:
-    $ref: '#/$defs/Meta'
+    $ref: '#/$defs/SheetInfo'
   personalia:
     $ref: '#/$defs/Personalia'
   possessions:
@@ -360,7 +360,7 @@ properties:
     title: System
     type: string
   version:
-    default: 0.0.6
+    default: 0.0.7
     title: Version
     type: string
   weapons:

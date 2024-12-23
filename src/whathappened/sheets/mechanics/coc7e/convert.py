@@ -33,8 +33,22 @@ def convert_from_dholes(indata):
 
     def convert_header(header):
         del header["Version"]
+
+        header["title"] = header["Title"]
+        del header["Title"]
+        header["creator"] = header["Creator"]
+        del header["Creator"]
+        header["createdate"] = header["CreateDate"]
+        del header["CreateDate"]
+        header["gamename"] = header["GameName"]
+        del header["GameName"]
+        header["gameversion"] = header["GameVersion"]
+        del header["GameVersion"]
+        header["gametype"] = header["GameType"]
+        del header["GameType"]
+
         if "Discalimer" in header:
-            header["Disclaimer"] = header["Discalimer"]
+            header["disclaimer"] = header["Discalimer"]
             del header["Discalimer"]
         return header
 
@@ -157,7 +171,7 @@ def convert_from_dholes(indata):
     assets = investigator["Assets"]
 
     return {
-        "version": "0.0.6",
+        "version": "0.0.7",
         "system": "coc7e",
         "meta": header,
         "personalia": personal_details,

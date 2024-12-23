@@ -10,8 +10,8 @@ class CoCMechanics(CharacterMechanics):
     def game(self):
         try:
             return (
-                self.parent.body["meta"]["GameName"],
-                self.parent.body["meta"]["GameType"],
+                self.parent.body["meta"]["gamename"],
+                self.parent.body["meta"]["gametype"],
             )
         except Exception as e:
             logger.warning(e)

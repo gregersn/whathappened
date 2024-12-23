@@ -281,6 +281,9 @@ $defs:
         default: Unknown
         title: Title
         type: string
+    required:
+    - gamename
+    - title
     title: SheetInfo
     type: object
   Skills:
@@ -395,7 +398,7 @@ properties:
     title: System
     type: string
   version:
-    default: 0.0.6
+    default: 0.0.7
     title: Version
     type: string
 required:
