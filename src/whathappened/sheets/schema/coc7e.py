@@ -175,11 +175,26 @@ def v005_to_v004(data):
     return data
 
 
+def v005_to_v006(data):
+    data["backstory"]["injuries"] = data["backstory"]["injurues"]
+    del data["backstory"]["injurues"]
+    data["version"] = "0.0.6"
+    return data
+
+
+def v006_to_v005(data):
+    data["backstory"]["injurues"] = data["backstory"]["injuries"]
+    del data["backstory"]["injuries"]
+    data["version"] = "0.0.5"
+    return data
+
+
 migrations = [
     Migration("0.0.1", "0.0.2", v001_to_002, v002_to_001),
     Migration("0.0.2", "0.0.3", v002_to_v003, v003_to_v002),
     Migration("0.0.3", "0.0.4", v003_to_v004, v004_to_v003),
     Migration("0.0.4", "0.0.5"),
+    Migration("0.0.5", "0.0.6", v005_to_v006, v006_to_v005),
 ]
 
 
@@ -310,7 +325,7 @@ class Backstory(BaseModel):
     description: Optional[str]
     traits: Optional[str]
     ideology: Optional[str]
-    injurues: Optional[str]  # TODO: Fix typo
+    injuries: Optional[str]
     people: Optional[str]
     phobias: Optional[str]
     locations: Optional[str]

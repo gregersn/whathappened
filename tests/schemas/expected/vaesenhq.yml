@@ -116,7 +116,7 @@ properties:
     title: System
     type: string
   version:
-    default: 0.0.5
+    default: 0.0.6
     title: Version
     type: string
 required:
