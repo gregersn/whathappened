@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 from typing import Callable, Literal, Optional
-from typing_extensions import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 
-CURRENT_SCHEMA_VERSION_TYPE = Literal["0.0.6"]
-CURRENT_SCHEMA_VERSION = "0.0.6"
+CURRENT_SCHEMA_VERSION_TYPE = Literal["0.0.7"]
+CURRENT_SCHEMA_VERSION = "0.0.7"
 
 
 @dataclass
@@ -47,6 +46,7 @@ migrations: list[Migration] = [
     Migration("0.0.0", "0.0.4", v000_to_004, v004_to_000),
     Migration("0.0.4", "0.0.5", v004_to_005, v005_to_004),
     Migration("0.0.5", "0.0.6"),
+    Migration("0.0.6", "0.0.7"),
 ]
 
 

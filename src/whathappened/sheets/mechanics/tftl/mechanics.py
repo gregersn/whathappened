@@ -1,4 +1,3 @@
-from whathappened.sheets.schema.build import validate
 
 from ..core import CharacterMechanics
 

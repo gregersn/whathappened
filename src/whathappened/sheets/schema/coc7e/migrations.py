@@ -185,10 +185,51 @@ def v006_to_v005(data):
     return data
 
 
+def v006_to_007(data):
+    data["meta"]["title"] = data["meta"]["Title"]
+    del data["meta"]["Title"]
+    data["meta"]["creator"] = data["meta"]["Creator"]
+    del data["meta"]["Creator"]
+    data["meta"]["createdate"] = data["meta"]["CreateDate"]
+    del data["meta"]["CreateDate"]
+    data["meta"]["gamename"] = data["meta"]["GameName"]
+    del data["meta"]["GameName"]
+    data["meta"]["gameversion"] = data["meta"]["GameVersion"]
+    del data["meta"]["GameVersion"]
+    data["meta"]["gametype"] = data["meta"]["GameType"]
+    del data["meta"]["GameType"]
+    data["meta"]["disclaimer"] = data["meta"]["Disclaimer"]
+    del data["meta"]["Disclaimer"]
+
+    data["version"] = "0.0.7"
+    return data
+
+
+def v007_to_006(data):
+    data["meta"]["Title"] = data["meta"]["title"]
+    del data["meta"]["title"]
+    data["meta"]["Creator"] = data["meta"]["creator"]
+    del data["meta"]["creator"]
+    data["meta"]["CreateDate"] = data["meta"]["createdate"]
+    del data["meta"]["createdate"]
+    data["meta"]["GameName"] = data["meta"]["gamename"]
+    del data["meta"]["gamename"]
+    data["meta"]["GameVersion"] = data["meta"]["gameversion"]
+    del data["meta"]["gameversion"]
+    data["meta"]["GameType"] = data["meta"]["gametype"]
+    del data["meta"]["gametype"]
+    data["meta"]["Disclaimer"] = data["meta"]["disclaimer"]
+    del data["meta"]["disclaimer"]
+
+    data["version"] = "0.0.6"
+    return data
+
+
 migrations = [
     Migration("0.0.1", "0.0.2", v001_to_002, v002_to_001),
     Migration("0.0.2", "0.0.3", v002_to_v003, v003_to_v002),
     Migration("0.0.3", "0.0.4", v003_to_v004, v004_to_v003),
     Migration("0.0.4", "0.0.5"),
     Migration("0.0.5", "0.0.6", v005_to_v006, v006_to_v005),
+    Migration("0.0.6", "0.0.7", v006_to_007, v007_to_006),
 ]

@@ -67,38 +67,6 @@ $defs:
         type: string
     title: Item
     type: object
-  Meta:
-    properties:
-      CreateDate:
-        default: ''
-        title: CreateDate
-        type: string
-      Creator:
-        default: What happened? A TTRPG utility
-        title: Creator
-        type: string
-      Disclaimer:
-        default: We're not gonna take it!
-        title: Disclaimer
-        type: string
-      GameName:
-        default: Tales From The Loop
-        title: GameName
-        type: string
-      GameType:
-        default: ''
-        title: GameType
-        type: string
-      GameVersion:
-        default: ''
-        title: GameVersion
-        type: string
-      Title:
-        default: New character
-        title: Title
-        type: string
-    title: Meta
-    type: object
   Personalia:
     properties:
       age:
@@ -179,6 +147,46 @@ $defs:
         title: Npcs
         type: array
     title: Relationships
+    type: object
+  SheetInfo:
+    properties:
+      createdate:
+        default: ''
+        title: CreateDate
+        type: string
+      creator:
+        default: What happened? A TTRPG utility
+        title: Creator
+        type: string
+      disclaimer:
+        default: We're not gonna take it!
+        title: Disclaimer
+        type: string
+      gamename:
+        default: Tales From The Loop
+        title: GameName
+        type: string
+      gametype:
+        default: ''
+        title: GameType
+        type: string
+      gameversion:
+        default: ''
+        title: GameVersion
+        type: string
+      title:
+        default: New character
+        title: Title
+        type: string
+    required:
+    - title
+    - creator
+    - createdate
+    - gamename
+    - gameversion
+    - gametype
+    - disclaimer
+    title: SheetInfo
     type: object
   Skills:
     properties:
@@ -289,7 +297,7 @@ properties:
     title: Items
     type: array
   meta:
-    $ref: '#/$defs/Meta'
+    $ref: '#/$defs/SheetInfo'
   notes:
     default: ''
     title: Notes
@@ -319,7 +327,7 @@ properties:
     title: System
     type: string
   version:
-    default: 0.0.6
+    default: 0.0.7
     title: Version
     type: string
 required:

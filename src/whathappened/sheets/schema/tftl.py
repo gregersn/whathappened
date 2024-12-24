@@ -5,20 +5,63 @@ from pydantic import BaseModel, ConfigDict, Field
 from whathappened.sheets.schema.base import BaseSchema, Migration
 
 
+def v006_to_007(data):
+    data["meta"]["title"] = data["meta"]["Title"] or "Untitled"
+    del data["meta"]["Title"]
+    data["meta"]["creator"] = data["meta"]["Creator"]
+    del data["meta"]["Creator"]
+    data["meta"]["createdate"] = data["meta"]["CreateDate"]
+    del data["meta"]["CreateDate"]
+    data["meta"]["gamename"] = data["meta"]["GameName"]
+    del data["meta"]["GameName"]
+    data["meta"]["gameversion"] = data["meta"]["GameVersion"]
+    del data["meta"]["GameVersion"]
+    data["meta"]["gametype"] = data["meta"]["GameType"]
+    del data["meta"]["GameType"]
+    data["meta"]["disclaimer"] = data["meta"]["Disclaimer"]
+    del data["meta"]["Disclaimer"]
+
+    data["version"] = "0.0.7"
+    return data
+
+
+def v007_to_006(data):
+    data["meta"]["Title"] = data["meta"]["title"]
+    del data["meta"]["title"]
+    data["meta"]["Creator"] = data["meta"]["creator"]
+    del data["meta"]["creator"]
+    data["meta"]["CreateDate"] = data["meta"]["createdate"]
+    del data["meta"]["createdate"]
+    data["meta"]["GameName"] = data["meta"]["gamename"]
+    del data["meta"]["gamename"]
+    data["meta"]["GameVersion"] = data["meta"]["gameversion"]
+    del data["meta"]["gameversion"]
+    data["meta"]["GameType"] = data["meta"]["gametype"]
+    del data["meta"]["gametype"]
+    data["meta"]["Disclaimer"] = data["meta"]["disclaimer"]
+    del data["meta"]["disclaimer"]
+
+    data["version"] = "0.0.6"
+    return data
+
+
 migrations = [
     Migration("0.0.1", "0.0.4"),
     Migration("0.0.4", "0.0.5"),
+    Migration("0.0.6", "0.0.7", v006_to_007, v007_to_006),
 ]
 
 
-class Meta(BaseModel):
-    Title: str = "New character"
-    Creator: str = "What happened? A TTRPG utility"
-    CreateDate: Annotated[str, Field(title="CreateDate")] = ""
-    GameName: Annotated[str, Field(title="GameName")] = "Tales From The Loop"
-    GameVersion: Annotated[str, Field(title="GameVersion")] = ""
-    GameType: Annotated[str, Field(title="GameType")] = ""
-    Disclaimer: str = "We're not gonna take it!"
+class SheetInfo(BaseModel):
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    title: str = "New character"
+    creator: str = "What happened? A TTRPG utility"
+    createdate: Annotated[str, Field(title="CreateDate")] = ""
+    gamename: Annotated[str, Field(title="GameName")] = "Tales From The Loop"
+    gameversion: Annotated[str, Field(title="GameVersion")] = ""
+    gametype: Annotated[str, Field(title="GameType")] = ""
+    disclaimer: str = "We're not gonna take it!"
 
 
 class Pride(BaseModel):
@@ -88,7 +131,7 @@ class TalesFromTheLoop(BaseSchema):
     )
 
     system: Annotated[Literal["tftl"], Field(frozen=True)] = "tftl"
-    meta: Annotated[Meta, Field(default_factory=Meta)]
+    meta: Annotated[SheetInfo, Field(default_factory=SheetInfo)]
     personalia: Annotated[Personalia, Field(default_factory=Personalia)]
     relationships: Annotated[Relationships, Field(default_factory=Relationships)]
     items: Annotated[list[Item], Field(default_factory=lambda: [Item()])]

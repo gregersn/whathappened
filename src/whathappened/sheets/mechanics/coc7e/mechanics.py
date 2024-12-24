@@ -1,7 +1,6 @@
 import logging
 
 from whathappened.sheets.mechanics.core import CharacterMechanics
-from whathappened.sheets.schema.build import validate
 
 logger = logging.getLogger(__name__)
 
@@ -10,8 +9,8 @@ class CoCMechanics(CharacterMechanics):
     def game(self):
         try:
             return (
-                self.parent.body["meta"]["GameName"],
-                self.parent.body["meta"]["GameType"],
+                self.parent.body["meta"]["gamename"],
+                self.parent.body["meta"]["gametype"],
             )
         except Exception as e:
             logger.warning(e)
