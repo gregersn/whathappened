@@ -1,7 +1,6 @@
 import logging
 
 from whathappened.sheets.mechanics.core import CharacterMechanics
-from whathappened.sheets.schema.build import validate
 
 logger = logging.getLogger(__name__)
 

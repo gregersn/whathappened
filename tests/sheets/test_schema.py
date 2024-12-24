@@ -1,9 +1,7 @@
 from whathappened.sheets.schema.build import (
-    SCHEMA_DIR,
     build_from_schema,
     flatten_schema,
     get_schema,
-    load_schema,
     validate,
 )
 

@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from typing import Callable, Literal, Optional
-from typing_extensions import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 
 CURRENT_SCHEMA_VERSION_TYPE = Literal["0.0.7"]
 CURRENT_SCHEMA_VERSION = "0.0.7"
