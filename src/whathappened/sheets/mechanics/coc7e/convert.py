@@ -2,6 +2,8 @@
 
 import math
 
+from whathappened.sheets.schema.utils import migrate
+
 
 def half(value):
     if not value:
@@ -156,7 +158,14 @@ def convert_from_dholes(indata):
                 characteristics[k] = int(v, 10)
             except ValueError:
                 print("WTF")
+        characteristics["SanityTemp"] = False
+        characteristics["SanityIndef"] = False
+        characteristics["HitPtsMajorWound"] = False
         return characteristics
+
+    def convert_backstory(backstory):
+        backstory["injuries"] = backstory.pop("injurues")
+        return backstory
 
     header = convert_header(investigator["Header"])
     personal_details = investigator["PersonalDetails"]
@@ -165,25 +174,28 @@ def convert_from_dholes(indata):
     # talents = investigator['Talents']  # Not used
     weapons = convert_weapons(investigator["Weapons"])
     combat = convert_combat(investigator["Combat"])
-    backstory = investigator["Backstory"]
+    backstory = convert_backstory(investigator["Backstory"])
     possessions = convert_possessions(investigator["Possessions"])
     cash = investigator["Cash"]
     assets = investigator["Assets"]
 
-    return {
-        "version": "0.0.7",
-        "system": "coc7e",
-        "meta": header,
-        "personalia": personal_details,
-        "characteristics": characteristics,
-        "skills": skills,
-        "weapons": weapons,
-        "combat": combat,
-        "backstory": backstory,
-        "possessions": possessions,
-        "cash": cash,
-        "assets": assets,
-    }
+    return migrate(
+        {
+            "version": "0.0.7",
+            "system": "coc7e",
+            "meta": header,
+            "personalia": personal_details,
+            "characteristics": characteristics,
+            "skills": skills,
+            "weapons": weapons,
+            "combat": combat,
+            "backstory": backstory,
+            "possessions": possessions,
+            "cash": cash,
+            "assets": assets,
+        },
+        "0.0.8",
+    )
 
 
 def convert_to_dholes(indata):

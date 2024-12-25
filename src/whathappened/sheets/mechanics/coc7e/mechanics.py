@@ -18,19 +18,19 @@ class CoCMechanics(CharacterMechanics):
 
     @property
     def name(self):
-        return self.parent.body["personalia"]["Name"]
+        return self.parent.body["character_sheet"]["personalia"]["name"]
 
     @property
     def age(self):
-        return self.parent.body["personalia"]["Age"]
+        return self.parent.body["character_sheet"]["personalia"]["age"]
 
     @property
     def description(self):
-        return self.parent.body["personalia"]["Occupation"]
+        return self.parent.body["character_sheet"]["personalia"]["occupation"]
 
     @property
     def portrait(self):
-        return self.parent.body["personalia"]["Portrait"]
+        return self.parent.body["character_sheet"]["personalia"]["portrait"]
 
     def skill(self, skill, subskill=None):
         """Return a single skill, or something."""
@@ -54,5 +54,5 @@ class CoCMechanics(CharacterMechanics):
         return None
 
     def set_portrait(self, data):
-        self.parent.body["personalia"]["Portrait"] = data
+        self.parent.body["character_sheet"]["personalia"]["Portrait"] = data
         return self.portrait

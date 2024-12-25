@@ -35,12 +35,12 @@
         <div class="box personalia">
             <h3>{{ "1920s Era Investigator" if character.game[1] != "Modern" else "Modern Era" }}</h3>
             <section>
-                <label>Name: </label>{{ editable_field("personalia.Name", "Unknown") }}<br />
-                <label>Occupation: </label><span>{{ editable_field("personalia.Occupation", "Unknown") }}</span><br />
-                <label>Age: </label>{{ editable_field("personalia.Age", "18") }}
-                <label>Sex: </label><span>{{ editable_field('personalia.Gender', 'Unknown')}}</span><br />
-                <label>Residence: </label><span>{{ editable_field("personalia.Residence", "Unknown") }}</span><br />
-                <label>Birthplace: </label><span>{{ editable_field("personalia.Birthplace", "Unknown") }}</span><br />
+                <label>Name: </label>{{ editable_field("character_sheet.personalia.name", "Unknown") }}<br />
+                <label>Occupation: </label><span>{{ editable_field("character_sheet.personalia.occupation", "Unknown") }}</span><br />
+                <label>Age: </label>{{ editable_field("character_sheet.personalia.age", "18") }}
+                <label>Sex: </label><span>{{ editable_field('character_sheet.personalia.gender', 'Unknown')}}</span><br />
+                <label>Residence: </label><span>{{ editable_field("character_sheet.personalia.residence", "Unknown") }}</span><br />
+                <label>Birthplace: </label><span>{{ editable_field("character_sheet.personalia.birthplace", "Unknown") }}</span><br />
             </section>
         </div>
         <div class="box characteristics">
@@ -49,27 +49,27 @@
                 <table>
                     <tr>
                         <td><label>STR:</label></td>
-                        <td><span class="stat">{{ editable_stat('characteristics.STR', type="number") }}</span></td>
+                        <td><span class="stat">{{ editable_stat('character_sheet.characteristics.STR', type="number") }}</span></td>
                         <td><label>DEX:</label></td>
-                        <td><span class="stat">{{ editable_stat('characteristics.DEX', type="number") }}</span></td>
+                        <td><span class="stat">{{ editable_stat('character_sheet.characteristics.DEX', type="number") }}</span></td>
                         <td><label>POW:</label></td>
-                        <td><span class="stat">{{ editable_stat('characteristics.POW', type="number") }}</span></td>
+                        <td><span class="stat">{{ editable_stat('character_sheet.characteristics.POW', type="number") }}</span></td>
                     </tr>
                     <tr>
                         <td><label>CON:</label></td>
-                        <td><span class="stat">{{ editable_stat('characteristics.CON', type="number") }}</span></td>
+                        <td><span class="stat">{{ editable_stat('character_sheet.characteristics.CON', type="number") }}</span></td>
                         <td><label>APP:</label></td>
-                        <td><span class="stat">{{ editable_stat('characteristics.APP', type="number") }}</span></td>
+                        <td><span class="stat">{{ editable_stat('character_sheet.characteristics.APP', type="number") }}</span></td>
                         <td><label>EDU:</label></td>
-                        <td><span class="stat">{{ editable_stat('characteristics.EDU', type="number") }}</span></td>
+                        <td><span class="stat">{{ editable_stat('character_sheet.characteristics.EDU', type="number") }}</span></td>
                     </tr>
                     <tr>
                         <td><label>SIZ:</label></td>
-                        <td><span class="stat">{{ editable_stat('characteristics.SIZ', type="number") }}</span></td>
+                        <td><span class="stat">{{ editable_stat('character_sheet.characteristics.SIZ', type="number") }}</span></td>
                         <td><label>INT:</label></td>
-                        <td><span class="stat">{{ editable_stat('characteristics.INT', type="number") }}</span></td>
+                        <td><span class="stat">{{ editable_stat('character_sheet.characteristics.INT', type="number") }}</span></td>
                         <td><label>Move:</label></td>
-                        <td>{{ editable_field('characteristics.Move', type="number") }}</td>
+                        <td>{{ editable_field('character_sheet.characteristics.move', type="number") }}</td>
                     </tr>
                 </table>
             </section>
@@ -83,34 +83,34 @@
         <div class="box hitpoints">
             <h3>Hitpoints</h3>
             <section>
-                <label>Current: </label> {{ editable_field("characteristics.HitPts", type="number") }} <br />
-                <label>Max: </label>{{ editable_field("characteristics.HitPtsMax", type="number") }}<br />
-                <label>Major wound: </label>{{ editable_binary("characteristics.HitPtsMajorWound") }}
+                <label>Current: </label> {{ editable_field("character_sheet.characteristics.hit_points", type="number") }} <br />
+                <label>Max: </label>{{ editable_field("character_sheet.characteristics.hit_points_max", type="number") }}<br />
+                <label>Major wound: </label>{{ editable_binary("character_sheet.characteristics.hit_points_major_wound") }}
             </section>
         </div>
         <div class="box sanity">
             <h3>Sanity</h3>
             <section>
-                <label>Current:</label> {{ editable_field('characteristics.Sanity', 0, type="number") }}<br />
-                <label>Start:</label> {{ editable_field('characteristics.SanityStart', 0, type="number") }}<br />
-                <label>Threshold:</label> <span>{{ (character.mechanics.attribute('characteristics.SanityStart') -
-                    (character.mechanics.attribute('characteristics.SanityStart'))*0.2)|int }}</span><br />
-                <label>Max:</label> {{ editable_field('characteristics.SanityMax', 99, type="number") }} <br />
-                <label>Temp insane:</label> {{ editable_binary("characteristics.SanityTemp") }}<br />
-                <label>Indefinitely insane:</label> {{ editable_binary("characteristics.SanityIndef") }}
+                <label>Current:</label> {{ editable_field('character_sheet.characteristics.sanity', 0, type="number") }}<br />
+                <label>Start:</label> {{ editable_field('character_sheet.characteristics.sanity_start', 0, type="number") }}<br />
+                <label>Threshold:</label> <span>{{ (character.mechanics.attribute('character_sheet.characteristics.sanity_start') -
+                    (character.mechanics.attribute('character_sheet.characteristics.sanity_start'))*0.2)|int }}</span><br />
+                <label>Max:</label> {{ editable_field('character_sheet.characteristics.sanity_max', 99, type="number") }} <br />
+                <label>Temp insane:</label> {{ editable_binary("character_sheet.characteristics.sanity_temporary_insane") }}<br />
+                <label>Indefinitely insane:</label> {{ editable_binary("character_sheet.characteristics.sanity_indefinitely_insane") }}
             </section>
         </div>
         <div class="box magicpoints">
             <h3>Magic points</h3>
             <section>
-                <label>Current: </label>{{ editable_field('characteristics.MagicPts', type="number") }}<br />
-                <label>Max: </label>{{ editable_field('characteristics.MagicPtsMax', type="number") }}
+                <label>Current: </label>{{ editable_field('character_sheet.characteristics.magic_points', type="number") }}<br />
+                <label>Max: </label>{{ editable_field('character_sheet.characteristics.magic_points_max', type="number") }}
             </section>
         </div>
         <div class="box luck">
             <h3>Luck</h3>
             <section>
-                <label>Current: </label>{{ editable_field('characteristics.Luck', type="number") }}<br />
+                <label>Current: </label>{{ editable_field('character_sheet.characteristics.luck', type="number") }}<br />
             </section>
         </div>
     </div>
@@ -166,7 +166,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for weapon in character.mechanics.attribute('weapons') %}
+                        {% for weapon in character.mechanics.attribute('character_sheet.weapons') %}
                         <tr data-row="{{ loop.index }}">
                             <td>{{ weapon['name'] }}</td>
                             <td data-type="number">{{ weapon['regular'] }}</td>
@@ -186,9 +186,9 @@
         <div class="combat box">
             <h3>Combat</h3>
             <section>
-                <label>Damage bonus: </label>{{ editable_field("combat.DamageBonus") }}<br />
-                <label>Build: </label>{{ editable_field("combat.Build") }}<br />
-                <label>Dodge: </label>{{ editable_field("combat.Dodge") }}<br />
+                <label>Damage bonus: </label>{{ editable_field("character_sheet.combat.damage_bonus") }}<br />
+                <label>Build: </label>{{ editable_field("character_sheet.combat.build") }}<br />
+                <label>Dodge: </label>{{ editable_field("character_sheet.combat.dodge") }}<br />
             </section>
         </div>
     </section>
@@ -198,43 +198,43 @@
         <section class="backstory">
             <div class="backstorysection">
                 <h4>Personal Description</h4>
-                {{ editable_area("backstory.description", "None") }}
+                {{ editable_area("character_sheet.backstory.description", "None") }}
             </div>
             <div class="backstorysection">
                 <h4>Ideology/Beliefs</h4>
-                {{ editable_area("backstory.ideology", "None") }}
+                {{ editable_area("character_sheet.backstory.ideology", "None") }}
             </div>
             <div class="backstorysection">
                 <h4>Significant people</h4>
-                {{ editable_area("backstory.people", "None") }}
+                {{ editable_area("character_sheet.backstory.people", "None") }}
             </div>
             <div class="backstorysection">
                 <h4>Meaningful locations</h4>
-                {{ editable_area("backstory.locations", "None") }}
+                {{ editable_area("character_sheet.backstory.locations", "None") }}
             </div>
             <div class="backstorysection">
                 <h4>Treasured possessions</h4>
-                {{ editable_area("backstory.possessions", "None") }}
+                {{ editable_area("character_sheet.backstory.possessions", "None") }}
             </div>
             <div class="backstorysection">
                 <h4>Traits</h4>
-                {{ editable_area("backstory.traits", "None") }}
+                {{ editable_area("character_sheet.backstory.traits", "None") }}
             </div>
             <div class="backstorysection">
                 <h4>Injuries & scars</h4>
-                {{ editable_area("backstory.injuries", "None") }}
+                {{ editable_area("character_sheet.backstory.injuries", "None") }}
             </div>
             <div class="backstorysection">
                 <h4>Phobias & manias</h4>
-                {{ editable_area("backstory.phobias", "None") }}
+                {{ editable_area("character_sheet.backstory.phobias", "None") }}
             </div>
             <div class="backstorysection">
                 <h4>Arcane tomes, spells & artifacts</h4>
-                {{ editable_area("backstory.tomes", "None") }}
+                {{ editable_area("character_sheet.backstory.tomes", "None") }}
             </div>
             <div class="backstorysection">
                 <h4>Encounters with strange entities</h4>
-                {{ editable_area("backstory.encounters", "None") }}
+                {{ editable_area("character_sheet.backstory.encounters", "None") }}
             </div>
         </section>
     </section>
@@ -244,7 +244,7 @@
             <h3>Gear &amp; Possessions</h3>
             <section>
                 <ul class="{%- if editable %} editable_list{%- endif %}" data-field="possessions" data-type="string">
-                    {% for item in character.mechanics.attribute('possessions') or [] %}
+                    {% for item in character.mechanics.attribute('character_sheet.possessions') or [] %}
                     <li data-field="possessions.{{loop.index0}}">
                     <span class="{%- if editable %} editable{%- endif %}" data-field="possessions.{{loop.index0}}" data-type="string">{{ item }}</span>
                     </li>
@@ -255,9 +255,9 @@
         <div class="cashassets box">
             <h3>Cash &amp; Assets</h3>
             <section>
-                <label>Spending level: </label>{{ editable_field("cash.spending")}}<br />
-                <label>Cash: </label>{{ editable_field("cash.cash")}}<br />
-                <label>Assets: </label>{{ editable_field("cash.assets")}}<br />{{ editable_area("assets", "None") }}
+                <label>Spending level: </label>{{ editable_field("character_sheet.cash.spending")}}<br />
+                <label>Cash: </label>{{ editable_field("character_sheet.cash.cash")}}<br />
+                <label>Assets: </label>{{ editable_field("character_sheet.cash.assets")}}<br />{{ editable_area("character_sheet.assets", "None") }}
             </section>
         </div>
     </section>
@@ -266,7 +266,7 @@
         <div class="notes box">
             <h3>Notes</h3>
             <div class="notes">
-                {{ editable_area("notes", "None") }}
+                {{ editable_area("character_sheet.notes", "None") }}
             </div>
         </div>
     </section>

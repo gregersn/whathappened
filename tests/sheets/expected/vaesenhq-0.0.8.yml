@@ -1,0 +1,18 @@
+character_sheet:
+  information:
+    development_points: 0
+    location: Somewhere
+    name: Unknown
+    picture: ''
+    type_of_building: Unknown
+  upgrades:
+    contacts: []
+    discovered_facilities: []
+    facilities: []
+    personell: []
+meta:
+  gamename: Vaesen
+  title: Unknown
+system: vaesenhq
+title: Test character
+version: 0.0.8

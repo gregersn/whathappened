@@ -1,54 +1,65 @@
 $defs:
   Attributes:
     properties:
-      Body:
+      body:
         default: 1
         maximum: 5
         minimum: 1
         title: Body
         type: integer
-      Heart:
+      heart:
         default: 1
         maximum: 5
         minimum: 1
         title: Heart
         type: integer
-      Mind:
+      mind:
         default: 1
         maximum: 5
         minimum: 1
         title: Mind
         type: integer
-      Tech:
+      tech:
         default: 1
         maximum: 5
         minimum: 1
         title: Tech
         type: integer
+    required:
+    - body
+    - tech
+    - heart
+    - mind
     title: Attributes
     type: object
   Conditions:
     properties:
-      Broken:
+      broken:
         default: false
         title: Broken
         type: boolean
-      Exhausted:
+      exhausted:
         default: false
         title: Exhausted
         type: boolean
-      Injured:
+      injured:
         default: false
         title: Injured
         type: boolean
-      Scared:
+      scared:
         default: false
         title: Scared
         type: boolean
-      Upset:
+      upset:
         default: false
         title: Upset
         type: boolean
+    required:
+    - upset
+    - scared
+    - exhausted
+    - injured
+    - broken
     title: Conditions
     type: object
   Item:
@@ -190,158 +201,170 @@ $defs:
     type: object
   Skills:
     properties:
-      Calculate (Tech):
+      calculate:
         default: 0
         maximum: 5
         minimum: 0
         title: Calculate (Tech)
         type: integer
-      Charm (Heart):
+      charm:
         default: 0
         maximum: 5
         minimum: 0
         title: Charm (Heart)
         type: integer
-      Comprehend (Mind):
+      comprehend:
         default: 0
         maximum: 5
         minimum: 0
         title: Comprehend (Mind)
         type: integer
-      Contact (Heart):
+      contact:
         default: 0
         maximum: 5
         minimum: 0
         title: Contact (Heart)
         type: integer
-      Empathize (Mind):
+      empathize:
         default: 0
         maximum: 5
         minimum: 0
         title: Empathize (Mind)
         type: integer
-      Force (Body):
+      force:
         default: 0
         maximum: 5
         minimum: 0
         title: Force (Body)
         type: integer
-      Investigate (Mind):
+      investigate:
         default: 0
         maximum: 5
         minimum: 0
         title: Investigate (Mind)
         type: integer
-      Lead (Heart):
+      lead:
         default: 0
         maximum: 5
         minimum: 0
         title: Lead (Heart)
         type: integer
-      Move (Body):
+      move:
         default: 0
         maximum: 5
         minimum: 0
         title: Move (Body)
         type: integer
-      Program (Tech):
+      program:
         default: 0
         maximum: 5
         minimum: 0
         title: Program (Tech)
         type: integer
-      Sneak (Body):
+      sneak:
         default: 0
         maximum: 5
         minimum: 0
         title: Sneak (Body)
         type: integer
-      Tinker (Tech):
+      tinker:
         default: 0
         maximum: 5
         minimum: 0
         title: Tinker (Tech)
         type: integer
+    required:
+    - sneak
+    - force
+    - move
+    - tinker
+    - program
+    - calculate
+    - contact
+    - charm
+    - lead
+    - investigate
+    - comprehend
+    - empathize
     title: Skills
+    type: object
+  TalesFromTheLoopSheet:
+    properties:
+      attributes:
+        $ref: '#/$defs/Attributes'
+        default:
+          body: 1
+          heart: 1
+          mind: 1
+          tech: 1
+      conditions:
+        $ref: '#/$defs/Conditions'
+        default:
+          broken: false
+          exhausted: false
+          injured: false
+          scared: false
+          upset: false
+      experience:
+        default: 0
+        maximum: 10
+        minimum: 0
+        title: Experience
+        type: integer
+      hideout:
+        default: Tree hut
+        title: Hideout
+        type: string
+      items:
+        items:
+          $ref: '#/$defs/Item'
+        title: Items
+        type: array
+      notes:
+        default: ''
+        title: Notes
+        type: string
+      personalia:
+        $ref: '#/$defs/Personalia'
+      relationships:
+        $ref: '#/$defs/Relationships'
+      skills:
+        $ref: '#/$defs/Skills'
+        default:
+          calculate: 0
+          charm: 0
+          comprehend: 0
+          contact: 0
+          empathize: 0
+          force: 0
+          investigate: 0
+          lead: 0
+          move: 0
+          program: 0
+          sneak: 0
+          tinker: 0
+    title: TalesFromTheLoopSheet
     type: object
 description: Tales from the Loop sheet.
 properties:
-  attributes:
-    $ref: '#/$defs/Attributes'
-    default:
-      Body: 1
-      Heart: 1
-      Mind: 1
-      Tech: 1
-  conditions:
-    $ref: '#/$defs/Conditions'
-    default:
-      Broken: false
-      Exhausted: false
-      Injured: false
-      Scared: false
-      Upset: false
-  experience:
-    default: 0
-    maximum: 10
-    minimum: 0
-    title: Experience
-    type: integer
-  hideout:
-    default: Tree hut
-    title: Hideout
-    type: string
-  items:
-    items:
-      $ref: '#/$defs/Item'
-    title: Items
-    type: array
+  character_sheet:
+    $ref: '#/$defs/TalesFromTheLoopSheet'
+    title: Tales from the Loop
   meta:
     $ref: '#/$defs/SheetInfo'
-  notes:
-    default: ''
-    title: Notes
-    type: string
-  personalia:
-    $ref: '#/$defs/Personalia'
-  relationships:
-    $ref: '#/$defs/Relationships'
-  skills:
-    $ref: '#/$defs/Skills'
-    default:
-      Calculate (Tech): 0
-      Charm (Heart): 0
-      Comprehend (Mind): 0
-      Contact (Heart): 0
-      Empathize (Mind): 0
-      Force (Body): 0
-      Investigate (Mind): 0
-      Lead (Heart): 0
-      Move (Body): 0
-      Program (Tech): 0
-      Sneak (Body): 0
-      Tinker (Tech): 0
   system:
     const: tftl
     default: tftl
     title: System
     type: string
   version:
-    default: 0.0.7
+    default: 0.0.8
     title: Version
     type: string
 required:
 - version
 - system
 - meta
-- personalia
-- relationships
-- items
-- hideout
-- notes
-- attributes
-- conditions
-- skills
-- experience
+- character_sheet
 title: TalesFromTheLoop
 type: object

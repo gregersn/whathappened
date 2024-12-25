@@ -9,7 +9,7 @@ from whathappened.sheets.schema.base import BaseSchema
 
 class SheetInfo(BaseModel):
     model_config = ConfigDict(
-        extra="ignore",
+        extra="forbid",
         json_schema_extra={
             "required": ["title", "gamename", "gameversion", "gametype"]
         },
@@ -29,40 +29,20 @@ class SheetInfo(BaseModel):
 
 
 class Personalia(BaseModel):
-    model_config = ConfigDict(extra="ignore", json_schema_extra={"required": []})
+    model_config = ConfigDict(extra="forbid", json_schema_extra={"required": []})
 
-    Name: str
-    Occupation: str
-    Gender: str
-    Age: str
-    Birthplace: str
-    Residence: str
-    Portrait: Optional[str]
+    name: str
+    occupation: str
+    gender: str
+    age: str
+    birthplace: str
+    residence: str
+    portrait: Optional[str]
 
 
 class Characteristics(BaseModel):
     model_config = ConfigDict(
-        extra="ignore",
-        json_schema_extra={
-            "required": [
-                "STR",
-                "DEX",
-                "INT",
-                "CON",
-                "APP",
-                "POW",
-                "SIZ",
-                "EDU",
-                "Move",
-                "Luck",
-                "Sanity",
-                "SanityMax",
-                "MagicPts",
-                "MagicPtsMax",
-                "HitPts",
-                "HitPtsMax",
-            ]
-        },
+        extra="forbid",
     )
 
     STR: int
@@ -73,21 +53,27 @@ class Characteristics(BaseModel):
     POW: int
     SIZ: int
     EDU: int
-    Move: int
-    Luck: int
-    LuckMax: int
-    Sanity: int
-    SanityStart: int
-    SanityMax: int
-    MagicPts: int
-    MagicPtsMax: int
-    HitPts: int
-    HitPtsMax: int
+    move: int
+    luck: int
+    luck_max: int
+    sanity: int
+    sanity_start: int
+    sanity_max: int
+    sanity_indefinitely_insane: bool = False
+    sanity_temporary_insane: bool = False
+    magic_points: int
+    magic_points_max: int
+    hit_points: int
+    hit_points_max: int
+    hit_points_major_wound: bool = False
+    occupation_skill_points: int = 0
+    personal_interest_skill_points: int = 0
 
 
 class Skill(BaseModel):
     model_config = ConfigDict(
-        extra="ignore", json_schema_extra={"required": ["name", "value", "start_value"]}
+        extra="forbid",
+        json_schema_extra={"required": ["name", "value", "start_value"]},
     )
 
     checked: bool
@@ -120,16 +106,16 @@ class Weapon(BaseModel):
 
 class Combat(BaseModel):
     model_config = ConfigDict(
-        json_schema_serialization_defaults_required=True, extra="ignore"
+        json_schema_serialization_defaults_required=True, extra="forbid"
     )
 
-    DamageBonus: Union[str, int]
-    Build: Union[str, int]
-    Dodge: Union[str, int]
+    damage_bonus: Union[str, int]
+    build: Union[str, int]
+    dodge: Union[str, int]
 
 
 class Backstory(BaseModel):
-    model_config = ConfigDict(extra="ignore", json_schema_extra={"required": []})
+    model_config = ConfigDict(extra="forbid", json_schema_extra={"required": []})
 
     description: Optional[str]
     traits: Optional[str]
@@ -144,31 +130,13 @@ class Backstory(BaseModel):
 
 
 class Cash(BaseModel):
-    model_config = ConfigDict(extra="ignore", json_schema_extra={"required": []})
+    model_config = ConfigDict(extra="forbid", json_schema_extra={"required": []})
     spending: Union[str, int]
     cash: Union[str, int]
     assets: Union[str, int]
 
 
-class CallofCthulhu7e(BaseSchema):
-    """Call of Cthulhu 7e sheet."""
-
-    model_config = ConfigDict(
-        frozen=True,
-        extra="ignore",
-        json_schema_extra={
-            "required": [
-                "version",
-                "system",
-                "meta",
-                "personalia",
-                "characteristics",
-            ]
-        },
-    )
-
-    system: Annotated[Literal["coc7e"], Field(frozen=True)] = "coc7e"
-    meta: Annotated[SheetInfo, Field()]
+class CoC7eSheet(BaseModel):
     personalia: Annotated[Personalia, Field()]
     characteristics: Annotated[Characteristics, Field()]
     skills: Annotated[
@@ -180,6 +148,21 @@ class CallofCthulhu7e(BaseSchema):
     possessions: Optional[list[str]]
     cash: Cash
     assets: Optional[str] = None
+
+
+class CallofCthulhu7e(BaseSchema):
+    """Call of Cthulhu 7e sheet."""
+
+    model_config = ConfigDict(
+        frozen=True,
+        extra="forbid",
+    )
+
+    system: Annotated[Literal["coc7e"], Field(frozen=True)] = "coc7e"
+    meta: Annotated[SheetInfo, Field()]
+    character_sheet: CoC7eSheet = Field(
+        title="Call of Cthulhu 7e", default_factory=CoC7eSheet
+    )
 
 
 if __name__ == "__main__":

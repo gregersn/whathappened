@@ -138,7 +138,7 @@ def test_subskill(newly_created_character: Character, app):
 
 
 def test_validate_migration_up(test_sheet: dict, app):
-    errors = validate(migrate(test_sheet, "0.0.7"), "coc7e")
+    errors = validate(migrate(test_sheet, "0.0.8"), "coc7e")
     assert len(errors) == 0, errors
 
 

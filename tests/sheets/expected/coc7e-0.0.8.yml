@@ -1,0 +1,228 @@
+character_sheet:
+  assets: null
+  backstory:
+    description: null
+    encounters: null
+    ideology: null
+    injuries: null
+    locations: null
+    people: null
+    phobias: null
+    possessions: null
+    tomes: null
+    traits: null
+  cash:
+    assets: 0
+    cash: 0
+    spending: 0
+  characteristics:
+    APP: 0
+    CON: 0
+    DEX: 0
+    EDU: 0
+    INT: 0
+    POW: 0
+    SIZ: 0
+    STR: 0
+    hit_points: 1
+    hit_points_major_wound: false
+    hit_points_max: 1
+    luck: 0
+    luck_max: 0
+    magic_points: 0
+    magic_points_max: 0
+    move: 0
+    occupation_skill_points: 0
+    personal_interest_skill_points: 0
+    sanity: 0
+    sanity_indefinitely_insane: false
+    sanity_max: 99
+    sanity_start: 0
+    sanity_temporary_insane: false
+  combat:
+    build: 0
+    damage_bonus: 0
+    dodge: 0
+  notes: null
+  personalia:
+    age: '18'
+    birthplace: Unknown
+    gender: Unknown
+    name: Unknown
+    occupation: Unknown
+    portrait: null
+    residence: Unknown
+  possessions: null
+  skills:
+  - name: Accounting
+    start_value: 5
+    value: 5
+  - name: Anthropology
+    start_value: 1
+    value: 1
+  - name: Appraise
+    start_value: 5
+    value: 5
+  - name: Archaeology
+    start_value: 1
+    value: 1
+  - name: Art/Craft
+    specializations: true
+    start_value: 5
+    value: 5
+  - name: Charm
+    start_value: 15
+    value: 15
+  - name: Climb
+    start_value: 20
+    value: 20
+  - name: Credit Rating
+    start_value: 0
+    value: 0
+  - name: Cthulhu Mythos
+    start_value: 0
+    value: 0
+  - name: Disguise
+    start_value: 5
+    value: 5
+  - name: Dodge
+    start_value: half DEX
+    value: 0
+  - name: Drive Auto
+    start_value: 20
+    value: 20
+  - name: Electrical Repair
+    start_value: 10
+    value: 10
+  - name: Fast Talk
+    start_value: 5
+    value: 5
+  - name: Fighting
+    specializations: true
+    start_value: 0
+    subskills:
+    - name: Brawl
+      start_value: 25
+      value: 25
+    value: 0
+  - name: Firearms
+    specializations: true
+    start_value: 0
+    subskills:
+    - name: Handgun
+      start_value: 20
+      value: 20
+    - name: Rifle/Shotgun
+      start_value: 25
+      value: 25
+    value: 0
+  - name: First Aid
+    start_value: 30
+    value: 30
+  - name: History
+    start_value: 5
+    value: 5
+  - name: Intimidate
+    start_value: 15
+    value: 15
+  - name: Jump
+    start_value: 20
+    value: 20
+  - name: Language (Other)
+    specializations: true
+    start_value: 1
+    value: 1
+  - name: Language (Own)
+    start_value: EDU
+    value: 0
+  - name: Law
+    start_value: 5
+    value: 5
+  - name: Library Use
+    start_value: 20
+    value: 20
+  - name: Listen
+    start_value: 20
+    value: 20
+  - name: Locksmith
+    start_value: 1
+    value: 1
+  - name: Mechanical Repair
+    start_value: 10
+    value: 10
+  - name: Medicine
+    start_value: 1
+    value: 1
+  - name: Natural World
+    start_value: 10
+    value: 10
+  - name: Navigate
+    start_value: 10
+    value: 10
+  - name: Occult
+    start_value: 5
+    value: 5
+  - name: Operate Heavy Machine
+    start_value: 1
+    value: 1
+  - name: Persuade
+    start_value: 10
+    value: 10
+  - name: Pilot
+    specializations: true
+    start_value: 1
+    value: 1
+  - name: Psychology
+    start_value: 10
+    value: 10
+  - name: Psychoanalysis
+    start_value: 1
+    value: 1
+  - name: Ride
+    start_value: 5
+    value: 5
+  - name: Science
+    specializations: true
+    start_value: 1
+    value: 1
+  - name: Sleight of Hand
+    start_value: 10
+    value: 10
+  - name: Spot Hidden
+    start_value: 25
+    value: 25
+  - name: Stealth
+    start_value: 20
+    value: 20
+  - name: Survival
+    specializations: true
+    start_value: 10
+    value: 10
+  - name: Swim
+    start_value: 20
+    value: 20
+  - name: Throw
+    start_value: 20
+    value: 20
+  - name: Track
+    start_value: 10
+    value: 10
+  weapons:
+  - ammo: '-'
+    attacks: 1
+    damage: 1d3 + db
+    malf: '-'
+    name: Unarmed
+    range: '-'
+    regular: 0
+    skillname: Brawl
+meta:
+  createdate: '1733213970'
+  creator: What happened? A TTRPG utility
+  disclaimer: The developer has not rolled for sanity
+  gamename: Call of Cthulhu TM
+  gametype: Classic (1920's)
+  gameversion: 7th Edition
+  title: Test character
+system: coc7e
+version: 0.0.8
