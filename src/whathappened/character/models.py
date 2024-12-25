@@ -15,6 +15,7 @@ from whathappened.database.base import BaseModel
 from whathappened.sheets.mechanics.core import CharacterMechanics, MECHANICS
 from whathappened.content.mixins import BaseContent
 from whathappened.content.models import Folder
+from whathappened.sheets.schema.utils import find_version
 
 logger = logging.getLogger(__name__)
 
@@ -140,7 +141,7 @@ class Character(BaseContent, BaseModel):
     @property
     def schema_version(self):
         """Version of schema."""
-        return self.data["meta"]["Version"]
+        return find_version(self.data)
 
     def viewable_by(self, player: UserProfile):
         """Check if character is viewable."""
