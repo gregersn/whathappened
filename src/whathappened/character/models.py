@@ -66,7 +66,6 @@ class Character(BaseContent, BaseModel):
     def data(self) -> Dict[str, Any]:
         """Character data."""
         if isinstance(self.body, dict):
-            logger.debug("%s: Character data is dict", self.id)
             return self.body
         if isinstance(self.body, str):
             logger.warning("Character, id %s body is string, not dictionary", self.id)
@@ -136,7 +135,7 @@ class Character(BaseContent, BaseModel):
 
     def skills(self, *_):
         """Return a list of skills."""
-        return self.data["skills"]
+        return self.data["character_sheet"]["skills"]
 
     @property
     def schema_version(self):

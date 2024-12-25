@@ -7,7 +7,67 @@ import yaml
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from whathappened.sheets.schema.base import BaseSchema
+from whathappened.sheets.schema.base import BaseSchema, Migration
+
+
+def v007_to_008(data):
+    old_key_new_key = (
+        ("avståndsattacker", "avstandsattacker"),
+        ("skyddsvärde", "skyddsvarde"),
+        ("upptäcka_fara", "upptacka_fara"),
+        ("brytvärde", "brytvarde"),
+        ("räckvidd", "rackvidd"),
+    )
+
+    containers = ("hjalm", "rustning")
+
+    for old, new in old_key_new_key:
+        for container in containers:
+            if old in data["character_sheet"]["vapen"][container]:
+                data["character_sheet"]["vapen"][container][new] = data[
+                    "character_sheet"
+                ]["vapen"][container][old]
+                del data["character_sheet"]["vapen"][container][old]
+
+        for vapen in data["character_sheet"]["vapen"]["till_hands"]:
+            if old in vapen:
+                vapen[new] = vapen[old]
+                del vapen[old]
+
+    data["version"] = "0.0.8"
+    return data
+
+
+def v008_to_007(data):
+    old_key_new_key = (
+        ("avståndsattacker", "avstandsattacker"),
+        ("skyddsvärde", "skyddsvarde"),
+        ("upptäcka_fara", "upptacka_fara"),
+        ("brytvärde", "brytvarde"),
+        ("räckvidd", "rackvidd"),
+    )
+
+    containers = ("hjalm", "rustning")
+
+    for old, new in old_key_new_key:
+        for container in containers:
+            if new in data["character_sheet"]["vapen"][container]:
+                data["character_sheet"]["vapen"][container][old] = data[
+                    "character_sheet"
+                ]["vapen"][container][new]
+                del data["character_sheet"]["vapen"][container][new]
+        for vapen in data["character_sheet"]["vapen"]["till_hands"]:
+            if new in vapen:
+                vapen[old] = vapen[new]
+                del vapen[new]
+
+    data["version"] = "0.0.7"
+    return data
+
+
+migrations: list[Migration] = [
+    Migration("0.0.7", "0.0.8", v007_to_008, v008_to_007),
+]
 
 
 class SheetInfo(BaseModel):
@@ -184,7 +244,7 @@ class Rustning(BaseModel):
     model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
     typ: str = "Ingen"
-    skyddsvärde: int = 0
+    skyddsvarde: Annotated[int, Field(title="Skyddsvärde")] = 0
     smyga: bool = False
     undvika: bool = False
     hoppa_och_klattra: Annotated[bool, Field(title="Hoppa & klättra")] = False
@@ -196,9 +256,9 @@ class Hjalm(BaseModel):
     model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
     typ: str = "Ingen"
-    skyddsvärde: int = 0
-    upptäcka_fara: Annotated[bool, Field(title="Upptäcka fara")] = False
-    avståndsattacker: bool = False
+    skyddsvarde: Annotated[int, Field(title="Skyddsvärde")] = 0
+    upptacka_fara: Annotated[bool, Field(title="Upptäcka fara")] = False
+    avstandsattacker: Annotated[bool, Field(title="Avståndsattaker")] = False
 
 
 class Vapen(BaseModel):
@@ -208,9 +268,9 @@ class Vapen(BaseModel):
 
     vapen: Annotated[str, Field(title="Vapen/sköld")] = "Obeväpnad"
     grepp: Literal["-", "1H", "2H"] = "-"
-    räckvidd: str = "2"
+    rackvidd: Annotated[str, Field(title="Räckvidd")] = "2"
     skada: str = "T6"
-    brytvärde: str = "-"
+    brytvarde: Annotated[str, Field(title="Brytdvärde")] = "-"
     egenskaper: str = "Krossande"
 
 

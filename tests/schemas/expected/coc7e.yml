@@ -1,5 +1,6 @@
 $defs:
   Backstory:
+    additionalProperties: false
     properties:
       description:
         anyOf:
@@ -55,6 +56,7 @@ $defs:
     title: Backstory
     type: object
   Cash:
+    additionalProperties: false
     properties:
       assets:
         anyOf:
@@ -75,6 +77,7 @@ $defs:
     title: Cash
     type: object
   Characteristics:
+    additionalProperties: false
     properties:
       APP:
         title: App
@@ -88,29 +91,8 @@ $defs:
       EDU:
         title: Edu
         type: integer
-      HitPts:
-        title: Hitpts
-        type: integer
-      HitPtsMax:
-        title: Hitptsmax
-        type: integer
       INT:
         title: Int
-        type: integer
-      Luck:
-        title: Luck
-        type: integer
-      LuckMax:
-        title: Luckmax
-        type: integer
-      MagicPts:
-        title: Magicpts
-        type: integer
-      MagicPtsMax:
-        title: Magicptsmax
-        type: integer
-      Move:
-        title: Move
         type: integer
       POW:
         title: Pow
@@ -121,15 +103,56 @@ $defs:
       STR:
         title: Str
         type: integer
-      Sanity:
+      hit_points:
+        title: Hit Points
+        type: integer
+      hit_points_major_wound:
+        default: false
+        title: Hit Points Major Wound
+        type: boolean
+      hit_points_max:
+        title: Hit Points Max
+        type: integer
+      luck:
+        title: Luck
+        type: integer
+      luck_max:
+        title: Luck Max
+        type: integer
+      magic_points:
+        title: Magic Points
+        type: integer
+      magic_points_max:
+        title: Magic Points Max
+        type: integer
+      move:
+        title: Move
+        type: integer
+      occupation_skill_points:
+        default: 0
+        title: Occupation Skill Points
+        type: integer
+      personal_interest_skill_points:
+        default: 0
+        title: Personal Interest Skill Points
+        type: integer
+      sanity:
         title: Sanity
         type: integer
-      SanityMax:
-        title: Sanitymax
+      sanity_indefinitely_insane:
+        default: false
+        title: Sanity Indefinitely Insane
+        type: boolean
+      sanity_max:
+        title: Sanity Max
         type: integer
-      SanityStart:
-        title: Sanitystart
+      sanity_start:
+        title: Sanity Start
         type: integer
+      sanity_temporary_insane:
+        default: false
+        title: Sanity Temporary Insane
+        type: boolean
     required:
     - STR
     - DEX
@@ -139,68 +162,120 @@ $defs:
     - POW
     - SIZ
     - EDU
-    - Move
-    - Luck
-    - Sanity
-    - SanityMax
-    - MagicPts
-    - MagicPtsMax
-    - HitPts
-    - HitPtsMax
+    - move
+    - luck
+    - luck_max
+    - sanity
+    - sanity_start
+    - sanity_max
+    - magic_points
+    - magic_points_max
+    - hit_points
+    - hit_points_max
     title: Characteristics
     type: object
-  Combat:
+  CoC7eSheet:
     properties:
-      Build:
+      assets:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+        title: Assets
+      backstory:
+        $ref: '#/$defs/Backstory'
+      cash:
+        $ref: '#/$defs/Cash'
+      characteristics:
+        $ref: '#/$defs/Characteristics'
+      combat:
+        $ref: '#/$defs/Combat'
+      personalia:
+        $ref: '#/$defs/Personalia'
+      possessions:
+        anyOf:
+        - items:
+            type: string
+          type: array
+        - type: 'null'
+        title: Possessions
+      skills:
+        default: []
+        items:
+          $ref: '#/$defs/Skill'
+        title: Skills
+        type: array
+        unique_items: true
+      weapons:
+        default: []
+        items:
+          $ref: '#/$defs/Weapon'
+        title: Weapons
+        type: array
+    required:
+    - personalia
+    - characteristics
+    - combat
+    - backstory
+    - possessions
+    - cash
+    title: CoC7eSheet
+    type: object
+  Combat:
+    additionalProperties: false
+    properties:
+      build:
         anyOf:
         - type: string
         - type: integer
         title: Build
-      DamageBonus:
+      damage_bonus:
         anyOf:
         - type: string
         - type: integer
-        title: Damagebonus
-      Dodge:
+        title: Damage Bonus
+      dodge:
         anyOf:
         - type: string
         - type: integer
         title: Dodge
     required:
-    - DamageBonus
-    - Build
-    - Dodge
+    - damage_bonus
+    - build
+    - dodge
     title: Combat
     type: object
   Personalia:
+    additionalProperties: false
     properties:
-      Age:
+      age:
         title: Age
         type: string
-      Birthplace:
+      birthplace:
         title: Birthplace
         type: string
-      Gender:
+      gender:
         title: Gender
         type: string
-      Name:
+      name:
         title: Name
         type: string
-      Occupation:
+      occupation:
         title: Occupation
         type: string
-      Portrait:
+      portrait:
         anyOf:
         - type: string
         - type: 'null'
         title: Portrait
-      Residence:
+      residence:
         title: Residence
         type: string
     required: []
     title: Personalia
     type: object
   SheetInfo:
+    additionalProperties: false
     properties:
       createdate:
         title: CreateDate
@@ -236,6 +311,7 @@ $defs:
     title: SheetInfo
     type: object
   Skill:
+    additionalProperties: false
     properties:
       checked:
         title: Checked
@@ -320,60 +396,27 @@ $defs:
     - malf
     title: Weapon
     type: object
+additionalProperties: false
 description: Call of Cthulhu 7e sheet.
 properties:
-  assets:
-    anyOf:
-    - type: string
-    - type: 'null'
-    default: null
-    title: Assets
-  backstory:
-    $ref: '#/$defs/Backstory'
-  cash:
-    $ref: '#/$defs/Cash'
-  characteristics:
-    $ref: '#/$defs/Characteristics'
-  combat:
-    $ref: '#/$defs/Combat'
+  character_sheet:
+    $ref: '#/$defs/CoC7eSheet'
+    title: Call of Cthulhu 7e
   meta:
     $ref: '#/$defs/SheetInfo'
-  personalia:
-    $ref: '#/$defs/Personalia'
-  possessions:
-    anyOf:
-    - items:
-        type: string
-      type: array
-    - type: 'null'
-    title: Possessions
-  skills:
-    default: []
-    items:
-      $ref: '#/$defs/Skill'
-    title: Skills
-    type: array
-    unique_items: true
   system:
     const: coc7e
     default: coc7e
     title: System
     type: string
   version:
-    default: 0.0.7
+    default: 0.0.8
     title: Version
     type: string
-  weapons:
-    default: []
-    items:
-      $ref: '#/$defs/Weapon'
-    title: Weapons
-    type: array
 required:
 - version
 - system
 - meta
-- personalia
-- characteristics
+- character_sheet
 title: CallofCthulhu7e
 type: object

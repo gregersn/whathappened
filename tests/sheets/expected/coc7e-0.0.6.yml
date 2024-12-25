@@ -37,6 +37,9 @@ characteristics:
   Sanity: 0
   SanityMax: 99
   SanityStart: 0
+  SanityTemp: false
+  SanityIndef: false
+  HitPtsMajorWound: false
 combat:
   Build: 0
   DamageBonus: 0

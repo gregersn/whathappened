@@ -41,7 +41,10 @@
         "DamageBonus": "0",
         "Build": "0",
         "OccupationSkillPoints": "0",
-        "PersonalInterestSkillPoints": "0"
+        "PersonalInterestSkillPoints": "0",
+        "SanityTemp": false,
+        "SanityIndef": false,
+        "HitPtsMajorWound": false
     },
     "skills": [
         {
@@ -319,16 +322,16 @@
         "Dodge": "0"
     },
     "backstory": {
-        "description": null,
-        "traits": null,
-        "ideology": null,
-        "injurues": null,
+        "description": "A description",
+        "traits": "My traits",
+        "ideology": "I believe",
+        "injurues": "Not hurt!",
         "people": "None",
-        "phobias": null,
-        "locations": null,
-        "tomes": null,
-        "possessions": null,
-        "encounters": null
+        "phobias": "Dogs",
+        "locations": "Sweden",
+        "tomes": "No!",
+        "possessions": "Nope",
+        "encounters": "My mom"
     },
     "possessions": ["A", "list", "of", "possessions"],
     "cash": {
@@ -336,5 +339,6 @@
         "cash": "25",
         "assets": "250"
     },
-    "assets": "A description of assets"
+    "assets": "A description of assets",
+    "notes": "There's are some notes about the backstory, I guess"
 }

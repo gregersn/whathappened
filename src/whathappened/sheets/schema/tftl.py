@@ -45,10 +45,97 @@ def v007_to_006(data):
     return data
 
 
+v007_to_v008_skillnames = (
+    ("Calculate (Tech)", "calculate"),
+    ("Charm (Heart)", "charm"),
+    ("Comprehend (Mind)", "comprehend"),
+    ("Contact (Heart)", "contact"),
+    ("Empathize (Mind)", "empathize"),
+    ("Force (Body)", "force"),
+    ("Investigate (Mind)", "investigate"),
+    ("Lead (Heart)", "lead"),
+    ("Move (Body)", "move"),
+    ("Program (Tech)", "program"),
+    ("Sneak (Body)", "sneak"),
+    ("Tinker (Tech)", "tinker"),
+)
+
+
+def v007_to_v008(data):
+    keys_to_move = (
+        "attributes",
+        "conditions",
+        "experience",
+        "hideout",
+        "items",
+        "notes",
+        "personalia",
+        "relationships",
+        "skills",
+    )
+    data["character_sheet"] = {}
+    for key in keys_to_move:
+        data["character_sheet"][key] = data[key]
+        del data[key]
+
+    for container in ("attributes", "conditions"):
+        for_deletion = []
+        for key, value in dict(data["character_sheet"][container]).items():
+            data["character_sheet"][container][key.lower()] = value
+            for_deletion.append(key)
+
+        for key in for_deletion:
+            del data["character_sheet"][container][key]
+
+    for old, new in v007_to_v008_skillnames:
+        data["character_sheet"]["skills"][new] = data["character_sheet"]["skills"].pop(
+            old
+        )
+
+    data["version"] = "0.0.8"
+    return data
+
+
+def v008_to_v007(data):
+    keys_to_move = (
+        "attributes",
+        "conditions",
+        "experience",
+        "hideout",
+        "items",
+        "notes",
+        "personalia",
+        "relationships",
+        "skills",
+    )
+
+    for container in ("attributes", "conditions"):
+        for_deletion = []
+        for key, value in dict(data["character_sheet"][container]).items():
+            data["character_sheet"][container][key.capitalize()] = value
+            for_deletion.append(key)
+
+        for key in for_deletion:
+            del data["character_sheet"][container][key]
+
+    for old, new in v007_to_v008_skillnames:
+        data["character_sheet"]["skills"][old] = data["character_sheet"]["skills"].pop(
+            new
+        )
+
+    for key in keys_to_move:
+        data[key] = data["character_sheet"][key]
+        del data["character_sheet"][key]
+    del data["character_sheet"]
+    data["version"] = "0.0.7"
+    return data
+
+
 migrations = [
     Migration("0.0.1", "0.0.4"),
     Migration("0.0.4", "0.0.5"),
     Migration("0.0.6", "0.0.7", v006_to_007, v007_to_006),
+    Migration("0.0.7", "0.0.8", v007_to_v008, v008_to_v007),
 ]
 
 
@@ -94,33 +181,51 @@ class Item(BaseModel):
 
 
 class Attributes(BaseModel):
-    Body: Annotated[int, Field(ge=1, le=5)] = 1
-    Tech: Annotated[int, Field(ge=1, le=5)] = 1
-    Heart: Annotated[int, Field(ge=1, le=5)] = 1
-    Mind: Annotated[int, Field(ge=1, le=5)] = 1
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    body: Annotated[int, Field(ge=1, le=5)] = 1
+    tech: Annotated[int, Field(ge=1, le=5)] = 1
+    heart: Annotated[int, Field(ge=1, le=5)] = 1
+    mind: Annotated[int, Field(ge=1, le=5)] = 1
 
 
 class Skills(BaseModel):
-    Sneak: Annotated[int, Field(alias="Sneak (Body)", ge=0, le=5)] = 0
-    Force: Annotated[int, Field(alias="Force (Body)", ge=0, le=5)] = 0
-    Move: Annotated[int, Field(alias="Move (Body)", ge=0, le=5)] = 0
-    Tinker: Annotated[int, Field(alias="Tinker (Tech)", ge=0, le=5)] = 0
-    Program: Annotated[int, Field(alias="Program (Tech)", ge=0, le=5)] = 0
-    Calculate: Annotated[int, Field(alias="Calculate (Tech)", ge=0, le=5)] = 0
-    Contact: Annotated[int, Field(alias="Contact (Heart)", ge=0, le=5)] = 0
-    Charm: Annotated[int, Field(alias="Charm (Heart)", ge=0, le=5)] = 0
-    Lead: Annotated[int, Field(alias="Lead (Heart)", ge=0, le=5)] = 0
-    Investigate: Annotated[int, Field(alias="Investigate (Mind)", ge=0, le=5)] = 0
-    Comprehend: Annotated[int, Field(alias="Comprehend (Mind)", ge=0, le=5)] = 0
-    Empathize: Annotated[int, Field(alias="Empathize (Mind)", ge=0, le=5)] = 0
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    sneak: Annotated[int, Field(title="Sneak (Body)", ge=0, le=5)] = 0
+    force: Annotated[int, Field(title="Force (Body)", ge=0, le=5)] = 0
+    move: Annotated[int, Field(title="Move (Body)", ge=0, le=5)] = 0
+    tinker: Annotated[int, Field(title="Tinker (Tech)", ge=0, le=5)] = 0
+    program: Annotated[int, Field(title="Program (Tech)", ge=0, le=5)] = 0
+    calculate: Annotated[int, Field(title="Calculate (Tech)", ge=0, le=5)] = 0
+    contact: Annotated[int, Field(title="Contact (Heart)", ge=0, le=5)] = 0
+    charm: Annotated[int, Field(title="Charm (Heart)", ge=0, le=5)] = 0
+    lead: Annotated[int, Field(title="Lead (Heart)", ge=0, le=5)] = 0
+    investigate: Annotated[int, Field(title="Investigate (Mind)", ge=0, le=5)] = 0
+    comprehend: Annotated[int, Field(title="Comprehend (Mind)", ge=0, le=5)] = 0
+    empathize: Annotated[int, Field(title="Empathize (Mind)", ge=0, le=5)] = 0
 
 
 class Conditions(BaseModel):
-    Upset: bool = False
-    Scared: bool = False
-    Exhausted: bool = False
-    Injured: bool = False
-    Broken: bool = False
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+
+    upset: bool = False
+    scared: bool = False
+    exhausted: bool = False
+    injured: bool = False
+    broken: bool = False
+
+
+class TalesFromTheLoopSheet(BaseModel):
+    personalia: Annotated[Personalia, Field(default_factory=Personalia)]
+    relationships: Annotated[Relationships, Field(default_factory=Relationships)]
+    items: Annotated[list[Item], Field(default_factory=lambda: [Item()])]
+    hideout: str = "Tree hut"
+    notes: str = ""
+    attributes: Attributes = Attributes()
+    conditions: Conditions = Conditions()
+    skills: Skills = Skills()
+    experience: Annotated[int, Field(ge=0, le=10)] = 0
 
 
 class TalesFromTheLoop(BaseSchema):
@@ -132,15 +237,10 @@ class TalesFromTheLoop(BaseSchema):
 
     system: Annotated[Literal["tftl"], Field(frozen=True)] = "tftl"
     meta: Annotated[SheetInfo, Field(default_factory=SheetInfo)]
-    personalia: Annotated[Personalia, Field(default_factory=Personalia)]
-    relationships: Annotated[Relationships, Field(default_factory=Relationships)]
-    items: Annotated[list[Item], Field(default_factory=lambda: [Item()])]
-    hideout: str = "Tree hut"
-    notes: str = ""
-    attributes: Attributes = Attributes()
-    conditions: Conditions = Conditions()
-    skills: Skills = Skills()
-    experience: Annotated[int, Field(ge=0, le=10)] = 0
+
+    character_sheet: TalesFromTheLoopSheet = Field(
+        title="Tales from the Loop", default_factory=TalesFromTheLoopSheet
+    )
 
 
 CharacterSheet = TalesFromTheLoop

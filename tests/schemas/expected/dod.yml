@@ -230,33 +230,33 @@ $defs:
         $ref: '#/$defs/Bevapning'
         default:
           hjalm:
-            "avst\xE5ndsattacker": false
-            "skyddsv\xE4rde": 0
+            avstandsattacker: false
+            skyddsvarde: 0
             typ: Ingen
-            "uppt\xE4cka_fara": false
+            upptacka_fara: false
           rustning:
             hoppa_och_klattra: false
-            "skyddsv\xE4rde": 0
+            skyddsvarde: 0
             smyga: false
             typ: Ingen
             undvika: false
           till_hands:
-          - "brytv\xE4rde": '-'
+          - brytvarde: '-'
             egenskaper: Krossande
             grepp: '-'
-            "r\xE4ckvidd": '2'
+            rackvidd: '2'
             skada: T6
             vapen: "Obev\xE4pnad"
-          - "brytv\xE4rde": '-'
+          - brytvarde: '-'
             egenskaper: Krossande
             grepp: '-'
-            "r\xE4ckvidd": '2'
+            rackvidd: '2'
             skada: T6
             vapen: "Obev\xE4pnad"
-          - "brytv\xE4rde": '-'
+          - brytvarde: '-'
             egenskaper: Krossande
             grepp: '-'
-            "r\xE4ckvidd": '2'
+            rackvidd: '2'
             skada: T6
             vapen: "Obev\xE4pnad"
         title: "Bev\xE4pning"
@@ -447,11 +447,11 @@ $defs:
   Hjalm:
     description: Helmet.
     properties:
-      "avst\xE5ndsattacker":
+      avstandsattacker:
         default: false
-        title: "Avst\xE5ndsattacker"
+        title: "Avst\xE5ndsattaker"
         type: boolean
-      "skyddsv\xE4rde":
+      skyddsvarde:
         default: 0
         title: "Skyddsv\xE4rde"
         type: integer
@@ -459,15 +459,15 @@ $defs:
         default: Ingen
         title: Typ
         type: string
-      "uppt\xE4cka_fara":
+      upptacka_fara:
         default: false
         title: "Uppt\xE4cka fara"
         type: boolean
     required:
     - typ
-    - "skyddsv\xE4rde"
-    - "uppt\xE4cka_fara"
-    - "avst\xE5ndsattacker"
+    - skyddsvarde
+    - upptacka_fara
+    - avstandsattacker
     title: Hjalm
     type: object
   Kroppspoang:
@@ -622,7 +622,7 @@ $defs:
         default: false
         title: "Hoppa & kl\xE4ttra"
         type: boolean
-      "skyddsv\xE4rde":
+      skyddsvarde:
         default: 0
         title: "Skyddsv\xE4rde"
         type: integer
@@ -640,7 +640,7 @@ $defs:
         type: boolean
     required:
     - typ
-    - "skyddsv\xE4rde"
+    - skyddsvarde
     - smyga
     - undvika
     - hoppa_och_klattra
@@ -717,9 +717,9 @@ $defs:
   Vapen:
     description: Weapon.
     properties:
-      "brytv\xE4rde":
+      brytvarde:
         default: '-'
-        title: "Brytv\xE4rde"
+        title: "Brytdv\xE4rde"
         type: string
       egenskaper:
         default: Krossande
@@ -733,7 +733,7 @@ $defs:
         - 2H
         title: Grepp
         type: string
-      "r\xE4ckvidd":
+      rackvidd:
         default: '2'
         title: "R\xE4ckvidd"
         type: string
@@ -748,9 +748,9 @@ $defs:
     required:
     - vapen
     - grepp
-    - "r\xE4ckvidd"
+    - rackvidd
     - skada
-    - "brytv\xE4rde"
+    - brytvarde
     - egenskaper
     title: Vapen
     type: object
@@ -784,7 +784,7 @@ properties:
     title: System
     type: string
   version:
-    default: 0.0.7
+    default: 0.0.8
     title: Version
     type: string
 required:

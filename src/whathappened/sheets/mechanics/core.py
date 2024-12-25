@@ -188,11 +188,11 @@ class CharacterMechanics:
         if self.skill(skillname) is not None:
             raise ValueError(f"Skill {skillname} already exists.")
 
-        self.parent.data["skills"].append(
+        self.parent.data["character_sheet"]["skills"].append(
             {"name": skillname, "value": value, "start_value": value}
         )
-        if isinstance(self.parent.data["skills"], list):
-            self.parent.data["skills"].sort(key=lambda x: x["name"])
+        if isinstance(self.parent.data["character_sheet"]["skills"], list):
+            self.parent.data["character_sheet"]["skills"].sort(key=lambda x: x["name"])
 
     def add_subskill(self, name: str, parent: str):
         """Add subskill."""

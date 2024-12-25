@@ -26,4 +26,5 @@ def test_migration(sheet: Path):
     data = migrate(original_data, CURRENT_SCHEMA_VERSION)
     assert not validate(data, find_system(data))
 
-    assert original_data == migrate(data, find_version(original_data))
+    down_data = migrate(data, find_version(original_data))
+    assert original_data == down_data
