@@ -1,3 +1,4 @@
+import copy
 import logging
 from typing import Optional
 
@@ -152,16 +153,28 @@ def render_character(
     if editable:
         if character.validate():
             logger.debug("Character sheet invalid, trying migration.")
+            backup_data = copy.deepcopy(character.body)
             data = character.body
-            character.body = migrate(data, CURRENT_SCHEMA_VERSION)
-            if not character.validate():
-                logentry = LogEntry(
-                    character,
-                    "Character was automatically migrated.",
-                    user_id=current_user.id,
-                )  # pyright: ignore[reportGeneralTypeIssues]
-                session.add(logentry)
-                session.commit()
+            try:
+                prev_version = character.schema_version
+                character.body = migrate(data, CURRENT_SCHEMA_VERSION)
+                if not character.validate():
+                    logentry = LogEntry(
+                        character,
+                        "Character was automatically migrated.",
+                        user_id=current_user.id,
+                    )  # pyright: ignore[reportGeneralTypeIssues]
+                    session.add(logentry)
+
+                    backup_character = Character(
+                        title=f"{character.title}-{prev_version}-backup",
+                        body=backup_data,
+                        user_id=character.user_id,
+                    )
+                    session.add(backup_character)
+                    session.commit()
+            except KeyError:
+                ...
 
         if character.system is None or character.validate():
             return redirect(url_for("character.editjson", id=character.id))
@@ -333,7 +346,10 @@ def editjson(id: int):
         if form.migration.data:
             logger.debug("Trying to migrate data")
             data = form.body.data
-            c.body = migrate(data, CURRENT_SCHEMA_VERSION)
+            try:
+                c.body = migrate(data, CURRENT_SCHEMA_VERSION)
+            except KeyError:
+                pass
         elif form.conversion.data:
             logger.debug("Conversion is checked")
             data = form.body.data

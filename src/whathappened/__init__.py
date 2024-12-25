@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
+import os
 import logging
 
 from flask import Flask
@@ -28,7 +29,8 @@ assets_env = AssetsEnvironment(directory=Path(__file__).absolute().parent / "sta
 csrf = CSRFProtect()
 
 logging.basicConfig(
-    format="%(asctime)s %(levelname)s: %(name)s %(message)s", level=logging.DEBUG
+    format="%(asctime)s %(levelname)s: %(name)s %(message)s",
+    level=os.environ.get("LOGLEVEL", "INFO").upper(),
 )
 logging.debug("Logger initialized")
 
