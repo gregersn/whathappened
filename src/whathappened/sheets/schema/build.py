@@ -28,23 +28,31 @@ class UnsortedGenerateJsonSchema(GenerateJsonSchema):
         return value
 
 
-def get_schema(system: Gametag):
-    """Get schema based on system name."""
+def get_module(system: Gametag):
+    """Get the module for a certain gametag."""
     try:
         import importlib
 
         game_module = importlib.import_module(f"whathappened.sheets.schema.{system}")
-
-        if issubclass(game_module.CharacterSheet, pydantic.BaseModel):
-            logger.debug("Getting character sheet from pydantic")
-            return game_module.CharacterSheet.model_json_schema(
-                mode="serialization", schema_generator=UnsortedGenerateJsonSchema
-            )
+        return game_module
 
     except ImportError:
-        ...
-    except AttributeError:
-        ...
+        logger.debug("No game module for %s", system)
+
+    return None
+
+
+def get_schema(system: Gametag):
+    """Get schema based on system name."""
+    game_module = get_module(system)
+
+    if game_module is not None and issubclass(
+        game_module.CharacterSheet, pydantic.BaseModel
+    ):
+        logger.debug("Getting character sheet from pydantic")
+        return game_module.CharacterSheet.model_json_schema(
+            mode="serialization", schema_generator=UnsortedGenerateJsonSchema
+        )
 
     CHARACTER_SCHEMA = SCHEMA_DIR / f"{system}.yaml"
     if CHARACTER_SCHEMA.is_file():
@@ -102,9 +110,28 @@ def load_schema(filename: Path) -> Dict[str, Any]:
 SchemaValidationError = Dict[str, str]
 
 
+def get_as_object(data: Dict, system: Gametag):
+    module = get_module(system)
+
+    if module is not None:
+        return module.CharacterSheet.model_validate(data)
+
+    return None
+
+
 def validate(data: Dict, system: Gametag) -> List[SchemaValidationError]:
     """Validate a sheet against a system."""
     logger.debug("Getting schema")
+
+    try:
+        get_as_object(data, system)
+        return []
+    except pydantic.ValidationError as exc:
+        return [
+            {"path": "/".join(str(x) for x in error["loc"]), "message": error["msg"]}
+            for error in exc.errors()
+        ]
+
     schema = get_schema(system)
     v = Draft7Validator(schema)
     return [

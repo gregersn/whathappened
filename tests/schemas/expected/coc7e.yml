@@ -314,15 +314,18 @@ $defs:
     additionalProperties: false
     properties:
       checked:
+        default: false
         title: Checked
         type: boolean
       name:
         title: Name
         type: string
       occupation:
+        default: false
         title: Occupation
         type: boolean
       specializations:
+        default: false
         title: Specializations
         type: boolean
       start_value:

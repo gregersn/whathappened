@@ -76,12 +76,12 @@ class Skill(BaseModel):
         json_schema_extra={"required": ["name", "value", "start_value"]},
     )
 
-    checked: bool
+    checked: bool = False
     name: str
-    occupation: bool
+    occupation: bool = False
     start_value: Union[str, int]
     value: Optional[int]
-    specializations: Annotated[bool, Field(frozen=True)]
+    specializations: Annotated[bool, Field(frozen=True)] = False
     subskills: Annotated[
         Optional[list["Skill"]], Field(json_schema_extra={"unique_items": True})
     ] = None

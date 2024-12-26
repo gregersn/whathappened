@@ -62,7 +62,9 @@ class SheetInfo(BaseModel):
 class LasersAndFeelingsCharacter(BaseModel):
     """Character information."""
 
-    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+    model_config = ConfigDict(
+        json_schema_serialization_defaults_required=True, validate_default=True
+    )
 
     name: str = Field(title="Character name", default="Ace")
     style: CharacterStyle = Field(
@@ -89,7 +91,9 @@ class LasersAndFeelings(BaseSchema):
     """Character sheet."""
 
     model_config = ConfigDict(
-        frozen=True, json_schema_serialization_defaults_required=True
+        frozen=True,
+        json_schema_serialization_defaults_required=True,
+        validate_default=True,
     )
 
     system: Literal["landf"] = "landf"

@@ -8,7 +8,12 @@ import io
 from PIL import Image
 
 from whathappened.sheets.schema.base import Gametag
-from whathappened.sheets.schema.build import get_schema, build_from_schema, validate
+from whathappened.sheets.schema.build import (
+    get_module,
+    get_schema,
+    build_from_schema,
+    validate,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -227,6 +232,10 @@ def new_character(title: str, system: Optional[Gametag] = None, **kwargs):
     """Create new character."""
     if system is None:
         raise SyntaxError("new_character: System not specified")
+
+    module = get_module(system)
+    if module is not None:
+        return module.CharacterSheet(title=title).model_dump()
 
     logger.debug("Getting schema")
     schema_data = get_schema(system)
