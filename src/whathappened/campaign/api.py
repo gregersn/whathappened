@@ -24,19 +24,19 @@ def hello(name: str):
 
 @apibp.route("<int:campaignid>/handouts/", methods=("GET",))
 def handouts(campaignid: int):
-    if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
+    if not current_user.is_authenticated:
         abort(403)
 
     campaign = session.get(Campaign, campaignid)
     if campaign is None:
         abort(404)
 
-    if current_user.profile not in campaign.players:  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.profile not in campaign.players:
         abort(403)
 
     handouts = campaign.handouts.filter_by(status=HandoutStatus.visible).filter(
         Handout.players.contains(current_user.profile)
-    )  # pyright: ignore[reportGeneralTypeIssues]
+    )
 
     handouts_dict = [handout.to_dict(show=["url"]) for handout in handouts]
 
@@ -66,8 +66,8 @@ def messages(campaignid: int):
     messages = (
         campaign.messages.filter(
             or_(
-                Message.from_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
-                Message.to_id == current_user.profile.id,  # pyright: ignore[reportGeneralTypeIssues]
+                Message.from_id == current_user.profile.id,
+                Message.to_id == current_user.profile.id,
                 Message.to_id.is_(None),
             )
         )
@@ -83,7 +83,7 @@ def messages(campaignid: int):
     "<int:campaignid>/handout/<int:handoutid>/players", methods=("GET", "POST")
 )
 def handout_players(campaignid: int, handoutid: int):
-    if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
+    if not current_user.is_authenticated:
         abort(403)
 
     handout = session.get(Handout, handoutid)
@@ -93,7 +93,7 @@ def handout_players(campaignid: int, handoutid: int):
     if handout.campaign.id != campaignid:
         abort(404)
 
-    if current_user.profile != handout.campaign.user:  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.profile != handout.campaign.user:
         abort(403)
 
     if request.method == "POST":
@@ -147,7 +147,7 @@ def npcs(campaignid: int):
 @apibp.route("<int:campaignid>/npc/<int:npcid>", methods=("GET", "POST"))
 @login_required
 def npc_visibility(npcid: int, campaignid: int):
-    if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
+    if not current_user.is_authenticated:
         abort(403)
 
     npc = session.get(NPC, npcid)
@@ -157,7 +157,7 @@ def npc_visibility(npcid: int, campaignid: int):
     if npc.campaign.id != campaignid:
         abort(404)
 
-    if current_user.profile != npc.campaign.user:  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.profile != npc.campaign.user:
         abort(403)
 
     if request.method == "POST":

@@ -18,7 +18,7 @@ class NewFolderForm(FlaskForm):
 
 
 def available_folders():
-    return current_user.profile.folders  # pyright: ignore[reportGeneralTypeIssues]
+    return current_user.profile.folders
 
 
 class ChooseFolderForm(FlaskForm):

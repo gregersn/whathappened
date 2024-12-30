@@ -24,4 +24,4 @@ def send_mail(
         msg.html = html_body
     Thread(
         target=send_async_email, args=(current_app._get_current_object(), msg)
-    ).start()  # pyright: ignore[reportGeneralTypeIssues]
+    ).start()

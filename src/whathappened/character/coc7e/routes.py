@@ -18,7 +18,7 @@ def view(id, character, editable):
             f"add subskill {subskillform.name.data} "
             + f"under {subskillform.parent.data}",
             user_id=current_user.id,
-        )  # pyright: ignore[reportGeneralTypeIssues]
+        )
         session.add(logentry)
 
         character.store_data()
@@ -37,7 +37,7 @@ def view(id, character, editable):
         character.store_data()
         logentry = LogEntry(
             character, f"add skill {subskillform.name.data}", user_id=current_user.id
-        )  # pyright: ignore[reportGeneralTypeIssues]
+        )
         session.add(logentry)
 
         session.commit()

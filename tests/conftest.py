@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Union
 
 import pytest
 from sqlalchemy import NullPool, create_engine
@@ -14,7 +15,7 @@ basedir = Path(__file__).parent.absolute()
 class Conf(Settings):
     TESTING: bool = True
     TESTDB: Path = basedir / "testing.sqlite"
-    SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + str(TESTDB)
+    SQLALCHEMY_DATABASE_URI: Union[str, None] = "sqlite:///" + str(TESTDB)
     WTF_CSRF_ENABLED: bool = False
 
 

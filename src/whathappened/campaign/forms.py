@@ -41,7 +41,7 @@ class InvitePlayerForm(FlaskForm):
 
 
 def available_characters():
-    return current_user.profile.characters  # pyright: ignore[reportGeneralTypeIssues]
+    return current_user.profile.characters
 
 
 class AddCharacterForm(FlaskForm):

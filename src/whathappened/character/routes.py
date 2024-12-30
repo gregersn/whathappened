@@ -37,13 +37,13 @@ def get_character(id: int, check_author: bool = True) -> Character:
     if character is None:
         abort(404, "Character id {0} doesn't exist.".format(id))
 
-    if current_user.has_role("admin"):  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.has_role("admin"):
         return character
 
     if character.viewable_by(current_user.profile):
         return character
 
-    if check_author and character.user_id != current_user.profile.id:  # pyright: ignore[reportGeneralTypeIssues]
+    if check_author and character.user_id != current_user.profile.id:
         abort(403)
 
     return character
@@ -69,7 +69,7 @@ def create(chartype: str):
         assert isinstance(char_data, dict)
         c = Character(
             title=form.title.data, body=char_data, user_id=current_user.profile.id
-        )  # pyright: ignore[reportGeneralTypeIssues]
+        )
         session.add(c)
         session.commit()
         return redirect(url_for("character.view", id=c.id))
@@ -106,7 +106,7 @@ def import_character(
     if form.validate_on_submit():
         c = Character(
             title=form.title.data, body=form.body.data, user_id=current_user.profile.id
-        )  # pyright: ignore[reportGeneralTypeIssues]
+        )
         session.add(c)
         session.commit()
         return redirect(url_for("character.view", id=c.id))
@@ -138,7 +138,7 @@ def update(id: int):
             else:
                 log_message = f"set {type} on {field}{log_subfield}: {value}"
 
-            logentry = LogEntry(character, log_message, user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
+            logentry = LogEntry(character, log_message, user_id=current_user.id)
             session.add(logentry)
 
         character.store_data()
@@ -163,7 +163,7 @@ def render_character(
                         character,
                         "Character was automatically migrated.",
                         user_id=current_user.id,
-                    )  # pyright: ignore[reportGeneralTypeIssues]
+                    )
                     session.add(logentry)
 
                     backup_character = Character(
@@ -283,7 +283,7 @@ def delete(id: int):
     """Delete a character."""
     character = get_character(id, check_author=True)
 
-    if current_user.profile.id != character.user_id:  # pyright: ignore[reportGeneralTypeIssues]
+    if current_user.profile.id != character.user_id:
         abort(404)
 
     form = DeleteForm()
@@ -355,7 +355,7 @@ def editjson(id: int):
             data = form.body.data
             c.body = convert_from_dholes(data)
 
-        logentry = LogEntry(c, "JSON edited", user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
+        logentry = LogEntry(c, "JSON edited", user_id=current_user.id)
         session.add(logentry)
 
         session.commit()

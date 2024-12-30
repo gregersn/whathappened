@@ -29,7 +29,7 @@ def folders(folder_id=None):
         print("Form did not validate")
         # return redirect(request.url)
 
-    new_folder_form.owner_id.data = current_user.profile.id  # pyright: ignore[reportGeneralTypeIssues]
+    new_folder_form.owner_id.data = current_user.profile.id
     new_folder_form.parent_id.data = folder_id
 
     current_folder = session.get(Folder, folder_id)
@@ -40,13 +40,11 @@ def folders(folder_id=None):
     tree = []
 
     if current_folder is None:
-        folders = current_user.profile.folders.filter(  # pyright: ignore[reportGeneralTypeIssues]
-            Folder.parent_id.__eq__(None)
-        )
-        characters = current_user.profile.characters.filter(  # pyright: ignore[reportGeneralTypeIssues]
+        folders = current_user.profile.folders.filter(Folder.parent_id.__eq__(None))
+        characters = current_user.profile.characters.filter(
             Character.folder_id.__eq__(None)
         )
-        campaigns = current_user.profile.campaigns.filter(  # pyright: ignore[reportGeneralTypeIssues]
+        campaigns = current_user.profile.campaigns.filter(
             campaignmodels.Campaign.folder_id.__eq__(None)
         )
 

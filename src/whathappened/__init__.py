@@ -97,7 +97,7 @@ def create_app(test_config=None) -> Flask:
 
         app.jinja_env.filters["webpack"] = WebpackFilter(webpack_env)
 
-    app.jinja_env.assets_environment = assets_env  # pyright: ignore[reportGeneralTypeIssues]
+    app.jinja_env.assets_environment = assets_env
 
     # Register blueprints
     from .auth.blueprints import bp as auth_bp
