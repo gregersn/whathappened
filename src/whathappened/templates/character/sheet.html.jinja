@@ -21,7 +21,7 @@
 | <a
     href="{{ url_for('character.import_character', id=character.id) if editable else url_for('character.import_character', code=code) }}">Copy</a>
 {%- if editable %}
-| <a href="{{ url_for('character.editjson', id=character.id) }}">Edit JSON</a>
+| <a href="{{ url_for('character.edit', id=character.id) }}">Edit</a>
 | <a href="{{ url_for('character.delete', id=character.id) }}">Delete</a>
 | <a href="#" id="sharebtn" data-id="{{ character.id }}">{% if not shared %}Share{% else %}Share link{% endif %}</a>
 | <a href="{{ url_for('character.eventlog', character_id=character.id) }}">Event log</a>

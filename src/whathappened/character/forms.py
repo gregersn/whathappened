@@ -34,6 +34,10 @@ class ImportForm(FlaskForm):
     submit = SubmitField("Import")
 
 
+class EditForm(ImportForm):
+    archived = BooleanField("Archived")
+
+
 class CreateForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired()])
     system = HiddenField("System", validators=[DataRequired()])
