@@ -151,7 +151,7 @@ def render_character(
     character: Character, editable: bool = False, code: Optional[str] = None
 ):
     if editable:
-        if character.validate():
+        if character.validate() and not character.archived:
             logger.debug("Character sheet invalid, trying migration.")
             backup_data = copy.deepcopy(character.body)
             data = character.body
@@ -170,6 +170,7 @@ def render_character(
                         title=f"{character.title}-{prev_version}-backup",
                         body=backup_data,
                         user_id=character.user_id,
+                        archived=True,
                     )
                     session.add(backup_character)
                     session.commit()

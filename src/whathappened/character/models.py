@@ -9,6 +9,7 @@ from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.orm import reconstructor, relationship, backref, Mapped, mapped_column
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import DateTime, JSON, String
+from sqlalchemy import func
 
 from whathappened.models import UserProfile
 from whathappened.database.base import BaseModel
@@ -30,8 +31,9 @@ class Character(BaseContent, BaseModel):
     timestamp: Mapped[datetime] = mapped_column(
         DateTime,
         index=True,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        server_default=func.now,
+        onupdate=func.current_timestamp,
+        default=func.now,
         nullable=True,
     )
     user_id: Mapped[int] = mapped_column(ForeignKey("user_profile.id"), nullable=True)
@@ -40,6 +42,8 @@ class Character(BaseContent, BaseModel):
     )
 
     folder: Mapped[Folder] = relationship(backref="characters")
+
+    archived: Mapped[bool] = mapped_column(default=False)
 
     _default_fields = ["id", "title", "body", "timestamp", "user_id"]
 

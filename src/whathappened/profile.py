@@ -1,4 +1,5 @@
 import logging
+from sqlalchemy import desc
 from flask import Blueprint, render_template, request
 from whathappened.auth.utils import login_required, current_user
 from whathappened.database import session
@@ -24,7 +25,9 @@ def index():
 
     logger.info("Showing profile %s", user_profile.id)
 
-    characters = user_profile.characters
+    characters = user_profile.characters.filter_by(archived=False).order_by(
+        desc("timestamp")
+    )
     folders = user_profile.folders  # .filter(Folder.parent_id.__eq__(None))
     return render_template(
         "profile/profile.html.jinja",
