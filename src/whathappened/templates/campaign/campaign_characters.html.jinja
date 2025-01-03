@@ -4,6 +4,7 @@
                         <div class="personalia">
                         {{ character_association.character.name }} {%- if character_association.character.age %} ({{ character_association.character.age }}){%- endif %}<br />
                         {{ character_association.character.description }}<br />
+                        {% if character_association.character.info %}<span>{{ character_association.character.info }}</span>{% endif %}
                         </div>
                         <div class="userinfo">
                         <em>Owner: {{ character_association.character.player.display_name or character_association.character.player.user.username }}</em><br />
