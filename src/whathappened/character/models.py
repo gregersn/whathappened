@@ -118,6 +118,11 @@ class Character(BaseContent, BaseModel):
         return self.mechanics.portrait
 
     @property
+    def info(self):
+        """Extra character information."""
+        return self.mechanics.info
+
+    @property
     def description(self):
         """Character description."""
         return self.mechanics.description

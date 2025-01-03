@@ -66,6 +66,11 @@ class CharacterMechanics:
         return "Unknown property, description"
 
     @property
+    def info(self) -> Optional[str]:
+        """Extra information about character."""
+        return None
+
+    @property
     def portrait(self):
         """Character portrait."""
         if res := self.attribute("character_sheet.personalia.portrait"):
