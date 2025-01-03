@@ -41,6 +41,8 @@ class Character(BaseContent, BaseModel):
 
     folder: Mapped[Folder] = relationship(backref="characters")
 
+    archived: Mapped[bool] = mapped_column(default=False)
+
     _default_fields = ["id", "title", "body", "timestamp", "user_id"]
 
     def __repr__(self):

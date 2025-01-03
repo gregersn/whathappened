@@ -1,0 +1,50 @@
+{% extends 'base.html.jinja' %}
+
+{% block header %}
+  <h2>{% block title %}{{ title or "Edit character"}}{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+  <div>
+    Remember to backup your character before doing anything you are not really sure about!
+  </div>
+  <form action="" method="post">
+    {{ form.hidden_tag() }}
+        <p>
+          {{ form.title.label }}<br>
+          {{ form.title(size=32) }}<br>
+          {% for error in form.title.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+      </p>
+      <p class="editjson">
+          {{ form.body.label }}<br>
+          {{ form.body() }}<br>
+          {% for error in form.body.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+      </p>        
+      <p>
+      {{ form.migration() }} Try data migration.
+      </p>
+      <p>
+      {{ form.conversion() }} Try to convert from Dholes.
+      </p>
+      <p>
+      {{ form.archived() }} Character is archived.
+      </p>
+      <p>{{ form.submit() }}</p>  
+      <p>
+        If you check the box, upon save, the system will try to convert the data from formats used by other generators.
+        Use with caution. Backup the data first.
+        </p>
+  </form>
+  {% if validation_errors %}
+    <h3>Validation errors in character sheet</h3>
+    {% for error in validation_errors %}
+      {{ error.path }}: {{ error.message }}<br />
+    {% endfor %}
+  {% endif %}
+
+    <a href="{{ url_for('character.delete', id=character.id) }}">Delete</a>
+{% endblock %}

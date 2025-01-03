@@ -19,7 +19,7 @@ from whathappened.sheets.schema.utils import migrate
 
 from .blueprints import bp, api
 from .models import Character
-from .forms import ImportForm, CreateForm
+from .forms import EditForm, CreateForm, ImportForm
 from .forms import DeleteForm
 
 # Imports for registering games.
@@ -151,7 +151,7 @@ def render_character(
     character: Character, editable: bool = False, code: Optional[str] = None
 ):
     if editable:
-        if character.validate():
+        if (not character.archived) and character.validate():
             logger.debug("Character sheet invalid, trying migration.")
             backup_data = copy.deepcopy(character.body)
             data = character.body
@@ -170,6 +170,7 @@ def render_character(
                         title=f"{character.title}-{prev_version}-backup",
                         body=backup_data,
                         user_id=character.user_id,
+                        archived=True,
                     )
                     session.add(backup_character)
                     session.commit()
@@ -177,7 +178,7 @@ def render_character(
                 ...
 
         if character.system is None or character.validate():
-            return redirect(url_for("character.editjson", id=character.id))
+            return redirect(url_for("character.edit", id=character.id))
 
     character_module = (
         globals()[character.system] if character.system in globals() else core
@@ -332,16 +333,18 @@ def export(id: int):
     return jsonify(data.get_sheet())
 
 
-@bp.route("/<int:id>/editjson", methods=("GET", "POST"))
-def editjson(id: int):
+@bp.route("/<int:id>/edit", methods=("GET", "POST"))
+def edit(id: int):
     """Lets the user edit the raw json of the character."""
     c = get_character(id, check_author=True)
-    form = ImportForm(obj=c)
+    form = EditForm(obj=c)
 
     if form.validate_on_submit():
         assert form.body.data is not None
+        assert form.title.data is not None
         c.title = form.title.data
         c.body = form.body.data
+        c.archived = form.archived.data
 
         if form.migration.data:
             logger.debug("Trying to migrate data")
@@ -366,10 +369,11 @@ def editjson(id: int):
     validation_errors = c.validate()
 
     return render_template(
-        "character/import.html.jinja",
-        title="Edit JSON",
+        "character/edit.html.jinja",
+        title="Edit",
         validation_errors=validation_errors,
         form=form,
+        character=c,
         type=None,
     )
 
