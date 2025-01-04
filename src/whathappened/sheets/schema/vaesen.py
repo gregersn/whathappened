@@ -215,7 +215,7 @@ class Personality(BaseModel):
         ),
     ] = ["PC 1", "PC 2", "PC 3", "PC 4"]
 
-    description: str = ""
+    description: Annotated[str, Field(json_schema_extra={"widget": "text"})] = ""
     portrait: Annotated[
         Optional[str], Field(json_schema_extra={"widget": "portrait"})
     ] = ""
