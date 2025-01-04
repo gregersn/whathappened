@@ -211,7 +211,7 @@ input[type="submit"] {
         width: 100%;
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         justify-content: center;
         align-items: stretch;
 
@@ -222,6 +222,7 @@ input[type="submit"] {
 
         .portrait {
             flex-grow: 0;
+            flex-shrink: 0;
             align-items: center;
         }
     }
