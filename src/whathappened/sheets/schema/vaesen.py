@@ -2,8 +2,8 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Annotated, Literal, Optional
-from pydantic import BaseModel, ConfigDict, Field
+from typing import Annotated, Literal, Optional, cast
+from pydantic import BaseModel, ConfigDict, Field, JsonValue
 import yaml
 
 from whathappened.sheets.schema.base import BaseSchema
@@ -34,6 +34,8 @@ class SheetInfo(BaseModel):
 
 
 class Attributes(BaseModel):
+    """Character attributes."""
+
     physique: int = Field(
         ge=2, le=5, default=2, description="How big and strong you are."
     )
@@ -47,6 +49,8 @@ class Attributes(BaseModel):
 
 
 class Skills(BaseModel):
+    """Character skills."""
+
     agility: int = Field(ge=0, le=5, default=0, title="Agility (Physique)")
     close_combat: int = Field(ge=0, le=5, default=0, title="Close combat (Physique)")
     force: int = Field(ge=0, le=5, default=0, title="Force (Physique)")
@@ -66,12 +70,16 @@ class Skills(BaseModel):
 
 @dataclass
 class Armor:
+    """Armor data."""
+
     type: str
     protection: int
     agility: int
 
 
 class Armors(str, Enum):
+    """Armor types."""
+
     NONE = "none"
     LIGHT = "light"
     MEDIUM = "medium"
@@ -87,6 +95,8 @@ ArmorStats: dict[str, str] = {
 
 
 class Weapon(BaseModel):
+    """Weapons data."""
+
     weapon: str = "Pocket lint"
     damage: int = 0
     range: str = "None"
@@ -94,11 +104,15 @@ class Weapon(BaseModel):
 
 
 class Equipment(BaseModel):
+    """Equipment data."""
+
     description: str = "Pocket lint"
     bonus: int = 0
 
 
 class PhysicalConditions(BaseModel):
+    """Current physical conditions for the character."""
+
     exhausted: bool = False
     battered: bool = False
     wounded: bool = False
@@ -106,6 +120,8 @@ class PhysicalConditions(BaseModel):
 
 
 class MentalConditions(BaseModel):
+    """Current mental conditions for the character."""
+
     angry: bool = False
     frightened: bool = False
     hopeless: bool = False
@@ -113,6 +129,8 @@ class MentalConditions(BaseModel):
 
 
 class Conditions(BaseModel):
+    """A characters current conditions."""
+
     physical: PhysicalConditions = Field(
         title="Physical", default_factory=PhysicalConditions
     )
@@ -120,61 +138,83 @@ class Conditions(BaseModel):
 
 
 class Miscellaneous(BaseModel):
-    talents: list[str] = Field(
-        [],
-        description="Tricks, traits and abilities that can benefit you in various situations.",
-    )
-    insights: list[str] = Field(title="Insights & defects", default=[])
-    advantages: str = Field(
-        "", description="What can help you on your current adventure?"
-    )
-    equipment: list[Equipment] = Field(
-        default=[],
-        json_schema_extra={"widget": "table", "header": True},
-        description="All your things.",
-    )
-    armor: Armors = Field(
-        title="Armor",
-        default=Armors.NONE,
-        json_schema_extra={"choice_values": ArmorStats},
-    )
-    weapons: list[Weapon] = Field(
-        default_factory=lambda: [],
-        json_schema_extra={
-            "widget": "table",
-            "header": True,
-            "hide_title": True,
-        },
-    )
-    memento: str = Field("", description="Something that's a part of you.")
+    """Miscellaneous information about the character."""
+
+    talents: Annotated[
+        list[str],
+        Field(
+            description="Tricks, traits and abilities that can benefit you in various situations.",
+        ),
+    ] = []
+    insights: Annotated[list[str], Field(title="Insights & defects")] = []
+    advantages: Annotated[
+        str, Field(description="What can help you on your current adventure?")
+    ] = ""
+    equipment: Annotated[
+        list[Equipment],
+        Field(
+            json_schema_extra={"widget": "table", "header": True},
+            description="All your things.",
+        ),
+    ] = []
+    armor: Annotated[
+        Armors,
+        Field(
+            title="Armor",
+            json_schema_extra={"choice_values": cast(JsonValue, ArmorStats)},
+        ),
+    ] = Armors.NONE
+    weapons: Annotated[
+        list[Weapon],
+        Field(
+            json_schema_extra={
+                "widget": "table",
+                "header": True,
+                "hide_title": True,
+            },
+        ),
+    ] = []
+    memento: Annotated[str, Field(description="Something that's a part of you.")] = ""
 
 
 class Personality(BaseModel):
-    name: str = Field("", description="How should you be adressed?")
-    age: int = Field(
-        17, description="Young: 17-25 years, middle-aged: 26-50 years, old: 51+ years."
-    )
-    archetype: Archetype = Field(
-        title="Archetype",
-        default=Archetype.ACADEMIC,
-        description="The skeleton of your character.",
-    )
-    motivation: str = Field(
-        "",
-        description="Why are you willing to risk your own life to track down and fight vaesen?",
-    )
-    trauma: str = Field("", description="What event gave you the Sight?")
-    dark_secret: str = Field(
-        "", description="A problem you are ashamed of, and keep to yourself."
-    )
-    relationships: list[str] = Field(
-        title="Relationships",
-        default=["PC 1", "PC 2", "PC 3", "PC 4"],
-        min_length=4,
-        max_length=4,
-        json_schema_extra={"constant": True},
-        description="Your relationship to the other characters.",
-    )
+    """Information about character personality."""
+
+    name: Annotated[str, Field(description="How should you be adressed?")] = ""
+    age: Annotated[
+        int,
+        Field(
+            description="Young: 17-25 years, middle-aged: 26-50 years, old: 51+ years."
+        ),
+    ] = 17
+    archetype: Annotated[
+        Archetype,
+        Field(
+            title="Archetype",
+            description="The skeleton of your character.",
+        ),
+    ] = Archetype.ACADEMIC
+    motivation: Annotated[
+        str,
+        Field(
+            description="Why are you willing to risk your own life to track down and fight vaesen?",
+        ),
+    ] = ""
+    trauma: Annotated[str, Field(description="What event gave you the Sight?")] = ""
+    dark_secret: Annotated[
+        str, Field(description="A problem you are ashamed of, and keep to yourself.")
+    ] = ""
+    relationships: Annotated[
+        list[str],
+        Field(
+            title="Relationships",
+            min_length=4,
+            max_length=4,
+            json_schema_extra={"constant": True},
+            description="Your relationship to the other characters.",
+        ),
+    ] = ["PC 1", "PC 2", "PC 3", "PC 4"]
+
     description: str = ""
     portrait: Annotated[
         Optional[str], Field(json_schema_extra={"widget": "portrait"})
@@ -182,40 +222,57 @@ class Personality(BaseModel):
 
 
 class Characteristics(BaseModel):
-    attributes: Attributes = Field(
-        title="Attributes",
-        default_factory=Attributes,
-        description="Each attribute has a value between 2 and 5 and determines the number of dice you roll when attempting things that depend on the attribute in question.",
-    )
-    resources: int = Field(
-        default=1,
-        description="How much capital you have at your disposal. 1 - destitude, 8 - filthy rich.",
-    )
-    conditions: Conditions = Field(title="Conditions", default_factory=Conditions)
-    skills: Skills = Field(
-        title="Skills",
-        default_factory=Skills,
-        description="Acquired knowledge, training and experience. Value between 0 and 5.",
-    )
-    experience: int = Field(
-        title="Experience",
-        ge=0,
-        le=20,
-        default=0,
-        json_schema_extra={"widget": "progress"},
-    )
+    """All the characteristics of the character."""
+
+    attributes: Annotated[
+        Attributes,
+        Field(
+            title="Attributes",
+            default_factory=Attributes,
+            description="Each attribute has a value between 2 and 5 and determines the number of dice you roll when attempting things that depend on the attribute in question.",
+        ),
+    ] = Attributes()
+    resources: Annotated[
+        int,
+        Field(
+            description="How much capital you have at your disposal. 1 - destitude, 8 - filthy rich.",
+        ),
+    ] = 1
+    conditions: Annotated[
+        Conditions, Field(title="Conditions", default_factory=Conditions)
+    ] = Conditions()
+    skills: Annotated[
+        Skills,
+        Field(
+            title="Skills",
+            default_factory=Skills,
+            description="Acquired knowledge, training and experience. Value between 0 and 5.",
+        ),
+    ] = Skills()
+    experience: Annotated[
+        int,
+        Field(
+            title="Experience",
+            ge=0,
+            le=20,
+            json_schema_extra={"widget": "progress"},
+        ),
+    ] = 0
 
 
 class Character(BaseModel):
     """Character information."""
 
-    personalia: Personality = Field(title="Personalia", default_factory=Personality)
-    miscellaneous: Miscellaneous = Field(
-        title="Miscellaneous", default_factory=Miscellaneous
-    )
-    characteristics: Characteristics = Field(
-        title="Characteristics", default_factory=Characteristics
-    )
+    personalia: Annotated[
+        Personality, Field(title="Personalia", default_factory=Personality)
+    ] = Personality()
+    miscellaneous: Annotated[
+        Miscellaneous, Field(title="Miscellaneous", default_factory=Miscellaneous)
+    ] = Miscellaneous()
+    characteristics: Annotated[
+        Characteristics,
+        Field(title="Characteristics", default_factory=Characteristics),
+    ] = Characteristics()
 
 
 class Vaesen(BaseSchema):
@@ -223,7 +280,9 @@ class Vaesen(BaseSchema):
 
     system: Literal["vaesen"] = "vaesen"
     meta: SheetInfo = SheetInfo()
-    character_sheet: Character = Field(title="Vaesen", default_factory=Character)
+    character_sheet: Annotated[
+        Character, Field(title="Vaesen", default_factory=Character)
+    ]
 
 
 CharacterSheet = Vaesen

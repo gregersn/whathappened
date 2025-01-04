@@ -15,6 +15,7 @@ $defs:
     title: Archetype
     type: string
   Armors:
+    description: Armor types.
     enum:
     - none
     - light
@@ -23,6 +24,7 @@ $defs:
     title: Armors
     type: string
   Attributes:
+    description: Character attributes.
     properties:
       empathy:
         default: 2
@@ -67,6 +69,7 @@ $defs:
     title: Character
     type: object
   Characteristics:
+    description: All the characteristics of the character.
     properties:
       attributes:
         $ref: '#/$defs/Attributes'
@@ -95,6 +98,7 @@ $defs:
     title: Characteristics
     type: object
   Conditions:
+    description: A characters current conditions.
     properties:
       mental:
         $ref: '#/$defs/MentalConditions'
@@ -105,6 +109,7 @@ $defs:
     title: Conditions
     type: object
   Equipment:
+    description: Equipment data.
     properties:
       bonus:
         default: 0
@@ -117,6 +122,7 @@ $defs:
     title: Equipment
     type: object
   MentalConditions:
+    description: Current mental conditions for the character.
     properties:
       angry:
         default: false
@@ -137,6 +143,7 @@ $defs:
     title: MentalConditions
     type: object
   Miscellaneous:
+    description: Miscellaneous information about the character.
     properties:
       advantages:
         default: ''
@@ -181,6 +188,7 @@ $defs:
         title: Talents
         type: array
       weapons:
+        default: []
         header: true
         hide_title: true
         items:
@@ -191,6 +199,7 @@ $defs:
     title: Miscellaneous
     type: object
   Personality:
+    description: Information about character personality.
     properties:
       age:
         default: 17
@@ -250,6 +259,7 @@ $defs:
     title: Personality
     type: object
   PhysicalConditions:
+    description: Current physical conditions for the character.
     properties:
       battered:
         default: false
@@ -287,6 +297,7 @@ $defs:
     title: SheetInfo
     type: object
   Skills:
+    description: Character skills.
     properties:
       agility:
         default: 0
@@ -363,6 +374,7 @@ $defs:
     title: Skills
     type: object
   Weapon:
+    description: Weapons data.
     properties:
       bonus:
         default: 0
