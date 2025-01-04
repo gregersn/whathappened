@@ -219,6 +219,7 @@ $defs:
         default: ''
         title: Description
         type: string
+        widget: text
       motivation:
         default: ''
         description: Why are you willing to risk your own life to track down and fight

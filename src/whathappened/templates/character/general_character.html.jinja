@@ -71,6 +71,8 @@
 {{ render_progress(path, character.mechanics.attribute(path), object.maximum) }}
 {% elif widget == "portrait" %}
 {{ render_portrait(object, path, key)}}
+{% elif widget == "text" %}
+{{ editable_area(path, "")}}
 {% else %}
 <div>Missing widget: {{ widget }}</div>
 {% endif %}
