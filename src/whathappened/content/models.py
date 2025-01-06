@@ -1,7 +1,7 @@
 """Storage folder."""
 
 import uuid
-from sqlalchemy.orm import relationship, backref, Mapped, mapped_column
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy import String, ForeignKey
 
 from whathappened.database import Base
@@ -22,8 +22,8 @@ class Folder(Base):
     parent_id: Mapped[str] = mapped_column(
         GUID(), ForeignKey("folder.id"), default=None, nullable=True
     )
-
-    subfolders: Mapped["Folder"] = relationship(
-        backref=backref("parent", remote_side=[id])
+    subfolders: Mapped[list["Folder"]] = relationship(back_populates="parent")
+    parent: Mapped["Folder"] = relationship(
+        back_populates="subfolders", remote_side=[id]
     )
     title: Mapped[str] = mapped_column(String(128), nullable=True)
