@@ -1,16 +1,17 @@
 $system_color: #119911;
 
 .charactersheet {
-    //display: grid;
+    display: grid;
     //grid-template-columns: 1fr 1fr;
     column-gap: 0;
+    grid-auto-flow: row dense;
 
     @media screen and (min-width: 960px) {
-        column-count: 2;
+        grid-template-columns: 1fr 1fr;
     }
 
     @media screen and (min-width: 1900px) {
-        column-count: 3;
+        grid-template-columns: 1fr 1fr 1fr;
     }
 
     section {
