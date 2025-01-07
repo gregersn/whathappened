@@ -159,6 +159,7 @@ def upload_file(folder_id=None):
 @bp.route("/view/<uuid:fileid>/<string:filename>")
 @login_required
 def view(fileid, filename):
+    """Retrieve a user asset."""
     userasset: Asset = session.get(Asset, fileid)
     assert userasset
     if filename != userasset.filename:
@@ -166,10 +167,11 @@ def view(fileid, filename):
 
     filepath = userasset.folder.get_path()
     assetname = secure_filename(str(userasset.filename))
-    logger.debug(f"Sending file from {filepath}, {assetname}")
+    logger.debug("Sending file from %s, %s", filepath, assetname)
 
-    full_dir = Path("..") / str(userasset.folder.system_path)
-    return send_from_directory(full_dir, assetname)
+    full_dir = Path(userasset.folder.system_path)
+    logger.debug("%s/%s", full_dir.absolute(), assetname)
+    return send_from_directory(str(full_dir.absolute()), assetname)
 
 
 @bp.route("/edit/<uuid:fileid>/<string:filename>")
@@ -237,7 +239,7 @@ def move(fileid, filename):
         logger.debug(full_dst_folder)
         if destinationfolder is not None:
             logger.debug(
-                f"Move {asset.system_path} " f"to {destinationfolder.system_path}"
+                "Move %s to %s", asset.system_path, destinationfolder.system_path
             )
             if not full_dst_folder.is_dir():
                 full_dst_folder.mkdir(parents=True)
