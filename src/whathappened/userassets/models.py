@@ -74,11 +74,12 @@ class AssetFolder(Base):
     parent_id: Mapped[str] = mapped_column(
         GUID(), ForeignKey("asset_folder.id"), default=None, nullable=True
     )
-    subfolders: Mapped["AssetFolder"] = relationship(
-        backref=backref("parent", remote_side=[id])
+    subfolders: Mapped[list["AssetFolder"]] = relationship(back_populates="parent")
+    parent: Mapped["AssetFolder"] = relationship(
+        back_populates="subfolders", remote_side=[id]
     )
     title: Mapped[str] = mapped_column(String(128), nullable=True)
-    files: Mapped[Asset] = relationship(back_populates="folder")
+    files: Mapped[list[Asset]] = relationship(back_populates="folder")
 
     def get_path(self) -> Path:
         if self.parent:

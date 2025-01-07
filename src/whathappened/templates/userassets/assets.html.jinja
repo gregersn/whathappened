@@ -15,9 +15,11 @@
     {% endfor %}
     </ul>
     <ul>
-    {% for file in folder.files %}
-        <li><a href="{{ url_for('userassets.view', fileid=file.id, filename=file.filename) }}">{{ file.filename }}</a>[<a href="{{ url_for('userassets.edit', fileid=file.id, filename=file.filename) }}">Edit</a>]</li>
-    {% endfor %}
+    {% if folder.files %}
+        {% for file in folder.files %}
+            <li><a href="{{ url_for('userassets.view', fileid=file.id, filename=file.filename) }}">{{ file.filename }}</a>[<a href="{{ url_for('userassets.edit', fileid=file.id, filename=file.filename) }}">Edit</a>]</li>
+        {% endfor %}
+    {% endif %}
     </ul>
 
 </section>
