@@ -16,9 +16,7 @@ class Folder(Base):
     __tablename__ = "folder"
     id: Mapped[str] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
     owner_id: Mapped[int] = mapped_column(ForeignKey("user_profile.id"), nullable=True)
-    owner: Mapped[UserProfile] = relationship(
-        backref=backref("folders", lazy="dynamic")
-    )
+    owner: Mapped[UserProfile] = relationship(back_populates="folders")
     parent_id: Mapped[str] = mapped_column(
         GUID(), ForeignKey("folder.id"), default=None, nullable=True
     )

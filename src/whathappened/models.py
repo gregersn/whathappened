@@ -12,6 +12,7 @@ from whathappened.database.fields import GUID
 
 if typing.TYPE_CHECKING:
     from whathappened.auth.models import User
+    from whathappened.content.models import Folder
 
 
 class UserProfile(Base):
@@ -23,6 +24,10 @@ class UserProfile(Base):
     user: Mapped["User"] = relationship(back_populates="profile")
 
     display_name: Mapped[typing.Optional[str]]
+
+    folders: Mapped[list["Folder"]] = relationship(
+        back_populates="owner", lazy="subquery"
+    )
 
     def __repr__(self):
         return f"<UserProfile {self.user_id}: {self.user.username}>"
