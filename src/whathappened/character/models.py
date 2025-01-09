@@ -107,27 +107,43 @@ class Character(BaseContent, BaseModel):
     @property
     def name(self):
         """Character name."""
-        return self.mechanics.name
+        try:
+            return self.mechanics.name
+        except KeyError:
+            return "Could not get name."
 
     @property
     def age(self):
         """Character age."""
-        return self.mechanics.age
+        try:
+            return self.mechanics.age
+        except KeyError:
+            return "Could not get age."
 
     @property
     def portrait(self):
         """Character portrait."""
-        return self.mechanics.portrait
+        try:
+            return self.mechanics.portrait
+        except KeyError:
+            logger.error("Could not get portrait")
+            return ""
 
     @property
     def info(self):
         """Extra character information."""
-        return self.mechanics.info
+        try:
+            return self.mechanics.info
+        except KeyError:
+            return "Could not get extra info."
 
     @property
     def description(self):
         """Character description."""
-        return self.mechanics.description
+        try:
+            return self.mechanics.description
+        except KeyError:
+            return "Could not get description."
 
     def set_attribute(self, attribute: Dict):
         """Set a specific attribute."""
