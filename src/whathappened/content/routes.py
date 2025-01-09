@@ -40,9 +40,11 @@ def folders(folder_id=None):
     tree = []
 
     if current_folder is None:
-        folders = current_user.profile.folders.filter(  # pyright: ignore[reportGeneralTypeIssues]
-            Folder.parent_id.__eq__(None)
-        )
+        folders = [
+            folder
+            for folder in current_user.profile.folders
+            if folder.parent_id is None
+        ]
         characters = current_user.profile.characters.filter(  # pyright: ignore[reportGeneralTypeIssues]
             Character.folder_id.__eq__(None)
         )
