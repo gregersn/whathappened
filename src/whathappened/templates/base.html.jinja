@@ -1,7 +1,5 @@
 {% extends 'shell.html.jinja' %}
 {% block head %}
-{{ super() }}
-<title>{% block title%}Tell me{% endblock %} - What Happened?</title>
 <meta name="_token" content="{{ csrf_token() }}">
 <script type="text/javascript">
     var csrf_token = "{{ csrf_token() }}";
@@ -10,6 +8,7 @@
 {% assets "scss_all" %}
 <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
 {% endassets %}
+
 {% endblock %}
 
 {% block body %}
@@ -26,29 +25,34 @@
                 <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
                 {% endif %}
             </ul>
+        </nav>
     </div>
     {% if self.menu() %}
+    <nav>
     <div class="navbar">
         {% block menu %}
         {% endblock menu %}
     </div>
-    {% endif %}
     </nav>
-    </div>
+    {% endif %}
 </header>
+
+
 <div class="messagebox" id="messagebox">
     No message.
 </div>
 
-<section class="content">
+<main class="content">
     <header>
         {% block header %}{% endblock %}
     </header>
     {%- for message in get_flashed_messages() %}
     <div class="flash">{{ message }}</div>
     {%- endfor %}
+    <section>
     {% block content %}{% endblock %}
-</section>
+    </section>
+</main>
 <footer>
 WhatHappened? ( Version: {{ whathappened_version }} ) {% block footer %}{% endblock %}
 </footer>

@@ -83,7 +83,7 @@ class Character(BaseContent, BaseModel):
         if s is not None:
             return s
 
-        logger.warning("Deprecation: Outdated character data")
+        logger.warning("Deprecation: Outdated character data: %s", self.title)
         default = "Call of Cthulhu TM"
         if self.data.get("meta", {}).get("GameName") == default:
             logger.warning("Trying old CoC stuff.")
