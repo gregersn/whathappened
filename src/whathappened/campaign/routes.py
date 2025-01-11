@@ -6,7 +6,7 @@ from sqlalchemy import and_, or_, desc
 from werkzeug.exceptions import abort
 
 from whathappened.main.forms import CreateInviteForm
-from whathappened.auth.models import User
+from whathappened.core.auth.models import User
 from whathappened.core.character.models import Character
 from whathappened.models import UserProfile, Invite
 from whathappened.core.database import session

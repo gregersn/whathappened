@@ -1,4 +1,4 @@
-from whathappened.auth.models import User
+from whathappened.core.auth.models import User
 from whathappened.core.campaign.models import Campaign, CampaignCharacter
 from whathappened.core.character.models import Character
 from whathappened.models import UserProfile

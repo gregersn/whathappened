@@ -4,7 +4,7 @@ from pathlib import Path
 import json
 import pytest
 
-from whathappened.auth.models import User  # noqa
+from whathappened.core.auth.models import User  # noqa
 from whathappened.core.campaign.models import Campaign  # noqa
 
 from whathappened.core.sheets.mechanics.coc7e import new_character

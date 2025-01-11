@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.sqltypes import String
-from whathappened.auth.models import User
+from whathappened.core.auth.models import User
 from whathappened.core.database import init_db, db
 from whathappened.core.database.base import Base, BaseModel
 from whathappened.core.database.pagination import paginate
