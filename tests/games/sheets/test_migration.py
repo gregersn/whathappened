@@ -7,7 +7,7 @@ from whathappened.sheets.schema.base import CURRENT_SCHEMA_VERSION
 from whathappened.sheets.schema.build import validate
 from whathappened.sheets.schema.utils import find_system, find_version, migrate
 
-expected_sheets = list(sorted(Path("tests/sheets/expected/").glob("*.yml")))
+expected_sheets = list(sorted(Path("tests/games/sheets/expected/").glob("*.yml")))
 
 
 def load_sheet(filename: Path):

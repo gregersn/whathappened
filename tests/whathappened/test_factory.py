@@ -1,4 +1,4 @@
-from .conftest import Conf
+from ..conftest import Conf
 from whathappened import create_app, assets
 
 

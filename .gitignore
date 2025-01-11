@@ -32,5 +32,5 @@ nosetests.xml
 
 uploads/
 
-tests/sheets/current/
-tests/schemas/current/
+tests/games/sheets/current/
+tests/games/schemas/current/
