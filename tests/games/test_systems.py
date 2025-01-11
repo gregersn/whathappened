@@ -32,8 +32,8 @@ def test_expected_schema(request, game: Gametag):
     current_schema = get_schema(game)
     assert current_schema
 
-    expected_file = Path(f"tests/schemas/expected/{game}.yml")
-    current_file = Path(f"tests/schemas/current/{game}.yml")
+    expected_file = Path(f"tests/games/schemas/expected/{game}.yml")
+    current_file = Path(f"tests/games/schemas/current/{game}.yml")
 
     if not expected_file.is_file():
         current_file.parent.mkdir(parents=True, exist_ok=True)
@@ -50,8 +50,8 @@ def test_flattened_schemas(request, game: Gametag):
     current_schema = get_schema(game)
     assert current_schema
 
-    expected_file = Path(f"tests/schemas/expected/{game}.yml")
-    current_file = Path(f"tests/schemas/current/{game}.yml")
+    expected_file = Path(f"tests/games/schemas/expected/{game}.yml")
+    current_file = Path(f"tests/games/schemas/current/{game}.yml")
 
     with open(expected_file, "r", encoding="utf8") as f:
         expected_schema = yaml.safe_load(f)
@@ -82,8 +82,8 @@ def test_written_schemas(request, game: Gametag):
     current_schema = get_schema(game)
     assert current_schema
 
-    expected_file = Path(f"tests/schemas/expected/{game}.yml")
-    current_file = Path(f"tests/schemas/current/{game}.yml")
+    expected_file = Path(f"tests/games/schemas/expected/{game}.yml")
+    current_file = Path(f"tests/games/schemas/current/{game}.yml")
 
     with open(expected_file, "r", encoding="utf8") as f:
         expected_schema = yaml.safe_load(f)
@@ -110,8 +110,8 @@ def test_expected_sheet(request, game: Gametag):
     version = find_version(test_sheet)
     assert version
 
-    expected_file = Path(f"tests/sheets/expected/{game}-{version}.yml")
-    current_file = Path(f"tests/sheets/current/{game}-{version}.yml")
+    expected_file = Path(f"tests/games/sheets/expected/{game}-{version}.yml")
+    current_file = Path(f"tests/games/sheets/current/{game}-{version}.yml")
 
     if not expected_file.is_file():
         current_file.parent.mkdir(parents=True, exist_ok=True)
@@ -146,8 +146,8 @@ def test_create_sheet(request, game: Gametag):
     version = find_version(test_sheet)
     assert version
 
-    expected_file = Path(f"tests/sheets/expected/{game}-{version}.yml")
-    current_file = Path(f"tests/sheets/current/{game}-{version}.yml")
+    expected_file = Path(f"tests/games/sheets/expected/{game}-{version}.yml")
+    current_file = Path(f"tests/games/sheets/current/{game}-{version}.yml")
 
     with open(expected_file, "r", encoding="utf8") as f:
         expected_sheet = yaml.safe_load(f)

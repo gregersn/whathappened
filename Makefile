@@ -57,11 +57,11 @@ dist: setup_dependencies
 
 .PHONY: update_schemas
 update_schemas:
-	cp tests/schemas/current/* tests/schemas/expected/
+	cp tests/games/schemas/current/* tests/games/schemas/expected/
 
 .PHONY: update_sheets
 update_sheets:
-	cp tests/sheets/current/* tests/sheets/expected/
+	cp tests/games/sheets/current/* tests/games/sheets/expected/
 
 # Clean out build artefacts:
 clean:
