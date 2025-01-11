@@ -18,7 +18,7 @@ from whathappened.core.sheets.schema.build import flatten_schema, get_schema, su
 from whathappened.core.sheets.schema.utils import migrate
 
 from .blueprints import bp, api
-from .models import Character
+from ..core.character.models import Character
 from .forms import EditForm, CreateForm, ImportForm
 from .forms import DeleteForm
 

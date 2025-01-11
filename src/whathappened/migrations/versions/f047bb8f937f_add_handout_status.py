@@ -9,7 +9,7 @@ Create Date: 2020-10-11 09:18:37.215880
 from alembic import op
 import sqlalchemy as sa
 
-from whathappened.campaign.models import HandoutStatusType
+from whathappened.core.campaign.models import HandoutStatusType
 
 # revision identifiers, used by Alembic.
 revision = "f047bb8f937f"

@@ -1,6 +1,6 @@
-from whathappened.campaign.models import Campaign, NPC, CampaignCharacter
+from whathappened.core.campaign.models import Campaign, NPC, CampaignCharacter
 from whathappened.models import UserProfile
-from whathappened.character.models import Character
+from whathappened.core.character.models import Character
 
 
 def test_create_campaign(db):

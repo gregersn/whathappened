@@ -11,7 +11,7 @@ from whathappened.auth.utils import login_required, current_user
 from whathappened.database import session
 
 from .blueprints import apibp
-from .models import Handout, Campaign, HandoutStatus, NPC, Message
+from ..core.campaign.models import Handout, Campaign, HandoutStatus, NPC, Message
 
 logger = logging.getLogger(__name__)
 

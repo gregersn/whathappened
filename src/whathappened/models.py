@@ -12,7 +12,7 @@ from whathappened.database.fields import GUID
 
 if typing.TYPE_CHECKING:
     from whathappened.auth.models import User
-    from whathappened.content.models import Folder
+    from whathappened.core.content.models import Folder
 
 
 class UserProfile(Base):
