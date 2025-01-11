@@ -1,4 +1,4 @@
-from whathappened.sheets.schema.build import (
+from whathappened.core.sheets.schema.build import (
     build_from_schema,
     flatten_schema,
     get_schema,

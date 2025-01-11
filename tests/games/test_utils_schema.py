@@ -2,7 +2,7 @@ from pathlib import Path
 import pytest
 from packaging.version import parse
 
-from whathappened.sheets.schema.utils import (
+from whathappened.core.sheets.schema.utils import (
     migrate,
     up_or_down,
     find_migration,

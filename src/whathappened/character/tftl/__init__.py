@@ -1,4 +1,4 @@
-from whathappened.sheets.mechanics.core import new_character
+from whathappened.core.sheets.mechanics.core import new_character
 
 CREATE_TEMPLATE = "character/tftl/create.html.jinja"
 CHARACTER_SHEET_TEMPLATE = "character/tftl/sheet.html.jinja"

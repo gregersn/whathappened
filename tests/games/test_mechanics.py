@@ -1,6 +1,6 @@
 import pytest
-from whathappened.sheets.mechanics.core import CharacterMechanics
-from whathappened.sheets.utils import create_sheet
+from whathappened.core.sheets.mechanics.core import CharacterMechanics
+from whathappened.core.sheets.utils import create_sheet
 
 
 @pytest.fixture

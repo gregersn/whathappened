@@ -1,6 +1,6 @@
 """DoD sheet mechanics."""
 
-from whathappened.sheets.mechanics.core import CharacterMechanics
+from whathappened.core.sheets.mechanics.core import CharacterMechanics
 
 
 class DoDMechanics(CharacterMechanics):
@@ -16,4 +16,4 @@ class DoDMechanics(CharacterMechanics):
 
     @property
     def description(self):
-        return f'{self.parent.body["character_sheet"]["personalia"]["slakte"]}, {self.parent.body["character_sheet"]["personalia"]["yrke"]}'
+        return f"{self.parent.body['character_sheet']['personalia']['slakte']}, {self.parent.body['character_sheet']['personalia']['yrke']}"

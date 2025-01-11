@@ -2,9 +2,9 @@
 
 from jsonschema import validate
 
-from whathappened.sheets.mechanics.coc7e import new_character
-from whathappened.sheets.schema.build import get_schema
-from whathappened.sheets.schema.utils import Migration
+from whathappened.core.sheets.mechanics.coc7e import new_character
+from whathappened.core.sheets.schema.build import get_schema
+from whathappened.core.sheets.schema.utils import Migration
 
 
 def v003_to_v004(data):

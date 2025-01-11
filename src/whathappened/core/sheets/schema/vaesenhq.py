@@ -4,7 +4,7 @@ from typing import Annotated, Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field
 import yaml
 
-from whathappened.sheets.schema.base import BaseSchema, Migration
+from whathappened.core.sheets.schema.base import BaseSchema, Migration
 
 
 def v004_to_v005(data):

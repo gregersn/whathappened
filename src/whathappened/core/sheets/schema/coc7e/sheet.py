@@ -4,7 +4,7 @@ from typing import Annotated, Literal, Optional, Union
 from pydantic import BaseModel, ConfigDict, Field
 import yaml
 
-from whathappened.sheets.schema.base import BaseSchema
+from whathappened.core.sheets.schema.base import BaseSchema
 
 
 class SheetInfo(BaseModel):

@@ -2,7 +2,7 @@
 
 import math
 
-from whathappened.sheets.schema.utils import migrate
+from whathappened.core.sheets.schema.utils import migrate
 
 
 def half(value):

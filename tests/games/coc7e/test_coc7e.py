@@ -7,13 +7,17 @@ import pytest
 from whathappened.auth.models import User  # noqa
 from whathappened.campaign.models import Campaign  # noqa
 
-from whathappened.sheets.mechanics.coc7e import new_character
-from whathappened.sheets.mechanics.coc7e.mechanics import CoCMechanics
-from whathappened.sheets.schema.base import CURRENT_SCHEMA_VERSION
-from whathappened.sheets.schema.build import validate
+from whathappened.core.sheets.mechanics.coc7e import new_character
+from whathappened.core.sheets.mechanics.coc7e.mechanics import CoCMechanics
+from whathappened.core.sheets.schema.base import CURRENT_SCHEMA_VERSION
+from whathappened.core.sheets.schema.build import validate
 from whathappened.character.models import Character
-from whathappened.sheets.mechanics.coc7e.convert import fifth, half, convert_from_dholes
-from whathappened.sheets.schema.utils import migrate
+from whathappened.core.sheets.mechanics.coc7e.convert import (
+    fifth,
+    half,
+    convert_from_dholes,
+)
+from whathappened.core.sheets.schema.utils import migrate
 
 BASEDIR = Path(__file__).parent.absolute()
 

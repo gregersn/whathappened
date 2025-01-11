@@ -3,9 +3,9 @@ from pathlib import Path
 import pytest
 import yaml
 
-from whathappened.sheets.schema.base import CURRENT_SCHEMA_VERSION
-from whathappened.sheets.schema.build import validate
-from whathappened.sheets.schema.utils import find_system, find_version, migrate
+from whathappened.core.sheets.schema.base import CURRENT_SCHEMA_VERSION
+from whathappened.core.sheets.schema.build import validate
+from whathappened.core.sheets.schema.utils import find_system, find_version, migrate
 
 expected_sheets = list(sorted(Path("tests/games/sheets/expected/").glob("*.yml")))
 
