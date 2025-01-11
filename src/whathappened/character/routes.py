@@ -7,7 +7,7 @@ from flask import redirect, url_for, jsonify
 from werkzeug.exceptions import abort
 
 from whathappened.auth.utils import login_required, current_user
-from whathappened.content.forms import ChooseFolderForm
+from whathappened.web.content.forms import ChooseFolderForm
 from whathappened.core.database import session
 from whathappened.core.database.pagination import paginate
 from whathappened.core.database.models import Invite, LogEntry
