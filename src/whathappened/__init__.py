@@ -119,7 +119,7 @@ def create_app(test_config=None) -> Flask:
     logger.debug("Registering blueprint profile")
     app.register_blueprint(profile.bp, url_prefix="/profile")
 
-    from .content.blueprints import bp as content_bp
+    from .web.content.blueprints import bp as content_bp
 
     logger.debug("Registering blueprint content")
     app.register_blueprint(content_bp, url_prefix="/content")

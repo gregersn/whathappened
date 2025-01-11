@@ -10,7 +10,7 @@ from whathappened.core.auth.models import User
 from whathappened.core.character.models import Character
 from whathappened.core.database.models import UserProfile, Invite
 from whathappened.core.database import session
-from whathappened.content.forms import ChooseFolderForm
+from whathappened.web.content.forms import ChooseFolderForm
 from whathappened.auth.utils import login_required, current_user
 
 from .blueprints import bp
