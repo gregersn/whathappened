@@ -124,7 +124,10 @@ def create_app(test_config=None) -> Flask:
     logger.debug("Registering blueprint content")
     app.register_blueprint(content_bp, url_prefix="/content")
 
-    from .userassets.blueprints import bp as userassets_bp, apibp as userassets_apibp
+    from .web.userassets.blueprints import (
+        bp as userassets_bp,
+        apibp as userassets_apibp,
+    )
 
     logger.debug("Registering assets module")
     app.register_blueprint(userassets_bp, url_prefix="/assets")

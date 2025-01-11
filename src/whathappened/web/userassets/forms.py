@@ -10,7 +10,7 @@ from wtforms.validators import DataRequired
 
 from whathappened.auth.utils import current_user
 from whathappened.web.forms.fields import QuerySelectField
-from ..core.userassets.models import Asset
+from ...core.userassets.models import Asset
 
 
 def available_folders():

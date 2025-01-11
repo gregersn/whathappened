@@ -14,7 +14,7 @@ from whathappened.auth.utils import login_required, current_user
 from .blueprints import bp
 from .forms import DeleteAssetFolderForm, DeleteAssetForm
 from .forms import UploadForm, NewFolderForm, MoveAssetForm
-from ..core.userassets.models import Asset, AssetFolder
+from ...core.userassets.models import Asset, AssetFolder
 from .utils import resolve_system_path
 
 logger = logging.getLogger(__name__)

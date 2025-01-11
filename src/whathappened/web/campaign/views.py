@@ -7,7 +7,7 @@ from werkzeug.exceptions import abort
 from werkzeug.wrappers import Response
 import markdown2
 
-from whathappened.userassets.forms import AssetSelectForm
+from whathappened.web.userassets.forms import AssetSelectForm
 from whathappened.core.database import session
 from whathappened.auth.utils import login_required, current_user
 
