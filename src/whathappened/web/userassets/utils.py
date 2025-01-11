@@ -3,7 +3,7 @@ from flask import current_app
 
 from typing import Union
 
-from ..core.userassets.models import Asset, AssetFolder
+from ...core.userassets.models import Asset, AssetFolder
 
 
 def resolve_system_path(o: Union[AssetFolder, Asset]):

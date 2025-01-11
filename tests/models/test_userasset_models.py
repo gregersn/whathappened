@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from whathappened.core.userassets.models import Asset, AssetFolder
-from whathappened.userassets.utils import resolve_system_path
+from whathappened.web.userassets.utils import resolve_system_path
 
 
 valid_asset_folder = AssetFolder(owner_id=1, title="Foolder")
