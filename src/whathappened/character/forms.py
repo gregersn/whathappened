@@ -7,7 +7,7 @@ from wtforms import ValidationError, SubmitField
 from wtforms import Field
 from wtforms.validators import DataRequired
 
-from whathappened.forms.fields import JsonField
+from whathappened.web.forms.fields import JsonField
 
 logger = logging.getLogger(__name__)
 
