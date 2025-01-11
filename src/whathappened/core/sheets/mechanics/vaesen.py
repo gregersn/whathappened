@@ -1,7 +1,7 @@
 """Vaesen sheet mechanics."""
 
 import logging
-from whathappened.sheets.mechanics.core import CharacterMechanics
+from whathappened.core.sheets.mechanics.core import CharacterMechanics
 
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ class VaesenMechanics(CharacterMechanics):
 
     @property
     def description(self):
-        return f'{self.parent.body["character_sheet"]["personalia"]["archetype"]}, {self.parent.body["character_sheet"]["personalia"]["description"]}'
+        return f"{self.parent.body['character_sheet']['personalia']['archetype']}, {self.parent.body['character_sheet']['personalia']['description']}"
 
     @property
     def info(self):
@@ -103,4 +103,4 @@ class VaesenHQMechanics(CharacterMechanics):
 
     @property
     def description(self):
-        return f'{self.parent.body["character_sheet"]["information"]["type_of_building"]} in {self.parent.body["character_sheet"]["information"]["location"]}'
+        return f"{self.parent.body['character_sheet']['information']['type_of_building']} in {self.parent.body['character_sheet']['information']['location']}"

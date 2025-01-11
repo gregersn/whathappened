@@ -1,7 +1,7 @@
 """Special cases for Call of Cthulhu."""
 
 import logging
-from whathappened.sheets.mechanics.coc7e import new_character
+from whathappened.core.sheets.mechanics.coc7e import new_character
 from .forms import CreateForm
 from .routes import view
 

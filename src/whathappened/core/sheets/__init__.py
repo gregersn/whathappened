@@ -1,14 +1,14 @@
 """Game sheets handling."""
 
-from whathappened.sheets.mechanics import core
-from whathappened.sheets.mechanics.core import register_game
-from whathappened.sheets.mechanics.coc7e.mechanics import CoCMechanics
-from whathappened.sheets.mechanics.dod.mechanics import DoDMechanics
-from whathappened.sheets.mechanics.landf import LandfMechanics
-from whathappened.sheets.mechanics.tftl.mechanics import TftlMechanics
-from whathappened.sheets.mechanics.vaesen import VaesenMechanics, VaesenHQMechanics
+from whathappened.core.sheets.mechanics import core
+from whathappened.core.sheets.mechanics.core import register_game
+from whathappened.core.sheets.mechanics.coc7e.mechanics import CoCMechanics
+from whathappened.core.sheets.mechanics.dod.mechanics import DoDMechanics
+from whathappened.core.sheets.mechanics.landf import LandfMechanics
+from whathappened.core.sheets.mechanics.tftl.mechanics import TftlMechanics
+from whathappened.core.sheets.mechanics.vaesen import VaesenMechanics, VaesenHQMechanics
 
-from whathappened.sheets.schema.base import Gametag
+from whathappened.core.sheets.schema.base import Gametag
 
 from .mechanics import coc7e  # noqa
 from .mechanics import tftl  # noqa

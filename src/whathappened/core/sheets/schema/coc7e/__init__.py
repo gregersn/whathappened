@@ -1,6 +1,6 @@
 """Call of Cthulhu schema."""
 
-from whathappened.sheets.schema.coc7e.sheet import CallofCthulhu7e
+from whathappened.core.sheets.schema.coc7e.sheet import CallofCthulhu7e
 
 from .migrations import migrations
 

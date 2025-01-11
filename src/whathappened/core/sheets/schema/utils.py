@@ -4,7 +4,7 @@ import copy
 from typing import Optional
 from packaging.version import Version, parse
 
-from whathappened.sheets.schema.base import (
+from whathappened.core.sheets.schema.base import (
     Migration,
     Gametag,
     migrations as base_migrations,
@@ -65,7 +65,9 @@ def find_migrations(system: Gametag) -> list[Migration]:
     try:
         import importlib
 
-        game_module = importlib.import_module(f"whathappened.sheets.schema.{system}")
+        game_module = importlib.import_module(
+            f"whathappened.core.sheets.schema.{system}"
+        )
         if hasattr(game_module, "migrations"):
             system_migrations = game_module.migrations
     except ImportError:

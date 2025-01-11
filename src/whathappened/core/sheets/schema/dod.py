@@ -7,7 +7,7 @@ import yaml
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from whathappened.sheets.schema.base import BaseSchema, Migration
+from whathappened.core.sheets.schema.base import BaseSchema, Migration
 
 
 def v007_to_008(data):

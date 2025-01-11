@@ -1,6 +1,6 @@
 """Lasers and feelings sheet mechanics."""
 
-from whathappened.sheets.mechanics.core import CharacterMechanics
+from whathappened.core.sheets.mechanics.core import CharacterMechanics
 
 
 class LandfMechanics(CharacterMechanics):
@@ -16,4 +16,4 @@ class LandfMechanics(CharacterMechanics):
 
     @property
     def description(self):
-        return f'{self.parent.body["character_sheet"]["style"]}, {self.parent.body["character_sheet"]["role"]}'
+        return f"{self.parent.body['character_sheet']['style']}, {self.parent.body['character_sheet']['role']}"

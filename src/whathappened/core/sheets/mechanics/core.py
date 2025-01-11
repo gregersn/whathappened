@@ -7,8 +7,12 @@ import base64
 import io
 from PIL import Image
 
-from whathappened.sheets.schema.base import Gametag
-from whathappened.sheets.schema.build import get_schema, build_from_schema, validate
+from whathappened.core.sheets.schema.base import Gametag
+from whathappened.core.sheets.schema.build import (
+    get_schema,
+    build_from_schema,
+    validate,
+)
 
 logger = logging.getLogger(__name__)
 

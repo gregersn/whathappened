@@ -10,7 +10,7 @@ from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 from jsonschema.exceptions import SchemaError
 from jsonschema.validators import Draft7Validator
 
-from whathappened.sheets.schema.base import Gametag
+from whathappened.core.sheets.schema.base import Gametag
 
 CHARACTER_SCHEMA_DIR = Path(__file__).parent.parent / "schema"
 
@@ -33,7 +33,9 @@ def get_schema(system: Gametag):
     try:
         import importlib
 
-        game_module = importlib.import_module(f"whathappened.sheets.schema.{system}")
+        game_module = importlib.import_module(
+            f"whathappened.core.sheets.schema.{system}"
+        )
 
         if issubclass(game_module.CharacterSheet, pydantic.BaseModel):
             logger.debug("Getting character sheet from pydantic")

@@ -6,7 +6,7 @@ from typing import Annotated, Literal, Optional, cast
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 import yaml
 
-from whathappened.sheets.schema.base import BaseSchema
+from whathappened.core.sheets.schema.base import BaseSchema
 
 
 class Archetype(str, Enum):
