@@ -11,7 +11,7 @@ from whathappened.core.database import Base
 from whathappened.core.database.fields import GUID
 
 if typing.TYPE_CHECKING:
-    from whathappened.auth.models import User
+    from whathappened.core.auth.models import User
     from whathappened.core.content.models import Folder
 
 

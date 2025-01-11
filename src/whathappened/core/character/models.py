@@ -10,7 +10,7 @@ from sqlalchemy.orm import reconstructor, relationship, backref, Mapped, mapped_
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import DateTime, JSON, String
 
-from whathappened.models import UserProfile
+from whathappened.core.database.models import UserProfile
 from whathappened.core.database.base import BaseModel
 from whathappened.core.sheets.mechanics.core import CharacterMechanics, MECHANICS
 from whathappened.core.content.mixins import BaseContent

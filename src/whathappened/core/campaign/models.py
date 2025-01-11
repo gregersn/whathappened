@@ -9,7 +9,7 @@ from sqlalchemy.sql.sqltypes import DateTime, Enum, Integer, String, Text
 
 from whathappened.core.database.base import Base, BaseModel
 from whathappened.core.content.mixins import BaseContent
-from whathappened.models import UserProfile
+from whathappened.core.database.models import UserProfile
 from whathappened.core.character.models import Character
 from whathappened.core.content.models import Folder
 

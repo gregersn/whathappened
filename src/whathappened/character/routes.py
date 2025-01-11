@@ -10,7 +10,7 @@ from whathappened.auth.utils import login_required, current_user
 from whathappened.content.forms import ChooseFolderForm
 from whathappened.core.database import session
 from whathappened.core.database.pagination import paginate
-from whathappened.models import Invite, LogEntry
+from whathappened.core.database.models import Invite, LogEntry
 from whathappened.core.sheets.mechanics import core
 from whathappened.core.sheets.mechanics.core import GameSystems
 from whathappened.core.sheets.schema.base import CURRENT_SCHEMA_VERSION
