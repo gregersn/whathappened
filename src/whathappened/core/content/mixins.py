@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy.orm import declared_attr
 
-from whathappened.database.fields import GUID
+from whathappened.core.database.fields import GUID
 
 
 class BaseContent:

@@ -16,7 +16,7 @@ from jinja2_webpack.filter import WebpackFilter
 from whathappened.config import Config
 from whathappened.email import mail
 
-from .database import init_db, session
+from .core.database import init_db, session
 
 try:
     from ._version import __version__
@@ -152,7 +152,7 @@ def create_app(test_config=None) -> Flask:
         return "Hello, World!"
 
     with app.app_context():
-        from .database import cli  # noqa: F401, Add some commands for database handling.
+        from .app import database  # noqa: F401, Add some commands for database handling.
 
         logger.debug("Registering assets")
         assets_env.url = app.static_url_path

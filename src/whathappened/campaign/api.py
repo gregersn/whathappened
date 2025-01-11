@@ -8,7 +8,7 @@ from sqlalchemy import or_
 from werkzeug.exceptions import abort
 
 from whathappened.auth.utils import login_required, current_user
-from whathappened.database import session
+from whathappened.core.database import session
 
 from .blueprints import apibp
 from ..core.campaign.models import Handout, Campaign, HandoutStatus, NPC, Message

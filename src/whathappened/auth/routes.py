@@ -6,7 +6,7 @@ from urllib.parse import urlsplit
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import login_user, logout_user
 
-from whathappened.database import session
+from whathappened.core.database import session
 
 from .utils import current_user
 from .forms import LoginForm, RegistrationForm

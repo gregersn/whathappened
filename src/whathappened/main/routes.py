@@ -5,7 +5,7 @@ from flask.json import jsonify
 from werkzeug.exceptions import abort
 
 from whathappened.models import Invite
-from whathappened.database import session, Base
+from whathappened.core.database import session, Base
 from whathappened.auth.utils import login_required, current_user
 
 from .blueprints import bp, api

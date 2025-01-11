@@ -8,8 +8,8 @@ from werkzeug.exceptions import abort
 
 from whathappened.auth.utils import login_required, current_user
 from whathappened.content.forms import ChooseFolderForm
-from whathappened.database import session
-from whathappened.database.pagination import paginate
+from whathappened.core.database import session
+from whathappened.core.database.pagination import paginate
 from whathappened.models import Invite, LogEntry
 from whathappened.core.sheets.mechanics import core
 from whathappened.core.sheets.mechanics.core import GameSystems

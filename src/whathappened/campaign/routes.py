@@ -9,7 +9,7 @@ from whathappened.main.forms import CreateInviteForm
 from whathappened.auth.models import User
 from whathappened.core.character.models import Character
 from whathappened.models import UserProfile, Invite
-from whathappened.database import session
+from whathappened.core.database import session
 from whathappened.content.forms import ChooseFolderForm
 from whathappened.auth.utils import login_required, current_user
 

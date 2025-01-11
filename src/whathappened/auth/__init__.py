@@ -3,7 +3,7 @@
 import logging
 
 from whathappened import login_manager
-from whathappened.database import session
+from whathappened.core.database import session
 from .models import User  # noqa E402
 from .forms import LoginForm, RegistrationForm  # noqa E402
 
