@@ -12,7 +12,7 @@ from whathappened.core.database import session
 from whathappened.auth.utils import login_required, current_user
 
 from .blueprints import bp
-from ..core.campaign.models import Campaign, Handout, HandoutGroup
+from ...core.campaign.models import Campaign, Handout, HandoutGroup
 from .forms import HandoutForm, DeleteHandoutForm, HandoutGroupForm
 
 logger = logging.getLogger(__name__)

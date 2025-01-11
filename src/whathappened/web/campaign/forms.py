@@ -11,7 +11,7 @@ from wtforms.widgets.core import HiddenInput, TextArea
 from whathappened.web.forms.fields import QuerySelectField, QuerySelectMultipleField
 from whathappened.auth.utils import current_user
 
-from ..core.campaign.models import HandoutStatus
+from ...core.campaign.models import HandoutStatus
 
 
 class CreateForm(FlaskForm):

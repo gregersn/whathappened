@@ -138,8 +138,8 @@ def create_app(test_config=None) -> Flask:
     app.register_blueprint(character_api, url_prefix="/api/character")
     character.register_assets(assets_env)
 
-    from .campaign.blueprints import bp as campaign_bp, apibp as campaign_apibp
-    from . import campaign
+    from .web.campaign.blueprints import bp as campaign_bp, apibp as campaign_apibp
+    from .web import campaign
 
     app.register_blueprint(campaign_bp, url_prefix="/campaign")
     app.register_blueprint(campaign_apibp, url_prefix="/api/campaign")

@@ -14,7 +14,7 @@ from whathappened.content.forms import ChooseFolderForm
 from whathappened.auth.utils import login_required, current_user
 
 from .blueprints import bp
-from ..core.campaign.models import Campaign, CampaignCharacter
+from ...core.campaign.models import Campaign, CampaignCharacter
 from .forms import (
     CreateForm,
     DeleteForm,
@@ -29,7 +29,7 @@ from .forms import (
     CampaignAssociationForm,
 )
 from .forms import RemovePlayerForm, NPCTransferForm, MessagePlayerForm
-from ..core.campaign.models import HandoutStatus, NPC, Message
+from ...core.campaign.models import HandoutStatus, NPC, Message
 
 from . import api  # noqa
 
