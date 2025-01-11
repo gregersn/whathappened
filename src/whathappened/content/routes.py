@@ -2,14 +2,14 @@ from flask import render_template, redirect
 
 from whathappened.database import session
 
-from whathappened.character.models import Character
-from whathappened.campaign import models as campaignmodels
+from whathappened.core.character.models import Character
+from whathappened.core.campaign import models as campaignmodels
 from whathappened.auth.utils import login_required, current_user
 
 from .blueprints import bp
 
 from .forms import NewFolderForm
-from .models import Folder
+from ..core.content.models import Folder
 
 
 @bp.route("/<uuid:folder_id>/", methods=["GET", "POST"])

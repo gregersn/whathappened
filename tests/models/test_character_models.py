@@ -1,4 +1,4 @@
-from whathappened.character.models import Character
+from whathappened.core.character.models import Character
 
 
 def test_create_character(db):

@@ -5,13 +5,13 @@ import json
 import pytest
 
 from whathappened.auth.models import User  # noqa
-from whathappened.campaign.models import Campaign  # noqa
+from whathappened.core.campaign.models import Campaign  # noqa
 
 from whathappened.core.sheets.mechanics.coc7e import new_character
 from whathappened.core.sheets.mechanics.coc7e.mechanics import CoCMechanics
 from whathappened.core.sheets.schema.base import CURRENT_SCHEMA_VERSION
 from whathappened.core.sheets.schema.build import validate
-from whathappened.character.models import Character
+from whathappened.core.character.models import Character
 from whathappened.core.sheets.mechanics.coc7e.convert import (
     fifth,
     half,

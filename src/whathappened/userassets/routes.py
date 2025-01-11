@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 import logging
 
 from typing import Optional
@@ -15,8 +14,8 @@ from whathappened.auth.utils import login_required, current_user
 from .blueprints import bp
 from .forms import DeleteAssetFolderForm, DeleteAssetForm
 from .forms import UploadForm, NewFolderForm, MoveAssetForm
-from .models import Asset, AssetFolder
-
+from ..core.userassets.models import Asset, AssetFolder
+from .utils import resolve_system_path
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +103,7 @@ def delete_folder(id):
 
         if str(folder.id) != deletefolderform.id.data:
             logger.debug(
-                f"Wrong ids specified {folder.id} " f"and {deletefolderform.id.data}"
+                f"Wrong ids specified {folder.id} and {deletefolderform.id.data}"
             )
             abort(403)
 
@@ -144,8 +143,8 @@ def upload_file(folder_id=None):
         if fileobject.filename:
             filename = secure_filename(fileobject.filename)
 
-            folder.system_path.mkdir(parents=True, exist_ok=True)
-            fileobject.save(folder.system_path / filename)
+            resolve_system_path(folder).mkdir(parents=True, exist_ok=True)
+            fileobject.save(resolve_system_path(folder) / filename)
 
             asset = Asset(
                 filename=fileobject.filename, folder=folder, owner=current_user.profile
@@ -169,7 +168,7 @@ def view(fileid, filename):
     assetname = secure_filename(str(userasset.filename))
     logger.debug("Sending file from %s, %s", filepath, assetname)
 
-    full_dir = Path(userasset.folder.system_path)
+    full_dir = resolve_system_path(userasset.folder)
     logger.debug("%s/%s", full_dir.absolute(), assetname)
     return send_from_directory(str(full_dir.absolute()), assetname)
 
@@ -233,13 +232,15 @@ def move(fileid, filename):
         if asset.owner != current_user.profile:
             abort(403)
         destinationfolder = form.folder.data
-        full_src_folder = asset.folder.system_path
-        full_dst_folder = destinationfolder.system_path
+        full_src_folder = resolve_system_path(asset.folder)
+        full_dst_folder = resolve_system_path(destinationfolder)
         logger.debug(full_src_folder)
         logger.debug(full_dst_folder)
         if destinationfolder is not None:
             logger.debug(
-                "Move %s to %s", asset.system_path, destinationfolder.system_path
+                "Move %s to %s",
+                resolve_system_path(asset),
+                resolve_system_path(destinationfolder),
             )
             if not full_dst_folder.is_dir():
                 full_dst_folder.mkdir(parents=True)

@@ -4,7 +4,7 @@ from whathappened import create_app
 
 from whathappened.auth.models import User, Role, UserRoles
 from whathappened.profile import UserProfile
-from whathappened.character.models import Character
+from whathappened.core.character.models import Character
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s: %(name)s %(message)s", level=logging.DEBUG

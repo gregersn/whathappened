@@ -13,8 +13,8 @@ from sqlalchemy.sql.sqltypes import DateTime, JSON, String
 from whathappened.models import UserProfile
 from whathappened.database.base import BaseModel
 from whathappened.core.sheets.mechanics.core import CharacterMechanics, MECHANICS
-from whathappened.content.mixins import BaseContent
-from whathappened.content.models import Folder
+from whathappened.core.content.mixins import BaseContent
+from whathappened.core.content.models import Folder
 from whathappened.core.sheets.schema.utils import find_version
 
 logger = logging.getLogger(__name__)

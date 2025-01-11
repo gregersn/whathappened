@@ -8,10 +8,10 @@ from sqlalchemy.sql.schema import ForeignKey, Table, Column
 from sqlalchemy.sql.sqltypes import DateTime, Enum, Integer, String, Text
 
 from whathappened.database.base import Base, BaseModel
-from whathappened.content.mixins import BaseContent
+from whathappened.core.content.mixins import BaseContent
 from whathappened.models import UserProfile
-from whathappened.character.models import Character
-from whathappened.content.models import Folder
+from whathappened.core.character.models import Character
+from whathappened.core.content.models import Folder
 
 
 campaign_players = Table(

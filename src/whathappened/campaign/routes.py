@@ -7,14 +7,14 @@ from werkzeug.exceptions import abort
 
 from whathappened.main.forms import CreateInviteForm
 from whathappened.auth.models import User
-from whathappened.character.models import Character
+from whathappened.core.character.models import Character
 from whathappened.models import UserProfile, Invite
 from whathappened.database import session
 from whathappened.content.forms import ChooseFolderForm
 from whathappened.auth.utils import login_required, current_user
 
 from .blueprints import bp
-from .models import Campaign, CampaignCharacter
+from ..core.campaign.models import Campaign, CampaignCharacter
 from .forms import (
     CreateForm,
     DeleteForm,
@@ -29,7 +29,7 @@ from .forms import (
     CampaignAssociationForm,
 )
 from .forms import RemovePlayerForm, NPCTransferForm, MessagePlayerForm
-from .models import HandoutStatus, NPC, Message
+from ..core.campaign.models import HandoutStatus, NPC, Message
 
 from . import api  # noqa
 

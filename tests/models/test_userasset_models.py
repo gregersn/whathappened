@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from whathappened.userassets.models import Asset, AssetFolder
+from whathappened.core.userassets.models import Asset, AssetFolder
+from whathappened.userassets.utils import resolve_system_path
 
 
 valid_asset_folder = AssetFolder(owner_id=1, title="Foolder")
@@ -23,8 +24,9 @@ def test_valid_folder(new_session):
     assert foolder.path == Path(foolder.title), foolder.path
 
     assert (
-        foolder.system_path == Path("uploads") / str(foolder.id) / foolder.title
-    ), foolder.system_path
+        resolve_system_path(foolder)
+        == Path("uploads") / str(foolder.id) / foolder.title
+    ), resolve_system_path(foolder)
 
     new_session.rollback()
 
@@ -66,7 +68,7 @@ def test_asset(new_session):
 
     assert new_asset
     assert new_asset.path == folder.get_path() / "foo.png"
-    assert new_asset.system_path == folder.system_path / "foo.png"
+    assert resolve_system_path(new_asset) == resolve_system_path(folder) / "foo.png"
 
     new_session.delete(new_asset)
     new_session.commit()

@@ -1,6 +1,6 @@
 from markupsafe import Markup
 from whathappened.campaign import forms
-from whathappened.character.models import Character
+from whathappened.core.character.models import Character
 
 
 def test_add_character_form(app):
