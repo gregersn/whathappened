@@ -8,7 +8,7 @@ from sqlalchemy.sql.sqltypes import String
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from whathappened.core.database import Base, session
-from whathappened.models import UserProfile
+from whathappened.core.database.models import UserProfile
 
 logger = logging.getLogger(__name__)
 

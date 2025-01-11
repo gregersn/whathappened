@@ -7,7 +7,7 @@ from sqlalchemy import String, ForeignKey
 from whathappened.core.database import Base
 from whathappened.core.database.fields import GUID
 
-from whathappened.models import UserProfile
+from whathappened.core.database.models import UserProfile
 
 
 class Folder(Base):

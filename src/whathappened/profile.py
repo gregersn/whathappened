@@ -7,7 +7,7 @@ from whathappened.core.database import session
 bp = Blueprint("profile", __name__)
 
 # from whathappened.character.models import Character  # noqa F401
-from .models import UserProfile  # noqa F401
+from .core.database.models import UserProfile  # noqa F401
 
 logger = logging.getLogger(__name__)
 

@@ -9,7 +9,7 @@ from sqlalchemy.sql.sqltypes import String
 from werkzeug.utils import secure_filename
 
 from whathappened.core.database import Base
-from whathappened.models import GUID, UserProfile
+from whathappened.core.database.models import GUID, UserProfile
 
 logger = logging.getLogger(__name__)
 

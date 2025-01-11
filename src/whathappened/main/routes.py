@@ -4,7 +4,7 @@ from flask import render_template, redirect, url_for
 from flask.json import jsonify
 from werkzeug.exceptions import abort
 
-from whathappened.models import Invite
+from whathappened.core.database.models import Invite
 from whathappened.core.database import session, Base
 from whathappened.auth.utils import login_required, current_user
 

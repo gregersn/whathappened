@@ -5,7 +5,7 @@ from whathappened.core.auth.models import User
 from whathappened.core.database import init_db, db
 from whathappened.core.database.base import Base, BaseModel
 from whathappened.core.database.pagination import paginate
-from whathappened.models import LogEntry
+from whathappened.core.database.models import LogEntry
 
 
 class DataModel(Base):
