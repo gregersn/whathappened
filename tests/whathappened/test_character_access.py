@@ -1,7 +1,7 @@
-from whathappened.auth.models import User
-from whathappened.campaign.models import Campaign, CampaignCharacter
-from whathappened.character.models import Character
-from whathappened.models import UserProfile
+from whathappened.core.auth.models import User
+from whathappened.core.campaign.models import Campaign, CampaignCharacter
+from whathappened.core.character.models import Character
+from whathappened.core.models import UserProfile
 
 
 def test_access_to_own_character(new_session):

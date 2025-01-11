@@ -97,7 +97,7 @@
             content: |
                 [program:whathappened]
                 environment=WHATHAPPENED_SETTINGS=/home/vagrant/whathappened_config.env
-                command=/home/vagrant/.venv/bin/gunicorn -b localhost:9631 -w 4 "whathappened:create_app()"
+                command=/home/vagrant/.venv/bin/gunicorn -b localhost:9631 -w 4 "whathappened:web.create_app()"
                 directory=/home/vagrant
                 user=vagrant
                 autostart=true

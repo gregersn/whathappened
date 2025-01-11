@@ -6,10 +6,10 @@ from pathlib import Path
 from pytest_dependency import depends
 
 from whathappened import sheets
-from whathappened.sheets.schema.base import Gametag
-from whathappened.sheets.schema.build import get_schema, flatten_schema, validate
-from whathappened.sheets.schema.utils import find_version
-from whathappened.sheets.utils import create_sheet
+from whathappened.core.sheets.schema.base import Gametag
+from whathappened.core.sheets.schema.build import get_schema, flatten_schema, validate
+from whathappened.core.sheets.schema.utils import find_version
+from whathappened.core.sheets.utils import create_sheet
 
 
 SYSTEMS: list[str] = list(typing.get_args(Gametag))

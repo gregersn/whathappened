@@ -1,5 +1,6 @@
+from whathappened.web import create_app
 from ..conftest import Conf
-from whathappened import create_app, assets
+from whathappened import assets
 
 
 def test_config():

@@ -1,5 +1,5 @@
 from whathappened.campaign.models import Campaign, NPC, CampaignCharacter
-from whathappened.models import UserProfile
+from whathappened.core.models import UserProfile
 from whathappened.character.models import Character
 
 

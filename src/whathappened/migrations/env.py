@@ -1,5 +1,5 @@
 from __future__ import with_statement
-from whathappened.database import Base
+from whathappened.core.database import Base
 
 import logging
 from logging.config import fileConfig
