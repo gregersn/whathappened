@@ -1,5 +1,5 @@
 from markupsafe import Markup
-from whathappened.campaign import forms
+from whathappened.web.campaign import forms
 from whathappened.core.character.models import Character
 
 

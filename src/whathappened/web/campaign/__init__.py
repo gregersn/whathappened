@@ -4,7 +4,7 @@ from webassets.env import Environment
 from . import routes  # noqa: F401,E402 isort:skip
 from . import views  # noqa: F401, E402 isort:skip
 from . import api  # noqa: F401, E402 isort:skip
-from ..core.campaign.models import Campaign  # noqa: F401, E402 isort:skip
+from ...core.campaign.models import Campaign  # noqa: F401, E402 isort:skip
 
 
 def register_assets(assets: Environment):
