@@ -7,8 +7,8 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.sql.sqltypes import DateTime, Text
 from sqlalchemy import String, ForeignKey
 
-from whathappened.database import Base
-from whathappened.database.fields import GUID
+from whathappened.core.database import Base
+from whathappened.core.database.fields import GUID
 
 if typing.TYPE_CHECKING:
     from whathappened.auth.models import User

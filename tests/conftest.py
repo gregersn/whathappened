@@ -3,10 +3,10 @@ from pathlib import Path
 import pytest
 from sqlalchemy import NullPool, create_engine
 from whathappened import create_app, assets
-from whathappened.database import db as _db
+from whathappened.core.database import db as _db
 
 from whathappened.config import Settings
-from whathappened.database.base import Base, Session
+from whathappened.core.database.base import Base, Session
 
 basedir = Path(__file__).parent.absolute()
 

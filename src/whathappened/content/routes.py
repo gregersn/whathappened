@@ -1,6 +1,6 @@
 from flask import render_template, redirect
 
-from whathappened.database import session
+from whathappened.core.database import session
 
 from whathappened.core.character.models import Character
 from whathappened.core.campaign import models as campaignmodels

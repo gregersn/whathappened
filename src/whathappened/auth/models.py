@@ -12,7 +12,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
 from flask import current_app
 
-from whathappened.database import Base, session
+from whathappened.core.database import Base, session
 from whathappened.models import UserProfile
 
 logger = logging.getLogger(__name__)

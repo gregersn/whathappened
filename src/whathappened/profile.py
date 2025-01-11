@@ -2,7 +2,7 @@ import logging
 from sqlalchemy import desc
 from flask import Blueprint, render_template, request
 from whathappened.auth.utils import login_required, current_user
-from whathappened.database import session
+from whathappened.core.database import session
 
 bp = Blueprint("profile", __name__)
 
