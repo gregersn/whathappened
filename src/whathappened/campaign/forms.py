@@ -8,7 +8,7 @@ from wtforms import IntegerField, SelectMultipleField
 from wtforms.validators import DataRequired, Email
 from wtforms.widgets.core import HiddenInput, TextArea
 
-from whathappened.forms.fields import QuerySelectField, QuerySelectMultipleField
+from whathappened.web.forms.fields import QuerySelectField, QuerySelectMultipleField
 from whathappened.auth.utils import current_user
 
 from ..core.campaign.models import HandoutStatus

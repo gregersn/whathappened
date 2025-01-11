@@ -3,7 +3,7 @@ from flask_wtf.form import FlaskForm
 from wtforms import StringField
 from wtforms.validators import DataRequired, UUID, Optional
 
-from whathappened.forms.fields.alchemy import QuerySelectField
+from whathappened.web.forms.fields.alchemy import QuerySelectField
 from whathappened.auth.utils import current_user
 
 
