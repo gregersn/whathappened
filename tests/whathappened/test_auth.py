@@ -1,5 +1,5 @@
 from flask import session
-from whathappened.auth.models import User
+from whathappened.core.auth.models import User
 
 
 def test_register(app, db):

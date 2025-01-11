@@ -1,7 +1,7 @@
 import unittest
 from whathappened import create_app, assets
 from whathappened.core.database import db
-from whathappened.auth.models import User
+from whathappened.core.auth.models import User
 
 from ..conftest import Conf as Config
 

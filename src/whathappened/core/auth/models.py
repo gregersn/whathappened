@@ -1,16 +1,11 @@
 """Auth models."""
 
 import logging
-from time import time
-import jwt
 
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import String
 from werkzeug.security import check_password_hash, generate_password_hash
-
-from flask_login import UserMixin
-from flask import current_app
 
 from whathappened.core.database import Base, session
 from whathappened.models import UserProfile
@@ -18,7 +13,7 @@ from whathappened.models import UserProfile
 logger = logging.getLogger(__name__)
 
 
-class User(Base, UserMixin):
+class User(Base):
     """User account."""
 
     __tablename__ = "user_account"
@@ -48,28 +43,49 @@ class User(Base, UserMixin):
         """Verify user account password."""
         return check_password_hash(str(self.password_hash), password)
 
-    def get_reset_password_token(self, expires_in: int = 600):
-        """Create token for password reset."""
-        return jwt.encode(
-            {"reset_password": self.id, "exp": time() + expires_in},
-            current_app.config["SECRET_KEY"],
-            algorithm="HS256",
-        )
-
-    @staticmethod
-    def verify_reset_password_token(token: str):
-        """Verify password reset token."""
-        user_id = jwt.decode(
-            token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
-        )["reset_password"]
-        return session.get(User, user_id)
-
     def has_role(self, role: str):
         """Check if user has role."""
         for r in self.roles:
             if r.name == role:
                 return True
         return False
+
+    __hash__ = object.__hash__
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_authenticated(self):
+        return self.is_active
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        try:
+            return str(self.id)
+        except AttributeError:
+            raise NotImplementedError("No `id` attribute - override `get_id`") from None
+
+    def __eq__(self, other):
+        """
+        Checks the equality of two `UserMixin` objects using `get_id`.
+        """
+        if isinstance(other, User):
+            return self.get_id() == other.get_id()
+        return NotImplemented
+
+    def __ne__(self, other):
+        """
+        Checks the inequality of two `UserMixin` objects using `get_id`.
+        """
+        equal = self.__eq__(other)
+        if equal is NotImplemented:
+            return NotImplemented
+        return not equal
 
 
 class Role(Base):

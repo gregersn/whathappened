@@ -8,10 +8,10 @@ from flask_login import login_user, logout_user
 
 from whathappened.core.database import session
 
-from .utils import current_user
+from .utils import current_user, verify_reset_password_token
 from .forms import LoginForm, RegistrationForm
 from .forms import ResetPasswordRequestForm, ResetPasswordForm
-from .models import User
+from ..core.auth.models import User
 
 from .utils import send_password_reset_email
 from .blueprints import bp
@@ -89,7 +89,7 @@ def reset_password(token: str):
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
 
-    user = User.verify_reset_password_token(token)
+    user = verify_reset_password_token(token)
     form = ResetPasswordForm()
     if form.validate_on_submit():
         if user is not None:
