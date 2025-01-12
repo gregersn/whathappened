@@ -1,5 +1,5 @@
 from ..conftest import Conf
-from whathappened import create_app
+from whathappened.web import create_app
 from whathappened.web.main import assets
 
 

@@ -1,9 +1,9 @@
 import logging
 
-from whathappened import create_app
+from whathappened.web import create_app
 
 from whathappened.core.auth.models import User, Role, UserRoles
-from whathappened.profile import UserProfile
+from whathappened.web.profile import UserProfile
 from whathappened.core.character.models import Character
 
 logging.basicConfig(

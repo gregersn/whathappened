@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 from sqlalchemy import NullPool, create_engine
-from whathappened import create_app
+from whathappened.web import create_app
 from whathappened.web.main import assets
 from whathappened.core.database import db as _db
 

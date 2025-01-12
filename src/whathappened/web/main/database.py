@@ -7,7 +7,7 @@ from alembic.config import Config
 from alembic import command
 
 
-CONFIG_FILE = Path(current_app.root_path) / "migrations/alembic.ini"
+CONFIG_FILE = Path(current_app.root_path).parent / "migrations/alembic.ini"
 
 
 @click.group()
@@ -54,12 +54,12 @@ def history():
 @click.option(
     "--sql",
     is_flag=True,
-    help=("Don't emit SQL to database - dump to standard output " "instead"),
+    help=("Don't emit SQL to database - dump to standard output instead"),
 )
 @click.option(
     "--tag",
     default=None,
-    help=('Arbitrary "tag" name - can be used by custom env.py ' "scripts"),
+    help=('Arbitrary "tag" name - can be used by custom env.py scripts'),
 )
 @click.option(
     "-x",
@@ -88,12 +88,12 @@ def upgrade(directory, sql, tag, x_arg, revision):
 @click.option(
     "--sql",
     is_flag=True,
-    help=("Don't emit SQL to database - dump to standard output " "instead"),
+    help=("Don't emit SQL to database - dump to standard output instead"),
 )
 @click.option(
     "--tag",
     default=None,
-    help=('Arbitrary "tag" name - can be used by custom env.py ' "scripts"),
+    help=('Arbitrary "tag" name - can be used by custom env.py scripts'),
 )
 @click.option(
     "-x",

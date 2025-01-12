@@ -4,10 +4,10 @@ from flask import Blueprint, render_template, request
 from whathappened.web.auth.utils import login_required, current_user
 from whathappened.core.database import session
 
-bp = Blueprint("profile", __name__)
+bp = Blueprint("profile", __name__, template_folder="../templates")
 
 # from whathappened.character.models import Character  # noqa F401
-from .core.database.models import UserProfile  # noqa F401
+from ..core.database.models import UserProfile  # noqa F401
 
 logger = logging.getLogger(__name__)
 

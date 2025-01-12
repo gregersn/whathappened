@@ -82,7 +82,7 @@
                 SQLALCHEMY_DATABASE_URI="mysql+pymysql://whathappened:letsroll@localhost:3306/whathappened"
 
       - name: update whathappened database
-        shell: WHATHAPPENED_SETTINGS=/home/vagrant/whathappened_config.env FLASK_APP=whathappened ~/.venv/bin/flask db upgrade
+        shell: WHATHAPPENED_SETTINGS=/home/vagrant/whathappened_config.env FLASK_APP=whathappened.web ~/.venv/bin/flask db upgrade
 
       - name: install gunicorn
         pip:
