@@ -1,4 +1,4 @@
-from whathappened.character.forms import ImportForm
+from whathappened.web.character.forms import ImportForm
 
 
 def test_edit_json(app):
