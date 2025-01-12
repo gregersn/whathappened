@@ -5,7 +5,7 @@ from flask import render_template, redirect, url_for, flash, request
 from sqlalchemy import and_, or_, desc
 from werkzeug.exceptions import abort
 
-from whathappened.main.forms import CreateInviteForm
+from whathappened.web.main.forms import CreateInviteForm
 from whathappened.core.auth.models import User
 from whathappened.core.character.models import Character
 from whathappened.core.database.models import UserProfile, Invite

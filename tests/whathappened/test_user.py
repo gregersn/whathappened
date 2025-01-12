@@ -1,6 +1,6 @@
 import unittest
 from whathappened import create_app
-from whathappened.main import assets
+from whathappened.web.main import assets
 from whathappened.core.database import db
 from whathappened.core.auth.models import User
 
