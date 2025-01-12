@@ -105,12 +105,12 @@ def create_app(test_config=None) -> Flask:
     logger.debug("Registering blueprint auth")
     app.register_blueprint(auth_bp)
 
-    from . import main
+    from .web import main
 
     logger.debug("Registering blueprint main")
     app.register_blueprint(main.bp)
 
-    from .main import assets
+    from .web.main import assets
 
     app.register_blueprint(assets.bp)
 
@@ -155,7 +155,7 @@ def create_app(test_config=None) -> Flask:
         return "Hello, World!"
 
     with app.app_context():
-        from .main import database  # noqa: F401, Add some commands for database handling.
+        from .web.main import database  # noqa: F401, Add some commands for database handling.
 
         logger.debug("Registering assets")
         assets_env.url = app.static_url_path
