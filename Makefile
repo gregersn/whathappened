@@ -12,7 +12,7 @@ FRONTEND_MARKER := frontend/$(MARKER_FILENAME)
 # Default target:
 .PHONY: dev_server
 dev_server: frontend
-	@FLASK_APP=src/whathappened FLASK_DEBUG=1 $(VENV_FLASK) run --extra-files ./src/whathappened/static/manifest.json
+	@FLASK_APP=src/whathappened.web FLASK_DEBUG=1 $(VENV_FLASK) run --extra-files ./src/whathappened/static/manifest.json
 
 # Install Python dependencies:
 .PHONY: setup_dependencies
@@ -28,7 +28,7 @@ setup_dependencies: .venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
 # Initialise database:
 .PHONY: setup
 setup: setup_dependencies
-	@FLASK_APP=src/whathappened FLASK_DEBUG=1 $(VENV_FLASK) db upgrade
+	@FLASK_APP=src/whathappened.web FLASK_DEBUG=1 $(VENV_FLASK) db upgrade
 
 # Install npm dependencies:
 $(FRONTEND_MARKER): frontend/package.json
@@ -38,7 +38,7 @@ $(FRONTEND_MARKER): frontend/package.json
 # Build the Flask frontend:
 .PHONY: frontend
 frontend: $(FRONTEND_MARKER) setup
-	@FLASK_APP=src/whathappened FLASK_DEBUG=1 $(VENV_FLASK) main build
+	@FLASK_APP=src/whathappened.web FLASK_DEBUG=1 $(VENV_FLASK) main build
 
 .PHONY: coverage
 coverage: .venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
@@ -51,7 +51,7 @@ dist: setup_dependencies
 	$(RMRF) src/whathappened/static/js/
 	$(RMRF) src/whathappened/static/css/
 	cd frontend; npm run dist
-	@FLASK_APP=src/whathappened $(VENV_FLASK) assets build
+	@FLASK_APP=src/whathappened.web $(VENV_FLASK) assets build
 	@$(VENV_PYTHON) -m build
 
 

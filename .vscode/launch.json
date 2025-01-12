@@ -30,7 +30,7 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                "FLASK_APP": "src/whathappened",
+                "FLASK_APP": "src/whathappened.web",
                 "FLASK_DEBUG": "1",
                 "LOGLEVEL": "DEBUG",
                 "SQLALCHEMY_WARN_20": "1"
@@ -50,7 +50,7 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                "FLASK_APP": "src/whathappened",
+                "FLASK_APP": "src/whathappened.web",
                 "FLASK_DEBUG": "1"
             },
             "args": ["db", "upgrade"],

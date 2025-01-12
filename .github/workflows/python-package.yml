@@ -70,8 +70,8 @@ jobs:
                   if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
             - name: Check if database needs migration.
               run: |
-                  FLASK_APP=./src/whathappened flask db upgrade
-                  FLASK_APP=./src/whathappened flask db check
+                  FLASK_APP=./src/whathappened.web flask db upgrade
+                  FLASK_APP=./src/whathappened.web flask db check
               continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
 
     test-frontend:
@@ -103,8 +103,8 @@ jobs:
                   cd frontend; npm install; cd ..
             - name: Build assets
               run: |
-                  FLASK_APP=src/whathappened flask assets build
-                  FLASK_APP=src/whathappened flask main build
+                  FLASK_APP=src/whathappened.web flask assets build
+                  FLASK_APP=src/whathappened.web flask main build
               continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
             - name: Test with pytest and make coverage report
               run: |

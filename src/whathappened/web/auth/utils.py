@@ -10,7 +10,7 @@ from flask_login import (
 )
 
 from whathappened.core.auth.models import User
-from whathappened.email import send_mail
+from whathappened.web.email import send_mail
 from whathappened.core.database import session
 
 
