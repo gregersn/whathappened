@@ -5,7 +5,7 @@ import logging
 from flask import Blueprint, current_app
 from flask.cli import with_appcontext
 
-from webassets.script import CommandLineEnvironment
+from pelican.plugins.webassets.vendor.webassets.script import CommandLineEnvironment
 
 bp = Blueprint("assets", __name__)
 

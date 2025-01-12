@@ -7,8 +7,8 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 
-from webassets import Environment as AssetsEnvironment
-from webassets.bundle import Bundle
+from pelican.plugins.webassets.vendor.webassets import Environment as AssetsEnvironment
+from pelican.plugins.webassets.vendor.webassets.bundle import Bundle
 from jinja2_webpack import Environment as WebpackEnvironment
 from jinja2_webpack.filter import WebpackFilter
 
@@ -87,7 +87,7 @@ def create_app(test_config=None) -> Flask:
     mail.init_app(app)
     app.jinja_env.globals["whathappened_version"] = __version__
     app.jinja_env.add_extension("jinja2.ext.do")
-    app.jinja_env.add_extension("webassets.ext.jinja2.AssetsExtension")
+    app.jinja_env.add_extension("pelican.plugins.webassets.vendor.webassets.ext.jinja2.AssetsExtension")
 
     app.jinja_env.filters["uberfilter"] = uberfilter
 
