@@ -133,8 +133,8 @@ def create_app(test_config=None) -> Flask:
     app.register_blueprint(userassets_bp, url_prefix="/assets")
     app.register_blueprint(userassets_apibp, url_prefix="/api/assets")
 
-    from .character.blueprints import bp as character_bp, api as character_api
-    from . import character
+    from .web.character.blueprints import bp as character_bp, api as character_api
+    from .web import character
 
     logger.debug("Registering blueprint character")
     app.register_blueprint(character_bp, url_prefix="/character")

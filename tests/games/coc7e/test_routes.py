@@ -1,4 +1,4 @@
-from whathappened.character import half, fifth
+from whathappened.web.character import half, fifth
 
 
 def test_half():
