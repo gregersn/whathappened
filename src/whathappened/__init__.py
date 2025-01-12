@@ -100,7 +100,7 @@ def create_app(test_config=None) -> Flask:
     app.jinja_env.assets_environment = assets_env  # pyright: ignore[reportGeneralTypeIssues]
 
     # Register blueprints
-    from .auth.blueprints import bp as auth_bp
+    from .web.auth.blueprints import bp as auth_bp
 
     logger.debug("Registering blueprint auth")
     app.register_blueprint(auth_bp)

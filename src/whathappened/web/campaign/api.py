@@ -7,7 +7,7 @@ from flask import request, jsonify
 from sqlalchemy import or_
 from werkzeug.exceptions import abort
 
-from whathappened.auth.utils import login_required, current_user
+from whathappened.web.auth.utils import login_required, current_user
 from whathappened.core.database import session
 
 from .blueprints import apibp

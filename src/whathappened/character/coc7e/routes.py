@@ -2,7 +2,7 @@ from flask import redirect, render_template, url_for, flash
 
 from whathappened.core.database.models import LogEntry, Invite
 from whathappened.core.database import session
-from whathappened.auth.utils import current_user
+from whathappened.web.auth.utils import current_user
 
 from ..forms import SkillForm, SubskillForm
 

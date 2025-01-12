@@ -4,7 +4,7 @@ from wtforms import StringField
 from wtforms.validators import DataRequired, UUID, Optional
 
 from whathappened.web.forms.fields.alchemy import QuerySelectField
-from whathappened.auth.utils import current_user
+from whathappened.web.auth.utils import current_user
 
 
 class NewFolderForm(FlaskForm):

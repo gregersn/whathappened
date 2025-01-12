@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.exceptions import abort
 
 from whathappened.core.database import session
-from whathappened.auth.utils import login_required, current_user
+from whathappened.web.auth.utils import login_required, current_user
 
 from .blueprints import bp
 from .forms import DeleteAssetFolderForm, DeleteAssetForm
