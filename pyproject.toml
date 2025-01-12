@@ -36,7 +36,7 @@ dependencies = [
     "PyYAML",
     "SQLAlchemy",
     "werkzeug==3.1.3",
-    "webassets",
+    "pelican-webassets",
     "jinja2-webpack",
     "pydantic",
     "pydantic-settings",
