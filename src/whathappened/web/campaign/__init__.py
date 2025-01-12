@@ -1,4 +1,4 @@
-from webassets.env import Environment
+from pelican.plugins.webassets.vendor.webassets.env import Environment
 
 
 from . import routes  # noqa: F401,E402 isort:skip
