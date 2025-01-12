@@ -6,7 +6,7 @@ from werkzeug.exceptions import abort
 
 from whathappened.core.database.models import Invite
 from whathappened.core.database import session, Base
-from whathappened.auth.utils import login_required, current_user
+from whathappened.web.auth.utils import login_required, current_user
 
 from .blueprints import bp, api
 

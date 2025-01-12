@@ -9,7 +9,7 @@ import markdown2
 
 from whathappened.web.userassets.forms import AssetSelectForm
 from whathappened.core.database import session
-from whathappened.auth.utils import login_required, current_user
+from whathappened.web.auth.utils import login_required, current_user
 
 from .blueprints import bp
 from ...core.campaign.models import Campaign, Handout, HandoutGroup

@@ -4,7 +4,7 @@ import logging
 
 from whathappened import login_manager
 from whathappened.core.database import session
-from ..core.auth.models import User  # noqa E402
+from ...core.auth.models import User  # noqa E402
 from .forms import LoginForm, RegistrationForm  # noqa E402
 
 logger = logging.getLogger(__name__)

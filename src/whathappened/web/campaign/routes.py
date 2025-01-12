@@ -11,7 +11,7 @@ from whathappened.core.character.models import Character
 from whathappened.core.database.models import UserProfile, Invite
 from whathappened.core.database import session
 from whathappened.web.content.forms import ChooseFolderForm
-from whathappened.auth.utils import login_required, current_user
+from whathappened.web.auth.utils import login_required, current_user
 
 from .blueprints import bp
 from ...core.campaign.models import Campaign, CampaignCharacter
