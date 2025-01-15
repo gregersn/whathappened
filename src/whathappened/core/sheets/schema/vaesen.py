@@ -36,6 +36,15 @@ class SheetInfo(BaseModel):
 class Attributes(BaseModel):
     """Character attributes."""
 
+    model_config = ConfigDict(
+        json_schema_extra={
+            "constant": True,
+            "widget": "table",
+            "heading": False,
+            "hide_title": True,
+        }
+    )
+
     physique: int = Field(
         ge=2, le=5, default=2, description="How big and strong you are."
     )
@@ -50,6 +59,15 @@ class Attributes(BaseModel):
 
 class Skills(BaseModel):
     """Character skills."""
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "constant": True,
+            "widget": "table",
+            "heading": False,
+            "hide_title": True,
+        }
+    )
 
     agility: int = Field(ge=0, le=5, default=0, title="Agility (Physique)")
     close_combat: int = Field(ge=0, le=5, default=0, title="Close combat (Physique)")
@@ -113,6 +131,15 @@ class Equipment(BaseModel):
 class PhysicalConditions(BaseModel):
     """Current physical conditions for the character."""
 
+    model_config = ConfigDict(
+        json_schema_extra={
+            "constant": True,
+            "widget": "table",
+            "heading": False,
+            "hide_title": True,
+        }
+    )
+
     exhausted: bool = False
     battered: bool = False
     wounded: bool = False
@@ -122,6 +149,15 @@ class PhysicalConditions(BaseModel):
 class MentalConditions(BaseModel):
     """Current mental conditions for the character."""
 
+    model_config = ConfigDict(
+        json_schema_extra={
+            "constant": True,
+            "widget": "table",
+            "heading": False,
+            "hide_title": True,
+        }
+    )
+
     angry: bool = False
     frightened: bool = False
     hopeless: bool = False
@@ -130,6 +166,8 @@ class MentalConditions(BaseModel):
 
 class Conditions(BaseModel):
     """A characters current conditions."""
+
+    model_config = ConfigDict(json_schema_extra={"columns": 2})
 
     physical: PhysicalConditions = Field(
         title="Physical", default_factory=PhysicalConditions

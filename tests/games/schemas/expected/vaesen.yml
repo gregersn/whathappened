@@ -24,7 +24,10 @@ $defs:
     title: Armors
     type: string
   Attributes:
+    constant: true
     description: Character attributes.
+    heading: false
+    hide_title: true
     properties:
       empathy:
         default: 2
@@ -56,6 +59,7 @@ $defs:
         type: integer
     title: Attributes
     type: object
+    widget: table
   Character:
     description: Character information.
     properties:
@@ -98,6 +102,7 @@ $defs:
     title: Characteristics
     type: object
   Conditions:
+    columns: 2
     description: A characters current conditions.
     properties:
       mental:
@@ -122,7 +127,10 @@ $defs:
     title: Equipment
     type: object
   MentalConditions:
+    constant: true
     description: Current mental conditions for the character.
+    heading: false
+    hide_title: true
     properties:
       angry:
         default: false
@@ -142,6 +150,7 @@ $defs:
         type: boolean
     title: MentalConditions
     type: object
+    widget: table
   Miscellaneous:
     description: Miscellaneous information about the character.
     properties:
@@ -260,7 +269,10 @@ $defs:
     title: Personality
     type: object
   PhysicalConditions:
+    constant: true
     description: Current physical conditions for the character.
+    heading: false
+    hide_title: true
     properties:
       battered:
         default: false
@@ -280,6 +292,7 @@ $defs:
         type: boolean
     title: PhysicalConditions
     type: object
+    widget: table
   SheetInfo:
     description: Basic information about the character sheet.
     properties:
@@ -298,7 +311,10 @@ $defs:
     title: SheetInfo
     type: object
   Skills:
+    constant: true
     description: Character skills.
+    heading: false
+    hide_title: true
     properties:
       agility:
         default: 0
@@ -374,6 +390,7 @@ $defs:
         type: integer
     title: Skills
     type: object
+    widget: table
   Weapon:
     description: Weapons data.
     properties:
