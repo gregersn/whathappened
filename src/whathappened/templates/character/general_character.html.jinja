@@ -58,6 +58,27 @@
 </section>
 {%- endmacro %}
 
+{%- macro render_table_layout(object, path='', key=None)%}
+<section>
+    <h4>{{ object.title }}</h4>
+    <table id="tbl{{object.title}}"
+        class="{%- if editable and not object.constant %} editableTable2{%- endif %}" data-field="{{ path }}">
+        <tbody>
+                {% for column, properties in object.properties.items() %}
+            <tr>
+                <td data-property="{{column}}" data-type="{{ properties.type }}"
+                    data-blank="{{ properties.default if properties.default is not none else '-'}}">
+                    {{(properties.title or column)|title
+                    if not
+                    properties.hide_heading}}</td>
+                <td data-property="{{column}}" data-blank="{{ properties.default if properties.default is not none else '-'}}">{{render_item(properties, path +"." + column)}}</td>
+            </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+</section>
+{%- endmacro %}
+
 {%- macro render_portrait(object, path='', key=None) %}
     <div class="portrait {%- if editable %} editable{%- endif %}" data-type="picture" data-field="{{ path }}">
         {% if character.mechanics.attribute(path) %}<img src="data:image/jpg;base64, {{ character.mechanics.attribute(path) }}" />{% else %}<img src="{{ url_for('static', filename='images/placeholderportrait.png')}}" />{% endif %}
@@ -66,7 +87,11 @@
 
 {%- macro render_widget(widget, object, path='', key=None) %}
 {% if widget == "table"%}
+{% if object.type == 'object'%}
+{{ render_table_layout(object, path, key) }}
+{% else %}
 {{ render_table(object, path, key) }}
+{% endif %}
 {% elif widget == "progress" %}
 {{ render_progress(path, character.mechanics.attribute(path), object.maximum) }}
 {% elif widget == "portrait" %}
