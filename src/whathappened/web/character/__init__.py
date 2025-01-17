@@ -1,47 +1,18 @@
 """Module for the interaction with character sheets in What Happened?"""
 
-import math
 from webassets.env import Environment
+
+from whathappened.core.sheets.schema.utils import fifth, half
+from whathappened.web.character.utils import datetimeformat, valuetostring
 
 from . import routes  # noqa: E402, F401 isort:skip
 from .blueprints import bp
 
 
-@bp.app_template_filter("datetimeformat")
-def datetimeformat(value, formatstring: str = "%Y-%m-%d %H:%M:%S"):
-    """Jinja filter for formatting datetimes."""
-    return value.strftime(formatstring)
-
-
-@bp.app_template_filter("valuetostring")
-def valuetostring(value):
-    if isinstance(value, dict):
-        return ", ".join(f"{k}: {v}" for k, v in value.items())
-    return value
-
-
-@bp.app_template_filter("half")
-def half(value):
-    if not value:
-        return 0
-    if isinstance(value, str):
-        try:
-            value = int(value, 10)
-        except ValueError:
-            return 0
-    return math.floor(value / 2)
-
-
-@bp.app_template_filter("fifth")
-def fifth(value):
-    if not value:
-        return 0
-    if isinstance(value, str):
-        try:
-            value = int(value, 10)
-        except ValueError:
-            return 0
-    return math.floor(value / 5)
+bp.add_app_template_filter(datetimeformat)
+bp.add_app_template_filter(valuetostring)
+bp.add_app_template_filter(half)
+bp.add_app_template_filter(fifth)
 
 
 def register_assets(assets: Environment):

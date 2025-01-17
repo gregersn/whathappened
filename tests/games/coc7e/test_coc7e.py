@@ -25,11 +25,17 @@ BASEDIR = Path(__file__).parent.absolute()
 def test_fifth():
     assert fifth("50") == 10
     assert fifth(50) == 10
+    assert fifth("100") == 20
+    assert fifth("54") == 10
+    assert fifth("foo") == 0
 
 
 def test_half():
     assert half("20") == 10
     assert half(20) == 10
+    assert half("100") == 50
+    assert half("55") == 27
+    assert half("foo") == 0
 
 
 @pytest.fixture(name="dholes_sheet")
