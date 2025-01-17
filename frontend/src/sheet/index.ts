@@ -65,7 +65,7 @@ function init_editable() {
                 make_element_editable(element, save, "area");
                 break;
             case "picture":
-                init_set_portrait(element.getAttribute("data-field"));
+                //init_set_portrait(element.getAttribute("data-field"));
                 break;
             default:
                 make_element_editable(element, save, dataType as edit_type);
