@@ -27,15 +27,15 @@
     <tr><th>Title</th><th>System</th><th>Actions</th><th>In campaigns</th><th>As NPC in</th></tr>
     {% for character in characters %}
         <tr>
-            <td><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }}</a></td>
+            <td><a class="action" href="{{ url_for('character.view', character_id=character.id) }}">{{ character.title }}</a></td>
             <td>{{ character.system }}</td>
-            <td><a href="{{ url_for('character.edit', id=character.id) }}">Edit</a></td>
+            <td><a href="{{ url_for('character.edit', character_id=character.id) }}">Edit</a></td>
             <td>{% if character.campaign_associations %}{% for campaign_association in character.campaign_associations %}
-                <a href="{{ url_for('campaign.view', id=campaign_association.campaign.id) }}">{{ campaign_association.campaign.title }}</a> 
+                <a href="{{ url_for('campaign.view', campaign_id=campaign_association.campaign.id) }}">{{ campaign_association.campaign.title }}</a> 
                 {% endfor %}{% endif %}
             </td>
             <td>{% if character.npc %}{% for npc in character.npc %}
-                <a href="{{ url_for('campaign.view', id=npc.campaign.id) }}">{{ npc.campaign.title }}</a> 
+                <a href="{{ url_for('campaign.view', campaign_id=npc.campaign.id) }}">{{ npc.campaign.title }}</a> 
                 {% endfor %}{% endif %}
             </td>
         </tr>
@@ -67,7 +67,7 @@
             <h3>Joined campaigns</h3>
             <ul>
             {% for campaign in profile.campaigns_as_player %}
-                <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a> (by {{ campaign.user.user.username }})</li>
+                <li><a class="action" href="{{ url_for('campaign.view', campaign_id=campaign.id) }}">{{ campaign.title }}</a> (by {{ campaign.user.user.username }})</li>
             {% endfor %}
             </ul>
         </div>
@@ -77,7 +77,7 @@
             {% if profile.campaigns %}
                 <ul>
                 {% for campaign in profile.campaigns %}
-                    <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title}}</a></li>
+                    <li><a class="action" href="{{ url_for('campaign.view', campaign_id=campaign.id) }}">{{ campaign.title}}</a></li>
                 {% endfor %}
                 </ul>
             {% endif %}

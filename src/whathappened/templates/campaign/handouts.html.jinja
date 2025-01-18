@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block header %}
-    <h2>Handouts for <a href="{{ url_for('campaign.view', id=campaign.id) }}">'{{ campaign.title }}'</a></h2>
+    <h2>Handouts for <a href="{{ url_for('campaign.view', campaign_id=campaign.id) }}">'{{ campaign.title }}'</a></h2>
 {% endblock %}
 
 
