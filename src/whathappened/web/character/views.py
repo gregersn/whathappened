@@ -78,7 +78,7 @@ def render_character(
                 ...
 
         if character.system is None or character.validate():
-            return redirect(url_for("character.edit", id=character.id))
+            return redirect(url_for("character.edit", character_id=character.id))
 
     character_module = (
         globals()[character.system] if character.system in globals() else core

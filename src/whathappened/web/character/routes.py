@@ -59,7 +59,7 @@ def create(character_type: str):
         )
         session.add(c)
         session.commit()
-        return redirect(url_for("character.view", id=c.id))
+        return redirect(url_for("character.view", character_id=c.id))
 
     form.system.data = character_type
     return render_template(template, form=form, type=type)
@@ -100,7 +100,7 @@ def import_character(
         )
         session.add(c)
         session.commit()
-        return redirect(url_for("character.view", id=c.id))
+        return redirect(url_for("character.view", character_id=c.id))
     return render_template("character/import.html.jinja", form=form, type=None)
 
 
@@ -280,7 +280,7 @@ def edit(character_id: int):
         session.add(logentry)
 
         session.commit()
-        return redirect(url_for("character.view", id=c.id))
+        return redirect(url_for("character.view", character_id=c.id))
 
     form.submit.label.text = "Save"
 

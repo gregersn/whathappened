@@ -16,7 +16,7 @@
 {% block content %}
 {%- if subskillform %}
 <div class="form-subskill" id="subskillform" hidden>
-    <form method="POST" action="{{ url_for('character.view', id=character.id) }}">
+    <form method="POST" action="{{ url_for('character.view', character_id=character.id) }}">
         {{ subskillform.hidden_tag() }}
         {{ subskillform.parent() }}
         {{ subskillform.name(placeholder="New subskill...")}} {{ subskillform.submit()}}
@@ -140,7 +140,7 @@
             {% endfor %}
             {% if editable and skillform%}
             <div class="skill newskill">
-                <form method="POST" action="{{ url_for('character.view', id=character.id) }}">
+                <form method="POST" action="{{ url_for('character.view', character_id=character.id) }}">
                     {{ skillform.hidden_tag() }} {{ skillform.name(placeholder="New skill...")}}
                 </form>
             </div>

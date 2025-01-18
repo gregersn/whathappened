@@ -1,3 +1,5 @@
+"""User assets routes."""
+
 import os
 import logging
 
@@ -24,6 +26,7 @@ logger = logging.getLogger(__name__)
 @bp.route("/")
 @login_required
 def index(folder_id: Optional[str] = None):
+    """User assets main view."""
     if current_user.profile.assetfolders.count() < 1:
         logger.debug("Creating initial folder")
         rootfolder = AssetFolder(title="assets", owner=current_user.profile)
@@ -65,6 +68,7 @@ def index(folder_id: Optional[str] = None):
 )
 @login_required
 def create_folder(folder_id=None):
+    """Create user asset folder."""
     folderform = NewFolderForm(prefix="newfolderform")
     if folderform.validate_on_submit():
         logger.debug("Create a new folder")
@@ -79,15 +83,16 @@ def create_folder(folder_id=None):
 
 
 @bp.route(
-    "/folder/<uuid:id>/delete",
+    "/folder/<uuid:folder_id>/delete",
     methods=[
         "POST",
     ],
 )
 @login_required
-def delete_folder(id):
+def delete_folder(folder_id):
+    """Delete user asset folder."""
     deletefolderform = DeleteAssetFolderForm(prefix="deletefolderform")
-    folder = session.get(AssetFolder, id)
+    folder = session.get(AssetFolder, folder_id)
     assert folder
     if not folder.owner == current_user.profile:
         logger.debug("Not deleting folder for other person")
@@ -103,7 +108,7 @@ def delete_folder(id):
 
         if str(folder.id) != deletefolderform.id.data:
             logger.debug(
-                f"Wrong ids specified {folder.id} and {deletefolderform.id.data}"
+                "Wrong ids specified %s and %s", folder.id, deletefolderform.id.data
             )
             abort(403)
 
@@ -115,7 +120,7 @@ def delete_folder(id):
         session.commit()
         return redirect(url_for("userassets.index", folder_id=parent_id))
 
-    return redirect(url_for("userassets.index", folder_id=id))
+    return redirect(url_for("userassets.index", folder_id=folder_id))
 
 
 @bp.route(
@@ -132,6 +137,7 @@ def delete_folder(id):
 )
 @login_required
 def upload_file(folder_id=None):
+    """Upload file."""
     form = UploadForm(prefix="fileupload")
     if form.validate_on_submit():
         fileobject = form.uploaded.data
@@ -176,6 +182,7 @@ def view(fileid, filename):
 @bp.route("/edit/<uuid:fileid>/<string:filename>")
 @login_required
 def edit(fileid, filename):
+    """Edit asset."""
     userasset = session.get(Asset, fileid)
     assert userasset
     if filename != userasset.filename:
@@ -202,6 +209,7 @@ def edit(fileid, filename):
 )
 @login_required
 def delete(fileid, filename):
+    """Delete asset."""
     logger.debug("Delete asset")
     asset = session.get(Asset, fileid)
     assert asset
@@ -224,6 +232,7 @@ def delete(fileid, filename):
 )
 @login_required
 def move(fileid, filename):
+    """Move asset."""
     asset = session.get(Asset, fileid)
     assert asset
     redirect_id = asset.folder.id

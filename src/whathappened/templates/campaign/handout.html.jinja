@@ -22,7 +22,7 @@
 
 {% block header %}
 <h2><a href="{{ url_for('campaign.handout_view', campaign_id=handout.campaign.id) }}">Handout</a>: '{{ handout.title }}'
-    in <a href="{{url_for('campaign.view', id=handout.campaign.id)}}">{{ handout.campaign.title }}</a></h2>
+    in <a href="{{url_for('campaign.view', campaign_id=handout.campaign.id)}}">{{ handout.campaign.title }}</a></h2>
 {% endblock %}
 
 

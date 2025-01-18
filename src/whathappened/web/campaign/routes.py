@@ -56,7 +56,7 @@ def join(code: str):
             campaign.players.append(player)
             session.commit()
 
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     flash("Valid code")
 
@@ -96,7 +96,7 @@ def view(campaign_id: int):
     is_owner = current_user and current_user.profile.id == campaign.user_id
 
     logger.debug("Viewing campagin %s", campaign.title)
-    logger.debug("There are %s players", len(campaign.players))
+    logger.debug("There are %s players", campaign.players.count())
     logger.debug("There are %s characters", len(campaign.character_associations))
 
     if not is_player and not is_owner:
@@ -113,7 +113,7 @@ def view(campaign_id: int):
             player = User.query.filter_by(email=inviteform.email.data).first().profile
             campaign.players.append(player)
             session.commit()
-            return redirect(url_for("campaign.view", id=campaign_id))
+            return redirect(url_for("campaign.view", campaign_id=campaign_id))
 
         invites = Invite.query_for(campaign)
 
@@ -124,7 +124,7 @@ def view(campaign_id: int):
             session.add(npc)
             session.commit()
 
-            return redirect(url_for("campaign.view", id=campaign_id))
+            return redirect(url_for("campaign.view", campaign_id=campaign_id))
 
     if characterform.submit.data and characterform.validate_on_submit():
         print("Adding character")
@@ -141,7 +141,7 @@ def view(campaign_id: int):
         else:
             flash("Character is already added to campaign")
 
-        return redirect(url_for("campaign.view", id=campaign_id))
+        return redirect(url_for("campaign.view", campaign_id=campaign_id))
 
     createinviteform.submit.label.text = "Create share link."
 
@@ -208,19 +208,19 @@ def edit(campaign_id: int):
             session.commit()
             return redirect("/")
         else:
-            return redirect(url_for("campaign.edit", id=campaign.id))
+            return redirect(url_for("campaign.edit", campaign_id=campaign.id))
 
     if form.submit.data and form.validate_on_submit():
         form.populate_obj(campaign)
         session.add(campaign)
         session.commit()
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     if folderform.choose.data and folderform.validate_on_submit():
         print("Folder form submitted!")
         campaign.folder = folderform.folder_id.data
         session.commit()
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     folderform.folder_id.data = campaign.folder
     invites = Invite.query_for(campaign).count()
@@ -252,7 +252,7 @@ def create():
         c = Campaign(title=form.title.data, user_id=current_user.profile.id)
         session.add(c)
         session.commit()
-        return redirect(url_for("campaign.view", id=c.id))
+        return redirect(url_for("campaign.view", campaign_id=c.id))
     return render_template("campaign/create.html.jinja", form=form)
 
 
@@ -276,7 +276,7 @@ def remove_character(campaign_id: int, characterid: int):
     if form.validate_on_submit():
         session.delete(session.get(CampaignCharacter, (char.id, campaign.id)))
         session.commit()
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     form.id.data = campaign.id
     form.character.data = char.id
@@ -306,7 +306,7 @@ def association_settings(campaign_id: int, characterid: int):
         form.populate_obj(association)
         session.add(association)
         session.commit()
-        return redirect(url_for("campaign.view", id=association.campaign_id))
+        return redirect(url_for("campaign.view", campaign_id=association.campaign_id))
 
     form.campaign_id.data = association.campaign_id
     form.character_id.data = association.character_id
@@ -334,7 +334,7 @@ def remove_npc(campaign_id: int, characterid: int):
         if npc.campaign.id == campaign_id:
             session.delete(npc)
             session.commit()
-        return redirect(url_for("campaign.view", id=campaign_id))
+        return redirect(url_for("campaign.view", campaign_id=campaign_id))
 
     form.id.data = npc.campaign.id
     form.character.data = npc.character.id
@@ -386,7 +386,7 @@ def manage_npc(campaign_id: int, npcid: int):
             # Commit changes
             session.commit()
 
-            return redirect(url_for("campaign.view", id=campaign.id))
+            return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     transferform.player.choices = [
         (p.id, p.user.username) for p in npc.campaign.players
@@ -410,7 +410,7 @@ def remove_player(campaign_id: int, playerid: int):
     if form.validate_on_submit():
         campaign.players.remove(player)
         session.commit()
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     form.id.data = campaign.id
     form.player.data = player.id
@@ -449,7 +449,7 @@ def message_player(campaign_id: int, player_id: Optional[int] = None):
         session.add(message)
         session.commit()
 
-        return redirect(url_for("campaign.view", id=campaign.id))
+        return redirect(url_for("campaign.view", campaign_id=campaign.id))
 
     form.campaign_id.data = campaign.id
     form.to_id.data = player_id

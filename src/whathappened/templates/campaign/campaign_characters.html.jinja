@@ -9,12 +9,12 @@
                         <div class="userinfo">
                         <em>Owner: {{ character_association.character.player.display_name or character_association.character.player.user.username }}</em><br />
                         {% if character_association.character.viewable_by(current_user.profile)%}
-                        [<a href="{{url_for('character.view', id=character_association.character.id)}}" {%- if character_association.character.player.user == current_user %} class="strong"{%- endif %}>View</a>]{%endif %}
+                        [<a href="{{url_for('character.view', character_id=character_association.character.id)}}" {%- if character_association.character.player.user == current_user %} class="strong"{%- endif %}>View</a>]{%endif %}
                         {%- if editable or character_association.character.player.user == current_user %}
-                            [<a href="{{ url_for('campaign.remove_character', id=campaign.id, characterid=character_association.character.id) }}">Remove</a>]
+                            [<a href="{{ url_for('campaign.remove_character', campaign_id=campaign.id, characterid=character_association.character.id) }}">Remove</a>]
                         {%- endif %}
                         {%- if character_association.character.player.user == current_user %}
-                            [<a href="{{ url_for('campaign.association_settings', id=campaign.id, characterid=character_association.character.id)}}">Sharing</a>]
+                            [<a href="{{ url_for('campaign.association_settings', campaign_id=campaign.id, characterid=character_association.character.id)}}">Sharing</a>]
                         {%- endif %}
                         </div>
                     </div>

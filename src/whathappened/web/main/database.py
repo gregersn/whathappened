@@ -1,3 +1,5 @@
+"""Database functions for CLI."""
+
 from pathlib import Path
 import click
 from flask import current_app
@@ -12,7 +14,7 @@ CONFIG_FILE = Path(current_app.root_path).parent / "migrations/alembic.ini"
 
 @click.group()
 def db():
-    pass
+    """CLI group for database functions."""
 
 
 @db.command()
@@ -123,7 +125,7 @@ def downgrade(directory, sql=False, tag=None, x_arg=None, revision="-1"):
 )
 @click.option("-m", "--message", help=("Migration messasge"), required=True)
 @with_appcontext
-def revision(directory, message):
+def create_revision(directory, message):
     """Create new revision."""
     alembic_cfg = Config(directory or str(CONFIG_FILE))
     alembic_cfg.set_main_option(
