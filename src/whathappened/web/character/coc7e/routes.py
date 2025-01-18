@@ -26,7 +26,7 @@ def view(character_id, character, editable):
 
         character.store_data()
         session.commit()
-        return redirect(url_for("character.view", id=character_id))
+        return redirect(url_for("character.view", character_id=character_id))
 
     skillform = SkillForm(prefix="skillform")
     if editable and skillform.data and skillform.validate_on_submit():
@@ -34,7 +34,7 @@ def view(character_id, character, editable):
         for skill in skills:
             if skillform.name.data == skill["name"]:
                 flash("Skill already exists")
-                return redirect(url_for("character.view", id=character_id))
+                return redirect(url_for("character.view", character_id=character_id))
 
         character.add_skill(skillform.name.data)
         character.store_data()
@@ -44,7 +44,7 @@ def view(character_id, character, editable):
         session.add(logentry)
 
         session.commit()
-        return redirect(url_for("character.view", id=character_id))
+        return redirect(url_for("character.view", character_id=character_id))
 
     shared = Invite.query_for(character).count()
 

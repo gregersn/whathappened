@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block content %}
-Character <a href="{{ url_for('character.view', id=npc.character.id) }}">{{ npc.character.title }}</a> in 
-<a href="{{url_for('campaign.view', id=npc.campaign.id) }}">{{ npc.campaign.title }}</a>
+Character <a href="{{ url_for('character.view', character_id=npc.character.id) }}">{{ npc.character.title }}</a> in 
+<a href="{{url_for('campaign.view', campaign_id=npc.campaign.id) }}">{{ npc.campaign.title }}</a>
 <section>
     <h3>Give to player</h3>
     <form action="" method="post" novalidate>

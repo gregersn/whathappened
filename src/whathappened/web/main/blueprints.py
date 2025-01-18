@@ -1,3 +1,5 @@
+"""Web main blueprints."""
+
 from flask import Blueprint
 
 bp = Blueprint("main", __name__)

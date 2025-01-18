@@ -1,3 +1,5 @@
+"""Userassets blueprints."""
+
 from flask import Blueprint
 
 bp = Blueprint("userassets", __name__)

@@ -6,10 +6,10 @@
                     {{ npc.character.name }} ({{ npc.character.age }})<br />
                     {{ npc.character.description }}<br />
                     {%- if editable or npc.character.player.user == current_user %}
-                        [<a href="{{url_for('character.view', id=npc.character.id)}}" {%- if npc.character.player.user == current_user %} class="strong"{%- endif %}>View</a>]
-                        [<a href="{{ url_for('campaign.remove_npc', id=campaign.id, characterid=npc.id) }}">Remove</a>]
+                        [<a href="{{url_for('character.view', character_id=npc.character.id)}}" {%- if npc.character.player.user == current_user %} class="strong"{%- endif %}>View</a>]
+                        [<a href="{{ url_for('campaign.remove_npc', campaign_id=campaign.id, characterid=npc.id) }}">Remove</a>]
                         <input type="checkbox" autocomplete="off" data-campaign="{{ campaign.id }}" data-npc="{{ npc.id }}" {%- if npc.visible %}checked{%- endif %} class="visibility" />
-                        [<a href="{{ url_for('campaign.manage_npc', id=campaign.id, npcid=npc.id) }}">Manage</a>]
+                        [<a href="{{ url_for('campaign.manage_npc', campaign_id=campaign.id, npcid=npc.id) }}">Manage</a>]
                     {%- endif %}
                     </div>
                     <div class="portrait">
@@ -37,11 +37,11 @@
 
 {% block menu %}
     {% if editable %}
-        <a href="{{ url_for('campaign.edit', id=campaign.id) }}">Edit</a>
+        <a href="{{ url_for('campaign.edit', campaign_id=campaign.id) }}">Edit</a>
         | 
         <a class="action" href="{{ url_for('userassets.index') }}">Assets</a>
         |
-        <a class="action" href="{{ url_for('campaign.export', id=campaign.id) }}">Export</a>
+        <a class="action" href="{{ url_for('campaign.export', campaign_id=campaign.id) }}">Export</a>
     {% endif %}
     {% if current_user.profile in campaign.players %}
         | <a href="">Leave</a>
@@ -85,7 +85,7 @@
             <li {%- if player.user == current_user %} class="strong"{%- endif %}>
                 {{ player.user.username }}
                 {%- if editable %}
-                    [<a href="{{ url_for('campaign.remove_player', id=campaign.id, playerid=player.id) }}">Remove</a>]
+                    [<a href="{{ url_for('campaign.remove_player', campaign_id=campaign.id, playerid=player.id) }}">Remove</a>]
                     [<a href="{{ url_for('campaign.message_player', campaign_id=campaign.id, player_id=player.id) }}">Message</a>]
                 {%- endif %}
             </li>
