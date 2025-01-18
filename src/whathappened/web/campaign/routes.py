@@ -1,3 +1,5 @@
+"""Campaign routes."""
+
 import logging
 from typing import Optional
 
@@ -31,7 +33,7 @@ from .forms import (
 from .forms import RemovePlayerForm, NPCTransferForm, MessagePlayerForm
 from ...core.campaign.models import HandoutStatus, NPC, Message
 
-from . import api  # noqa
+from . import api  # pylint: disable=unused-import  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +41,7 @@ logger = logging.getLogger(__name__)
 @bp.route("/<code>", methods=("GET", "POST"))
 @login_required
 def join(code: str):
+    """Join a campaign."""
     inv = session.get(Invite, code)
 
     if inv is None or inv.table != Campaign.__tablename__:
@@ -65,11 +68,12 @@ def join(code: str):
     )
 
 
-@bp.route("/<int:id>", methods=("GET", "POST"))
+@bp.route("/<int:campaign_id>", methods=("GET", "POST"))
 @login_required
-def view(id: int):
+def view(campaign_id: int):
+    """Show a campaign."""
     invites = None
-    campaign: Campaign = session.get(Campaign, id)
+    campaign: Campaign = session.get(Campaign, campaign_id)
     if not campaign:
         abort(404)
 
@@ -91,9 +95,9 @@ def view(id: int):
     is_player = current_user.profile in campaign.players
     is_owner = current_user and current_user.profile.id == campaign.user_id
 
-    logger.debug(f"Viewing campagin {campaign.title}")
-    logger.debug(f"There are {campaign.players.count()} players")
-    logger.debug(f"There are {len(campaign.character_associations)} characters")
+    logger.debug("Viewing campagin %s", campaign.title)
+    logger.debug("There are %s players", len(campaign.players))
+    logger.debug("There are %s characters", len(campaign.character_associations))
 
     if not is_player and not is_owner:
         abort(404, "This is not the campaign your are looking for.")
@@ -109,7 +113,7 @@ def view(id: int):
             player = User.query.filter_by(email=inviteform.email.data).first().profile
             campaign.players.append(player)
             session.commit()
-            return redirect(url_for("campaign.view", id=id))
+            return redirect(url_for("campaign.view", id=campaign_id))
 
         invites = Invite.query_for(campaign)
 
@@ -120,7 +124,7 @@ def view(id: int):
             session.add(npc)
             session.commit()
 
-            return redirect(url_for("campaign.view", id=id))
+            return redirect(url_for("campaign.view", id=campaign_id))
 
     if characterform.submit.data and characterform.validate_on_submit():
         print("Adding character")
@@ -137,11 +141,15 @@ def view(id: int):
         else:
             flash("Character is already added to campaign")
 
-        return redirect(url_for("campaign.view", id=id))
+        return redirect(url_for("campaign.view", id=campaign_id))
 
     createinviteform.submit.label.text = "Create share link."
 
-    handouts = campaign.handouts.filter_by(status=HandoutStatus.visible)
+    handouts = [
+        handout
+        for handout in campaign.handouts
+        if handout.status == HandoutStatus.visible
+    ]
     messages = campaign.messages.filter(
         or_(
             Message.from_id == current_user.profile.id,
@@ -180,9 +188,10 @@ def view(id: int):
     )
 
 
-@bp.route("/<int:id>/edit", methods=("GET", "POST"))
-def edit(id: int):
-    campaign = session.get(Campaign, id)
+@bp.route("/<int:campaign_id>/edit", methods=("GET", "POST"))
+def edit(campaign_id: int):
+    """Edit campaign."""
+    campaign = session.get(Campaign, campaign_id)
     assert campaign
     form = EditForm(obj=campaign, prefix="campaign_edit")
     folderform = ChooseFolderForm(prefix="choose_folder")
@@ -225,10 +234,11 @@ def edit(id: int):
     )
 
 
-@bp.route("/<int:id>/export", methods=("GET",))
+@bp.route("/<int:campaign_id>/export", methods=("GET",))
 @login_required
-def export(id: int):
-    campaign: Campaign = session.get(Campaign, id)
+def export(campaign_id: int):
+    """Export campaign."""
+    campaign: Campaign = session.get(Campaign, campaign_id)
     assert campaign
     return campaign.to_dict(_hide=[])
 
@@ -236,6 +246,7 @@ def export(id: int):
 @bp.route("/create", methods=("GET", "POST"))
 @login_required
 def create():
+    """Create a campaign."""
     form = CreateForm()
     if form.validate_on_submit():
         c = Campaign(title=form.title.data, user_id=current_user.profile.id)
@@ -245,10 +256,13 @@ def create():
     return render_template("campaign/create.html.jinja", form=form)
 
 
-@bp.route("/<int:id>/removecharacter/<int:characterid>", methods=("GET", "POST"))
+@bp.route(
+    "/<int:campaign_id>/removecharacter/<int:characterid>", methods=("GET", "POST")
+)
 @login_required
-def remove_character(id: int, characterid: int):
-    campaign = session.get(Campaign, id)
+def remove_character(campaign_id: int, characterid: int):
+    """Remove character from campaign."""
+    campaign = session.get(Campaign, campaign_id)
     assert campaign
     char = session.get(Character, characterid)
     assert char
@@ -274,11 +288,13 @@ def remove_character(id: int, characterid: int):
     )
 
 
-@bp.route("/<int:id>/association_settings/<int:characterid>", methods=("GET", "POST"))
+@bp.route(
+    "/<int:campaign_id>/association_settings/<int:characterid>", methods=("GET", "POST")
+)
 @login_required
-def association_settings(id: int, characterid: int):
+def association_settings(campaign_id: int, characterid: int):
     """Character-campaign association settings view."""
-    association = session.get(CampaignCharacter, (characterid, id))
+    association = session.get(CampaignCharacter, (characterid, campaign_id))
     assert association
 
     if current_user.profile.id != association.character.user_id:
@@ -306,18 +322,19 @@ def association_settings(id: int, characterid: int):
     )
 
 
-@bp.route("/<int:id>/removenpc/<int:characterid>", methods=("GET", "POST"))
+@bp.route("/<int:campaign_id>/removenpc/<int:characterid>", methods=("GET", "POST"))
 @login_required
-def remove_npc(id: int, characterid: int):
+def remove_npc(campaign_id: int, characterid: int):
+    """Remove NPC from campaign."""
     npc = session.get(NPC, characterid)
     assert npc
     form = RemoveCharacterForm()
 
     if form.validate_on_submit():
-        if npc.campaign.id == id:
+        if npc.campaign.id == campaign_id:
             session.delete(npc)
             session.commit()
-        return redirect(url_for("campaign.view", id=id))
+        return redirect(url_for("campaign.view", id=campaign_id))
 
     form.id.data = npc.campaign.id
     form.character.data = npc.character.id
@@ -330,9 +347,10 @@ def remove_npc(id: int, characterid: int):
     )
 
 
-@bp.route("/<int:id>/npc/<int:npcid>", methods=("GET", "POST"))
+@bp.route("/<int:campaign_id>/npc/<int:npcid>", methods=("GET", "POST"))
 @login_required
-def manage_npc(id: int, npcid: int):
+def manage_npc(campaign_id: int, npcid: int):
+    """Manage NPCs in campaign."""
     npc = session.get(NPC, npcid)
 
     transferform = NPCTransferForm(prefix="npctransfer", npc_id=npcid)
@@ -340,7 +358,7 @@ def manage_npc(id: int, npcid: int):
     if npc is None:
         return abort(404)
 
-    if npc.campaign_id != id:
+    if npc.campaign_id != campaign_id:
         return abort(404)
 
     if current_user.profile != npc.campaign.user:
@@ -379,11 +397,12 @@ def manage_npc(id: int, npcid: int):
     )
 
 
-@bp.route("/<int:id>/removeplayer/<int:playerid>", methods=("GET", "POST"))
+@bp.route("/<int:campaign_id>/removeplayer/<int:playerid>", methods=("GET", "POST"))
 @login_required
-def remove_player(id: int, playerid: int):
+def remove_player(campaign_id: int, playerid: int):
+    """Remove player from campaign."""
     form = RemovePlayerForm()
-    campaign = session.get(Campaign, id)
+    campaign = session.get(Campaign, campaign_id)
     assert campaign
     player = session.get(UserProfile, playerid)
     assert player
@@ -404,16 +423,22 @@ def remove_player(id: int, playerid: int):
 @bp.route("/<int:campaign_id>/message/", methods=("GET", "POST"))
 @login_required
 def message_player(campaign_id: int, player_id: Optional[int] = None):
+    """Send message to player."""
     campaign = session.get(Campaign, campaign_id)
-    assert campaign
+
+    if campaign is None:
+        abort(404)
+
     player = None
+
     if player_id:
         player = session.get(UserProfile, player_id)
 
     form = MessagePlayerForm()
 
     if form.validate_on_submit():
-        flash(form.message.data)
+        if form.message.data is not None:
+            flash(form.message.data)
         logger.debug(request.form)
 
         message = Message()

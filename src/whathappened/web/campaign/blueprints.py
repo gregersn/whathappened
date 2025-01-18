@@ -1,3 +1,5 @@
+"""Campaign blueprints."""
+
 from flask import Blueprint
 
 bp = Blueprint(
