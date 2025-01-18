@@ -29,11 +29,14 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import operator
+import warnings
+
+from typing import Any, Optional
 from wtforms import widgets
 from wtforms.fields import SelectFieldBase
+from wtforms.validators import ValidationError
 
 from sqlalchemy.orm.util import identity_key
-from wtforms.validators import ValidationError
 
 
 class QuerySelectField(SelectFieldBase):
@@ -64,6 +67,8 @@ class QuerySelectField(SelectFieldBase):
     """
 
     widget = widgets.Select()
+    _formdata: Optional[set]
+    _data: Any
 
     def __init__(
         self,
@@ -130,6 +135,9 @@ class QuerySelectField(SelectFieldBase):
         for pk, obj in self._get_object_list():
             yield (pk, self.get_label(obj), obj == self.data, {})
 
+    def iter_groups(self):
+        raise NotImplementedError()
+
     def process_formdata(self, valuelist):
         if valuelist:
             if self.allow_blank and valuelist[0] == "__None":
@@ -141,7 +149,7 @@ class QuerySelectField(SelectFieldBase):
     def pre_validate(self, form):
         data = self.data
         if data is not None:
-            for pk, obj in self._get_object_list():
+            for _, obj in self._get_object_list():
                 if data == obj:
                     break
             else:
@@ -166,10 +174,8 @@ class QuerySelectMultipleField(QuerySelectField):
             default = []
         super().__init__(label, validators, default=default, **kwargs)
         if kwargs.get("allow_blank", False):
-            import warnings
-
             warnings.warn(
-                "allow_blank=True does not do anything for " "QuerySelectMultipleField."
+                "allow_blank=True does not do anything for QuerySelectMultipleField."
             )
         self._invalid_formdata = False
 
@@ -180,7 +186,8 @@ class QuerySelectMultipleField(QuerySelectField):
             for pk, obj in self._get_object_list():
                 if not formdata:
                     break
-                elif pk in formdata:
+
+                if pk in formdata:
                     formdata.remove(pk)
                     data.append(obj)
             if formdata:
@@ -198,13 +205,17 @@ class QuerySelectMultipleField(QuerySelectField):
         for pk, obj in self._get_object_list():
             yield (pk, self.get_label(obj), obj in self.data, {})
 
+    def iter_groups(self):
+        raise NotImplementedError()
+
     def process_formdata(self, valuelist):
         self._formdata = set(valuelist)
 
     def pre_validate(self, form):
         if self._invalid_formdata:
             raise ValidationError(self.gettext("Not a valid choice"))
-        elif self.data:
+
+        if self.data:
             obj_list = list(x[1] for x in self._get_object_list())
             for v in self.data:
                 if v not in obj_list:
@@ -212,5 +223,6 @@ class QuerySelectMultipleField(QuerySelectField):
 
 
 def get_pk_from_identity(obj):
-    cls, key = identity_key(instance=obj)[0:2]
+    """Get primary key from identity."""
+    _, key = identity_key(instance=obj)[0:2]
     return ":".join(str(x) for x in key)

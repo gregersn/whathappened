@@ -1,3 +1,5 @@
+"""Campaign views."""
+
 from webassets.env import Environment
 
 
@@ -8,6 +10,7 @@ from ...core.campaign.models import Campaign  # noqa: F401, E402 isort:skip
 
 
 def register_assets(assets: Environment):
+    """Register campaign assets."""
     assets.register(
         "scss_campaign",
         "scss/campaign/campaign.scss",
