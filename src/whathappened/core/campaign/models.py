@@ -2,6 +2,7 @@
 
 import enum
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy.orm import backref, relationship, Mapped, mapped_column
 from sqlalchemy.sql.schema import ForeignKey, Table, Column
@@ -167,7 +168,7 @@ class Handout(BaseModel):
         lazy="dynamic",
         backref=backref("campaign_handouts", lazy=True),
     )
-    group_id: Mapped[int] = mapped_column(
+    group_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("campaign_handout_group.id"), nullable=True
     )
 

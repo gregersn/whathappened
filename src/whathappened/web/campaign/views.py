@@ -1,3 +1,5 @@
+"""Campaign related views."""
+
 import logging
 from typing import Optional, Text, Union
 
@@ -7,8 +9,8 @@ from werkzeug.exceptions import abort
 from werkzeug.wrappers import Response
 import markdown2
 
-from whathappened.web.userassets.forms import AssetSelectForm
 from whathappened.core.database import session
+from whathappened.web.userassets.forms import AssetSelectForm
 from whathappened.web.auth.utils import login_required, current_user
 
 from .blueprints import bp
@@ -20,28 +22,34 @@ logger = logging.getLogger(__name__)
 
 @bp.app_template_filter("markdown")
 def markdown(value: str):
+    """Render markdown."""
     return markdown2.markdown(value, extras=["tables", "fenced-code-blocks"])
 
 
 class HandoutView(View):
+    """View class for handouts."""
+
     def dispatch_request(
         self, campaign_id: int, handout_id: Optional[int] = None
     ) -> Union[Text, Response]:
-        logger.debug(f"dispatch_request({campaign_id}, {handout_id})")
+        logger.debug("Dispatch_request(%s, %s)", campaign_id, handout_id)
 
-        if request.method == "GET" and handout_id is None:
-            return self.list_view(campaign_id)
+        if handout_id is None:
+            if request.method == "GET" and handout_id is None:
+                return self.list_view(campaign_id)
 
-        if request.method == "POST" and handout_id is None:
-            return self.create(campaign_id)
-
-        if request.method == "POST":
-            if handout_id is not None:
+            if request.method == "POST" and handout_id is None:
+                return self.create(campaign_id)
+        else:
+            if request.method == "POST":
                 return self.update(campaign_id, handout_id)
 
-        return self.view(campaign_id, handout_id)
+            return self.view(campaign_id, handout_id)
+
+        raise NotImplementedError()
 
     def create(self, campaign_id: int):
+        """Create a handout."""
         logger.debug("Posting handout")
         handoutform = HandoutForm(prefix="handout")
         groupform = HandoutGroupForm(prefix="group")
@@ -64,20 +72,26 @@ class HandoutView(View):
             logger.debug("Form did not validate")
             for error, message in handoutform.errors.items():
                 logger.debug(
-                    f"Field: {error}, "
-                    f"value: {handoutform[error].data}, "
-                    f"errors: {', '.join(message)}"
+                    "Field: %s, value: %s, errors: %s",
+                    error,
+                    handoutform[error].data,
+                    ", ".join(message),
                 )
 
         return redirect(url_for("campaign.handout_view", campaign_id=campaign_id))
 
     def update(self, campaign_id: int, handout_id: int):
+        """Update a handout."""
         logger.debug("Put to handout")
         handout = session.get(Handout, handout_id)
+
+        if handout is None:
+            abort(404)
+
         form = HandoutForm(prefix="handout")
         form.group_id.choices = [
             ("", "(none)"),
-        ] + [(g.id, g.name) for g in handout.campaign.handout_groups]
+        ] + [(g.id, g.name) for g in handout.campaign.handout_groups]  # type: ignore
 
         if form.submit.data and form.validate_on_submit():
             logger.debug("Form is valid")
@@ -89,9 +103,10 @@ class HandoutView(View):
             logger.debug("Form did not validate")
             for error, message in form.errors.items():
                 logger.debug(
-                    f"Field: {error}, "
-                    f"value: {form[error].data}, "
-                    f"errors: {', '.join(message)}"
+                    "Field: %s, value: %s, errors: %s",
+                    error,
+                    form[error].data,
+                    ", ".join(message),
                 )
 
         return redirect(
@@ -101,7 +116,8 @@ class HandoutView(View):
         )
 
     def view(self, campaign_id: int, handout_id: int) -> Text:
-        logger.debug(f"view({campaign_id}, {handout_id})")
+        """Show a handout."""
+        logger.debug("view(%s, %s)", campaign_id, handout_id)
         handout: Handout = session.get(Handout, handout_id)
 
         if not handout:
@@ -111,14 +127,14 @@ class HandoutView(View):
             current_user.is_authenticated
             and current_user.profile not in handout.players
             and current_user.profile != handout.campaign.user
-        ):  # pyright: ignore[reportGeneralTypeIssues]
+        ):
             abort(403)
 
         editable = False
         if (
             current_user.is_authenticated
             and current_user.profile.id == handout.campaign.user_id
-        ):  # pyright: ignore[reportGeneralTypeIssues]
+        ):
             editable = True
 
         if not editable:
@@ -130,7 +146,7 @@ class HandoutView(View):
         form = HandoutForm(obj=handout, prefix="handout")
         form.group_id.choices = [
             ("", "(none)"),
-        ] + [(g.id, g.name) for g in handout.campaign.handout_groups]
+        ] + [(g.id, g.name) for g in handout.campaign.handout_groups]  # type: ignore
 
         assetsform = AssetSelectForm(prefix="assetselect")
 
@@ -144,18 +160,27 @@ class HandoutView(View):
 
     @login_required
     def list_view(self, campaign_id: int) -> Text:
+        """Show a list of handouts."""
         campaign = session.get(Campaign, campaign_id)
-        is_owner = current_user and current_user.profile.id == campaign.user_id  # pyright: ignore[reportGeneralTypeIssues]
-        handouts = campaign.handouts.filter(~Handout.group.has()).filter(
-            is_owner or Handout.players.contains(current_user.profile)
-        )  # pyright: ignore[reportGeneralTypeIssues]
+
+        if campaign is None:
+            abort(404)
+
+        is_owner = current_user and current_user.profile.id == campaign.user_id
+
+        handouts = [
+            handout
+            for handout in campaign.handouts
+            if not handout.group
+            and (is_owner or current_user.profile in handout.players)
+        ]
 
         groups = {
             group.name: list(
                 group.handouts.filter(
                     is_owner or Handout.players.contains(current_user.profile)
                 )
-            )  # pyright: ignore[reportGeneralTypeIssues]
+            )
             for group in campaign.handout_groups
             if group.handouts
         }
@@ -207,7 +232,13 @@ def handout_delete(campaign_id: int, handout_id: int):
     """Delete a handout."""
     handout = session.get(Handout, handout_id)
 
-    if current_user.profile.id != handout.campaign.user_id:  # pyright: ignore[reportGeneralTypeIssues]
+    if handout is None:
+        abort(404)
+
+    if current_user.profile.id != handout.campaign.user_id:
+        abort(404)
+
+    if handout.campaign_id != campaign_id:
         abort(404)
 
     form = DeleteHandoutForm()

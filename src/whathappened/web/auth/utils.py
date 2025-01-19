@@ -1,17 +1,17 @@
+"""Authentication utility functions."""
+
 from time import time
 import jwt
 
 from flask import render_template, current_app
-
-from flask_login import (
-    login_required as login_required,
-    current_user as current_user,
-    LoginManager as LoginManager,
-)
+from flask_login import login_required, current_user, LoginManager
 
 from whathappened.core.auth.models import User
 from whathappened.web.email import send_mail
 from whathappened.core.database import session
+
+
+__all__ = ["login_required", "current_user", "LoginManager"]
 
 
 def get_reset_password_token(user: User, expires_in: int = 600):
@@ -32,6 +32,7 @@ def verify_reset_password_token(token: str):
 
 
 def send_password_reset_email(user: User):
+    """Send email to user with password reset token."""
     token = get_reset_password_token(user)
     send_mail(
         "[What Happened?] Reset your password",

@@ -55,6 +55,7 @@ def register():
         return redirect(url_for("main.index"))
     form = RegistrationForm()
     if form.validate_on_submit():
+        assert form.password.data
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         session.add(user)
@@ -92,6 +93,7 @@ def reset_password(token: str):
     user = verify_reset_password_token(token)
     form = ResetPasswordForm()
     if form.validate_on_submit():
+        assert form.password.data
         if user is not None:
             user.set_password(form.password.data)
         session.commit()
