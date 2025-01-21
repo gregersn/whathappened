@@ -4,7 +4,7 @@
 <section class="folders">
     <h4>{{ folder|clickpath }}</h4>
     {% if not folder.subfolders and not folder.files and folder.parent %}
-        <form action="{{ url_for('userassets.delete_folder', id=folder.id) }}" method="post">
+        <form action="{{ url_for('userassets.delete_folder', folder_id=folder.id) }}" method="post">
             {{ deletefolderform.hidden_tag() }}
             {{ deletefolderform.delete }}
         </form>

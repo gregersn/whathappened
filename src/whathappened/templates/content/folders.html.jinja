@@ -40,7 +40,7 @@
 <section id="characters">
     <ul>
     {% for character in data.characters %}
-        <li><a class="action" href="{{ url_for('character.view', id=character.id) }}">{{ character.title }}</a></li>
+        <li><a class="action" href="{{ url_for('character.view', character_id=character.id) }}">{{ character.title }}</a></li>
     {% endfor %}
     </ul>
 </section>
@@ -51,7 +51,7 @@
 <section id="campaigns">
     <ul>
     {% for campaign in data.campaigns %}
-        <li><a class="action" href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.title }}</a></li>
+        <li><a class="action" href="{{ url_for('campaign.view', campaign_id=campaign.id) }}">{{ campaign.title }}</a></li>
     {% endfor %}
     </ul>
 </section>
