@@ -19,8 +19,34 @@ def v005_to_v004(data):
     return data
 
 
+def v008_to_v009(data):
+    data["version"] = "0.0.9"
+
+    upgrades = ["contacts", "discovered_facilities", "facilities", "personell"]
+
+    for upgrade in upgrades:
+        for added in data["character_sheet"]["upgrades"][upgrade]:
+            if "title" not in added:
+                added["title"] = "No title"
+
+    return data
+
+
+def v009_to_v008(data):
+    data["version"] = "0.0.8"
+
+    upgrades = ["contacts", "discovered_facilities", "facilities", "personell"]
+
+    for upgrade in upgrades:
+        for added in data["character_sheet"]["upgrades"][upgrade]:
+            if "title" in added:
+                del added["title"]
+    return data
+
+
 migrations = [
     Migration("0.0.4", "0.0.5", v004_to_v005, v005_to_v004),
+    Migration("0.0.8", "0.0.9", v008_to_v009, v009_to_v008),
 ]
 
 
@@ -48,6 +74,7 @@ class Information(BaseModel):
 class Upgrade(BaseModel):
     """Information about an upgrade."""
 
+    title: str = "No title"
     function: str = "No function"
     asset: str = "No asset"
 
@@ -56,16 +83,16 @@ class Upgrades(BaseModel):
     """Upgrades to headquarters."""
 
     facilities: list[Upgrade] = Field(
-        default=[], json_schema_extra={"widget": "table", "header": True}
+        default=[], json_schema_extra={"widget": "table", "header": False}
     )
     discovered_facilities: list[Upgrade] = Field(
-        default=[], json_schema_extra={"widget": "table", "header": True}
+        default=[], json_schema_extra={"widget": "table", "header": False}
     )
     contacts: list[Upgrade] = Field(
-        default=[], json_schema_extra={"widget": "table", "header": True}
+        default=[], json_schema_extra={"widget": "table", "header": False}
     )
     personell: list[Upgrade] = Field(
-        default=[], json_schema_extra={"widget": "table", "header": True}
+        default=[], json_schema_extra={"widget": "table", "header": False}
     )
 
 

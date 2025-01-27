@@ -410,7 +410,7 @@ properties:
     title: System
     type: string
   version:
-    default: 0.0.8
+    default: 0.0.9
     title: Version
     type: string
 required:

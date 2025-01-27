@@ -64,6 +64,10 @@ $defs:
         default: No function
         title: Function
         type: string
+      title:
+        default: No title
+        title: Title
+        type: string
     title: Upgrade
     type: object
   Upgrades:
@@ -71,7 +75,7 @@ $defs:
     properties:
       contacts:
         default: []
-        header: true
+        header: false
         items:
           $ref: '#/$defs/Upgrade'
         title: Contacts
@@ -79,7 +83,7 @@ $defs:
         widget: table
       discovered_facilities:
         default: []
-        header: true
+        header: false
         items:
           $ref: '#/$defs/Upgrade'
         title: Discovered Facilities
@@ -87,7 +91,7 @@ $defs:
         widget: table
       facilities:
         default: []
-        header: true
+        header: false
         items:
           $ref: '#/$defs/Upgrade'
         title: Facilities
@@ -95,7 +99,7 @@ $defs:
         widget: table
       personell:
         default: []
-        header: true
+        header: false
         items:
           $ref: '#/$defs/Upgrade'
         title: Personell
@@ -119,7 +123,7 @@ properties:
     title: System
     type: string
   version:
-    default: 0.0.8
+    default: 0.0.9
     title: Version
     type: string
 required:

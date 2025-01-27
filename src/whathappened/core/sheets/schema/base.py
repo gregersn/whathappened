@@ -3,8 +3,8 @@ from typing import Callable, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict
 
-CURRENT_SCHEMA_VERSION_TYPE = Literal["0.0.8"]
-CURRENT_SCHEMA_VERSION = "0.0.8"
+CURRENT_SCHEMA_VERSION_TYPE = Literal["0.0.9"]
+CURRENT_SCHEMA_VERSION = "0.0.9"
 
 
 @dataclass
@@ -48,6 +48,7 @@ migrations: list[Migration] = [
     Migration("0.0.5", "0.0.6"),
     Migration("0.0.6", "0.0.7"),
     Migration("0.0.7", "0.0.8"),
+    Migration("0.0.8", "0.0.9"),
 ]
 
 
