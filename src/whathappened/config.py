@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "development"
     SQLALCHEMY_DATABASE_URI: Optional[str] = (
         os.environ.get("DATABASE_URL")
-        or f"sqlite:///{Path(__file__).parent.parent / 'instance' / 'whathappened.sqlite'}"
+        or f"sqlite:///{Path(__file__).parent.parent.parent.parent / 'whathappened.sqlite'}"
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
