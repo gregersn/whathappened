@@ -1,30 +1,6 @@
 """CoC conversion functions."""
 
-import math
-
-from whathappened.core.sheets.schema.utils import migrate
-
-
-def half(value):
-    if not value:
-        return 0
-    if isinstance(value, str):
-        try:
-            value = int(value, 10)
-        except ValueError:
-            return 0
-    return math.floor(value / 2)
-
-
-def fifth(value):
-    if not value:
-        return 0
-    if isinstance(value, str):
-        try:
-            value = int(value, 10)
-        except ValueError:
-            return 0
-    return math.floor(value / 5)
+from whathappened.core.sheets.schema.utils import fifth, half, migrate
 
 
 def convert_from_dholes(indata):

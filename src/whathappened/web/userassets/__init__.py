@@ -1,3 +1,5 @@
+"""User assets for web."""
+
 from flask import url_for
 
 from .blueprints import bp
@@ -9,6 +11,7 @@ from . import routes  # noqa: F401,E402 isort:skip
 
 @bp.app_template_filter("clickpath")
 def clickpath(folder):
+    """Create path for clicking."""
     path = ""
     if folder.parent:
         path = clickpath(folder.parent)

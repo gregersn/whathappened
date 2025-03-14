@@ -1,10 +1,17 @@
+"""Web forms and fields."""
+
 import json
+from typing import Union
 import yaml
 from wtforms.fields.simple import TextAreaField
 from .alchemy import QuerySelectField, QuerySelectMultipleField  # noqa
 
 
 class JsonField(TextAreaField):
+    """JSON form field."""
+
+    data: Union[str, None]
+
     def _value(self):
         if not isinstance(self.data, str):
             return json.dumps(self.data or {}, indent=4)
@@ -24,11 +31,15 @@ class JsonField(TextAreaField):
         if self.data:
             try:
                 json.dumps(self.data)
-            except TypeError:
-                raise ValueError("Invalid JSON")
+            except TypeError as exc:
+                raise ValueError("Invalid JSON") from exc
 
 
 class YamlField(TextAreaField):
+    """YAML form field."""
+
+    data: Union[str, None]
+
     def _value(self):
         return yaml.dump(self.data, indent=4, sort_keys=False) if self.data else ""
 
@@ -36,8 +47,8 @@ class YamlField(TextAreaField):
         if valuelist:
             try:
                 self.data = yaml.load(valuelist[0], yaml.SafeLoader)
-            except ValueError:
-                raise ValueError("This field is not valid YAML")
+            except ValueError as exc:
+                raise ValueError("This field is not valid YAML") from exc
         else:
             self.data = None
 
@@ -46,5 +57,5 @@ class YamlField(TextAreaField):
         if self.data:
             try:
                 yaml.dump(self.data, sort_keys=False)
-            except TypeError:
-                raise ValueError("Invalid YAML")
+            except TypeError as exc:
+                raise ValueError("Invalid YAML") from exc

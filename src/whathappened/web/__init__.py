@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Main web app."""
+
 from pathlib import Path
 import os
 import logging
@@ -47,14 +49,16 @@ FILTERS = {
 }
 
 
-def uberfilter(inp: str, filter: str = ""):
-    fun = FILTERS.get(filter, None)
+def uberfilter(inp: str, filter_name: str = ""):
+    """Ultimate filter function."""
+    fun = FILTERS.get(filter_name, None)
     if fun:
         return fun(inp)
     return inp
 
 
 def create_app(test_config=None) -> Flask:
+    """Create Flask App."""
     logger.info("Creating app")
 
     assets_env._named_bundles = {}
@@ -79,7 +83,7 @@ def create_app(test_config=None) -> Flask:
     init_db(app.config["SQLALCHEMY_DATABASE_URI"], nullpool=test_config is not None)
 
     @app.teardown_appcontext
-    def cleanup(resp_or_exc):
+    def cleanup(_):
         session.remove()
 
     login_manager.init_app(app)

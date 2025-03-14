@@ -1,7 +1,9 @@
 from pathlib import Path
 
+from flask_login import FlaskLoginClient
 import pytest
 from sqlalchemy import NullPool, create_engine
+from whathappened.core.auth.models import User
 from whathappened.web import create_app
 from whathappened.web.main import assets
 from whathappened.core.database import db as _db
@@ -78,6 +80,15 @@ def session(db, request):
 @pytest.fixture(scope="function")
 def client(app, request):
     client = app.test_client()
+    return client
+
+
+@pytest.fixture(scope="function")
+def authorized_client(app, request):
+    app.test_client_class = FlaskLoginClient
+    user = User.query.get(1)
+    assert user
+    client = app.test_client(user=user)
     return client
 
 
