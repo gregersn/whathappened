@@ -10,7 +10,7 @@
     Jinja2==3.1.6
     jsonschema==4.23.0
     markdown2==2.5.3
-    packaging==24.2
+    packaging==25.0
     Pillow==11.2.1
     pydantic-settings==2.8.1
     pydantic==2.11.3
