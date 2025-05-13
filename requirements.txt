@@ -3,7 +3,7 @@
     Flask-Login==0.6.3
     Flask-Mail==0.10.0
     Flask-WTF==1.2.2
-    flask==3.1.0
+    flask==3.1.1
     gunicorn==23.0.0
     itsdangerous==2.2.0
     jinja2-webpack==0.2.0
