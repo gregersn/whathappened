@@ -64,6 +64,11 @@
     </div>
 {%- endmacro %}
 
+{%- macro modified_value(item, path='', key=None) %}
+    {{ editable_field(path, type=html_data_type(item.type), minimum=item.minimum, maximum=item.maximum, constant=constant)}} (+{{ character.mechanics.attribute(item.source) }})
+{%- endmacro %}
+
+
 {%- macro render_widget(widget, object, path='', key=None) %}
 {% if widget == "table"%}
 {{ render_table(object, path, key) }}
@@ -73,6 +78,8 @@
 {{ render_portrait(object, path, key)}}
 {% elif widget == "text" %}
 {{ editable_area(path, "")}}
+{% elif widget == "modifier" %}
+{{ modified_value(object, path, key) }}
 {% else %}
 <div>Missing widget: {{ widget }}</div>
 {% endif %}

@@ -3,8 +3,9 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import Annotated, Literal, Optional, cast
-from pydantic import BaseModel, ConfigDict, Field, JsonValue
+
 import yaml
+from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
 from whathappened.core.sheets.schema.base import BaseSchema
 
@@ -51,21 +52,129 @@ class Attributes(BaseModel):
 class Skills(BaseModel):
     """Character skills."""
 
-    agility: int = Field(ge=0, le=5, default=0, title="Agility (Physique)")
-    close_combat: int = Field(ge=0, le=5, default=0, title="Close combat (Physique)")
-    force: int = Field(ge=0, le=5, default=0, title="Force (Physique)")
+    agility: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Agility (Physique)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.physique",
+        },
+    )
+    close_combat: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Close combat (Physique)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.physique",
+        },
+    )
+    force: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Force (Physique)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.physique",
+        },
+    )
 
-    medicine: int = Field(ge=0, le=5, default=0, title="Medicine (Precision)")
-    ranged_combat: int = Field(ge=0, le=5, default=0, title="Ranged combat (Precision)")
-    stealth: int = Field(ge=0, le=5, default=0, title="Stealth (Precision)")
+    medicine: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Medicine (Precision)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.precision",
+        },
+    )
+    ranged_combat: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Ranged combat (Precision)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.precision",
+        },
+    )
+    stealth: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Stealth (Precision)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.precision",
+        },
+    )
 
-    investigation: int = Field(ge=0, le=5, default=0, title="Investigation (Logic)")
-    learning: int = Field(ge=0, le=5, default=0, title="Learning (Logic)")
-    vigilance: int = Field(ge=0, le=5, default=0, title="Vigilance (Logic)")
+    investigation: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Investigation (Logic)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.logic",
+        },
+    )
+    learning: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Learning (Logic)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.logic",
+        },
+    )
+    vigilance: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Vigilance (Logic)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.logic",
+        },
+    )
 
-    inspiration: int = Field(ge=0, le=5, default=0, title="Inspiration (Empathy)")
-    manipulation: int = Field(ge=0, le=5, default=0, title="Manipulation (Empathy)")
-    observation: int = Field(ge=0, le=5, default=0, title="Observation (Empathy)")
+    inspiration: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Inspiration (Empathy)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.empathy",
+        },
+    )
+    manipulation: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Manipulation (Empathy)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.empathy",
+        },
+    )
+    observation: int = Field(
+        ge=0,
+        le=5,
+        default=0,
+        title="Observation (Empathy)",
+        json_schema_extra={
+            "widget": "modifier",
+            "source": "character_sheet.characteristics.attributes.empathy",
+        },
+    )
 
 
 @dataclass
