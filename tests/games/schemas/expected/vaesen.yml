@@ -304,74 +304,98 @@ $defs:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.physique
         title: Agility (Physique)
         type: integer
+        widget: modifier
       close_combat:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.physique
         title: Close combat (Physique)
         type: integer
+        widget: modifier
       force:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.physique
         title: Force (Physique)
         type: integer
+        widget: modifier
       inspiration:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.empathy
         title: Inspiration (Empathy)
         type: integer
+        widget: modifier
       investigation:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.logic
         title: Investigation (Logic)
         type: integer
+        widget: modifier
       learning:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.logic
         title: Learning (Logic)
         type: integer
+        widget: modifier
       manipulation:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.empathy
         title: Manipulation (Empathy)
         type: integer
+        widget: modifier
       medicine:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.precision
         title: Medicine (Precision)
         type: integer
+        widget: modifier
       observation:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.empathy
         title: Observation (Empathy)
         type: integer
+        widget: modifier
       ranged_combat:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.precision
         title: Ranged combat (Precision)
         type: integer
+        widget: modifier
       stealth:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.precision
         title: Stealth (Precision)
         type: integer
+        widget: modifier
       vigilance:
         default: 0
         maximum: 5
         minimum: 0
+        source: character_sheet.characteristics.attributes.logic
         title: Vigilance (Logic)
         type: integer
+        widget: modifier
     title: Skills
     type: object
   Weapon:
