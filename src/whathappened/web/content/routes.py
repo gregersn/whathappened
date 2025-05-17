@@ -1,3 +1,6 @@
+"""Folder routes."""
+
+from typing import Optional
 from flask import render_template, redirect
 
 from whathappened.core.database import session
@@ -15,7 +18,8 @@ from ...core.content.models import Folder
 @bp.route("/<uuid:folder_id>/", methods=["GET", "POST"])
 @bp.route("/", methods=["GET", "POST"])
 @login_required
-def folders(folder_id=None):
+def folders(folder_id: Optional[str] = None):
+    """Show folders."""
     new_folder_form = NewFolderForm(prefix="new_folder")
 
     if new_folder_form.validate_on_submit():
@@ -34,13 +38,13 @@ def folders(folder_id=None):
 
     current_folder = session.get(Folder, folder_id)
 
-    folders = None
+    found_folders = None
     characters = None
     campaigns = None
     tree = []
 
     if current_folder is None:
-        folders = [
+        found_folders = [
             folder
             for folder in current_user.profile.folders
             if folder.parent_id is None
@@ -53,7 +57,7 @@ def folders(folder_id=None):
         )
 
     else:
-        folders = current_folder.subfolders
+        found_folders = current_folder.subfolders
         characters = current_folder.characters
         campaigns = current_folder.campaigns
         f = current_folder
@@ -65,7 +69,7 @@ def folders(folder_id=None):
     data = {
         "current_folder": current_folder,
         "tree": tree,
-        "folders": folders,
+        "folders": found_folders,
         "characters": characters,
         "campaigns": campaigns,
     }

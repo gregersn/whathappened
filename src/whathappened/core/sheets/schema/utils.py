@@ -1,7 +1,8 @@
 """Schema and sheet utilities"""
 
 import copy
-from typing import Optional
+import math
+from typing import Optional, Union
 from packaging.version import Version, parse
 
 from whathappened.core.sheets.schema.base import (
@@ -11,6 +12,30 @@ from whathappened.core.sheets.schema.base import (
 )
 
 SheetVersion = Version
+
+
+def half(value: Union[int, str]):
+    """Return half of a value, rounded down."""
+    if not value:
+        return 0
+    if isinstance(value, str):
+        try:
+            value = int(value, 10)
+        except ValueError:
+            return 0
+    return math.floor(value / 2)
+
+
+def fifth(value: Union[int, str]):
+    """Return the fifth of a value, rounded down."""
+    if not value:
+        return 0
+    if isinstance(value, str):
+        try:
+            value = int(value, 10)
+        except ValueError:
+            return 0
+    return math.floor(value / 5)
 
 
 def up_or_down(from_version: SheetVersion, to_version: SheetVersion) -> int:

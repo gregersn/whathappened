@@ -12,7 +12,7 @@
     <article class="character">
       <header>
         <div>
-        <a class="action" href="{{ url_for('character.view', id=character['id']) }}">
+        <a class="action" href="{{ url_for('character.view', character_id=character['id']) }}">
           <h3>{{ character['title'] }}</h3>
           </a>
           <div class="about">by {{ character['username'] }} on {{ character['created'].strftime('%Y-%m-%d') }}</div>
