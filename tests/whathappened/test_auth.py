@@ -2,8 +2,8 @@ from flask import session
 from whathappened.core.auth.models import User
 
 
-def test_register(app, db):
-    client = app.test_client()
+def test_register(test_app, db):
+    client = test_app.test_client()
     assert client.get("/auth/register").status_code == 200
 
     response = client.post(

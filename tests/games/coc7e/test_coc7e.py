@@ -61,7 +61,7 @@ def fixture_test_character() -> Character:
     return c
 
 
-def test_validate(test_sheet: dict, app):
+def test_validate(test_sheet: dict, test_app):
     nc = new_character("Test Character", "Classic (1920's)")
     errors = validate(nc, "coc7e")
     assert len(errors) == 0
@@ -76,7 +76,7 @@ def test_convert_from_dholes(dholes_sheet: dict):
     assert len(errors) == 0, error_messages
 
 
-def test_personalia_and_attributes(newly_created_character: Character, app):
+def test_personalia_and_attributes(newly_created_character: Character, test_app):
     assert newly_created_character.name == "Unknown"
     assert newly_created_character.age == "18"
     assert newly_created_character.description == "Unknown"
@@ -85,13 +85,13 @@ def test_personalia_and_attributes(newly_created_character: Character, app):
     assert newly_created_character.game[1] == "Classic (1920's)"
 
 
-def test_skills(newly_created_character: Character, app):
+def test_skills(newly_created_character: Character, test_app):
     skill = newly_created_character.skill("Spot Hidden")
     assert skill is not None
     assert skill["value"] == 25
 
 
-def test_skill(newly_created_character: Character, app):
+def test_skill(newly_created_character: Character, test_app):
     skill_name = "test skill"
     skill = newly_created_character.skill(skill_name)
     assert skill is None
@@ -113,7 +113,7 @@ def test_skill(newly_created_character: Character, app):
     assert skill["value"] == 21
 
 
-def test_subskill(newly_created_character: Character, app):
+def test_subskill(newly_created_character: Character, test_app):
     skill_name = "Science"
     subskill_name = "Biology"
 
@@ -141,18 +141,18 @@ def test_subskill(newly_created_character: Character, app):
     assert subskill["value"] == 21
 
 
-def test_validate_migration_up(test_sheet: dict, app):
+def test_validate_migration_up(test_sheet: dict, test_app):
     errors = validate(migrate(test_sheet, "0.0.8"), "coc7e")
     assert len(errors) == 0, errors
 
 
-def test_validate_migration_latest(test_sheet: dict, app):
+def test_validate_migration_latest(test_sheet: dict, test_app):
     errors = validate(migrate(test_sheet, CURRENT_SCHEMA_VERSION), "coc7e")
 
     assert len(errors) == 0, errors
 
 
-def test_validate_migration_up_and_down(test_sheet: dict, app):
+def test_validate_migration_up_and_down(test_sheet: dict, test_app):
     migrated = migrate(test_sheet.copy(), "0.0.4")
 
     back_down = migrate(migrated, "0.0.1")

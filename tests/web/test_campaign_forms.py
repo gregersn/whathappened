@@ -3,11 +3,11 @@ from whathappened.web.campaign import forms
 from whathappened.core.character.models import Character
 
 
-def test_add_character_form(app):
+def test_add_character_form(test_app):
     def blank():
         return [Character(id=1, title="foo_character")]
 
-    with app.test_request_context("/"):
+    with test_app.test_request_context("/"):
         form = forms.AddCharacterForm()
 
     form.character.query_factory = blank

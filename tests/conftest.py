@@ -1,4 +1,8 @@
 from pathlib import Path
+from typing import get_type_hints, Any
+import warnings
+from flask import Flask
+import typeguard
 
 import pytest
 from sqlalchemy import NullPool, create_engine
@@ -12,6 +16,31 @@ from whathappened.core.database.base import Base, Session
 basedir = Path(__file__).parent.absolute()
 
 
+def pytest_runtest_call(item: pytest.Function) -> None:
+    """Check test typing.
+
+    Copied from: https://github.com/pytest-dev/pytest/issues/5981#issuecomment-1875730079
+    """
+    try:
+        annotations = get_type_hints(
+            item.obj,
+            globalns=item.obj.__globals__,
+            localns={"Any": Any},  # pytest-bdd appears to insert an `Any` annotation
+        )
+    except TypeError:
+        # get_type_hints may fail on Python <3.10 because pytest-bdd appears to have
+        # `dict[str, str]` as a type somewhere, and builtin type subscripting isn't
+        # supported yet
+        warnings.warn(
+            f"Type annotations could not be retrieved for {item.obj!r}", RuntimeWarning
+        )
+        return
+
+    for attr, type_ in annotations.items():
+        if attr in item.funcargs:
+            typeguard.check_type(item.funcargs[attr], type_)
+
+
 class Conf(Settings):
     TESTING: bool = True
     TESTDB: Path = basedir / "testing.sqlite"
@@ -23,11 +52,11 @@ Config = Conf()
 
 
 @pytest.fixture(scope="session")
-def app(request):
+def test_app(request):
     assets._named_bundles = {}
-    app = create_app(Config)
+    test_app = create_app(Config)
 
-    ctx = app.app_context()
+    ctx = test_app.app_context()
     ctx.push()
 
     def teardown():
@@ -35,11 +64,11 @@ def app(request):
 
     request.addfinalizer(teardown)
 
-    return app
+    return test_app
 
 
 @pytest.fixture(scope="session")
-def db(app, request):
+def db(test_app: Flask, request):
     """Session-wide test database."""
     if Config.TESTDB.exists():
         Config.TESTDB.unlink()
@@ -76,8 +105,8 @@ def session(db, request):
 
 
 @pytest.fixture(scope="function")
-def client(app, request):
-    client = app.test_client()
+def client(test_app, request):
+    client = test_app.test_client()
     return client
 
 
