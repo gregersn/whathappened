@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, make_response
 from sqlalchemy import and_, or_, desc
 from werkzeug.exceptions import abort
 
@@ -32,6 +32,7 @@ from .forms import RemovePlayerForm, NPCTransferForm, MessagePlayerForm
 from ...core.campaign.models import HandoutStatus, NPC, Message
 
 from . import api  # noqa
+from .utils import check_pad_connection
 
 logger = logging.getLogger(__name__)
 
@@ -165,19 +166,32 @@ def view(id: int):
         .order_by("title")
     )
 
-    return render_template(
-        "campaign/campaign.html.jinja",
-        campaign=campaign,
-        handouts=handouts,
-        invites=invites,
-        inviteform=inviteform,
-        createinviteform=createinviteform,
-        characterform=characterform,
-        messages=messages,
-        npcform=npcform,
-        editable=is_owner,
-        messageform=messageform,
+    pad_data = check_pad_connection(
+        user_id=str(current_user.profile.id),
+        user_name=current_user.username,
+        campaign_id=str(campaign.id),
     )
+
+    response = make_response(
+        render_template(
+            "campaign/campaign.html.jinja",
+            campaign=campaign,
+            handouts=handouts,
+            invites=invites,
+            inviteform=inviteform,
+            createinviteform=createinviteform,
+            characterform=characterform,
+            messages=messages,
+            npcform=npcform,
+            editable=is_owner,
+            messageform=messageform,
+            pad_data=pad_data,
+        )
+    )
+
+    response.set_cookie("sessionID", pad_data["session_id"])
+
+    return response
 
 
 @bp.route("/<int:id>/edit", methods=("GET", "POST"))
