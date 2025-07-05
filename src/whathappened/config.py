@@ -30,6 +30,8 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file_encoding="utf-8")
 
+    ETHERPAD: Optional[str] = None
+
 
 Config = Settings(_env_file=os.environ.get("WHATHAPPENED_SETTINGS"))
 

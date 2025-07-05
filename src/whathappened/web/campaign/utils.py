@@ -1,7 +1,8 @@
 import time
 import requests
 
-API_KEY = "2c69ecfdce2327f31d441fb6ad64acfe3c427a04cfa5972031ec147decbc1f72"
+# TODO: Get API_KEY from elsewhere
+API_KEY = "9c20c7b332f73ba030742a3efaf1e9240417e5f10006e42c8acfce1ee84c73b9"
 PAD_HOST = "http://localhost:9001/"
 
 
