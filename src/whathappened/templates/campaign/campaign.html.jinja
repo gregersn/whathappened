@@ -37,8 +37,7 @@
 
 {% block menu %}
     {% if editable %}
-        <a href="{{ url_for('campaign.edit', id=campaign.id) }}">Edit</a>
-        | 
+        <a href="{{ url_for('campaign.edit', id=campaign.id) }}">Edit</a>&nbsp;| 
         <a class="action" href="{{ url_for('userassets.index') }}">Assets</a>
         |
         <a class="action" href="{{ url_for('campaign.export', id=campaign.id) }}">Export</a>
@@ -116,7 +115,9 @@
 {% include 'campaign/campaign_messages.html.jinja' %}
 {% endif %}
 </div>
+{% if campaign.document_enabled and pad_data %}
 <div>
 {% include 'campaign/campaign_document.html.jinja' %}
 </div>
+{% endif %}
 {% endblock %}
