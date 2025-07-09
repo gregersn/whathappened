@@ -116,7 +116,9 @@
 {% include 'campaign/campaign_messages.html.jinja' %}
 {% endif %}
 </div>
+{% if campaign.document_enabled and pad_data %}
 <div>
 {% include 'campaign/campaign_document.html.jinja' %}
 </div>
+{% endif %}
 {% endblock %}
