@@ -4,7 +4,7 @@ import { send_update, init_set_portrait } from "../common";
 function init_skillchecks() {
     console.log("Init skillchecks");
     const checkboxes: HTMLInputElement[] = Array.from(
-        document.getElementsByTagName("input"),
+        document.getElementsByTagName("input")
     );
     checkboxes.forEach((element) => {
         if (
@@ -64,7 +64,7 @@ function init_skill_edits() {
                     subfield: occupation_subfield,
                     type: "occupationcheck",
                 },
-                occupation_checker.checked,
+                occupation_checker.checked
             );
         };
 
@@ -79,7 +79,7 @@ function init_skill_edits() {
                 show_subskillform(
                     e.pageX,
                     e.pageY,
-                    element.getAttribute("data-field"),
+                    element.getAttribute("data-field")
                 );
             };
             element.parentElement.appendChild(btn_add_subskill);
@@ -99,5 +99,5 @@ document.addEventListener("DOMContentLoaded", function (event) {
     console.log("Cthulhu fhtagn!");
     init_skillchecks();
     init_skill_edits();
-    init_set_portrait("personalia.Portrait");
+    //init_set_portrait("personalia.Portrait");
 });
