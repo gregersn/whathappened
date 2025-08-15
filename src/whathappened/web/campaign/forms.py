@@ -20,6 +20,7 @@ class CreateForm(FlaskForm):
     npcs_enabled = BooleanField("Use NPCs")
     handouts_enabled = BooleanField("Use handouts")
     messages_enabled = BooleanField("Use messages")
+    document_enabled = BooleanField("Enable shared document")
     submit = SubmitField("Create")
 
 

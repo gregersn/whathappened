@@ -95,6 +95,7 @@ class Campaign(BaseModel, BaseContent):
     npcs_enabled: Mapped[bool] = mapped_column(default=False, nullable=True)
     handouts_enabled: Mapped[bool] = mapped_column(default=False, nullable=True)
     messages_enabled: Mapped[bool] = mapped_column(default=False, nullable=True)
+    document_enabled: Mapped[bool] = mapped_column(default=False, nullable=True)
 
     folder: Mapped["Folder"] = relationship(backref="campaigns")
 
