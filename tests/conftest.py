@@ -1,7 +1,9 @@
 from pathlib import Path
 
+from flask import Flask
+from flask.testing import FlaskClient
 import pytest
-from sqlalchemy import NullPool, create_engine
+from sqlalchemy import Connection, NullPool, create_engine
 from whathappened.web import create_app
 from whathappened.web.main import assets
 from whathappened.core.database import db as _db
@@ -15,15 +17,16 @@ basedir = Path(__file__).parent.absolute()
 class Conf(Settings):
     TESTING: bool = True
     TESTDB: Path = basedir / "testing.sqlite"
-    SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + str(TESTDB)
+    SQLALCHEMY_DATABASE_URI: str | None = "sqlite:///" + str(TESTDB)
     WTF_CSRF_ENABLED: bool = False
+    REQUIRE_INVITE: bool = False
 
 
 Config = Conf()
 
 
 @pytest.fixture(scope="session")
-def app(request):
+def app(request: pytest.FixtureRequest):
     assets._named_bundles = {}
     app = create_app(Config)
 
@@ -39,7 +42,7 @@ def app(request):
 
 
 @pytest.fixture(scope="session")
-def db(app, request):
+def db(app: Flask, request: pytest.FixtureRequest):
     """Session-wide test database."""
     if Config.TESTDB.exists():
         Config.TESTDB.unlink()
@@ -56,7 +59,7 @@ def db(app, request):
 
 
 @pytest.fixture(scope="function")
-def session(db, request):
+def session(db: _db, request: pytest.FixtureRequest):
     """Creates a new database session for a test."""
     connection = db.engine.connect()
     transaction = connection.begin()
@@ -76,16 +79,16 @@ def session(db, request):
 
 
 @pytest.fixture(scope="function")
-def client(app, request):
+def client(app: Flask, request: pytest.FixtureRequest):
     client = app.test_client()
     return client
 
 
 class AuthActions:
-    def __init__(self, client):
-        self._client = client
+    def __init__(self, client: FlaskClient):
+        self._client: FlaskClient = client
 
-    def login(self, username="test", password="test"):
+    def login(self, username: str = "test", password: str = "test"):
         return self._client.post(
             "/auth/login", data={"username": username, "password": password}
         )
@@ -95,12 +98,12 @@ class AuthActions:
 
 
 @pytest.fixture
-def auth(client):
+def auth(client: FlaskClient):
     return AuthActions(client)
 
 
 @pytest.fixture(scope="session")
-def connection(request):
+def connection(request: pytest.FixtureRequest):
     engine = create_engine(
         "sqlite:///test_db_2.sqlite", poolclass=NullPool, future=True
     )
@@ -114,7 +117,7 @@ def connection(request):
 
 
 @pytest.fixture(scope="session", autouse=True)
-def setup_db(connection, request):
+def setup_db(connection: Connection, request: pytest.FixtureRequest):
     Base.metadata.create_all(bind=connection)
 
     def teardown():
@@ -124,7 +127,7 @@ def setup_db(connection, request):
 
 
 @pytest.fixture(autouse=True)
-def new_session(connection, request):
+def new_session(connection: Connection, request: pytest.FixtureRequest):
     # transaction = connection.begin()
     session = Session(bind=connection)
     session.begin_nested()

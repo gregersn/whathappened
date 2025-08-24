@@ -1,16 +1,35 @@
 """Auth models."""
 
+import enum
 import logging
 
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.sql.sqltypes import String
+from sqlalchemy.sql.sqltypes import String, Enum
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from whathappened.core.database import Base, session
 from whathappened.core.database.models import UserProfile
 
 logger = logging.getLogger(__name__)
+
+
+class UserStatus(enum.Enum):
+    """Status of a handout."""
+
+    invited = "Invited"
+    active = "Active"
+    inactive = "Inactive"
+    registered = "Registered"
+
+
+UserStatusType: Enum = Enum(
+    UserStatus,
+    name="userstatus",
+    create_constraint=True,
+    metadata=Base.metadata,
+    validate_strings=True,
+)
 
 
 class User(Base):
@@ -31,6 +50,10 @@ class User(Base):
     )
 
     roles: Mapped[list["Role"]] = relationship(secondary="user_roles")
+
+    status: Mapped[UserStatus] = mapped_column(
+        default=UserStatus.invited, nullable=True
+    )
 
     def __repr__(self):
         return f"<User {self.username}>"

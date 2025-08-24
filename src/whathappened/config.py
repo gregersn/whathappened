@@ -2,35 +2,33 @@
 
 import os
 from pathlib import Path
-from typing import List, Optional
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     """Settings to be overridden with env variables."""
 
-    ADMINS: List[str] = ["your-email@example.com"]
+    ADMINS: list[str] = ["your-email@example.com"]
     ASSETS_DEBUG: bool = False
     ASSETS_AUTO_BUILD: bool = False
     FLASK_DEBUG: bool = True
     MAIL_PORT: int = 8025
     MAIL_SERVER: str = "localhost"
     MAX_CONTENT_LENGTH: int = 1024 * 1024  # Max upload size
+    REQUIRE_INVITE: bool = True  # Set to true to require invitation to register
     SECRET_KEY: str = "development"
-    SQLALCHEMY_DATABASE_URI: Optional[str] = (
+    SQLALCHEMY_DATABASE_URI: str | None = (
         os.environ.get("DATABASE_URL")
         or f"sqlite:///{Path(__file__).parent.parent.parent.parent / 'whathappened.sqlite'}"
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
-    UPLOAD_EXTENSIONS: List[str] = [".jpg", ".png", ".jpeg", ".gif"]
+    UPLOAD_EXTENSIONS: list[str] = [".jpg", ".png", ".jpeg", ".gif"]
     UPLOAD_FOLDER: str = "uploads"
     WEBPACKEXT_MANIFEST_PATH: str = "manifest.json"
-    WTF_CSRF_TIME_LIMIT: Optional[int] = None
+    WTF_CSRF_TIME_LIMIT: int | None = None
 
-    model_config = {
-        "_env_file_encoding": "utf-8",
-    }
+    model_config = SettingsConfigDict(env_file_encoding="utf-8")
 
 
 Config = Settings(_env_file=os.environ.get("WHATHAPPENED_SETTINGS"))

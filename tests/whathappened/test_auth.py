@@ -1,5 +1,5 @@
 from flask import session
-from whathappened.core.auth.models import User
+from whathappened.core.auth.models import User, UserStatus
 
 
 def test_register(app, db):
@@ -15,6 +15,7 @@ def test_register(app, db):
     user = db.session.get(User, 1)
     assert user.username == "a"
     assert user.email == "t@t.com"
+    assert user.status == UserStatus.invited
 
 
 def test_logout(client, auth):

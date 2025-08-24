@@ -1,7 +1,7 @@
 """Campaign database models."""
 
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy.orm import backref, relationship, Mapped, mapped_column
 from sqlalchemy.sql.schema import ForeignKey, Table, Column
@@ -217,7 +217,7 @@ class Message(BaseModel):
 
     message: Mapped[str] = mapped_column(Text, nullable=True)
     timestamp: Mapped[datetime] = mapped_column(
-        DateTime, index=True, default=datetime.utcnow, nullable=True
+        DateTime, index=True, default=datetime.now(timezone.utc), nullable=True
     )
 
     _default_fields = ["timestamp", "sender_name", "to_name", "message", "id"]

@@ -17,10 +17,7 @@
 {% endblock %}
 
 {% block menu %}
-    {% if current_user.is_authenticated %}
-        <a href="{{ url_for('content.folders') }}">Content</a> |
-        <a href="{{ url_for('profile.settings') }}">User settings</a>
-    {% endif %}
+{% include 'profile/menu.html.jinja' %}
 {% endblock %}
 
 
@@ -40,5 +37,29 @@
 <li>Profile id: {{ profile.id }} </li>
 </ul>
 </section>
+{% if invites %}
+<section id="invites">
+<h3>Invite friends</h3>
+{% if invites.invitations %}
+<table>
+<tr><th>Email</th><th>Status</th></tr>
+{% for invite in invites.invitations %}
+<tr><td>{{ invite.1.email }}</td><td>{{ invite.1.status.name }}</td></tr>
+{% endfor %}
+</table>
+{% endif %}
+    <form action="/profile/settings/invite" method="post">
+        {{ invites.form.hidden_tag() }}
+        <p>
+            {{ invites.form.email.label }}<br>
+            {{ invites.form.email(size=32) }}<br>
+            {% for error in invites.form.email.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ invites.form.submit() }}</p>
+    </form>
+</section>
+{% endif %}
 {% endblock%}
 
