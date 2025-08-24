@@ -3,7 +3,7 @@
 import logging
 from urllib.parse import urlsplit
 
-from flask import flash, redirect, render_template, request, url_for
+from flask import current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_user, logout_user
 
 from whathappened.core.database import session
@@ -54,6 +54,10 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
     form = RegistrationForm()
+
+    if not current_app.config["REQUIRE_INVITE"]:
+        del form.invitation
+
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)

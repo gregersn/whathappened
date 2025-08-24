@@ -36,6 +36,15 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
+        {% if form.invitation %}
+        <p>
+            {{ form.invitation.label }}<br>
+            {{ form.invitation(size=32) }}<br>
+            {% for error in form.invitation.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        {% endif %}
         <p>{{ form.submit() }}</p>
     </form>
 {% endblock %}
