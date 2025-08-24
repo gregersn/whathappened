@@ -1,8 +1,11 @@
 """Authentication forms."""
 
+from uuid import UUID
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+
+from whathappened.core.database.models import Invite
 
 from ...core.auth.models import User
 
@@ -25,6 +28,7 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField(
         "Repeat Password", validators=[DataRequired(), EqualTo("password")]
     )
+    invitation = StringField("Invitation code", validators=[DataRequired()])
     submit = SubmitField("Register")
 
     def validate_username(self, username: StringField):
@@ -36,6 +40,21 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError("Please use a different email address.")
+
+    def validate_invitation(self, invitation: StringField):
+        valid = True
+        try:
+            code = UUID(invitation.data)
+        except ValueError:
+            valid = False
+
+        if valid:
+            invite = Invite.query.filter_by(id=invitation.data).first()
+            if invite is None:
+                valid = False
+
+        if not valid:
+            raise ValidationError("Please use a valid invite code.")
 
 
 class ResetPasswordRequestForm(FlaskForm):
