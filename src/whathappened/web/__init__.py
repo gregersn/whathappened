@@ -13,7 +13,7 @@ from jinja2_webpack import Environment as WebpackEnvironment
 from jinja2_webpack.filter import WebpackFilter
 
 
-from whathappened.config import Config
+from whathappened.config import Config, Settings
 from whathappened.web.email import mail
 
 from ..core.database import init_db, session
@@ -54,7 +54,7 @@ def uberfilter(inp: str, filter: str = ""):
     return inp
 
 
-def create_app(test_config=None) -> Flask:
+def create_app(test_config: Settings | None = None) -> Flask:
     logger.info("Creating app")
 
     assets_env._named_bundles = {}
@@ -87,7 +87,9 @@ def create_app(test_config=None) -> Flask:
     mail.init_app(app)
     app.jinja_env.globals["whathappened_version"] = __version__
     app.jinja_env.add_extension("jinja2.ext.do")
-    app.jinja_env.add_extension("pelican.plugins.webassets.vendor.webassets.ext.jinja2.AssetsExtension")
+    app.jinja_env.add_extension(
+        "pelican.plugins.webassets.vendor.webassets.ext.jinja2.AssetsExtension"
+    )
 
     app.jinja_env.filters["uberfilter"] = uberfilter
 

@@ -1,13 +1,15 @@
 import logging
 from sqlalchemy import desc
-from flask import Blueprint, render_template, request
+from flask import Blueprint, current_app, flash, redirect, render_template, request
+from whathappened.core.auth.models import User, UserStatus
 from whathappened.web.auth.utils import login_required, current_user
 from whathappened.core.database import session
+from whathappened.web.campaign.forms import InvitePlayerForm
 
 bp = Blueprint("profile", __name__, template_folder="../templates")
 
 # from whathappened.character.models import Character  # noqa F401
-from ..core.database.models import UserProfile  # noqa F401
+from ..core.database.models import Invite, UserProfile  # noqa F401
 
 logger = logging.getLogger(__name__)
 
@@ -37,14 +39,57 @@ def index():
     )
 
 
+@bp.post("/settings/invite")
+@login_required
+def settings_invite_post():
+    assert current_user is not None
+    form = InvitePlayerForm()
+
+    if form.validate_on_submit():
+        user_profile = session.get(UserProfile, current_user.id)
+        assert user_profile
+        invited_user = User(
+            username=form.email.data, email=form.email.data, status=UserStatus.invited
+        )
+        session.add(invited_user)
+        session.commit()
+
+        user_invite = Invite(invited_user)
+        user_invite.owner_id = user_profile.id
+        session.add(user_invite)
+
+        session.commit()
+        flash("User is invited.")
+
+    return redirect("/profile/settings")
+
+
 @bp.get("/settings")
 @login_required
 def settings():
     assert current_user is not None
     user_profile = session.get(UserProfile, current_user.id)
 
+    invites = None
+
+    if current_app.config.get("REQUIRE_INVITE"):
+        invitations = (
+            session.query(Invite, User)
+            .filter(Invite.owner_id == user_profile.id)
+            .filter(Invite.table == User.__tablename__)
+            .filter(User.id == Invite.object_id)
+            .all()
+        )
+        invites = {
+            "form": InvitePlayerForm(),
+            "invitations": invitations,
+        }
+
     return render_template(
-        "profile/settings.html.jinja", profile=user_profile, user=current_user
+        "profile/settings.html.jinja",
+        profile=user_profile,
+        user=current_user,
+        invites=invites,
     )
 
 

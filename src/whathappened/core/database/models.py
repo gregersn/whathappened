@@ -68,7 +68,9 @@ class LogEntry(Base):
     table: Mapped[str] = mapped_column(String(128), nullable=True)
     object_id: Mapped[int] = mapped_column(nullable=True)
     entry: Mapped[str] = mapped_column(Text, nullable=True)
-    created_date = mapped_column(DateTime, default=datetime.datetime.utcnow)
+    created_date = mapped_column(
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
+    )
     user: Mapped["User"] = relationship()
 
     def __init__(self, target: typing.Any, entry: str, user_id=None, **kwargs):

@@ -3,7 +3,7 @@
 import json
 import logging
 from typing import Any, Dict, Type
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.orm import reconstructor, relationship, backref, Mapped, mapped_column
@@ -30,8 +30,8 @@ class Character(BaseContent, BaseModel):
     timestamp: Mapped[datetime] = mapped_column(
         DateTime,
         index=True,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
         nullable=True,
     )
     user_id: Mapped[int] = mapped_column(ForeignKey("user_profile.id"), nullable=True)

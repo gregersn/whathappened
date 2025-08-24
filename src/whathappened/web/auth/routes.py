@@ -3,7 +3,7 @@
 import logging
 from urllib.parse import urlsplit
 
-from flask import flash, redirect, render_template, request, url_for
+from flask import current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_user, logout_user
 
 from whathappened.core.database import session
@@ -11,7 +11,7 @@ from whathappened.core.database import session
 from .utils import current_user, verify_reset_password_token
 from .forms import LoginForm, RegistrationForm
 from .forms import ResetPasswordRequestForm, ResetPasswordForm
-from ...core.auth.models import User
+from ...core.auth.models import User, UserStatus
 
 from .utils import send_password_reset_email
 from .blueprints import bp
@@ -37,6 +37,11 @@ def login():
             flash("Invalid username or password")
             return redirect(url_for("auth.login"))
         login_user(user, remember=form.remember_me.data)
+
+        user.status = UserStatus.active
+        session.add(user)
+        session.commit()
+
         return redirect(next_page)
     return render_template("auth/login.html.jinja", title="Sign In", form=form)
 
@@ -53,15 +58,50 @@ def register():
     """Register new user route."""
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
+
     form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        session.add(user)
-        session.commit()
-        flash("Congratulations, you are now a registered user!")
-        return redirect(url_for("auth.login"))
-    return render_template("auth/register.html.jinja", title="Register", form=form)
+
+    if request.method == "POST":
+        form.validate()
+
+        if not form.errors and not current_app.config.get("REQUIRE_INVITE"):
+            user = User(username=form.username.data, email=form.email.data)
+            user.set_password(form.password.data)
+            session.add(user)
+            session.commit()
+            flash("Congratulations, you are now a registered user!")
+            return redirect(url_for("auth.login"))
+
+        if (
+            current_app.config.get("REQUIRE_INVITE")
+            and len(form.errors.keys()) == 1
+            and "email" in form.errors.keys()
+        ):
+            user = (
+                User.query.filter_by(username=form.email.data)
+                .filter_by(status=UserStatus.invited)
+                .first()
+            )
+            if user is not None:
+                user.username = form.username.data
+                user.status = UserStatus.registered
+                user.set_password(form.password.data)
+
+                session.add(user)
+                session.commit()
+                flash("Congratulations, you are now a registered user!")
+                return redirect(url_for("auth.login"))
+
+        if current_app.config.get("REQUIRE_INVITE"):
+            if not form.email.errors:
+                form.email.errors = []
+            form.email.errors.append("Invitation needed to register.")
+
+    return render_template(
+        "auth/register.html.jinja",
+        title="Register",
+        form=form,
+    )
 
 
 @bp.route("/reset_password_request", methods=["GET", "POST"])

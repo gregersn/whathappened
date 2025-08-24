@@ -1,0 +1,6 @@
+    {% if current_user.is_authenticated %}
+    <ul>
+        <li><a href="{{ url_for('content.folders') }}">Content</a></li>
+        <li><a href="{{ url_for('profile.settings') }}">User settings</a></li>
+        </ul>
+    {% endif %}

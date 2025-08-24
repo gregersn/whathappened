@@ -23,3 +23,6 @@ class db:
         Base.metadata.create_all(Base.metadata.bind)
 
     session = session
+
+
+__all__ = ["Base"]
