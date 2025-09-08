@@ -1,6 +1,6 @@
 build
 pylint==3.3.8
-pytest-cov==6.2.1
+pytest-cov==6.3.0
 pytest==8.4.1
 pytest-dependency
 ruff
