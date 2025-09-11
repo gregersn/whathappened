@@ -1,4 +1,4 @@
-    alembic==1.16.4
+    alembic==1.16.5
     email-validator==2.3.0
     Flask-Login==0.6.3
     Flask-Mail==0.10.0
