@@ -18,7 +18,7 @@
     PyMysql==1.1.2
     pyScss @ git+https://github.com/Kronuz/pyScss.git
     python-dotenv==1.1.1
-    PyYAML==6.0.2
+    PyYAML==6.0.3
     SQLAlchemy==2.0.43
     pelican-webassets==2.1.0
     werkzeug==3.1.3
