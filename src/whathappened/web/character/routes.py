@@ -122,6 +122,7 @@ def update(id: int):
         update = request.get_json()
         assert update is not None
         for setting in update:
+            prev = character.mechanics.attribute(setting["field"])
             name = character.set_attribute(setting)
             field = setting["field"]
             subfield = setting.get("subfield", "")
@@ -133,10 +134,21 @@ def update(id: int):
             log_subfield = ""
             if subfield is not None and subfield != "None":
                 log_subfield = " " + subfield
-            if name is not None:
-                log_message = f"set {type} on {field}{log_subfield} ({name}): {value}"
+
+            if prev:
+                if name is not None:
+                    log_message = f"change {type} on {field}{log_subfield} ({name}): {prev} -> {value}"
+                else:
+                    log_message = (
+                        f"change {type} on {field}{log_subfield}: {prev} -> {value}"
+                    )
             else:
-                log_message = f"set {type} on {field}{log_subfield}: {value}"
+                if name is not None:
+                    log_message = (
+                        f"set {type} on {field}{log_subfield} ({name}): {value}"
+                    )
+                else:
+                    log_message = f"set {type} on {field}{log_subfield}: {value}"
 
             logentry = LogEntry(character, log_message, user_id=current_user.id)  # pyright: ignore[reportGeneralTypeIssues]
             session.add(logentry)
