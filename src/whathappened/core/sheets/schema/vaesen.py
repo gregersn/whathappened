@@ -340,7 +340,7 @@ class Characteristics(BaseModel):
             default_factory=Attributes,
             description="Each attribute has a value between 2 and 5 and determines the number of dice you roll when attempting things that depend on the attribute in question.",
         ),
-    ] = Attributes()
+    ]
     resources: Annotated[
         int,
         Field(
@@ -349,7 +349,7 @@ class Characteristics(BaseModel):
     ] = 1
     conditions: Annotated[
         Conditions, Field(title="Conditions", default_factory=Conditions)
-    ] = Conditions()
+    ]
     skills: Annotated[
         Skills,
         Field(
@@ -357,7 +357,7 @@ class Characteristics(BaseModel):
             default_factory=Skills,
             description="Acquired knowledge, training and experience. Value between 0 and 5.",
         ),
-    ] = Skills()
+    ]
     experience: Annotated[
         int,
         Field(
@@ -374,14 +374,14 @@ class Character(BaseModel):
 
     personalia: Annotated[
         Personality, Field(title="Personalia", default_factory=Personality)
-    ] = Personality()
+    ]
     miscellaneous: Annotated[
         Miscellaneous, Field(title="Miscellaneous", default_factory=Miscellaneous)
-    ] = Miscellaneous()
+    ]
     characteristics: Annotated[
         Characteristics,
         Field(title="Characteristics", default_factory=Characteristics),
-    ] = Characteristics()
+    ]
 
 
 class Vaesen(BaseSchema):
