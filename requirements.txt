@@ -11,7 +11,7 @@
     jsonschema==4.25.1
     markdown2==2.5.4
     packaging==25.0
-    Pillow==11.3.0
+    Pillow==12.1.0
     pydantic-settings==2.11.0
     pydantic==2.12.5
     PyJWT==2.10.1
