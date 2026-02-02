@@ -14,7 +14,7 @@
     Pillow==12.1.0
     pydantic-settings==2.11.0
     pydantic==2.12.5
-    PyJWT==2.10.1
+    PyJWT==2.11.0
     PyMysql==1.1.2
     pyScss @ git+https://github.com/Kronuz/pyScss.git
     python-dotenv==1.2.1
