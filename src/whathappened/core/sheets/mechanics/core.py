@@ -111,6 +111,11 @@ class CharacterMechanics:
         logger.debug("Getting attribute for: %s", path)
 
         def reducer(source, selector):
+            logger.debug("Reducing source: %s, to selector: %s", source, selector)
+
+            if not source:  # No content in source
+                return None
+
             if isinstance(source, list):
                 return source[int(selector)]
             return source[selector] if source is not None else None
