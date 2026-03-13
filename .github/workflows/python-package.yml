@@ -20,16 +20,13 @@ jobs:
               uses: actions/setup-python@v4
               with:
                   python-version: "3.12"
-            - name: Install dependencies
-              run: |
-                  python -m pip install --upgrade pip
-                  if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+            - uses: astral-sh/setup-uv@v7
             - name: Lint with ruff
               run: |
                   # stop the build if there are Python syntax errors or undefined names
-                  ruff check . --select=E9,F63,F7,F82 --statistics --exclude=.venv/,./src/whathappened/migrations/
+                  uv run -- ruff check . --select=E9,F63,F7,F82 --statistics --exclude=.venv/,./src/whathappened/migrations/
                   # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-                  ruff check . --exit-zero --statistics --exclude=.venv/,./src/whathappened/migrations/
+                  uv run -- ruff check . --exit-zero --statistics --exclude=.venv/,./src/whathappened/migrations/
     coverage:
         runs-on: ubuntu-latest
         steps:
@@ -38,16 +35,12 @@ jobs:
               uses: actions/setup-python@v4
               with:
                   python-version: "3.12"
-            - name: Install dependencies
-              run: |
-                  python -m pip install --upgrade pip
-                  if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-                  if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+            - uses: astral-sh/setup-uv@v7
             - name: Test with pytest and make coverage report
               run: |
-                  pytest -vvv --cov=whathappened
-                  coverage report
-                  coverage html
+                  uv run pytest -vvv --cov=whathappened
+                  uv run coverage report
+                  uv run coverage html
               continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
             - name: Archive coverage html report
               uses: actions/upload-artifact@v4
@@ -63,15 +56,11 @@ jobs:
               uses: actions/setup-python@v4
               with:
                   python-version: "3.12"
-            - name: Install dependencies
-              run: |
-                  python -m pip install --upgrade pip
-                  if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-                  if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+            - uses: astral-sh/setup-uv@v7
             - name: Check if database needs migration.
               run: |
-                  FLASK_APP=./src/whathappened.web flask db upgrade
-                  FLASK_APP=./src/whathappened.web flask db check
+                  FLASK_APP=./src/whathappened.web uv run -- flask db upgrade
+                  FLASK_APP=./src/whathappened.web uv run -- flask db check
               continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
 
     test-frontend:
@@ -94,21 +83,20 @@ jobs:
               uses: actions/setup-python@v4
               with:
                   python-version: ${{ matrix.python-version }}
+            - uses: astral-sh/setup-uv@v7
             - name: Install dependencies
               run: |
-                  python -m pip install --upgrade pip
-                  pip install --upgrade setuptools
-                  if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-                  if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+                  uv venv
+                  uv pip install --upgrade setuptools
                   cd frontend; npm install; cd ..
             - name: Build assets
               run: |
-                  FLASK_APP=src/whathappened.web flask assets build
-                  FLASK_APP=src/whathappened.web flask main build
+                  FLASK_APP=src/whathappened.web uv run -- flask assets build
+                  FLASK_APP=src/whathappened.web uv run -- flask main build
               continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
             - name: Test with pytest and make coverage report
               run: |
-                  pytest -vvv
+                  uv run pytest -vvv
               continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
             - name: Setup database
               run: |
