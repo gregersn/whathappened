@@ -16,7 +16,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "alembic==1.17.2",
+    "alembic==1.18.4",
     "email-validator==2.3.0",
     "flask-login==0.6.3",
     "flask-mail==0.10.0",
