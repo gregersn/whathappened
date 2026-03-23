@@ -39,7 +39,7 @@ dependencies = [
     "pelican-webassets==2.1.0",
     "jinja2-webpack==0.2.0",
     "pydantic==2.12.5",
-    "pydantic-settings==2.11.0",
+    "pydantic-settings==2.13.1",
     "wtforms==3.2.1",
 ]
 
