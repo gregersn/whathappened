@@ -76,7 +76,7 @@ source = "whathappened"
 dev = [
     "build>=1.4.0",
     "pytest==8.4.2",
-    "pytest-cov==7.0.0",
+    "pytest-cov==7.1.0",
     "pytest-dependency>=0.6.1",
     "ruff>=0.15.5",
     "setuptools>=82.0.1",
