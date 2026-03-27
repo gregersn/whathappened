@@ -3,6 +3,10 @@
 {% block head %}
 {{ super() }}
 {% if editable %}
+<!-- PyScript CSS -->
+<link rel="stylesheet" href="https://pyscript.net/releases/2024.11.1/core.css">
+<!-- This script tag bootstraps PyScript -->
+<script type="module" src="https://pyscript.net/releases/2024.11.1/core.js"></script>
 <script src="{{ 'coc7e.js' | webpack}}"></script>
 {% endif %}
 
@@ -28,6 +32,7 @@
 </div>
 <div class="extrainfo">
     {{ extra_info(character, campaign, editable) }}
+    <script type="mpy" src="/static/pyscript/hello.py"></script>
 </div>
 
 <div class="charactersheet">
