@@ -1,6 +1,5 @@
 import json
 import logging
-from typing import Optional
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, HiddenField
 from wtforms import ValidationError, SubmitField
@@ -13,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class JsonString(object):
-    def __init__(self, message: Optional[str] = None):
+    def __init__(self, message: str | None = None):
         if not message:
             message = "Field must be a valid JSON string"
         self.message = message

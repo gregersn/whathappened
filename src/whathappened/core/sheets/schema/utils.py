@@ -1,7 +1,6 @@
 """Schema and sheet utilities"""
 
 import copy
-from typing import Optional
 from packaging.version import Version, parse
 
 from whathappened.core.sheets.schema.base import (
@@ -83,7 +82,7 @@ def set_version(data, version: str):
     return data
 
 
-def migrate(data, to_version: str, migrations: Optional[list[Migration]] = None):
+def migrate(data, to_version: str, migrations: list[Migration] | None = None):
     """Do the migration."""
     data = copy.deepcopy(data)
     system = find_system(data)

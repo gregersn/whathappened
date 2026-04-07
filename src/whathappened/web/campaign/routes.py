@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 from flask import render_template, redirect, url_for, flash, request
 from sqlalchemy import and_, or_, desc
@@ -403,7 +402,7 @@ def remove_player(id: int, playerid: int):
 @bp.route("/<int:campaign_id>/player/<int:player_id>/message", methods=("GET", "POST"))
 @bp.route("/<int:campaign_id>/message/", methods=("GET", "POST"))
 @login_required
-def message_player(campaign_id: int, player_id: Optional[int] = None):
+def message_player(campaign_id: int, player_id: int | None = None):
     campaign = session.get(Campaign, campaign_id)
     assert campaign
     player = None

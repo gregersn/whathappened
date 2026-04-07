@@ -2,7 +2,7 @@
 
 import json
 import logging
-from typing import Any, Dict, Type
+from typing import Any
 from datetime import datetime, timezone
 
 from sqlalchemy.orm.attributes import flag_modified
@@ -49,7 +49,7 @@ class Character(BaseContent, BaseModel):
         return f"<Character {self.title}>"
 
     def __init__(
-        self, *args, mechanics: Type[CharacterMechanics] = CharacterMechanics, **kwargs
+        self, *args, mechanics: type[CharacterMechanics] = CharacterMechanics, **kwargs
     ):
         super().__init__(*args, **kwargs)
         self._data = None
@@ -66,7 +66,7 @@ class Character(BaseContent, BaseModel):
         self.mechanics = MECHANICS.get(system, CharacterMechanics)(self)
 
     @property
-    def data(self) -> Dict[str, Any]:
+    def data(self) -> dict[str, Any]:
         """Character data."""
         if isinstance(self.body, dict):
             return self.body
@@ -145,7 +145,7 @@ class Character(BaseContent, BaseModel):
         except KeyError:
             return "Could not get description."
 
-    def set_attribute(self, attribute: Dict):
+    def set_attribute(self, attribute: dict):
         """Set a specific attribute."""
         return self.mechanics.set_attribute(attribute)
 

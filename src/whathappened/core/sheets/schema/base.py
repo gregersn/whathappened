@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, Literal, Optional
+from typing import Callable, Literal
 
 from pydantic import BaseModel, ConfigDict
 
@@ -13,8 +13,8 @@ class Migration:
 
     from_version: str
     to: str
-    up: Optional[Callable] = None
-    down: Optional[Callable] = None
+    up: Callable | None = None
+    down: Callable | None = None
 
 
 Gametag = Literal["landf", "tftl", "coc7e", "dod", "vaesen", "vaesenhq"]

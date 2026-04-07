@@ -1,7 +1,6 @@
 import os
 import logging
 
-from typing import Optional
 from flask import render_template, flash
 from flask import redirect, url_for
 from flask.helpers import send_from_directory
@@ -23,7 +22,7 @@ logger = logging.getLogger(__name__)
 @bp.route("/<uuid:folder_id>/")
 @bp.route("/")
 @login_required
-def index(folder_id: Optional[str] = None):
+def index(folder_id: str | None = None):
     if current_user.profile.assetfolders.count() < 1:
         logger.debug("Creating initial folder")
         rootfolder = AssetFolder(title="assets", owner=current_user.profile)
