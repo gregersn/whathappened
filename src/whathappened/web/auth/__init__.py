@@ -2,8 +2,9 @@
 
 import logging
 
-from whathappened.web import login_manager
 from whathappened.core.database import session
+from whathappened.web import login_manager
+
 from ...core.auth.models import User  # noqa E402
 from .forms import LoginForm, RegistrationForm  # noqa E402
 

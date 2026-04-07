@@ -1,6 +1,7 @@
 """Vaesen Headquarters sheet."""
 
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
+
 from pydantic import BaseModel, ConfigDict, Field
 import yaml
 
@@ -66,9 +67,7 @@ class Information(BaseModel):
     type_of_building: str = "Unknown"
     location: str = "Somewhere"
     development_points: int = 0
-    picture: Annotated[
-        Optional[str], Field(json_schema_extra={"widget": "portrait"})
-    ] = ""
+    picture: Annotated[str | None, Field(json_schema_extra={"widget": "portrait"})] = ""
 
 
 class Upgrade(BaseModel):

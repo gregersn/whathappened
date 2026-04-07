@@ -1,7 +1,7 @@
 """Miscellanous character sheet utilities."""
 
-from .schema.build import get_schema, build_from_schema
 from .schema.base import Gametag
+from .schema.build import build_from_schema, get_schema
 
 
 def create_sheet(system: Gametag):

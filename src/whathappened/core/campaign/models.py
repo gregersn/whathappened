@@ -1,18 +1,17 @@
 """Campaign database models."""
 
-import enum
 from datetime import datetime, timezone
+import enum
 
-from sqlalchemy.orm import backref, relationship, Mapped, mapped_column
-from sqlalchemy.sql.schema import ForeignKey, Table, Column
+from sqlalchemy.orm import Mapped, backref, mapped_column, relationship
+from sqlalchemy.sql.schema import Column, ForeignKey, Table
 from sqlalchemy.sql.sqltypes import DateTime, Enum, Integer, String, Text
 
-from whathappened.core.database.base import Base, BaseModel
-from whathappened.core.content.mixins import BaseContent
-from whathappened.core.database.models import UserProfile
 from whathappened.core.character.models import Character
+from whathappened.core.content.mixins import BaseContent
 from whathappened.core.content.models import Folder
-
+from whathappened.core.database.base import Base, BaseModel
+from whathappened.core.database.models import UserProfile
 
 campaign_players = Table(
     "campaign_players",

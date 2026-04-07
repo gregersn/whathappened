@@ -1,15 +1,13 @@
 from flask import url_for
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired, FileAllowed
-
-from wtforms import SubmitField
-
-from wtforms import StringField
+from flask_wtf.file import FileAllowed, FileField, FileRequired
+from wtforms import StringField, SubmitField
 from wtforms.fields.simple import HiddenField
 from wtforms.validators import DataRequired
 
 from whathappened.web.auth.utils import current_user
 from whathappened.web.forms.fields import QuerySelectField
+
 from ...core.userassets.models import Asset
 
 

@@ -1,8 +1,8 @@
 """Vaesen sheet mechanics."""
 
 import logging
-from whathappened.core.sheets.mechanics.core import CharacterMechanics
 
+from whathappened.core.sheets.mechanics.core import CharacterMechanics
 
 logger = logging.getLogger(__name__)
 

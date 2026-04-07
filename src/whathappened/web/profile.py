@@ -1,9 +1,11 @@
 import logging
-from sqlalchemy import desc
+
 from flask import Blueprint, current_app, flash, redirect, render_template, request
+from sqlalchemy import desc
+
 from whathappened.core.auth.models import User, UserStatus
-from whathappened.web.auth.utils import login_required, current_user
 from whathappened.core.database import session
+from whathappened.web.auth.utils import current_user, login_required
 from whathappened.web.campaign.forms import InvitePlayerForm
 
 bp = Blueprint("profile", __name__, template_folder="../templates")
@@ -71,6 +73,8 @@ def settings():
     user_profile = session.get(UserProfile, current_user.id)
 
     invites = None
+
+    assert user_profile is not None
 
     if current_app.config.get("REQUIRE_INVITE"):
         invitations = (

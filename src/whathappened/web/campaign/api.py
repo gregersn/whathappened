@@ -1,17 +1,17 @@
-import json
-import hashlib
-import logging
 from datetime import datetime
+import hashlib
+import json
+import logging
 
-from flask import request, jsonify
+from flask import jsonify, request
 from sqlalchemy import or_
 from werkzeug.exceptions import abort
 
-from whathappened.web.auth.utils import login_required, current_user
 from whathappened.core.database import session
+from whathappened.web.auth.utils import current_user, login_required
 
+from ...core.campaign.models import NPC, Campaign, Handout, HandoutStatus, Message
 from .blueprints import apibp
-from ...core.campaign.models import Handout, Campaign, HandoutStatus, NPC, Message
 
 logger = logging.getLogger(__name__)
 

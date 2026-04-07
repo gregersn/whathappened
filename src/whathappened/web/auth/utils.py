@@ -1,17 +1,20 @@
 from time import time
-import jwt
 
-from flask import render_template, current_app
-
+from flask import current_app, render_template
 from flask_login import (
-    login_required as login_required,
-    current_user as current_user,
     LoginManager as LoginManager,
 )
+from flask_login import (
+    current_user as current_user,
+)
+from flask_login import (
+    login_required as login_required,
+)
+import jwt
 
 from whathappened.core.auth.models import User
-from whathappened.web.email import send_mail
 from whathappened.core.database import session
+from whathappened.web.email import send_mail
 
 
 def get_reset_password_token(user: User, expires_in: int = 600):

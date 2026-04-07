@@ -1,9 +1,9 @@
+import logging
 from pathlib import Path
 import uuid
-import logging
 
 from sqlalchemy import event
-from sqlalchemy.orm import backref, relationship, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, backref, mapped_column, relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import String
 from werkzeug.utils import secure_filename

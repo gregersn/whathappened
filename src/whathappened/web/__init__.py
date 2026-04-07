@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
-from pathlib import Path
-import os
 import logging
+import os
+from pathlib import Path
 
 from flask import Flask
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
-
-from pelican.plugins.webassets.vendor.webassets import Environment as AssetsEnvironment
-from pelican.plugins.webassets.vendor.webassets.bundle import Bundle
 from jinja2_webpack import Environment as WebpackEnvironment
 from jinja2_webpack.filter import WebpackFilter
-
+from pelican.plugins.webassets.vendor.webassets import Environment as AssetsEnvironment
+from pelican.plugins.webassets.vendor.webassets.bundle import Bundle
 
 from whathappened.config import Config, Settings
 from whathappened.web.email import mail
@@ -131,24 +129,28 @@ def create_app(test_config: Settings | None = None) -> Flask:
     app.register_blueprint(content_bp, url_prefix="/content")
 
     from .userassets.blueprints import (
-        bp as userassets_bp,
         apibp as userassets_apibp,
+    )
+    from .userassets.blueprints import (
+        bp as userassets_bp,
     )
 
     logger.debug("Registering assets module")
     app.register_blueprint(userassets_bp, url_prefix="/assets")
     app.register_blueprint(userassets_apibp, url_prefix="/api/assets")
 
-    from .character.blueprints import bp as character_bp, api as character_api
     from . import character
+    from .character.blueprints import api as character_api
+    from .character.blueprints import bp as character_bp
 
     logger.debug("Registering blueprint character")
     app.register_blueprint(character_bp, url_prefix="/character")
     app.register_blueprint(character_api, url_prefix="/api/character")
     character.register_assets(assets_env)
 
-    from .campaign.blueprints import bp as campaign_bp, apibp as campaign_apibp
     from . import campaign
+    from .campaign.blueprints import apibp as campaign_apibp
+    from .campaign.blueprints import bp as campaign_bp
 
     app.register_blueprint(campaign_bp, url_prefix="/campaign")
     app.register_blueprint(campaign_apibp, url_prefix="/api/campaign")
@@ -161,7 +163,9 @@ def create_app(test_config: Settings | None = None) -> Flask:
         return "Hello, World!"
 
     with app.app_context():
-        from .main import database  # noqa: F401, Add some commands for database handling.
+        from .main import (
+            database,  # noqa: F401, Add some commands for database handling.
+        )
 
         logger.debug("Registering assets")
         assets_env.url = app.static_url_path

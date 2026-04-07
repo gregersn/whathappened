@@ -2,6 +2,7 @@ import logging
 import subprocess
 
 from .blueprints import bp
+
 from . import routes  # noqa: E402, F401 isort:skip
 
 logger = logging.getLogger(__name__)

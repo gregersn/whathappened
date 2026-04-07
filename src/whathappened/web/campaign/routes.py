@@ -1,37 +1,40 @@
 import logging
-from typing import Optional
 
-from flask import render_template, redirect, url_for, flash, request
-from sqlalchemy import and_, or_, desc
+from flask import flash, redirect, render_template, request, url_for
+from sqlalchemy import and_, desc, or_
 from werkzeug.exceptions import abort
 
-from whathappened.web.main.forms import CreateInviteForm
 from whathappened.core.auth.models import User
 from whathappened.core.character.models import Character
-from whathappened.core.database.models import UserProfile, Invite
 from whathappened.core.database import session
+from whathappened.core.database.models import Invite, UserProfile
+from whathappened.web.auth.utils import current_user, login_required
 from whathappened.web.content.forms import ChooseFolderForm
-from whathappened.web.auth.utils import login_required, current_user
+from whathappened.web.main.forms import CreateInviteForm
 
+from ...core.campaign.models import (
+    NPC,
+    Campaign,
+    CampaignCharacter,
+    HandoutStatus,
+    Message,
+)
+from . import api  # noqa
 from .blueprints import bp
-from ...core.campaign.models import Campaign, CampaignCharacter
 from .forms import (
-    CreateForm,
-    DeleteForm,
-    InvitePlayerForm,
     AddCharacterForm,
     AddNPCForm,
-)
-from .forms import (
-    JoinCampaignForm,
-    EditForm,
-    RemoveCharacterForm,
     CampaignAssociationForm,
+    CreateForm,
+    DeleteForm,
+    EditForm,
+    InvitePlayerForm,
+    JoinCampaignForm,
+    MessagePlayerForm,
+    NPCTransferForm,
+    RemoveCharacterForm,
+    RemovePlayerForm,
 )
-from .forms import RemovePlayerForm, NPCTransferForm, MessagePlayerForm
-from ...core.campaign.models import HandoutStatus, NPC, Message
-
-from . import api  # noqa
 
 logger = logging.getLogger(__name__)
 
@@ -403,7 +406,7 @@ def remove_player(id: int, playerid: int):
 @bp.route("/<int:campaign_id>/player/<int:player_id>/message", methods=("GET", "POST"))
 @bp.route("/<int:campaign_id>/message/", methods=("GET", "POST"))
 @login_required
-def message_player(campaign_id: int, player_id: Optional[int] = None):
+def message_player(campaign_id: int, player_id: int | None = None):
     campaign = session.get(Campaign, campaign_id)
     assert campaign
     player = None

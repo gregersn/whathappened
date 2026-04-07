@@ -1,6 +1,5 @@
 from pelican.plugins.webassets.vendor.webassets.env import Environment
 
-
 from . import routes  # noqa: F401,E402 isort:skip
 from . import views  # noqa: F401, E402 isort:skip
 from . import api  # noqa: F401, E402 isort:skip

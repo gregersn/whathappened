@@ -1,20 +1,23 @@
-import os
 import logging
+import os
 
-from typing import Optional
-from flask import render_template, flash
-from flask import redirect, url_for
+from flask import flash, redirect, render_template, url_for
 from flask.helpers import send_from_directory
-from werkzeug.utils import secure_filename
 from werkzeug.exceptions import abort
+from werkzeug.utils import secure_filename
 
 from whathappened.core.database import session
-from whathappened.web.auth.utils import login_required, current_user
+from whathappened.web.auth.utils import current_user, login_required
 
-from .blueprints import bp
-from .forms import DeleteAssetFolderForm, DeleteAssetForm
-from .forms import UploadForm, NewFolderForm, MoveAssetForm
 from ...core.userassets.models import Asset, AssetFolder
+from .blueprints import bp
+from .forms import (
+    DeleteAssetFolderForm,
+    DeleteAssetForm,
+    MoveAssetForm,
+    NewFolderForm,
+    UploadForm,
+)
 from .utils import resolve_system_path
 
 logger = logging.getLogger(__name__)
@@ -23,7 +26,7 @@ logger = logging.getLogger(__name__)
 @bp.route("/<uuid:folder_id>/")
 @bp.route("/")
 @login_required
-def index(folder_id: Optional[str] = None):
+def index(folder_id: str | None = None):
     if current_user.profile.assetfolders.count() < 1:
         logger.debug("Creating initial folder")
         rootfolder = AssetFolder(title="assets", owner=current_user.profile)

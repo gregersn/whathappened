@@ -1,32 +1,30 @@
 import copy
 import logging
-from typing import Optional
 
-from flask import render_template, request
-from flask import redirect, url_for, jsonify
+from flask import jsonify, redirect, render_template, request, url_for
 from werkzeug.exceptions import abort
 
-from whathappened.web.auth.utils import login_required, current_user
-from whathappened.web.content.forms import ChooseFolderForm
 from whathappened.core.database import session
-from whathappened.core.database.pagination import paginate
 from whathappened.core.database.models import Invite, LogEntry
+from whathappened.core.database.pagination import paginate
 from whathappened.core.sheets.mechanics import core
+from whathappened.core.sheets.mechanics.coc7e.convert import convert_from_dholes
 from whathappened.core.sheets.mechanics.core import GameSystems
 from whathappened.core.sheets.schema.base import CURRENT_SCHEMA_VERSION
 from whathappened.core.sheets.schema.build import flatten_schema, get_schema, sub_schema
 from whathappened.core.sheets.schema.utils import migrate
+from whathappened.web.auth.utils import current_user, login_required
+from whathappened.web.content.forms import ChooseFolderForm
 
-from .blueprints import bp, api
 from ...core.character.models import Character
-from .forms import EditForm, CreateForm, ImportForm
-from .forms import DeleteForm
 
 # Imports for registering games.
-from . import coc7e  # noqa
-from whathappened.core.sheets.mechanics.coc7e.convert import convert_from_dholes
-from . import tftl  # noqa
-
+from . import (
+    coc7e,  # noqa
+    tftl,  # noqa
+)
+from .blueprints import api, bp
+from .forms import CreateForm, DeleteForm, EditForm, ImportForm
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +88,7 @@ def system_select(chartype=None):
 @bp.route("/import", methods=("GET", "POST"))
 @login_required
 def import_character(
-    type: Optional[str] = None, id: Optional[int] = None, code: Optional[str] = None
+    type: str | None = None, id: int | None = None, code: str | None = None
 ):
     logger.debug(f"{type}, {code}, {id}")
     character = None
@@ -160,7 +158,7 @@ def update(id: int):
 
 
 def render_character(
-    character: Character, editable: bool = False, code: Optional[str] = None
+    character: Character, editable: bool = False, code: str | None = None
 ):
     if editable:
         if (not character.archived) and character.validate():
@@ -246,7 +244,7 @@ def html_data_type(t: str) -> str:
 
 
 def render_general_view(
-    system: str, character: Character, editable: bool, code: Optional[str] = None
+    system: str, character: Character, editable: bool, code: str | None = None
 ):
     logger.debug("Getting schema")
     schema = get_schema(system)
@@ -305,7 +303,7 @@ def delete(id: int):
         session.commit()
         return redirect(url_for("character.index"))
 
-    form.character_id.data = character.id
+    form.character_id.data = str(character.id) if character.id else None
 
     return render_template(
         "character/delete_character.html.jinja", form=form, character=character

@@ -1,15 +1,20 @@
-from typing import List, Tuple
 from flask_wtf import FlaskForm
-from wtforms import StringField, HiddenField, SelectField, BooleanField
 from markupsafe import Markup
-from wtforms import SubmitField
-from wtforms import widgets
-from wtforms import IntegerField, SelectMultipleField
+from wtforms import (
+    BooleanField,
+    HiddenField,
+    IntegerField,
+    SelectField,
+    SelectMultipleField,
+    StringField,
+    SubmitField,
+    widgets,
+)
 from wtforms.validators import DataRequired, Email
 from wtforms.widgets.core import HiddenInput, TextArea
 
-from whathappened.web.forms.fields import QuerySelectField, QuerySelectMultipleField
 from whathappened.web.auth.utils import current_user
+from whathappened.web.forms.fields import QuerySelectField, QuerySelectMultipleField
 
 from ...core.campaign.models import HandoutStatus
 
@@ -187,7 +192,7 @@ class MessagePlayerForm(FlaskForm):
     def __init__(
         self,
         hide_to_id: bool = False,
-        players: List[Tuple[int, str]] = [],
+        players: list[tuple[int, str]] = [],
         *args,
         **kwargs,
     ):
@@ -195,7 +200,7 @@ class MessagePlayerForm(FlaskForm):
         if hide_to_id:
             self.to_id.widget = HiddenInput()  # type: ignore  # Not an error
 
-        player_choices: List[Tuple[int | str, str]] = [("", "All")]
+        player_choices: list[tuple[int | str, str]] = [("", "All")]
         player_choices += players
         self.to_id.choices = player_choices
 

@@ -1,19 +1,19 @@
 import logging
-from typing import Optional, Text, Union
+from typing import Text
 
-from flask import render_template, request, redirect, url_for
+from flask import redirect, render_template, request, url_for
 from flask.views import View
+import markdown2
 from werkzeug.exceptions import abort
 from werkzeug.wrappers import Response
-import markdown2
 
-from whathappened.web.userassets.forms import AssetSelectForm
 from whathappened.core.database import session
-from whathappened.web.auth.utils import login_required, current_user
+from whathappened.web.auth.utils import current_user, login_required
+from whathappened.web.userassets.forms import AssetSelectForm
 
-from .blueprints import bp
 from ...core.campaign.models import Campaign, Handout, HandoutGroup
-from .forms import HandoutForm, DeleteHandoutForm, HandoutGroupForm
+from .blueprints import bp
+from .forms import DeleteHandoutForm, HandoutForm, HandoutGroupForm
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +25,8 @@ def markdown(value: str):
 
 class HandoutView(View):
     def dispatch_request(
-        self, campaign_id: int, handout_id: Optional[int] = None
-    ) -> Union[Text, Response]:
+        self, campaign_id: int, handout_id: int | None = None
+    ) -> Text | Response:
         logger.debug(f"dispatch_request({campaign_id}, {handout_id})")
 
         if request.method == "GET" and handout_id is None:
@@ -145,6 +145,7 @@ class HandoutView(View):
     @login_required
     def list_view(self, campaign_id: int) -> Text:
         campaign = session.get(Campaign, campaign_id)
+        assert campaign
         is_owner = current_user and current_user.profile.id == campaign.user_id  # pyright: ignore[reportGeneralTypeIssues]
         handouts = campaign.handouts.filter(~Handout.group.has()).filter(
             is_owner or Handout.players.contains(current_user.profile)

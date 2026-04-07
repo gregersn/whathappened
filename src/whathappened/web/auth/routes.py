@@ -8,13 +8,15 @@ from flask_login import login_user, logout_user
 
 from whathappened.core.database import session
 
-from .utils import current_user, verify_reset_password_token
-from .forms import LoginForm, RegistrationForm
-from .forms import ResetPasswordRequestForm, ResetPasswordForm
 from ...core.auth.models import User, UserStatus
-
-from .utils import send_password_reset_email
 from .blueprints import bp
+from .forms import (
+    LoginForm,
+    RegistrationForm,
+    ResetPasswordForm,
+    ResetPasswordRequestForm,
+)
+from .utils import current_user, send_password_reset_email, verify_reset_password_token
 
 logger = logging.getLogger(__name__)
 

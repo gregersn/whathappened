@@ -1,6 +1,7 @@
 from flask import url_for
 
 from .blueprints import bp
+
 from . import routes  # noqa: F401,E402 isort:skip
 
 # from . import views  # noqa: F401, E402 isort:skip

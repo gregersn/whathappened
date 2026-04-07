@@ -1,6 +1,7 @@
 """Module for the interaction with character sheets in What Happened?"""
 
 import math
+
 from pelican.plugins.webassets.vendor.webassets.env import Environment
 
 from . import routes  # noqa: E402, F401 isort:skip

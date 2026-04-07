@@ -1,6 +1,8 @@
 import json
-import yaml
+
 from wtforms.fields.simple import TextAreaField
+import yaml
+
 from .alchemy import QuerySelectField, QuerySelectMultipleField  # noqa
 
 
