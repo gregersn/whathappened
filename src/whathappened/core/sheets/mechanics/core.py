@@ -1,16 +1,16 @@
 """Core mechanics for manipulating character sheet."""
 
-from functools import reduce
-import logging
-from typing import Dict, Optional, Type
 import base64
+from functools import reduce
 import io
+import logging
+
 from PIL import Image
 
 from whathappened.core.sheets.schema.base import Gametag
 from whathappened.core.sheets.schema.build import (
-    get_schema,
     build_from_schema,
+    get_schema,
     validate,
 )
 
@@ -58,7 +58,7 @@ class CharacterMechanics:
         return "Unknown property, name"
 
     @property
-    def age(self) -> Optional[str]:
+    def age(self) -> str | None:
         """Age of character."""
         logger.error("age: Not implemented")
         return "Unknown property, age"
@@ -70,7 +70,7 @@ class CharacterMechanics:
         return "Unknown property, description"
 
     @property
-    def info(self) -> Optional[str]:
+    def info(self) -> str | None:
         """Extra information about character."""
         return None
 
@@ -133,7 +133,7 @@ class CharacterMechanics:
 
         return val
 
-    def set_attribute(self, attribute: Dict):
+    def set_attribute(self, attribute: dict):
         """Set an attribute."""
         if attribute.get("category", None) == "skill":
             logger.debug("Set a skill")
@@ -226,7 +226,7 @@ class CharacterMechanics:
 
 
 def register_game(
-    tag: Gametag, name: str, mechanics: Type[CharacterMechanics] = CharacterMechanics
+    tag: Gametag, name: str, mechanics: type[CharacterMechanics] = CharacterMechanics
 ):
     """Register a game system."""
     global GameSystems
@@ -237,7 +237,7 @@ def register_game(
     GameSystems += [(k, v) for k, v in GAMES.items()]
 
 
-def new_character(title: str, system: Optional[Gametag] = None, **kwargs):
+def new_character(title: str, system: Gametag | None = None, **kwargs):
     """Create new character."""
     if system is None:
         raise SyntaxError("new_character: System not specified")

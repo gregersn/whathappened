@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
+
 from .base import Base, Session, session
 
 

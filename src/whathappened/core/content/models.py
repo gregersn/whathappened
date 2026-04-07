@@ -1,12 +1,12 @@
 """Storage folder."""
 
 import uuid
-from sqlalchemy.orm import relationship, Mapped, mapped_column
-from sqlalchemy import String, ForeignKey
+
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from whathappened.core.database import Base
 from whathappened.core.database.fields import GUID
-
 from whathappened.core.database.models import UserProfile
 
 

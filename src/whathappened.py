@@ -1,10 +1,9 @@
 import logging
 
-from whathappened.web import create_app
-
-from whathappened.core.auth.models import User, Role, UserRoles
-from whathappened.web.profile import UserProfile
+from whathappened.core.auth.models import Role, User, UserRoles
 from whathappened.core.character.models import Character
+from whathappened.core.database.models import UserProfile
+from whathappened.web import create_app
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s: %(name)s %(message)s", level=logging.DEBUG

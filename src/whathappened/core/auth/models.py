@@ -3,9 +3,9 @@
 import enum
 import logging
 
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.sql.sqltypes import String, Enum
+from sqlalchemy.sql.sqltypes import Enum, String
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from whathappened.core.database import Base, session

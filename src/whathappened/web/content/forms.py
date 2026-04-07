@@ -1,10 +1,10 @@
-from wtforms.fields.simple import HiddenField, SubmitField
 from flask_wtf.form import FlaskForm
 from wtforms import StringField
-from wtforms.validators import DataRequired, UUID, Optional
+from wtforms.fields.simple import HiddenField, SubmitField
+from wtforms.validators import UUID, DataRequired, Optional
 
-from whathappened.web.forms.fields.alchemy import QuerySelectField
 from whathappened.web.auth.utils import current_user
+from whathappened.web.forms.fields.alchemy import QuerySelectField
 
 
 class NewFolderForm(FlaskForm):

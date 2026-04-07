@@ -1,7 +1,8 @@
 import json
-import time
 from pathlib import Path
-from typing import Literal, Optional
+import time
+from typing import Literal
+
 import jinja2
 
 GameType = Literal["Classic (1920's)", "Modern"]
@@ -13,7 +14,7 @@ CHARACTER_TEMPLATE = "character/coc7e/blank_character.json.jinja"
 def new_character(
     title: str,
     gametype: GameType = "Classic (1920's)",
-    timestamp: Optional[float] = None,
+    timestamp: float | None = None,
     **kwargs,
 ):
     """Create new CoC7e character."""

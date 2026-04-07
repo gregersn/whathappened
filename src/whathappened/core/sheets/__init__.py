@@ -1,17 +1,18 @@
 """Game sheets handling."""
 
 from whathappened.core.sheets.mechanics import core
-from whathappened.core.sheets.mechanics.core import register_game
 from whathappened.core.sheets.mechanics.coc7e.mechanics import CoCMechanics
+from whathappened.core.sheets.mechanics.core import register_game
 from whathappened.core.sheets.mechanics.dod.mechanics import DoDMechanics
 from whathappened.core.sheets.mechanics.landf import LandfMechanics
 from whathappened.core.sheets.mechanics.tftl.mechanics import TftlMechanics
-from whathappened.core.sheets.mechanics.vaesen import VaesenMechanics, VaesenHQMechanics
-
+from whathappened.core.sheets.mechanics.vaesen import VaesenHQMechanics, VaesenMechanics
 from whathappened.core.sheets.schema.base import Gametag
 
-from .mechanics import coc7e  # noqa
-from .mechanics import tftl  # noqa
+from .mechanics import (
+    coc7e,  # noqa
+    tftl,  # noqa
+)
 
 
 def find_system(tag: Gametag):

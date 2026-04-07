@@ -1,15 +1,14 @@
 import logging
 
-from flask import render_template, redirect, url_for
+from flask import redirect, render_template, url_for
 from flask.json import jsonify
 from werkzeug.exceptions import abort
 
+from whathappened.core.database import Base, session
 from whathappened.core.database.models import Invite
-from whathappened.core.database import session, Base
-from whathappened.web.auth.utils import login_required, current_user
+from whathappened.web.auth.utils import current_user, login_required
 
-from .blueprints import bp, api
-
+from .blueprints import api, bp
 from .forms import DeleteInviteForm
 
 logger = logging.getLogger(__name__)
@@ -31,8 +30,9 @@ def index():
 
 @bp.route("/share/<uuid:id>/delete", methods=("GET", "POST"))
 @login_required
-def invite_delete(id):
+def invite_delete(id: str):
     invite = session.get(Invite, id)
+    assert invite is not None
     if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
         logger.debug("Wrong user")
         abort(403)
@@ -59,6 +59,7 @@ def invite_delete(id):
 @login_required
 def api_invite_delete(id):
     invite = session.get(Invite, id)
+    assert invite is not None
     if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
     session.delete(invite)

@@ -1,20 +1,20 @@
 """Character models."""
 
+from datetime import datetime, timezone
 import json
 import logging
-from typing import Any, Dict, Type
-from datetime import datetime, timezone
+from typing import Any
 
+from sqlalchemy.orm import Mapped, backref, mapped_column, reconstructor, relationship
 from sqlalchemy.orm.attributes import flag_modified
-from sqlalchemy.orm import reconstructor, relationship, backref, Mapped, mapped_column
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.sql.sqltypes import DateTime, JSON, String
+from sqlalchemy.sql.sqltypes import JSON, DateTime, String
 
-from whathappened.core.database.models import UserProfile
-from whathappened.core.database.base import BaseModel
-from whathappened.core.sheets.mechanics.core import CharacterMechanics, MECHANICS
 from whathappened.core.content.mixins import BaseContent
 from whathappened.core.content.models import Folder
+from whathappened.core.database.base import BaseModel
+from whathappened.core.database.models import UserProfile
+from whathappened.core.sheets.mechanics.core import MECHANICS, CharacterMechanics
 from whathappened.core.sheets.schema.utils import find_version
 
 logger = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ class Character(BaseContent, BaseModel):
         return f"<Character {self.title}>"
 
     def __init__(
-        self, *args, mechanics: Type[CharacterMechanics] = CharacterMechanics, **kwargs
+        self, *args, mechanics: type[CharacterMechanics] = CharacterMechanics, **kwargs
     ):
         super().__init__(*args, **kwargs)
         self._data = None
@@ -66,7 +66,7 @@ class Character(BaseContent, BaseModel):
         self.mechanics = MECHANICS.get(system, CharacterMechanics)(self)
 
     @property
-    def data(self) -> Dict[str, Any]:
+    def data(self) -> dict[str, Any]:
         """Character data."""
         if isinstance(self.body, dict):
             return self.body
@@ -145,7 +145,7 @@ class Character(BaseContent, BaseModel):
         except KeyError:
             return "Could not get description."
 
-    def set_attribute(self, attribute: Dict):
+    def set_attribute(self, attribute: dict):
         """Set a specific attribute."""
         return self.mechanics.set_attribute(attribute)
 

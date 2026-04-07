@@ -29,10 +29,10 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import operator
-from wtforms import widgets
-from wtforms.fields import SelectFieldBase
 
 from sqlalchemy.orm.util import identity_key
+from wtforms import widgets
+from wtforms.fields import SelectFieldBase
 from wtforms.validators import ValidationError
 
 

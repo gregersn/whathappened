@@ -2,6 +2,7 @@
 
 import os
 from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -28,10 +29,12 @@ class Settings(BaseSettings):
     WEBPACKEXT_MANIFEST_PATH: str = "manifest.json"
     WTF_CSRF_TIME_LIMIT: int | None = None
 
-    model_config = SettingsConfigDict(env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(
+        env_file=os.environ.get("WHATHAPPENED_SETTINGS"), env_file_encoding="utf-8"
+    )
 
 
-Config = Settings(_env_file=os.environ.get("WHATHAPPENED_SETTINGS"))
+Config = Settings()
 
 if __name__ == "__main__":  # pragma: no cover
     print(Config)

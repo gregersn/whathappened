@@ -1,6 +1,7 @@
-from typing import Annotated, Literal, Optional
-import yaml
+from typing import Annotated, Literal
+
 from pydantic import BaseModel, ConfigDict, Field
+import yaml
 
 from whathappened.core.sheets.schema.base import BaseSchema, Migration
 
@@ -167,7 +168,7 @@ class Personalia(BaseModel):
     pride: Pride = Field(default_factory=Pride)
     description: str = Field(default="Unknown")
     favorite_song: str = Field(default="Unknown")
-    portrait: Optional[str] = ""
+    portrait: str | None = ""
 
 
 class Relationships(BaseModel):
@@ -177,7 +178,7 @@ class Relationships(BaseModel):
 
 class Item(BaseModel):
     name: str = "Pocket lint"
-    bonus: Annotated[Optional[int], Field(default=1, ge=1, le=3)] = 1
+    bonus: Annotated[int | None, Field(default=1, ge=1, le=3)] = 1
 
 
 class Attributes(BaseModel):
