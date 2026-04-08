@@ -61,9 +61,7 @@ version_file = "src/whathappened/_version.py"
 
 [tool.pytest]
 testpaths = "tests"
-
-[tool.pytest.ini_options]
-pythonpath = ['src']
+pythonpath = ["src"]
 
 [tool.pyright]
 typeCheckingMode = "standard"
