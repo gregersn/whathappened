@@ -73,7 +73,7 @@ source = "whathappened"
 [dependency-groups]
 dev = [
     "build>=1.4.0",
-    "pytest==8.4.2",
+    "pytest==9.0.3",
     "pytest-cov==7.1.0",
     "pytest-dependency>=0.6.1",
     "ruff>=0.15.5",
