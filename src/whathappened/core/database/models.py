@@ -1,6 +1,6 @@
 """User handling models."""
 
-import typing
+from typing import Any, TYPE_CHECKING
 import uuid
 import datetime
 from sqlalchemy.orm import relationship, Mapped, mapped_column
@@ -10,7 +10,7 @@ from sqlalchemy import String, ForeignKey
 from whathappened.core.database import Base
 from whathappened.core.database.fields import GUID
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from whathappened.core.auth.models import User
     from whathappened.core.content.models import Folder
 
@@ -23,7 +23,7 @@ class UserProfile(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"), nullable=True)
     user: Mapped["User"] = relationship(back_populates="profile")
 
-    display_name: Mapped[typing.Optional[str]]
+    display_name: Mapped[str | None]
 
     folders: Mapped[list["Folder"]] = relationship(
         back_populates="owner", lazy="subquery"
@@ -42,19 +42,19 @@ class Invite(Base):
     table: Mapped[str] = mapped_column(String(128), nullable=True)
     object_id: Mapped[int] = mapped_column(nullable=True)
 
-    def __init__(self, target: typing.Any, **kwargs):
+    def __init__(self, target: Any, **kwargs):
         super().__init__(**kwargs)
         self.table = target.__tablename__
         self.object_id = target.id
 
     @classmethod
-    def query_for(cls, target: typing.Any):
+    def query_for(cls, target: Any):
         """Find invites by target."""
         return cls.query.filter_by(object_id=target.id).filter_by(
             table=target.__tablename__
         )
 
-    def matches(self, target: typing.Any):
+    def matches(self, target: Any):
         """Find invite matches."""
         return target.__tablename__ == self.table and target.id == self.object_id
 
@@ -73,7 +73,7 @@ class LogEntry(Base):
     )
     user: Mapped["User"] = relationship()
 
-    def __init__(self, target: typing.Any, entry: str, user_id=None, **kwargs):
+    def __init__(self, target: Any, entry: str, user_id=None, **kwargs):
         super().__init__(**kwargs)
         self.table = target.__tablename__
         self.object_id = target.id
@@ -82,7 +82,7 @@ class LogEntry(Base):
             self.user_id = user_id
 
     @classmethod
-    def query_for(cls, target: typing.Any):
+    def query_for(cls, target: Any):
         """Look up logentries by object."""
         return (
             cls.query.filter_by(object_id=target.id)

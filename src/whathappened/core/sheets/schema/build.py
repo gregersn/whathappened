@@ -1,6 +1,7 @@
 """Build sheets from schemas."""
 
-from typing import Dict, List, MutableMapping, Optional, Union, Any
+from typing import Any
+from collections.abc import MutableMapping
 import logging
 from pathlib import Path
 import json
@@ -23,7 +24,7 @@ SCHEMA_DIR = Path(__file__).parent
 
 class UnsortedGenerateJsonSchema(GenerateJsonSchema):
     def sort(
-        self, value: JsonSchemaValue, parent_key: Optional[str] = None
+        self, value: JsonSchemaValue, parent_key: str | None = None
     ) -> JsonSchemaValue:
         return value
 
@@ -65,11 +66,9 @@ def get_schema(system: Gametag):
     raise SchemaError("Missing schema")
 
 
-def flatten_schema(
-    schema: Dict[str, Any], main_schema: Optional[Dict[str, Any]] = None
-):
+def flatten_schema(schema: dict[str, Any], main_schema: dict[str, Any] | None = None):
     """Resolve refs."""
-    output: Dict[str, Any] = {}
+    output: dict[str, Any] = {}
     for key, value in schema.items():
         if key == "$ref":
             value = sub_schema(main_schema or schema, schema["$ref"])
@@ -85,7 +84,7 @@ def flatten_schema(
     return output
 
 
-def load_schema(filename: Path) -> Dict[str, Any]:
+def load_schema(filename: Path) -> dict[str, Any]:
     """Load schema from file."""
     with open(filename, "r", encoding="utf8") as f:
         try:
@@ -101,10 +100,10 @@ def load_schema(filename: Path) -> Dict[str, Any]:
     return {}
 
 
-SchemaValidationError = Dict[str, str]
+SchemaValidationError = dict[str, str]
 
 
-def validate(data: Dict, system: Gametag) -> List[SchemaValidationError]:
+def validate(data: dict, system: Gametag) -> list[SchemaValidationError]:
     """Validate a sheet against a system."""
     logger.debug("Getting schema")
     schema = get_schema(system)
@@ -115,25 +114,25 @@ def validate(data: Dict, system: Gametag) -> List[SchemaValidationError]:
     ]
 
 
-def build_boolean(schema: Dict[str, bool]) -> bool:
+def build_boolean(schema: dict[str, bool]) -> bool:
     """Build boolean."""
     logger.debug("build boolean: %s", schema["default"])
     return schema["default"]
 
 
-def build_string(schema: Dict[str, str]) -> str:
+def build_string(schema: dict[str, str]) -> str:
     """Build string."""
     logger.debug("build string: %s", schema["default"])
     return schema["default"]
 
 
-def build_integer(schema: Dict[str, int]) -> int:
+def build_integer(schema: dict[str, int]) -> int:
     """Build integer."""
     logger.debug("build integer: %s", schema["default"])
     return schema["default"]
 
 
-def build_object(schema: Dict[str, Any], main_schema: Dict[str, Any]) -> Dict[str, Any]:
+def build_object(schema: dict[str, Any], main_schema: dict[str, Any]) -> dict[str, Any]:
     """Build object."""
     logger.debug("build object")
     output = {}
@@ -142,7 +141,7 @@ def build_object(schema: Dict[str, Any], main_schema: Dict[str, Any]) -> Dict[st
     return output
 
 
-def build_array(schema: Dict[str, List[Any]]) -> List[Any]:
+def build_array(schema: dict[str, list[Any]]) -> list[Any]:
     """Build array."""
     logger.debug("build array")
     if "default" in schema:
@@ -150,7 +149,7 @@ def build_array(schema: Dict[str, List[Any]]) -> List[Any]:
     return []
 
 
-def get_sub(d: Dict[str, Any], path: List[str]) -> Dict:
+def get_sub(d: dict[str, Any], path: list[str]) -> dict:
     """Get sub schema."""
     logger.debug("get_sub: %s", path)
     if len(path) == 1:
@@ -160,9 +159,7 @@ def get_sub(d: Dict[str, Any], path: List[str]) -> Dict:
     return get_sub(d[p], path)
 
 
-def sub_schema(
-    schema: Union[List, Dict], path: str
-) -> Union[Dict, List, str, int, bool]:
+def sub_schema(schema: list | dict, path: str) -> dict | list | str | int | bool:
     """Dive into sub schema."""
     logger.debug("sub_schema: %s", path)
     parts = path.split("/")
@@ -175,17 +172,17 @@ def sub_schema(
 
 
 def build_from_schema_inner(
-    schema: Union[List, Dict[str, Any]], main_schema: Dict[str, Any]
-) -> Union[Dict, List, str, int, bool]:
+    schema: list | dict[str, Any], main_schema: dict[str, Any]
+) -> dict | list | str | int | bool:
     """Main loop of build_from_schema()"""
-    if isinstance(schema, Dict):
+    if isinstance(schema, dict):
         logger.debug("Handling a dictionary")
         if "default" in schema:
             return schema["default"]
         if "$ref" in schema:
             sub = sub_schema(main_schema, schema["$ref"])
 
-            assert isinstance(sub, Dict) or isinstance(sub, List)
+            assert isinstance(sub, dict) or isinstance(sub, list)
 
             return build_from_schema_inner(sub, main_schema)
         if "const" in schema:
@@ -207,14 +204,14 @@ def build_from_schema_inner(
                 assert isinstance(all_of_data, dict)
                 out.update(all_of_data)
             return out
-    elif isinstance(schema, List):
+    elif isinstance(schema, list):
         logger.debug("Handling a list")
         raise NotImplementedError("Lists are not my strong suite.")
 
     return ""
 
 
-def build_from_schema(schema: Dict[str, Any]) -> Dict[str, Any]:
+def build_from_schema(schema: dict[str, Any]) -> dict[str, Any]:
     """Build a charactersheet from a schema."""
     built = build_from_schema_inner(schema, schema)
     assert isinstance(built, MutableMapping)

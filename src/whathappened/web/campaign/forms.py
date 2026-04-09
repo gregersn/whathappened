@@ -1,4 +1,3 @@
-from typing import List, Tuple
 from flask_wtf import FlaskForm
 from wtforms import StringField, HiddenField, SelectField, BooleanField
 from markupsafe import Markup
@@ -187,7 +186,7 @@ class MessagePlayerForm(FlaskForm):
     def __init__(
         self,
         hide_to_id: bool = False,
-        players: List[Tuple[int, str]] = [],
+        players: list[tuple[int, str]] = [],
         *args,
         **kwargs,
     ):
@@ -195,7 +194,7 @@ class MessagePlayerForm(FlaskForm):
         if hide_to_id:
             self.to_id.widget = HiddenInput()  # type: ignore  # Not an error
 
-        player_choices: List[Tuple[int | str, str]] = [("", "All")]
+        player_choices: list[tuple[int | str, str]] = [("", "All")]
         player_choices += players
         self.to_id.choices = player_choices
 

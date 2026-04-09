@@ -1,11 +1,11 @@
 import math
-from typing import Any, List, Optional
+from typing import Any
 
 
 class Page:
-    items: List[Any]
-    prev_page: Optional[int]
-    next_page: Optional[int]
+    items: list[Any]
+    prev_page: int | None
+    next_page: int | None
     has_prev: bool
     prev_items: int
     has_next: bool

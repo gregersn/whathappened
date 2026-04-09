@@ -1,6 +1,6 @@
 """Call of Cthulhu schema definition."""
 
-from typing import Annotated, Literal, Optional, Union
+from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, Field
 import yaml
 
@@ -37,7 +37,7 @@ class Personalia(BaseModel):
     age: str
     birthplace: str
     residence: str
-    portrait: Optional[str]
+    portrait: str | None
 
 
 class Characteristics(BaseModel):
@@ -79,11 +79,11 @@ class Skill(BaseModel):
     checked: bool
     name: str
     occupation: bool
-    start_value: Union[str, int]
-    value: Optional[int]
+    start_value: str | int
+    value: int | None
     specializations: Annotated[bool, Field(frozen=True)]
     subskills: Annotated[
-        Optional[list["Skill"]], Field(json_schema_extra={"unique_items": True})
+        list["Skill"] | None, Field(json_schema_extra={"unique_items": True})
     ] = None
 
     # TODO: Add a conditional for subskills based on specializations.
@@ -96,12 +96,12 @@ class Weapon(BaseModel):
     )
 
     name: str
-    regular: Optional[int] = None
+    regular: int | None = None
     damage: str
     range: str
-    attacks: Union[int, str]
-    ammo: Union[Literal["-"], int] = "-"
-    malf: Union[Literal["-"], int] = "-"
+    attacks: int | str
+    ammo: Literal["-"] | int = "-"
+    malf: Literal["-"] | int = "-"
 
 
 class Combat(BaseModel):
@@ -109,31 +109,31 @@ class Combat(BaseModel):
         json_schema_serialization_defaults_required=True, extra="forbid"
     )
 
-    damage_bonus: Union[str, int]
-    build: Union[str, int]
-    dodge: Union[str, int]
+    damage_bonus: str | int
+    build: str | int
+    dodge: str | int
 
 
 class Backstory(BaseModel):
     model_config = ConfigDict(extra="forbid", json_schema_extra={"required": []})
 
-    description: Optional[str]
-    traits: Optional[str]
-    ideology: Optional[str]
-    injuries: Optional[str]
-    people: Optional[str]
-    phobias: Optional[str]
-    locations: Optional[str]
-    tomes: Optional[str]
-    possessions: Optional[str]
-    encounters: Optional[str]
+    description: str | None
+    traits: str | None
+    ideology: str | None
+    injuries: str | None
+    people: str | None
+    phobias: str | None
+    locations: str | None
+    tomes: str | None
+    possessions: str | None
+    encounters: str | None
 
 
 class Cash(BaseModel):
     model_config = ConfigDict(extra="forbid", json_schema_extra={"required": []})
-    spending: Union[str, int]
-    cash: Union[str, int]
-    assets: Union[str, int]
+    spending: str | int
+    cash: str | int
+    assets: str | int
 
 
 class CoC7eSheet(BaseModel):
@@ -145,9 +145,9 @@ class CoC7eSheet(BaseModel):
     weapons: Annotated[list[Weapon], Field(default=[])]
     combat: Annotated[Combat, Field()]
     backstory: Backstory
-    possessions: Optional[list[str]]
+    possessions: list[str] | None
     cash: Cash
-    assets: Optional[str] = None
+    assets: str | None = None
 
 
 class CallofCthulhu7e(BaseSchema):

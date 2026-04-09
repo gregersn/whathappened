@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Annotated, Literal, Optional, cast
+from typing import Annotated, Literal, cast
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
@@ -325,9 +325,9 @@ class Personality(BaseModel):
     ] = ["PC 1", "PC 2", "PC 3", "PC 4"]
 
     description: Annotated[str, Field(json_schema_extra={"widget": "text"})] = ""
-    portrait: Annotated[
-        Optional[str], Field(json_schema_extra={"widget": "portrait"})
-    ] = ""
+    portrait: Annotated[str | None, Field(json_schema_extra={"widget": "portrait"})] = (
+        ""
+    )
 
 
 class Characteristics(BaseModel):

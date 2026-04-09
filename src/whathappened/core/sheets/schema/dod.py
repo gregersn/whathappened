@@ -1,6 +1,6 @@
 """Character sheet data for DoD."""
 
-from typing import List, Literal, Optional
+from typing import Literal
 from typing_extensions import Annotated
 
 import yaml
@@ -173,7 +173,7 @@ class Fardigheter(BaseModel):
     model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
     primar: Annotated[
-        List[Fardighet],
+        list[Fardighet],
         Field(
             json_schema_extra={
                 "constant": True,
@@ -189,7 +189,7 @@ class Fardigheter(BaseModel):
         ],
     )
     vapenfardigheter: Annotated[
-        List[Fardighet],
+        list[Fardighet],
         Field(
             json_schema_extra={
                 "constant": True,
@@ -205,7 +205,7 @@ class Fardigheter(BaseModel):
     )
 
     sekundarafardigheter: Annotated[
-        List[Fardighet],
+        list[Fardighet],
         Field(
             json_schema_extra={"constant": False, "widget": "table"},
             title="Sekundära färdigheter",
@@ -221,11 +221,11 @@ class Packning(BaseModel):
     barformoga: Annotated[int, Field(title="Bärformåga", ge=0, le=10)] = Field(
         default=0
     )
-    items: Annotated[List[str], Field(json_schema_extra={"constant": True})] = Field(
+    items: Annotated[list[str], Field(json_schema_extra={"constant": True})] = Field(
         default_factory=lambda: ["-" for _ in range(10)]
     )
     minnessak: str = "-"
-    smaasaker: Annotated[List[str], Field(title="Småsaker")] = []
+    smaasaker: Annotated[list[str], Field(title="Småsaker")] = []
 
 
 class Pengar(BaseModel):
@@ -286,7 +286,7 @@ class Bevapning(BaseModel):
         Hjalm, Field(title="Hjälm", json_schema_extra={"subsection": True})
     ] = Field(default_factory=Hjalm)
     till_hands: Annotated[
-        List[Vapen],
+        list[Vapen],
         Field(
             title="Till hands",
             json_schema_extra={"constant": True, "widget": "table", "header": True},
@@ -336,9 +336,9 @@ class Personalia(BaseModel):
     yrke: Yrke = "Bard"
     svaghet: str = "Odefinerad"
     utseende: str = "Odefinerad"
-    portrait: Annotated[
-        Optional[str], Field(json_schema_extra={"widget": "portrait"})
-    ] = ""
+    portrait: Annotated[str | None, Field(json_schema_extra={"widget": "portrait"})] = (
+        ""
+    )
 
 
 class SekundaraEgenskaper(BaseModel):
@@ -381,7 +381,7 @@ class Character(BaseModel):
     sekundara_egenskaper: Annotated[
         SekundaraEgenskaper, Field(title="Sekundära egenskaper")
     ] = Field(default=SekundaraEgenskaper())
-    formagor_og_besvarjelser: List[str] = Field(
+    formagor_og_besvarjelser: list[str] = Field(
         default=[], alias="Förmågor & besvärjelser"
     )
     fardigheter: Annotated[

@@ -1,7 +1,7 @@
 """Lasers and Feelings schema."""
 
 from enum import Enum
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 import yaml
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -80,9 +80,9 @@ class LasersAndFeelingsCharacter(BaseModel):
         title="Lasers or feelings",
         default=4,
     )
-    portrait: Annotated[
-        Optional[str], Field(json_schema_extra={"widget": "portrait"})
-    ] = ""
+    portrait: Annotated[str | None, Field(json_schema_extra={"widget": "portrait"})] = (
+        ""
+    )
 
 
 class LasersAndFeelings(BaseSchema):

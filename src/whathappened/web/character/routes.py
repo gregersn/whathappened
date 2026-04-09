@@ -1,6 +1,5 @@
 import copy
 import logging
-from typing import Optional
 
 from flask import render_template, request
 from flask import redirect, url_for, jsonify
@@ -90,7 +89,7 @@ def system_select(chartype=None):
 @bp.route("/import", methods=("GET", "POST"))
 @login_required
 def import_character(
-    type: Optional[str] = None, id: Optional[int] = None, code: Optional[str] = None
+    type: str | None = None, id: int | None = None, code: str | None = None
 ):
     logger.debug(f"{type}, {code}, {id}")
     character = None
@@ -160,7 +159,7 @@ def update(id: int):
 
 
 def render_character(
-    character: Character, editable: bool = False, code: Optional[str] = None
+    character: Character, editable: bool = False, code: str | None = None
 ):
     if editable:
         if (not character.archived) and character.validate():
@@ -246,7 +245,7 @@ def html_data_type(t: str) -> str:
 
 
 def render_general_view(
-    system: str, character: Character, editable: bool, code: Optional[str] = None
+    system: str, character: Character, editable: bool, code: str | None = None
 ):
     logger.debug("Getting schema")
     schema = get_schema(system)

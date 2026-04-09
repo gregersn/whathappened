@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, Text, Union
+from typing import Text
 
 from flask import render_template, request, redirect, url_for
 from flask.views import View
@@ -25,8 +25,8 @@ def markdown(value: str):
 
 class HandoutView(View):
     def dispatch_request(
-        self, campaign_id: int, handout_id: Optional[int] = None
-    ) -> Union[Text, Response]:
+        self, campaign_id: int, handout_id: int | None = None
+    ) -> Text | Response:
         logger.debug(f"dispatch_request({campaign_id}, {handout_id})")
 
         if request.method == "GET" and handout_id is None:

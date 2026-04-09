@@ -1,5 +1,6 @@
 import json
-from typing import KeysView, List, Dict, Any, Optional
+from typing import Any
+from collections.abc import KeysView
 
 from sqlalchemy import MetaData
 from sqlalchemy.orm import declarative_base
@@ -33,18 +34,18 @@ class BaseModel(Base):
 
     def to_dict(
         self,
-        show: Optional[List[str]] = None,
-        _hide: List[str] = [],
-        _path: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        show: list[str] | None = None,
+        _hide: list[str] = [],
+        _path: str | None = None,
+    ) -> dict[str, Any]:
         """Return a dictionary representation of model."""
 
         show = show or []
 
-        hidden: List[str] = (
+        hidden: list[str] = (
             self._hidden_fields if hasattr(self, "_hidden_fields") else []
         )
-        default: List[str] = (
+        default: list[str] = (
             self._default_fields if hasattr(self, "_default_fields") else []
         )
 
@@ -71,7 +72,7 @@ class BaseModel(Base):
         relationships: KeysView[str] = self.__mapper__.relationships.keys()
         properties = dir(self)
 
-        ret_data: Dict[str, Any] = {}
+        ret_data: dict[str, Any] = {}
 
         for key in columns:
             if key.startswith("_"):

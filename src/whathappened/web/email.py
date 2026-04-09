@@ -1,4 +1,3 @@
-from typing import List, Optional
 from threading import Thread
 from flask_mail import Message, Mail
 from flask import current_app, Flask
@@ -14,9 +13,9 @@ def send_async_email(app: Flask, msg: str):
 def send_mail(
     subject: str,
     sender: str,
-    recipients: List[str],
+    recipients: list[str],
     text_body: str,
-    html_body: Optional[str] = None,
+    html_body: str | None = None,
 ):
     msg = Message(subject, sender=sender, recipients=recipients)
     msg.body = text_body
