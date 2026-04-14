@@ -63,15 +63,19 @@ version_file = "src/whathappened/_version.py"
 testpaths = ["tests"]
 pythonpath = ["src"]
 
-[tool.pyright]
-typeCheckingMode = "standard"
-
 [coverage.run]
 branch = true
 source = "whathappened"
 
+[tool.basedpyright]
+exclude = ["./whathappened/migrations", "./.venv", "./tests/"]
+typeCheckingMode = "basic"
+
+
+
 [dependency-groups]
 dev = [
+    "basedpyright>=1.39.0",
     "build>=1.4.3",
     "pytest==9.0.3",
     "pytest-cov==7.1.0",
@@ -80,6 +84,19 @@ dev = [
     "setuptools>=82.0.1",
     "wheel==0.46.3",
 ]
+
+
+[tool.ruff]
+exclude = ["_version.py", "src/whathappened/migrations/"]
+
+[tool.ruff.lint]
+extend-select = ["I", "UP006"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+order-by-type = true
+force-sort-within-sections = true
+
 
 
 [tool.pylint.main]
