@@ -10,7 +10,8 @@ function switch_tab(tab_id: string, tab_content: string, tabset: HTMLElement) {
         tab.style.display = "none";
     });
 
-    document.getElementById(tab_content).style.display = "block";
+    const tab = document.getElementById(tab_content);
+    if (tab) tab.style.display = "block";
     // TODO: Highlight selected tab
 }
 
@@ -32,7 +33,7 @@ function init_tabs() {
             const menutrigger = document.createElement("a");
 
             menutrigger.href = "";
-            menutrigger.innerHTML = tab.getAttribute("data-name");
+            menutrigger.innerHTML = tab.getAttribute("data-name") ?? "";
             menutrigger.onclick = (e: Event) => {
                 e.preventDefault();
                 switch_tab("", tab.id, tabset);
@@ -65,7 +66,7 @@ function insertAtCursor(
     const isSuccess = document.execCommand("insertText", false, text);
 
     if (!isSuccess && typeof input.setRangeText === "function") {
-        const start = input.selectionStart;
+        const start = input.selectionStart ?? 0;
         input.setRangeText(text);
         input.selectionStart = input.selectionEnd = start + text.length;
 
@@ -104,10 +105,10 @@ function setup_editor(element: HTMLTextAreaElement) {
     const asset_selector = <HTMLSelectElement>(
         document.getElementsByClassName("asset-selector")[0]
     );
-    element.parentElement.replaceChild(container, element);
+    element.parentElement?.replaceChild(container, element);
     container.appendChild(toolbar);
     container.appendChild(element);
-    asset_selector.parentElement.appendChild(
+    asset_selector.parentElement?.appendChild(
         create_button("Insert asset", () => insert_asset(element)),
     );
     element.onchange = () => {

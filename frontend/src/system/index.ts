@@ -9,12 +9,12 @@ import {
 function update(datamap: Datamap | DOMStringMap, value: any) {
     const xhr = new XMLHttpRequest();
     const url = document.location.href;
-    const field_name = datamap.field.split(".")[1];
+    const field_name = datamap.field?.split(".")[1];
 
     xhr.open("POST", url);
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("X-CSRFToken", get_meta_tag("_token"));
-    xhr.setRequestHeader("x-csrf-token", get_meta_tag("_token"));
+    xhr.setRequestHeader("X-CSRFToken", get_meta_tag("_token") ?? "");
+    xhr.setRequestHeader("x-csrf-token", get_meta_tag("_token") ?? "");
     xhr.onload = () => {
         console.log(`Post done, got ${xhr.status} ${xhr.statusText}`);
         if (xhr.status === 200 && xhr.statusText === "OK") {
@@ -34,7 +34,7 @@ function init_editable() {
 
     const save = (
         datamap: Datamap | DOMStringMap,
-        data: Elementdata | Tabledata
+        data: Elementdata | Tabledata,
     ) => {
         update(datamap, data);
     };

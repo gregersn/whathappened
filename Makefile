@@ -26,8 +26,8 @@ setup: setup_dependencies
 	@FLASK_APP=src/whathappened.web FLASK_DEBUG=1 $(UV_FLASK) db upgrade
 
 # Install npm dependencies:
-$(FRONTEND_MARKER): frontend/package.json
-	@cd frontend && npm install && cd ..
+$(FRONTEND_MARKER): package.json
+	@npm install
 	@touch $@
 
 # Build the Flask frontend:
@@ -38,14 +38,14 @@ frontend: $(FRONTEND_MARKER) setup
 .PHONY: coverage
 coverage: .venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
 	@uv run pytest --cov=whathappened tests/
-	@cd frontend && npm test
+	@npm test
 
 .PHONY: dist
 dist: setup_dependencies
 	$(RMRF) build dist
 	$(RMRF) src/whathappened/static/js/
 	$(RMRF) src/whathappened/static/css/
-	cd frontend; npm run dist
+	npm run dist
 	@FLASK_APP=src/whathappened.web uv run -- flask assets build
 	@$(VENV_PYTHON) -m build
 

@@ -11,9 +11,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     canvas.width = size;
     canvas.height = size;
 
-    image.parentElement.appendChild(canvas);
+    image.parentElement && image.parentElement.appendChild(canvas);
 
     const ctx = canvas.getContext("2d");
+
+    if (!ctx) return;
 
     ctx.translate(size / 2, size / 2);
     ctx.fillStyle = "#0ff";

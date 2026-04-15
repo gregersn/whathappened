@@ -47,11 +47,11 @@ function init_editable() {
     // Create save function
     const save = (
         datamap: Datamap | DOMStringMap,
-        data: Elementdata | Tabledata
+        data: Elementdata | Tabledata,
     ) => {
         console.debug("Save data");
         if (data === null) {
-            data = default_for_type(datamap.type);
+            data = default_for_type(datamap.type ?? "");
         }
         send_update(datamap, data);
     };
@@ -65,7 +65,7 @@ function init_editable() {
                 make_element_editable(element, save, "area");
                 break;
             case "picture":
-                init_set_portrait(element.getAttribute("data-field"));
+                init_set_portrait(element.getAttribute("data-field") ?? "");
                 break;
             default:
                 make_element_editable(element, save, dataType as edit_type);
@@ -77,7 +77,7 @@ function init_editable() {
 function init_editable_binaries() {
     console.log("Init editable binaries");
     const checkboxes: HTMLInputElement[] = Array.from(
-        document.getElementsByTagName("input")
+        document.getElementsByTagName("input"),
     );
     checkboxes.forEach((element) => {
         if (
@@ -103,7 +103,7 @@ function init_editable_lists() {
     });
 }
 
-let popup: HTMLDivElement = null;
+let popup: HTMLDivElement | null = null;
 function init_popup() {
     // Create element that can be used as a popup on the character sheet.
     popup = document.createElement("div");
@@ -118,6 +118,7 @@ function init_popup() {
 }
 
 function show_popup(x: number, y: number, content: HTMLElement) {
+    if (!popup) return;
     popup.style.left = x + "px";
     popup.style.top = y + "px";
     popup.hidden = false;
@@ -126,6 +127,7 @@ function show_popup(x: number, y: number, content: HTMLElement) {
 }
 
 function close_popup() {
+    if (!popup) return;
     popup.hidden = true;
 }
 
@@ -140,7 +142,7 @@ function init_editable_tables() {
             const field = table.getAttribute("data-field");
             console.log("Saving table.\n");
             console.log(data);
-            send_update({ field: field }, data);
+            send_update({ field: field ?? "" }, data);
         });
     });
 }
@@ -166,7 +168,7 @@ function init_check_progress() {
         const indicator = document.getElementById(field + "-value");
         editable_check_progress(bar, (value: number) => {
             console.log(`Saving progress: ${value}`);
-            send_update({ field: field }, value);
+            send_update({ field: field ?? "" }, value);
             if (indicator) {
                 indicator.innerHTML = value.toString();
             }

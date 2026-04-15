@@ -60,15 +60,15 @@ function init_skill_edits() {
             occupation_checker.hidden = true;
             send_update(
                 {
-                    field: occupation_field,
-                    subfield: occupation_subfield,
+                    field: occupation_field ?? "",
+                    subfield: occupation_subfield ?? "",
                     type: "occupationcheck",
                 },
                 occupation_checker.checked,
             );
         };
 
-        element.parentElement.appendChild(occupation_checker);
+        element.parentElement?.appendChild(occupation_checker);
 
         let btn_add_subskill: null | HTMLButtonElement = null;
         if (element.getAttribute("data-specializations")) {
@@ -79,16 +79,19 @@ function init_skill_edits() {
                 show_subskillform(
                     e.pageX,
                     e.pageY,
-                    element.getAttribute("data-field"),
+                    element.getAttribute("data-field") ?? "",
                 );
             };
-            element.parentElement.appendChild(btn_add_subskill);
+            element.parentElement?.appendChild(btn_add_subskill);
         }
 
         // Add subt functions
         element.onclick = (e: Event) => {
             occupation_checker.hidden = !occupation_checker.hidden;
-            if (element.getAttribute("data-specializations")) {
+            if (
+                element.getAttribute("data-specializations") &&
+                btn_add_subskill
+            ) {
                 btn_add_subskill.hidden = !btn_add_subskill.hidden;
             }
         };
