@@ -8,14 +8,14 @@ const options = {
 module.exports = {
     mode: "production",
     entry: {
-        campaign: "./src/campaign/index.ts",
-        handout: "./src/handout/index.ts",
-        sheet: "./src/sheet/index.ts",
-        coc7e: "./src/coc7e/index.ts",
-        tftl: "./src/tftl/index.ts",
-        tokens: "./src/tokens/index.ts",
-        general: "./src/general/index.ts",
-        system: "./src/system/index.ts",
+        campaign: "./frontend/src/campaign/index.ts",
+        handout: "./frontend/src/handout/index.ts",
+        sheet: "./frontend/src/sheet/index.ts",
+        coc7e: "./frontend/src/coc7e/index.ts",
+        tftl: "./frontend/src/tftl/index.ts",
+        tokens: "./frontend/src/tokens/index.ts",
+        general: "./frontend/src/general/index.ts",
+        system: "./frontend/src/system/index.ts",
     },
     module: {
         rules: [

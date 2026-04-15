@@ -4,10 +4,10 @@
     "description": "",
     "private": "true",
     "scripts": {
-        "build": "webpack --config webpack.dev.js --progress",
-        "watch": "webpack --config webpack.dev.js --watch",
-        "test": "jest --collectCoverageFrom=src/**/*.ts --collectCoverage",
-        "dist": "webpack --config webpack.prod.js --progress"
+        "build": "webpack --config ./frontend/webpack.dev.js --progress",
+        "watch": "webpack --config ./frontend/webpack.dev.js --watch",
+        "test": "jest --collectCoverageFrom=./frontend/src/**/*.ts --collectCoverage",
+        "dist": "webpack --config ./frontend/webpack.prod.js --progress"
     },
     "keywords": [],
     "author": "",
@@ -19,7 +19,7 @@
         "jest-environment-jsdom": "^30.3.0",
         "ts-jest": "^29.4.9",
         "ts-loader": "^9.5.7",
-        "typescript": "^5.9.3",
+        "typescript": "^6.0.0",
         "webpack": "^5.106.1",
         "webpack-cli": "^7.0.2",
         "webpack-manifest-plugin": "^6.0.1",
@@ -32,7 +32,7 @@
         "transform": {
             "^.+\\.tsx?$": "ts-jest"
         },
-        "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+        "testRegex": "(/frontend/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
         "moduleFileExtensions": [
             "ts",
             "tsx",
@@ -42,7 +42,7 @@
             "node"
         ],
         "collectCoverageFrom": [
-            "./src/**/*.tsx?,"
+            "./frontend/src/**/*.tsx?,"
         ],
         "preset": "ts-jest",
         "testEnvironment": "node"

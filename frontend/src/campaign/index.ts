@@ -10,8 +10,8 @@ function set_handout_state(
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.setRequestHeader("X-CSRFToken", get_meta_tag("_token"));
-    xhr.setRequestHeader("x-csrf-token", get_meta_tag("_token"));
+    xhr.setRequestHeader("X-CSRFToken", get_meta_tag("_token") ?? "");
+    xhr.setRequestHeader("x-csrf-token", get_meta_tag("_token") ?? "");
 
     xhr.send(JSON.stringify({ player_id: player_id, state: state }));
 }
@@ -25,8 +25,8 @@ function set_npc_visibility(
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.setRequestHeader("X-CSRFToken", get_meta_tag("_token"));
-    xhr.setRequestHeader("x-csrf-token", get_meta_tag("_token"));
+    xhr.setRequestHeader("X-CSRFToken", get_meta_tag("_token") ?? "");
+    xhr.setRequestHeader("x-csrf-token", get_meta_tag("_token") ?? "");
 
     xhr.send(JSON.stringify({ npc_id: npc_id, visibility: state }));
 }
@@ -65,8 +65,10 @@ function update_npcs(npcs, npc_container: HTMLElement) {
         return div;
     });
 
-    list.innerHTML = "";
-    npcs_elements.forEach((el) => list.appendChild(el));
+    if (list) {
+        list.innerHTML = "";
+        npcs_elements.forEach((el) => list.appendChild(el));
+    }
 }
 
 function get_handouts(campaign_id: number, handout_list: HTMLUListElement) {
@@ -150,11 +152,15 @@ function init_handout_share() {
 
     checkboxes.forEach((cb) => {
         cb.onchange = () => {
-            const player_id = Number.parseInt(cb.getAttribute("data-player"));
-            const campaign_id = Number.parseInt(
-                cb.getAttribute("data-campaign"),
+            const player_id = Number.parseInt(
+                cb.getAttribute("data-player") ?? "",
             );
-            const handout_id = Number.parseInt(cb.getAttribute("data-handout"));
+            const campaign_id = Number.parseInt(
+                cb.getAttribute("data-campaign") ?? "",
+            );
+            const handout_id = Number.parseInt(
+                cb.getAttribute("data-handout") ?? "",
+            );
             const state = cb.checked;
 
             set_handout_state(player_id, campaign_id, handout_id, state);
@@ -170,12 +176,13 @@ const init_handout_watch = () => {
     );
     if (!handout_list) return false;
     const campaign_id = Number.parseInt(
-        handout_list.getAttribute("data-campaign"),
+        handout_list.getAttribute("data-campaign") ?? "",
         10,
     );
     const handout_section = document.getElementById("handout_section");
-    handout_section.getElementsByTagName("h3")[0].onclick = () =>
-        get_handouts(campaign_id, handout_list);
+    handout_section &&
+        (handout_section.getElementsByTagName("h3")[0].onclick = () =>
+            get_handouts(campaign_id, handout_list));
     /*const refresh_handouts = () => {
         get_handouts(campaign_id, handout_list);
         window.setTimeout(refresh_handouts, 10000);
@@ -195,10 +202,10 @@ function init_npc_control() {
         if (visibility)
             visibility.onchange = () => {
                 const npc_id = Number.parseInt(
-                    visibility.getAttribute("data-npc"),
+                    visibility.getAttribute("data-npc") ?? "",
                 );
                 const campaign_id = Number.parseInt(
-                    visibility.getAttribute("data-campaign"),
+                    visibility.getAttribute("data-campaign") ?? "",
                 );
                 const state = visibility.checked;
                 console.log(`Visibility toggled on ${npc_id} to ${state}`);
@@ -209,10 +216,11 @@ function init_npc_control() {
 
 function init_npc_refresh() {
     console.log("Init NPC refresh");
-    const npc_container: HTMLElement = document.getElementById("npc_section");
+    const npc_container: HTMLElement | null =
+        document.getElementById("npc_section");
     if (!npc_container || npc_container.classList.contains("editable")) return;
     const campaign_id = Number.parseInt(
-        npc_container.getAttribute("data-campaign"),
+        npc_container.getAttribute("data-campaign") ?? "",
     );
     npc_container.getElementsByTagName("h3")[0].onclick = () =>
         get_npcs(campaign_id, npc_container);

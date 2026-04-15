@@ -29,7 +29,7 @@ test("saveElement", () => {
         (data, value) => {
             status = value;
         },
-        () => {}
+        () => {},
     );
 
     expect(status).toEqual("TestValue");
@@ -51,7 +51,7 @@ test("saveElement with number", () => {
         (data, value) => {
             status = value;
         },
-        () => {}
+        () => {},
     );
 
     expect(status).toEqual(2);
@@ -99,7 +99,7 @@ test("editElement", () => {
         },
         (event) => {
             console.log(event);
-        }
+        },
     );
 
     const input_element = editable_element.children.item(0) as HTMLInputElement;

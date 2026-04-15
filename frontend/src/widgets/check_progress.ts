@@ -2,7 +2,7 @@ export function editable_check_progress(
     bar: HTMLSpanElement | HTMLDivElement,
     save: (data: number) => void,
 ) {
-    let current_value = Number.parseInt(bar.getAttribute("data-value"));
+    let current_value = Number.parseInt(bar.getAttribute("data-value") ?? "0");
     const checkboxes: HTMLInputElement[] = Array.from(
         bar.getElementsByTagName("input"),
     );
@@ -24,7 +24,7 @@ export function editable_check_progress(
 
     checkboxes.forEach((box) => {
         box.onclick = (ev: Event) => {
-            let value = Number.parseInt(box.getAttribute("data-value"));
+            let value = Number.parseInt(box.getAttribute("data-value") ?? "0");
             if (value == current_value) {
                 value = current_value - 1;
             }
@@ -33,7 +33,9 @@ export function editable_check_progress(
             set_count(value);
         };
         box.onmouseenter = () => {
-            const value = Number.parseInt(box.getAttribute("data-value"));
+            const value = Number.parseInt(
+                box.getAttribute("data-value") ?? "0",
+            );
             set_count(value);
         };
         box.onmouseout = () => {

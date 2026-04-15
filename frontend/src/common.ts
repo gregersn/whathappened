@@ -15,16 +15,16 @@ export type Tabledata = any[];
 export type Listdata = string[];
 export type SaveFunction = (
     datamap: Datamap | DOMStringMap,
-    data: Elementdata | Tabledata
+    data: Elementdata | Tabledata,
 ) => void;
 
 function saveElement(
     editfield: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
     element: HTMLElement,
     save: SaveFunction,
-    editable_handler: (e: Event) => void
+    editable_handler: (e: Event) => void,
 ) {
-    let value = null;
+    let value: null | string | number = null;
     if (
         editfield instanceof HTMLInputElement &&
         (editfield.type === "number" || editfield.type === "integer")
@@ -40,12 +40,12 @@ function saveElement(
 
     const field = element.getAttribute("data-field");
     console.log(`Save changes to ${field}, new value ${value}`);
-    element.setAttribute("data-value", value);
+    element.setAttribute("data-value", value ? value.toString() : "0");
     if (editfield instanceof HTMLSelectElement) {
         element.innerHTML =
             editfield.options[editfield.selectedIndex].innerHTML;
     } else {
-        element.innerHTML = value;
+        element.innerHTML = value?.toString() ?? "";
     }
     element.addEventListener("click", editable_handler);
     save(data, value);
@@ -83,7 +83,7 @@ export const editable_list = (list: HTMLUListElement) => {
         console.log("Adding row to list");
         send_update(
             { field: `${list.getAttribute("data-field")}.-1` },
-            "New item..."
+            "New item...",
         );
         const blank = "New item...";
         const field = `${list.getAttribute("data-field")}.${
@@ -92,47 +92,50 @@ export const editable_list = (list: HTMLUListElement) => {
         const type = list.getAttribute("data-type");
         const new_item: HTMLLIElement = create_editable(
             "li",
-            type,
+            type ?? "",
             field,
-            blank
+            blank,
         ) as HTMLLIElement;
         list.appendChild(new_item);
     };
-    parent.appendChild(button);
+    parent?.appendChild(button);
 };
 
 function editElement(
     element: HTMLElement,
     type: edit_type,
     save: SaveFunction,
-    editable_handler: (e: Event) => void
+    editable_handler: (e: Event) => void,
 ) {
     console.log("Edit element");
     const value = element.getAttribute("data-value") ?? element.innerHTML;
-    let editfield: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement =
-        null;
+    let editfield:
+        | HTMLInputElement
+        | HTMLSelectElement
+        | HTMLTextAreaElement
+        | null = null;
 
     const choices = element.getAttribute("data-choices");
 
     if (choices) {
-        const values = JSON.parse(element.getAttribute("data-values"));
+        const values = JSON.parse(element.getAttribute("data-values") ?? "");
         editfield = document.createElement("select");
         JSON.parse(choices).forEach((choice) => {
             const option = document.createElement("option");
             option.value = choice;
             option.innerHTML = values[choice] ?? choice;
-            editfield.appendChild(option);
+            editfield?.appendChild(option);
         });
     } else if (type === "string") {
         editfield = document.createElement("input");
     } else if (type === "number" || type === "integer") {
         editfield = document.createElement("input") as HTMLInputElement;
         editfield.type = "number";
-        editfield.min = element.getAttribute("data-min");
-        editfield.max = element.getAttribute("data-max");
+        editfield.min = element.getAttribute("data-min") ?? "";
+        editfield.max = element.getAttribute("data-max") ?? "";
         editfield.setAttribute(
             "data-blank",
-            element.getAttribute("data-blank")
+            element.getAttribute("data-blank") ?? "",
         );
     } else if (type === "area") {
         editfield = document.createElement("textarea");
@@ -150,10 +153,11 @@ function editElement(
         saveElement(editfield, element, save, editable_handler);
     });
 
-    editfield.addEventListener("keypress", (e: KeyboardEvent) => {
-        if (e.keyCode === 13 && e.shiftKey === false) {
-            saveElement(editfield, element, save, editable_handler);
-        }
+    editfield.addEventListener("keypress", (e: Event) => {
+        if (e instanceof KeyboardEvent)
+            if (e.key === "Enter" && e.shiftKey === false) {
+                saveElement(editfield, element, save, editable_handler);
+            }
     });
 
     element.removeEventListener("click", editable_handler);
@@ -164,7 +168,7 @@ export type edit_type = "input" | "area" | "string" | "number" | "integer";
 const make_editable_handler = (
     element: HTMLElement,
     save: SaveFunction,
-    type: edit_type = "input"
+    type: edit_type = "input",
 ) => {
     const f = (e: Event) => {
         e.preventDefault();
@@ -177,12 +181,12 @@ const make_editable_handler = (
 export function make_element_editable(
     element: HTMLElement,
     save: SaveFunction,
-    type: edit_type = "input"
+    type: edit_type = "input",
 ) {
     const editable_handler = make_editable_handler(element, save, type);
     element.addEventListener("click", editable_handler);
     const label = document.getElementById(
-        `${element.getAttribute("data-field")}-label`
+        `${element.getAttribute("data-field")}-label`,
     );
     if (label) {
         label.addEventListener("click", editable_handler);
@@ -199,13 +203,15 @@ export function get_meta_tag(tagname: string): string | undefined {
 
 export function show_message(message: string | HTMLElement) {
     const message_box = document.getElementById("messagebox");
-    message_box.innerHTML = "";
-    if (message instanceof HTMLElement) {
-        message_box.appendChild(message);
-    } else {
-        message_box.innerHTML = message;
+    if (message_box) {
+        message_box.innerHTML = "";
+        if (message instanceof HTMLElement) {
+            message_box.appendChild(message);
+        } else {
+            message_box.innerHTML = message;
+        }
+        message_box.style.display = "block";
     }
-    message_box.style.display = "block";
 }
 
 export function send_update(datamap: Datamap | DOMStringMap, value: any) {
@@ -214,11 +220,11 @@ export function send_update(datamap: Datamap | DOMStringMap, value: any) {
     const url = document.location.href + "update";
     xhr.open("POST", url);
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("X-CSRFToken", get_meta_tag("_token"));
-    xhr.setRequestHeader("x-csrf-token", get_meta_tag("_token"));
+    xhr.setRequestHeader("X-CSRFToken", get_meta_tag("_token") ?? "");
+    xhr.setRequestHeader("x-csrf-token", get_meta_tag("_token") ?? "");
     xhr.onload = () => {
         console.log(`Post done, got ${xhr.status} ${xhr.statusText}`);
-        if (xhr.status === 200 && xhr.statusText === "OK") {
+        if (xhr.status === 200 && xhr.statusText === "OK" && busy !== null) {
             busy.style.display = "none";
         }
     };
@@ -241,9 +247,10 @@ export function saveCheck(editfield: HTMLInputElement) {
 }
 
 function table_to_obj(table: HTMLTableElement): Tabledata {
-    const data_rows = [];
+    const data_rows: Tabledata = [];
 
     //const tableName = table.getAttribute('data-field');
+    if (!table.tHead) return data_rows;
     const fields = Array.from(table.tHead.rows[0].cells)
         .map((element, index) => {
             return {
@@ -261,18 +268,22 @@ function table_to_obj(table: HTMLTableElement): Tabledata {
     const rows = Array.from(table.tBodies[0].rows);
     for (const row of rows) {
         const row_data = {};
+        const cells = row.cells;
         fields.forEach((field) => {
+            const cell_item = cells.item(field["index"]);
             if (field["type"] === "number" || field["type"] === "integer") {
-                const value = Number.parseInt(
-                    row.cells.item(field["index"]).innerHTML
-                );
-                row_data[field["property"]] = isNaN(value)
-                    ? field["blank"]
-                    : value;
+                const value = cell_item
+                    ? Number.parseInt(cell_item.innerHTML)
+                    : NaN;
+                if (field["property"])
+                    row_data[field["property"]] = isNaN(value)
+                        ? field["blank"]
+                        : value;
             } else {
-                row_data[field["property"]] = row.cells.item(
-                    field["index"]
-                ).innerHTML;
+                if (field["property"])
+                    row_data[field["property"]] = cell_item
+                        ? cell_item.innerHTML
+                        : "";
             }
         });
 
@@ -301,7 +312,7 @@ const create_editable = (
     tagname: keyof HTMLElementTagNameMap,
     data_type: string,
     data_field: string,
-    data_blank: any
+    data_blank: any,
 ) => {
     const editable = document.createElement(tagname);
     editable.setAttribute("data-type", data_type);
@@ -323,7 +334,7 @@ const create_editable = (
 
         const save = (
             datamap: Datamap | DOMStringMap,
-            data: Elementdata | Tabledata
+            data: Elementdata | Tabledata,
         ) => {
             console.debug("Save data");
             if (data === null) {
@@ -353,14 +364,16 @@ export const editable_table_2 = (table: HTMLTableElement) => {
         console.log("Default values");
         const default_values = {};
         for (const cell of table_header.rows[0].cells) {
-            default_values[cell.getAttribute("data-property")] = parse_value(
-                cell.getAttribute("data-blank"),
-                cell.getAttribute("data-type")
-            );
+            const property = cell.getAttribute("data-property");
+            if (property)
+                default_values[property] = parse_value(
+                    cell.getAttribute("data-blank"),
+                    cell.getAttribute("data-type") ?? "",
+                );
         }
         send_update(
             { field: `${table.getAttribute("data-field")}.-1` },
-            default_values
+            default_values,
         );
         console.log(default_values);
         const new_row = table_body.insertRow(-1);
@@ -375,21 +388,21 @@ export const editable_table_2 = (table: HTMLTableElement) => {
 
             const new_cell: HTMLTableCellElement = create_editable(
                 "td",
-                type,
+                type ?? "",
                 field,
-                blank
+                blank,
             ) as HTMLTableCellElement;
             new_row.appendChild(new_cell);
             //console.log(cell);
         }
     };
 
-    parent.appendChild(button);
+    parent?.appendChild(button);
 };
 
 export const editable_table = (
     table: HTMLTableElement,
-    save: (data: Tabledata) => void
+    save: (data: Tabledata) => void,
 ) => {
     const make_cell_editable = (cell: HTMLTableCellElement) => {
         make_element_editable(
@@ -397,7 +410,7 @@ export const editable_table = (
             (data: any) => {
                 save(table_to_obj(table));
             },
-            cell.getAttribute("data-type") as edit_type
+            cell.getAttribute("data-type") as edit_type,
         );
     };
     const make_row_editable = (row: HTMLTableRowElement, fields: any[]) => {
@@ -410,7 +423,7 @@ export const editable_table = (
         });
     };
 
-    const cells = Array.from(table.tHead.rows[0].cells);
+    const cells = table.tHead ? Array.from(table.tHead.rows[0].cells) : [];
     const fields = cells
         .map((element, index) => {
             return {
@@ -438,7 +451,7 @@ export const editable_table = (
         make_row_editable(new_row, fields);
     };
 
-    parent.appendChild(button);
+    parent?.appendChild(button);
 };
 
 export function init_set_portrait(field_name: string) {
@@ -451,12 +464,13 @@ export function init_set_portrait(field_name: string) {
         uploadelement.type = "file";
         uploadelement.style.display = "none";
         uploadelement.onchange = (e: Event) => {
+            if (!uploadelement.files) return;
             const reader = new FileReader();
             reader.readAsDataURL(uploadelement.files[0]);
             reader.onload = () => {
                 send_update(
                     { field: field_name, type: "portrait" },
-                    reader.result
+                    reader.result,
                 );
             };
         };

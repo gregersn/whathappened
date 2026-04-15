@@ -34,3 +34,5 @@ uploads/
 
 tests/games/sheets/current/
 tests/games/schemas/current/
+
+node_modules/

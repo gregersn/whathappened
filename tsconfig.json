@@ -4,6 +4,8 @@
         "module": "es6",
         "noImplicitAny": false,
         "sourceMap": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "typeRoots": ["./node_modules/@types"],
+        "types": ["jest"]
     }
 }
