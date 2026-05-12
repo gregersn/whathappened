@@ -93,7 +93,20 @@ Yrke = Literal[
 
 Bonus = Literal["-", "+T4", "+T6"]
 Alder = Literal["Ung", "Medelålders", "Gammal"]
-Slakte = Literal["Människa", "Halvling", "Dvärg", "Alv", "Anka", "Vargfolk"]
+Slakte = Literal[
+    "Människa",
+    "Halvling",
+    "Dvärg",
+    "Alv",
+    "Anka",
+    "Vargfolk",
+    "Kattfolk",
+    "Reptilfolk",
+    "Orch",
+    "Rese",
+    "Svartalf",
+    "Vätte",
+]
 BasEgenskap = Literal["STY", "FYS", "SMI", "INT", "PSY", "KAR"]
 
 
