@@ -580,6 +580,12 @@ $defs:
         - Alv
         - Anka
         - Vargfolk
+        - Kattfolk
+        - Reptilfolk
+        - Orch
+        - Rese
+        - Svartalf
+        - "V\xE4tte"
         title: "Sl\xE4kte"
         type: string
       svaghet:
