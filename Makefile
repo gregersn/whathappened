@@ -17,7 +17,7 @@ dev_server: frontend
 setup_dependencies: .venv/$(MARKER_FILENAME) $(FRONTEND_MARKER)
 
 .venv/$(MARKER_FILENAME): pyproject.toml
-	@uv sync
+	@uv sync --frozen
 	@touch $@
 
 # Initialise database:
@@ -46,7 +46,7 @@ dist: setup_dependencies
 	$(RMRF) src/whathappened/static/js/
 	$(RMRF) src/whathappened/static/css/
 	npm run dist
-	@FLASK_APP=src/whathappened.web uv run -- flask assets build
+	@FLASK_APP=src/whathappened.web uv run --no-sync -- flask assets build
 	@$(VENV_PYTHON) -m build
 
 
