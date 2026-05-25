@@ -29,7 +29,7 @@ dependencies = [
     "markdown2==2.5.5",
     "packaging==26.2",
     "pillow==12.2.0",
-    "pyjwt==2.12.1",
+    "pyjwt==2.13.0",
     "pyscss",
     "python-dotenv==1.2.2",
     "pymysql==1.1.3",
