@@ -1,20 +1,17 @@
+from functools import wraps
 from time import time
-
-from flask import current_app, render_template
-from flask_login import (
-    LoginManager as LoginManager,
-)
-from flask_login import (
-    current_user as current_user,
-)
-from flask_login import (
-    login_required as login_required,
-)
-import jwt
 
 from whathappened.core.auth.models import User
 from whathappened.core.database import session
 from whathappened.web.email import send_mail
+
+
+def login_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 def get_reset_password_token(user: User, expires_in: int = 600):
@@ -42,3 +39,11 @@ def send_password_reset_email(user: User):
         recipients=[str(user.email)],
         text_body=render_template("/auth/reset_password.txt", user=user, token=token),
     )
+
+
+def login_user(*args, **kwargs):
+    raise NotImplementedError(f"{args}, {kwargs}")
+
+
+def logout_user(*args, **kwargs):
+    raise NotImplementedError(f"{args}, {kwargs}")

@@ -1,21 +1,21 @@
 import logging
 import subprocess
 
-from .blueprints import bp
+# from .blueprints import bp
 
 from . import routes  # noqa: E402, F401 isort:skip
 
 logger = logging.getLogger(__name__)
 
 
-@bp.cli.command("build")
+# @bp.cli.command("build")
 def build():
     logger.debug("Build stuff")
     project_path = "./"
     subprocess.run("npm run build", cwd=project_path, check=True, shell=True)
 
 
-@bp.cli.command("watch")
+# @bp.cli.command("watch")
 def watch():
     logger.debug("Watch stuff")
     project_path = "./"

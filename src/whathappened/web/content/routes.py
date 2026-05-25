@@ -1,17 +1,17 @@
-from flask import redirect, render_template
-
+from whathappened.core.auth.utils import current_user
 from whathappened.core.campaign import models as campaignmodels
 from whathappened.core.character.models import Character
 from whathappened.core.database import session
-from whathappened.web.auth.utils import current_user, login_required
+from whathappened.web.auth.utils import login_required
 
 from ...core.content.models import Folder
-from .blueprints import bp
+
+# from .blueprints import bp
 from .forms import NewFolderForm
 
 
-@bp.route("/<uuid:folder_id>/", methods=["GET", "POST"])
-@bp.route("/", methods=["GET", "POST"])
+# @bp.route("/<uuid:folder_id>/", methods=["GET", "POST"])
+# @bp.route("/", methods=["GET", "POST"])
 @login_required
 def folders(folder_id=None):
     new_folder_form = NewFolderForm(prefix="new_folder")

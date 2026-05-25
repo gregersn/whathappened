@@ -1,7 +1,6 @@
 import json
 import logging
 
-from flask_wtf import FlaskForm
 from wtforms import (
     BooleanField,
     Field,

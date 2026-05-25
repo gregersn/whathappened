@@ -1,7 +1,4 @@
-from flask import url_for
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileAllowed, FileField, FileRequired
-from wtforms import StringField, SubmitField
+from wtforms import Form, StringField, SubmitField, FileField
 from wtforms.fields.simple import HiddenField
 from wtforms.validators import DataRequired
 
@@ -26,18 +23,18 @@ def available_assets():
 VALID_FILE_EXTENSIONS = ["jpg", "png", "jpeg", "gif", "svg", "glb"]
 
 
-class UploadForm(FlaskForm):
+class UploadForm(Form):
     uploaded = FileField(
         validators=[
-            FileRequired(),
-            FileAllowed(VALID_FILE_EXTENSIONS, "Certain images only"),
+            # FileRequired(),
+            # FileAllowed(VALID_FILE_EXTENSIONS, "Certain images only"),
         ]
     )
     folder_id = HiddenField("FolderId", validators=[DataRequired()])
     submit = SubmitField("Upload")
 
 
-class AssetSelectForm(FlaskForm):
+class AssetSelectForm(Form):
     asset = QuerySelectField(
         "Asset",
         query_factory=available_assets,
@@ -47,23 +44,23 @@ class AssetSelectForm(FlaskForm):
     add = SubmitField("Add")
 
 
-class NewFolderForm(FlaskForm):
+class NewFolderForm(Form):
     title = StringField("Title", validators=[DataRequired()])
     parent_id = HiddenField("Parent", validators=[DataRequired()])
     add = SubmitField("Create folder")
 
 
-class DeleteAssetForm(FlaskForm):
+class DeleteAssetForm(Form):
     id = HiddenField("Asset", validators=[DataRequired()])
     delete = SubmitField("Delete")
 
 
-class DeleteAssetFolderForm(FlaskForm):
+class DeleteAssetFolderForm(Form):
     id = HiddenField("AssetFolder", validators=[DataRequired()])
     delete = SubmitField("Delete")
 
 
-class MoveAssetForm(FlaskForm):
+class MoveAssetForm(Form):
     id = HiddenField("Asset", validators=[DataRequired()])
     folder = QuerySelectField(
         "Folder", query_factory=available_folders, get_label=lambda x: x.path

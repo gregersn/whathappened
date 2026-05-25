@@ -1,14 +1,17 @@
 import logging
 
-from flask import redirect, render_template, url_for
-from flask.json import jsonify
+from litestar import Router, get, Request
+from litestar.datastructures import State
+from litestar.response.template import Template
 from werkzeug.exceptions import abort
 
+from whathappened.core.auth.models import User
+from whathappened.core.auth.utils import current_user
 from whathappened.core.database import Base, session
 from whathappened.core.database.models import Invite
-from whathappened.web.auth.utils import current_user, login_required
+from whathappened.web.auth.utils import login_required
 
-from .blueprints import api, bp
+
 from .forms import DeleteInviteForm
 
 logger = logging.getLogger(__name__)
@@ -20,28 +23,30 @@ def get_class_by_tablename(tablename):
             return c
 
 
-@bp.route("/")
-def index():
-    if current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
-        return redirect(url_for("profile.index"))
+@get("/")
+def index(request: Request[User, None, State]) -> Template:
+    # if current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
+    #    return redirect(url_for("profile.index"))
+    print(request.session)
+    print(request.user)
+    print(request.state)
+    return Template("main/index.html.jinja", context={"current_user": current_user})
 
-    return render_template("main/index.html.jinja")
 
-
-@bp.route("/share/<uuid:id>/delete", methods=("GET", "POST"))
+@get("/share/<uuid:id>/delete", methods=("GET", "POST"))
 @login_required
-def invite_delete(id: str):
+def invite_delete(id: str) -> Template:
     invite = session.get(Invite, id)
     assert invite is not None
     if current_user.profile.id != invite.owner_id:  # pyright: ignore[reportGeneralTypeIssues]
         logger.debug("Wrong user")
         abort(403)
     form = DeleteInviteForm()
-    if form.validate_on_submit():
-        logger.debug("Delete form validated")
-        session.delete(invite)
-        session.commit()
-        return redirect("/")
+    # if form.validate_on_submit():
+    # logger.debug("Delete form validated")
+    # session.delete(invite)
+    # session.commit()
+    # return redirect("/")
 
     objclass = get_class_by_tablename(invite.table)
     obj = None
@@ -50,11 +55,10 @@ def invite_delete(id: str):
 
     form.id.data = invite.id
 
-    return render_template(
-        "main/invite_delete.html.jinja", obj=obj, invite=invite, form=form
-    )
+    return Template("main/invite_delete.html.jinja", obj=obj, invite=invite, form=form)
 
 
+"""
 @api.route("/invite/<int:id>/delete", methods=("POST",))
 @login_required
 def api_invite_delete(id):
@@ -66,3 +70,7 @@ def api_invite_delete(id):
     session.commit()
 
     return jsonify({"html": "Deleted"})
+"""
+
+
+main_router = Router(path="/", route_handlers=[index, invite_delete])

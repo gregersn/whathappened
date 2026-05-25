@@ -1,6 +1,4 @@
-from flask import url_for
-
-from .blueprints import bp
+# from .blueprints import bp
 
 from . import routes  # noqa: F401,E402 isort:skip
 
@@ -8,7 +6,7 @@ from . import routes  # noqa: F401,E402 isort:skip
 # from . import api  # noqa: F401, E402 isort:skip
 
 
-@bp.app_template_filter("clickpath")
+# @bp.app_template_filter("clickpath")
 def clickpath(folder):
     path = ""
     if folder.parent:

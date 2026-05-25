@@ -1,13 +1,11 @@
-from flask_wtf.form import FlaskForm
-from wtforms import StringField
+from wtforms import Form, StringField
 from wtforms.fields.simple import HiddenField, SubmitField
 from wtforms.validators import UUID, DataRequired, Optional
 
-from whathappened.web.auth.utils import current_user
 from whathappened.web.forms.fields.alchemy import QuerySelectField
 
 
-class NewFolderForm(FlaskForm):
+class NewFolderForm(Form):
     title = StringField("Title", validators=[DataRequired()])
     owner_id = HiddenField(validators=[DataRequired()])
     # parent_id = QuerySelectField('Parent')
@@ -21,7 +19,7 @@ def available_folders():
     return current_user.profile.folders  # pyright: ignore[reportGeneralTypeIssues]
 
 
-class ChooseFolderForm(FlaskForm):
+class ChooseFolderForm(Form):
     folder_id = QuerySelectField(
         query_factory=available_folders, get_label=lambda x: x.title, allow_blank=True
     )

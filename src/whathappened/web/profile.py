@@ -1,14 +1,15 @@
 import logging
 
-from flask import Blueprint, current_app, flash, redirect, render_template, request
+from litestar import Router, get
+from litestar.response.template import Template
 from sqlalchemy import desc
 
 from whathappened.core.auth.models import User, UserStatus
+from whathappened.core.auth.utils import current_user
 from whathappened.core.database import session
-from whathappened.web.auth.utils import current_user, login_required
+from whathappened.web.auth.utils import login_required
 from whathappened.web.campaign.forms import InvitePlayerForm
-
-bp = Blueprint("profile", __name__, template_folder="../templates")
+from whathappened.web.utils import render_template
 
 # from whathappened.character.models import Character  # noqa F401
 from ..core.database.models import Invite, UserProfile  # noqa F401
@@ -16,9 +17,8 @@ from ..core.database.models import Invite, UserProfile  # noqa F401
 logger = logging.getLogger(__name__)
 
 
-@bp.route("/")
-@login_required
-def index():
+@get(["/", "/index"])
+def index() -> Template:
     assert current_user is not None
     user_profile = session.get(UserProfile, current_user.id)  # type: ignore
 
@@ -41,7 +41,7 @@ def index():
     )
 
 
-@bp.post("/settings/invite")
+# @bp.post("/settings/invite")
 @login_required
 def settings_invite_post():
     assert current_user is not None
@@ -66,7 +66,7 @@ def settings_invite_post():
     return redirect("/profile/settings")
 
 
-@bp.get("/settings")
+# @bp.get("/settings")
 @login_required
 def settings():
     assert current_user is not None
@@ -97,7 +97,7 @@ def settings():
     )
 
 
-@bp.post("/settings")
+# @bp.post("/settings")
 @login_required
 def settings_post():
     assert current_user is not None
@@ -111,3 +111,6 @@ def settings_post():
     session.commit()
 
     return "Good"
+
+
+profile_router = Router(path="/profile", route_handlers=[index])

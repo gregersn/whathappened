@@ -18,11 +18,11 @@
         <nav>
             <ul>
                 {% if current_user.is_anonymous %}
-                <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
+                <li><a href="{{ '/auth/register' }}">Register</a></li>
+                <li><a href="{{ '/auth/login' }}">Log in</a></li>
                 {% else %}
-                <li><a href="{{ url_for('profile.index') }}">{{ current_user.username }}</a></li>
-                <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
+                <li><a href="{{ '/profile/index' }}">{{ current_user.username }}</a></li>
+                <li><a href="{{ '/auth/logout' }}">Log out</a></li>
                 {% endif %}
             </ul>
         </nav>
@@ -46,7 +46,7 @@
     <header>
         {% block header %}{% endblock %}
     </header>
-    {%- for message in get_flashed_messages() %}
+    {%- for message in []  %}
     <div class="flash">{{ message }}</div>
     {%- endfor %}
     <section>

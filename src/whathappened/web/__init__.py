@@ -3,15 +3,21 @@ import logging
 import os
 from pathlib import Path
 
-from flask import Flask
-from flask_login import LoginManager
-from flask_wtf.csrf import CSRFProtect
 from jinja2_webpack import Environment as WebpackEnvironment
 from jinja2_webpack.filter import WebpackFilter
+from litestar.contrib.jinja import JinjaTemplateEngine
+from litestar.middleware import DefineMiddleware
+from litestar.middleware.session.server_side import ServerSideSessionConfig
+from litestar.response import Template
+from litestar.static_files.config import StaticFilesConfig, create_static_files_router
+from litestar.stores.file import FileStore
+from litestar.template.config import TemplateConfig
 from pelican.plugins.webassets.vendor.webassets import Environment as AssetsEnvironment
 from pelican.plugins.webassets.vendor.webassets.bundle import Bundle
 
 from whathappened.config import Config, Settings
+from whathappened.web import profile as webprofile
+from whathappened.web.auth.middleware import LoginManager
 from whathappened.web.email import mail
 
 from ..core.database import init_db, session
@@ -20,13 +26,14 @@ try:
     from .._version import __version__
 except ModuleNotFoundError:
     __version__ = "unknown"
-
+"""
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"  # type: ignore  # Not an error
+"""
 assets_env = AssetsEnvironment(
     directory=Path(__file__).absolute().parent.parent / "static"
 )
-csrf = CSRFProtect()
+# csrf = CSRFProtect()
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s: %(name)s %(message)s",
@@ -52,10 +59,71 @@ def uberfilter(inp: str, filter: str = ""):
     return inp
 
 
-def create_app(test_config: Settings | None = None) -> Flask:
+from litestar import Litestar, get
+
+
+@get("/hello")
+async def hello_world() -> str:
+    return "Hello, world!"
+
+
+def create_app(test_config: Settings | None = None):
     logger.info("Creating app")
 
     assets_env._named_bundles = {}
+
+    template_config = TemplateConfig(
+        directory="./src/whathappened/templates", engine=JinjaTemplateEngine
+    )
+
+    jinja_env = template_config.engine_instance.engine
+    jinja_env.globals["whathappened_version"] = __version__
+    jinja_env.add_extension("jinja2.ext.do")
+    jinja_env.add_extension(
+        "pelican.plugins.webassets.vendor.webassets.ext.jinja2.AssetsExtension"
+    )
+    jinja_env.assets_environment = assets_env  # pyright: ignore[reportGeneralTypeIssues]
+    assets_env.url = "/static"
+
+    assets_env.config["TYPESCRIPT_CONFIG"] = "--target ES6"
+
+    scss = Bundle("scss/main.scss", filters="pyscss", output="css/all.css")
+    assets_env.register("scss_all", scss)
+
+    css_profile = Bundle(
+        "scss/profile.scss", filters="pyscss", output="css/profile.css"
+    )
+    assets_env.register("scss_profile", css_profile)
+
+    from whathappened.core.auth import models as auth_models
+    from whathappened.core.content import models as content_models
+    from whathappened.core.database import models
+
+    from . import auth, main
+
+    auth_mw = DefineMiddleware(LoginManager)
+
+    app = Litestar(
+        route_handlers=[
+            main.routes.main_router,
+            auth.routes.auth_router,
+            webprofile.profile_router,
+        ],
+        static_files_config=[
+            StaticFilesConfig(
+                path="/static", directories=["./src/whathappened/static"], name="static"
+            )
+        ],
+        template_config=template_config,
+        middleware=[ServerSideSessionConfig().middleware, auth_mw],
+        stores={"sessions": FileStore(path=Path("session_data"))},
+    )
+
+    # Init addons
+    init_db(Config.SQLALCHEMY_DATABASE_URI, nullpool=test_config is not None)
+
+    return app
+
     app = Flask(__name__, instance_relative_config=True, static_folder="../static")
 
     # Default settings from config file
@@ -83,11 +151,6 @@ def create_app(test_config: Settings | None = None) -> Flask:
     login_manager.init_app(app)
     csrf.init_app(app)
     mail.init_app(app)
-    app.jinja_env.globals["whathappened_version"] = __version__
-    app.jinja_env.add_extension("jinja2.ext.do")
-    app.jinja_env.add_extension(
-        "pelican.plugins.webassets.vendor.webassets.ext.jinja2.AssetsExtension"
-    )
 
     app.jinja_env.filters["uberfilter"] = uberfilter
 

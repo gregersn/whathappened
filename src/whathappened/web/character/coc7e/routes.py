@@ -1,5 +1,3 @@
-from flask import flash, redirect, render_template, url_for
-
 from whathappened.core.database import session
 from whathappened.core.database.models import Invite, LogEntry
 from whathappened.web.auth.utils import current_user

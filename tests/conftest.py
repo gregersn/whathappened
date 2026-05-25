@@ -1,7 +1,5 @@
 from pathlib import Path
 
-from flask import Flask
-from flask.testing import FlaskClient
 import pytest
 from sqlalchemy import Connection, NullPool, create_engine
 from whathappened.web import create_app

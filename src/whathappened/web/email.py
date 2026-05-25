@@ -1,7 +1,14 @@
 from threading import Thread
 
-from flask import Flask, current_app
-from flask_mail import Mail, Message
+
+class Mail:
+    def send(self, *args, **kwargs):
+        raise NotImplementedError("{args}, {kwargs}")
+
+
+class Message:
+    def __init__(self, *args, **kwargs): ...
+
 
 mail = Mail()
 

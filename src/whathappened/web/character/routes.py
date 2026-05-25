@@ -1,7 +1,6 @@
 import copy
 import logging
 
-from flask import jsonify, redirect, render_template, request, url_for
 from werkzeug.exceptions import abort
 
 from whathappened.core.database import session

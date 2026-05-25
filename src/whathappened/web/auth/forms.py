@@ -1,13 +1,12 @@
 """Authentication forms."""
 
-from flask_wtf import FlaskForm
-from wtforms import BooleanField, PasswordField, StringField, SubmitField
+from wtforms import BooleanField, Form, PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 
 from ...core.auth.models import User
 
 
-class LoginForm(FlaskForm):
+class LoginForm(Form):
     """System login form."""
 
     username = StringField("Username", validators=[DataRequired()])
@@ -16,7 +15,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Sign In")
 
 
-class RegistrationForm(FlaskForm):
+class RegistrationForm(Form):
     """System registration form."""
 
     username = StringField("Username", validators=[DataRequired()])
@@ -38,14 +37,14 @@ class RegistrationForm(FlaskForm):
             raise ValidationError("Please use a different email address.")
 
 
-class ResetPasswordRequestForm(FlaskForm):
+class ResetPasswordRequestForm(Form):
     """Reset password request."""
 
     email = StringField("Email", validators=[DataRequired(), Email()])
     submit = SubmitField("Request password reset")
 
 
-class ResetPasswordForm(FlaskForm):
+class ResetPasswordForm(Form):
     """Reset password form."""
 
     password = PasswordField("Password", validators=[DataRequired()])

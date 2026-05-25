@@ -1,14 +1,14 @@
 import logging
 
-from flask import flash, redirect, render_template, request, url_for
 from sqlalchemy import and_, desc, or_
 from werkzeug.exceptions import abort
 
 from whathappened.core.auth.models import User
+from whathappened.core.auth.utils import current_user
 from whathappened.core.character.models import Character
 from whathappened.core.database import session
 from whathappened.core.database.models import Invite, UserProfile
-from whathappened.web.auth.utils import current_user, login_required
+from whathappened.web.auth.utils import login_required
 from whathappened.web.content.forms import ChooseFolderForm
 from whathappened.web.main.forms import CreateInviteForm
 
@@ -20,7 +20,8 @@ from ...core.campaign.models import (
     Message,
 )
 from . import api  # noqa
-from .blueprints import bp
+
+# from .blueprints import bp
 from .forms import (
     AddCharacterForm,
     AddNPCForm,
@@ -39,7 +40,7 @@ from .forms import (
 logger = logging.getLogger(__name__)
 
 
-@bp.route("/<code>", methods=("GET", "POST"))
+# @bp.route("/<code>", methods=("GET", "POST"))
 @login_required
 def join(code: str):
     inv = session.get(Invite, code)
@@ -68,7 +69,7 @@ def join(code: str):
     )
 
 
-@bp.route("/<int:id>", methods=("GET", "POST"))
+# @bp.route("/<int:id>", methods=("GET", "POST"))
 @login_required
 def view(id: int):
     invites = None
@@ -183,7 +184,7 @@ def view(id: int):
     )
 
 
-@bp.route("/<int:id>/edit", methods=("GET", "POST"))
+# @bp.route("/<int:id>/edit", methods=("GET", "POST"))
 def edit(id: int):
     campaign = session.get(Campaign, id)
     assert campaign
@@ -228,7 +229,7 @@ def edit(id: int):
     )
 
 
-@bp.route("/<int:id>/export", methods=("GET",))
+# @bp.route("/<int:id>/export", methods=("GET",))
 @login_required
 def export(id: int):
     campaign: Campaign = session.get(Campaign, id)
@@ -236,7 +237,7 @@ def export(id: int):
     return campaign.to_dict(_hide=[])
 
 
-@bp.route("/create", methods=("GET", "POST"))
+# @bp.route("/create", methods=("GET", "POST"))
 @login_required
 def create():
     form = CreateForm()
@@ -248,7 +249,7 @@ def create():
     return render_template("campaign/create.html.jinja", form=form)
 
 
-@bp.route("/<int:id>/removecharacter/<int:characterid>", methods=("GET", "POST"))
+# @bp.route("/<int:id>/removecharacter/<int:characterid>", methods=("GET", "POST"))
 @login_required
 def remove_character(id: int, characterid: int):
     campaign = session.get(Campaign, id)
@@ -277,7 +278,7 @@ def remove_character(id: int, characterid: int):
     )
 
 
-@bp.route("/<int:id>/association_settings/<int:characterid>", methods=("GET", "POST"))
+# @bp.route("/<int:id>/association_settings/<int:characterid>", methods=("GET", "POST"))
 @login_required
 def association_settings(id: int, characterid: int):
     """Character-campaign association settings view."""
@@ -309,7 +310,7 @@ def association_settings(id: int, characterid: int):
     )
 
 
-@bp.route("/<int:id>/removenpc/<int:characterid>", methods=("GET", "POST"))
+# @bp.route("/<int:id>/removenpc/<int:characterid>", methods=("GET", "POST"))
 @login_required
 def remove_npc(id: int, characterid: int):
     npc = session.get(NPC, characterid)
@@ -333,7 +334,7 @@ def remove_npc(id: int, characterid: int):
     )
 
 
-@bp.route("/<int:id>/npc/<int:npcid>", methods=("GET", "POST"))
+# @bp.route("/<int:id>/npc/<int:npcid>", methods=("GET", "POST"))
 @login_required
 def manage_npc(id: int, npcid: int):
     npc = session.get(NPC, npcid)
@@ -382,7 +383,7 @@ def manage_npc(id: int, npcid: int):
     )
 
 
-@bp.route("/<int:id>/removeplayer/<int:playerid>", methods=("GET", "POST"))
+# @bp.route("/<int:id>/removeplayer/<int:playerid>", methods=("GET", "POST"))
 @login_required
 def remove_player(id: int, playerid: int):
     form = RemovePlayerForm()
@@ -403,8 +404,8 @@ def remove_player(id: int, playerid: int):
     )
 
 
-@bp.route("/<int:campaign_id>/player/<int:player_id>/message", methods=("GET", "POST"))
-@bp.route("/<int:campaign_id>/message/", methods=("GET", "POST"))
+# @bp.route("/<int:campaign_id>/player/<int:player_id>/message", methods=("GET", "POST"))
+# @bp.route("/<int:campaign_id>/message/", methods=("GET", "POST"))
 @login_required
 def message_player(campaign_id: int, player_id: int | None = None):
     campaign = session.get(Campaign, campaign_id)

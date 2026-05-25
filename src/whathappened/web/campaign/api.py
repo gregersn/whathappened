@@ -3,7 +3,6 @@ import hashlib
 import json
 import logging
 
-from flask import jsonify, request
 from sqlalchemy import or_
 from werkzeug.exceptions import abort
 
@@ -11,18 +10,18 @@ from whathappened.core.database import session
 from whathappened.web.auth.utils import current_user, login_required
 
 from ...core.campaign.models import NPC, Campaign, Handout, HandoutStatus, Message
-from .blueprints import apibp
+# from .blueprints import apibp
 
 logger = logging.getLogger(__name__)
 
 
-@apibp.route("/hello/<string:name>")
+# @apibp.route("/hello/<string:name>")
 def hello(name: str):
     response = {"msg": f"Hello, {name}"}
     return jsonify(response)
 
 
-@apibp.route("<int:campaignid>/handouts/", methods=("GET",))
+# @apibp.route("<int:campaignid>/handouts/", methods=("GET",))
 def handouts(campaignid: int):
     if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
@@ -46,14 +45,14 @@ def handouts(campaignid: int):
     return jsonify({"sha": sha.hexdigest(), "handouts": handouts_dict})
 
 
-@apibp.route("<int:campaignid>/player/<int:playerid>/message", methods=("GET", "POST"))
+# @apibp.route("<int:campaignid>/player/<int:playerid>/message", methods=("GET", "POST"))
 def message_player(campaignid: int, playerid: int):
     logger.debug("Got a message in the post")
     logger.debug(request.form)
     return jsonify({"status": "ok"})
 
 
-@apibp.route("<int:campaignid>/messages", methods=("GET",))
+# @apibp.route("<int:campaignid>/messages", methods=("GET",))
 @login_required
 def messages(campaignid: int):
     after = int(request.args.get("after", "0"), 10)
@@ -79,9 +78,9 @@ def messages(campaignid: int):
     return jsonify(message_list)
 
 
-@apibp.route(
-    "<int:campaignid>/handout/<int:handoutid>/players", methods=("GET", "POST")
-)
+# @apibp.route(
+#    "<int:campaignid>/handout/<int:handoutid>/players", methods=("GET", "POST")
+# )
 def handout_players(campaignid: int, handoutid: int):
     if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
         abort(403)
@@ -123,7 +122,7 @@ def handout_players(campaignid: int, handoutid: int):
     return jsonify(response)
 
 
-@apibp.route("<int:campaignid>/npcs/", methods=("GET", "POST"))
+# @apibp.route("<int:campaignid>/npcs/", methods=("GET", "POST"))
 @login_required
 def npcs(campaignid: int):
     campaign = session.get(Campaign, campaignid)
@@ -144,7 +143,7 @@ def npcs(campaignid: int):
     return jsonify(response)
 
 
-@apibp.route("<int:campaignid>/npc/<int:npcid>", methods=("GET", "POST"))
+# @apibp.route("<int:campaignid>/npc/<int:npcid>", methods=("GET", "POST"))
 @login_required
 def npc_visibility(npcid: int, campaignid: int):
     if not current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]

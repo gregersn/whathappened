@@ -1,12 +1,11 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import Form, StringField, SubmitField
 from wtforms.widgets.core import HiddenInput
 
 
-class CreateInviteForm(FlaskForm):
+class CreateInviteForm(Form):
     submit = SubmitField("Create invite")
 
 
-class DeleteInviteForm(FlaskForm):
+class DeleteInviteForm(Form):
     id = StringField(widget=HiddenInput())
     submit = SubmitField("Delete share")

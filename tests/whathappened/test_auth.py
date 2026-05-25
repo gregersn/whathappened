@@ -1,4 +1,3 @@
-from flask import session
 from whathappened.core.auth.models import User, UserStatus
 
 

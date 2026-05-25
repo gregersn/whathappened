@@ -1,8 +1,6 @@
 import logging
 from typing import Text
 
-from flask import redirect, render_template, request, url_for
-from flask.views import View
 import markdown2
 from werkzeug.exceptions import abort
 from werkzeug.wrappers import Response
@@ -12,17 +10,19 @@ from whathappened.web.auth.utils import current_user, login_required
 from whathappened.web.userassets.forms import AssetSelectForm
 
 from ...core.campaign.models import Campaign, Handout, HandoutGroup
-from .blueprints import bp
+
+# from .blueprints import bp
 from .forms import DeleteHandoutForm, HandoutForm, HandoutGroupForm
 
 logger = logging.getLogger(__name__)
 
 
-@bp.app_template_filter("markdown")
+# @bp.app_template_filter("markdown")
 def markdown(value: str):
     return markdown2.markdown(value, extras=["tables", "fenced-code-blocks"])
 
 
+"""
 class HandoutView(View):
     def dispatch_request(
         self, campaign_id: int, handout_id: int | None = None
@@ -176,8 +176,9 @@ class HandoutView(View):
             handoutform=handoutform,
             groupform=groupform,
         )
+"""
 
-
+"""
 handout_view = HandoutView.as_view("handout_view")
 bp.add_url_rule(
     "/<int:campaign_id>/handouts/",
@@ -200,10 +201,12 @@ bp.add_url_rule(
     methods=["GET", "PUT", "DELETE", "POST"],
 )
 
+"""
 
-@bp.route(
-    "/<int:campaign_id>/handouts/<int:handout_id>/delete", methods=("GET", "POST")
-)
+
+# @bp.route(
+#    "/<int:campaign_id>/handouts/<int:handout_id>/delete", methods=("GET", "POST")
+# )
 def handout_delete(campaign_id: int, handout_id: int):
     """Delete a handout."""
     handout = session.get(Handout, handout_id)

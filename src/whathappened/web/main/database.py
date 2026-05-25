@@ -3,8 +3,6 @@ from pathlib import Path
 from alembic import command
 from alembic.config import Config
 import click
-from flask import current_app
-from flask.cli import with_appcontext
 
 CONFIG_FILE = Path(current_app.root_path).parent / "migrations/alembic.ini"
 

@@ -1,8 +1,6 @@
 import logging
 import os
 
-from flask import flash, redirect, render_template, url_for
-from flask.helpers import send_from_directory
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 
@@ -10,7 +8,8 @@ from whathappened.core.database import session
 from whathappened.web.auth.utils import current_user, login_required
 
 from ...core.userassets.models import Asset, AssetFolder
-from .blueprints import bp
+
+# from .blueprints import bp
 from .forms import (
     DeleteAssetFolderForm,
     DeleteAssetForm,
@@ -23,8 +22,8 @@ from .utils import resolve_system_path
 logger = logging.getLogger(__name__)
 
 
-@bp.route("/<uuid:folder_id>/")
-@bp.route("/")
+# @bp.route("/<uuid:folder_id>/")
+# @bp.route("/")
 @login_required
 def index(folder_id: str | None = None):
     if current_user.profile.assetfolders.count() < 1:
@@ -54,6 +53,7 @@ def index(folder_id: str | None = None):
     )
 
 
+"""
 @bp.route(
     "/folder/<uuid:folder_id>/",
     methods=[
@@ -66,6 +66,9 @@ def index(folder_id: str | None = None):
         "POST",
     ],
 )
+"""
+
+
 @login_required
 def create_folder(folder_id=None):
     folderform = NewFolderForm(prefix="newfolderform")
@@ -81,12 +84,16 @@ def create_folder(folder_id=None):
     return redirect(url_for("userassets.index", folder_id=folder_id))
 
 
+"""
 @bp.route(
     "/folder/<uuid:id>/delete",
     methods=[
         "POST",
     ],
 )
+"""
+
+
 @login_required
 def delete_folder(id):
     deletefolderform = DeleteAssetFolderForm(prefix="deletefolderform")
@@ -121,6 +128,7 @@ def delete_folder(id):
     return redirect(url_for("userassets.index", folder_id=id))
 
 
+"""
 @bp.route(
     "/<uuid:folder_id>/",
     methods=[
@@ -133,6 +141,9 @@ def delete_folder(id):
         "POST",
     ],
 )
+"""
+
+
 @login_required
 def upload_file(folder_id=None):
     form = UploadForm(prefix="fileupload")
@@ -158,7 +169,7 @@ def upload_file(folder_id=None):
     return redirect(url_for("userassets.index", folder_id=folder_id))
 
 
-@bp.route("/view/<uuid:fileid>/<string:filename>")
+# @bp.route("/view/<uuid:fileid>/<string:filename>")
 @login_required
 def view(fileid, filename):
     """Retrieve a user asset."""
@@ -176,7 +187,7 @@ def view(fileid, filename):
     return send_from_directory(str(full_dir.absolute()), assetname)
 
 
-@bp.route("/edit/<uuid:fileid>/<string:filename>")
+# @bp.route("/edit/<uuid:fileid>/<string:filename>")
 @login_required
 def edit(fileid, filename):
     userasset = session.get(Asset, fileid)
@@ -197,12 +208,16 @@ def edit(fileid, filename):
     )
 
 
+"""
 @bp.route(
     "/edit/<uuid:fileid>/<string:filename>/delete",
     methods=[
         "POST",
     ],
 )
+"""
+
+
 @login_required
 def delete(fileid, filename):
     logger.debug("Delete asset")
@@ -219,12 +234,16 @@ def delete(fileid, filename):
     return redirect(url_for("userassets.index", folder_id=asset.folder_id))
 
 
+"""
 @bp.route(
     "/edit/<uuid:fileid>/<string:filename>/move",
     methods=[
         "POST",
     ],
 )
+"""
+
+
 @login_required
 def move(fileid, filename):
     asset = session.get(Asset, fileid)

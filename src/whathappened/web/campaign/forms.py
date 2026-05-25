@@ -1,7 +1,7 @@
-from flask_wtf import FlaskForm
 from markupsafe import Markup
 from wtforms import (
     BooleanField,
+    Form,
     HiddenField,
     IntegerField,
     SelectField,
@@ -19,7 +19,7 @@ from whathappened.web.forms.fields import QuerySelectField, QuerySelectMultipleF
 from ...core.campaign.models import HandoutStatus
 
 
-class CreateForm(FlaskForm):
+class CreateForm(Form):
     title = StringField("Title", validators=[DataRequired()])
     characters_enabled = BooleanField("Use Characters")
     npcs_enabled = BooleanField("Use NPCs")
@@ -34,13 +34,13 @@ class EditForm(CreateForm):
     submit = SubmitField("Save")
 
 
-class DeleteForm(FlaskForm):
+class DeleteForm(Form):
     id = IntegerField(widget=HiddenInput())
     confirm = StringField("Confirm", validators=[DataRequired()])
     submit = SubmitField("Delete")
 
 
-class InvitePlayerForm(FlaskForm):
+class InvitePlayerForm(Form):
     email = StringField("Email", validators=[DataRequired(), Email()])
     submit = SubmitField("Invite")
 
@@ -49,7 +49,7 @@ def available_characters():
     return current_user.profile.characters  # pyright: ignore[reportGeneralTypeIssues]
 
 
-class AddCharacterForm(FlaskForm):
+class AddCharacterForm(Form):
     character = QuerySelectField(
         query_factory=available_characters, get_label=lambda x: x.title
     )
@@ -60,7 +60,7 @@ class AddNPCForm(AddCharacterForm):
     visible = BooleanField("Visible", default=False)
 
 
-class CampaignAssociationForm(FlaskForm):
+class CampaignAssociationForm(Form):
     """Edit settings for a character-campaign association."""
 
     campaign_id = IntegerField(widget=HiddenInput())
@@ -71,19 +71,19 @@ class CampaignAssociationForm(FlaskForm):
     submit = SubmitField("Update settings")
 
 
-class RemoveCharacterForm(FlaskForm):
+class RemoveCharacterForm(Form):
     id = IntegerField(widget=HiddenInput())
     character = IntegerField(widget=HiddenInput())
     submit = SubmitField("Remove character")
 
 
-class RemovePlayerForm(FlaskForm):
+class RemovePlayerForm(Form):
     id = IntegerField(widget=HiddenInput())
     player = IntegerField(widget=HiddenInput())
     submit = SubmitField("Remove player")
 
 
-class JoinCampaignForm(FlaskForm):
+class JoinCampaignForm(Form):
     invite_code = HiddenField("Invite", validators=[DataRequired()])
     submit = SubmitField("Join campaign")
 
@@ -100,13 +100,13 @@ class PlayerListField(QuerySelectMultipleField):
     option_widget = widgets.CheckboxInput()
 
 
-class HandoutGroupForm(FlaskForm):
+class HandoutGroupForm(Form):
     campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     name = StringField("Name", validators=[DataRequired()])
     submit = SubmitField("Add group")
 
 
-class HandoutForm(FlaskForm):
+class HandoutForm(Form):
     campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     title = StringField("Title", validators=[DataRequired()])
     content = StringField("Content", widget=TextArea())
@@ -128,7 +128,7 @@ class HandoutForm(FlaskForm):
     submit = SubmitField("Save handout")
 
 
-class DeleteHandoutForm(FlaskForm):
+class DeleteHandoutForm(Form):
     campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     submit = SubmitField("Delete handout")
@@ -163,19 +163,19 @@ class PlayerField(SelectMultipleField):
     option_widget = widgets.CheckboxInput()
 
 
-class RevealHandout(FlaskForm):
+class RevealHandout(Form):
     campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     players = QuerySelectMultipleField("Show to", get_label=lambda x: x.user.username)
 
 
-class NPCTransferForm(FlaskForm):
+class NPCTransferForm(Form):
     npc_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     player = SelectField(validate_choice=False)
     submit = SubmitField("Transfer NPC")
 
 
-class MessagePlayerForm(FlaskForm):
+class MessagePlayerForm(Form):
     campaign_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     from_id = IntegerField(widget=HiddenInput(), validators=[DataRequired()])
     message = StringField()

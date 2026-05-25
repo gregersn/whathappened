@@ -1,4 +1,5 @@
-from flask import Blueprint
+from whathappened.web.utils import Blueprint
+
 
 bp = Blueprint("main", __name__)
 api = Blueprint("main", __name__)
