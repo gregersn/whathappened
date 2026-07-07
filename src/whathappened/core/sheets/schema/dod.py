@@ -115,7 +115,7 @@ class Grundegenskaper(BaseModel):
 
     model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
-    STY: Annotated[int, Field(le=18, ge=0, title="Styrke (STY)")] = 0
+    STY: Annotated[int, Field(le=18, ge=0, title="Styrka (STY)")] = 0
     FYS: Annotated[int, Field(le=18, ge=0, title="Fysik (FYS)")] = 0
     SMI: Annotated[int, Field(le=18, ge=0, title="Smidighet (SMI)")] = 0
     INT: Annotated[int, Field(le=18, ge=0, title="Intelligens (INT)")] = 0
@@ -230,7 +230,7 @@ class Packning(BaseModel):
 
     model_config = ConfigDict(json_schema_serialization_defaults_required=True)
 
-    barformoga: Annotated[int, Field(title="Bärformåga", ge=0, le=10)] = Field(
+    barformoga: Annotated[int, Field(title="Bärförmåga", ge=0, le=10)] = Field(
         default=0
     )
     items: Annotated[list[str], Field(json_schema_extra={"constant": True})] = Field(
@@ -270,7 +270,7 @@ class Hjalm(BaseModel):
     typ: str = "Ingen"
     skyddsvarde: Annotated[int, Field(title="Skyddsvärde")] = 0
     upptacka_fara: Annotated[bool, Field(title="Upptäcka fara")] = False
-    avstandsattacker: Annotated[bool, Field(title="Avståndsattaker")] = False
+    avstandsattacker: Annotated[bool, Field(title="Avståndsattacker")] = False
 
 
 class Vapen(BaseModel):
@@ -282,7 +282,7 @@ class Vapen(BaseModel):
     grepp: Literal["-", "1H", "2H"] = "-"
     rackvidd: Annotated[str, Field(title="Räckvidd")] = "2"
     skada: str = "T6"
-    brytvarde: Annotated[str, Field(title="Brytdvärde")] = "-"
+    brytvarde: Annotated[str, Field(title="Brytvärde")] = "-"
     egenskaper: str = "Krossande"
 
 
@@ -346,8 +346,8 @@ class Personalia(BaseModel):
     slakte: Annotated[Slakte, Field(title="Släkte")] = Field(default="Människa")
     alder: Annotated[Alder, Field(title="Ålder")] = "Ung"
     yrke: Yrke = "Bard"
-    svaghet: str = "Odefinerad"
-    utseende: str = "Odefinerad"
+    svaghet: str = "Odefinierad"
+    utseende: str = "Odefinierad"
     portrait: Annotated[str | None, Field(json_schema_extra={"widget": "portrait"})] = (
         ""
     )
