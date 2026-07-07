@@ -207,8 +207,8 @@ $defs:
           namn: Inget namn
           portrait: ''
           slakte: "M\xE4nniska"
-          svaghet: Odefinerad
-          utseende: Odefinerad
+          svaghet: Odefinierad
+          utseende: Odefinierad
           yrke: Bard
       sekundara_egenskaper:
         $ref: '#/$defs/SekundaraEgenskaper'
@@ -403,7 +403,7 @@ $defs:
         default: 0
         maximum: 18
         minimum: 0
-        title: Styrke (STY)
+        title: Styrka (STY)
         type: integer
       arg:
         default: false
@@ -449,7 +449,7 @@ $defs:
     properties:
       avstandsattacker:
         default: false
-        title: "Avst\xE5ndsattaker"
+        title: "Avst\xE5ndsattacker"
         type: boolean
       skyddsvarde:
         default: 0
@@ -503,7 +503,7 @@ $defs:
         default: 0
         maximum: 10
         minimum: 0
-        title: "B\xE4rform\xE5ga"
+        title: "B\xE4rf\xF6rm\xE5ga"
         type: integer
       items:
         constant: true
@@ -589,11 +589,11 @@ $defs:
         title: "Sl\xE4kte"
         type: string
       svaghet:
-        default: Odefinerad
+        default: Odefinierad
         title: Svaghet
         type: string
       utseende:
-        default: Odefinerad
+        default: Odefinierad
         title: Utseende
         type: string
       yrke:
@@ -725,7 +725,7 @@ $defs:
     properties:
       brytvarde:
         default: '-'
-        title: "Brytdv\xE4rde"
+        title: "Brytv\xE4rde"
         type: string
       egenskaper:
         default: Krossande
