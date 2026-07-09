@@ -32,7 +32,7 @@ dependencies = [
     "pyjwt==2.13.0",
     "pyscss",
     "python-dotenv==1.2.2",
-    "pymysql==1.1.3",
+    "pymysql==1.2.0",
     "pyyaml==6.0.3",
     "sqlalchemy==2.0.51",
     "werkzeug==3.1.8",
