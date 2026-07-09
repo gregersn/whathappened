@@ -1,7 +1,9 @@
 import logging
 
-from litestar import Router, get, Request
+from litestar import Request, Router, get
 from litestar.datastructures import State
+from litestar.di import Provide
+from litestar.response import Redirect
 from litestar.response.template import Template
 from werkzeug.exceptions import abort
 
@@ -9,8 +11,7 @@ from whathappened.core.auth.models import User
 from whathappened.core.auth.utils import current_user
 from whathappened.core.database import Base, session
 from whathappened.core.database.models import Invite
-from whathappened.web.auth.utils import login_required
-
+from whathappened.web.auth.utils import login_required, provide_user
 
 from .forms import DeleteInviteForm
 
@@ -24,12 +25,12 @@ def get_class_by_tablename(tablename):
 
 
 @get("/")
-def index(request: Request[User, None, State]) -> Template:
+def index(user: User | None) -> Template | Redirect:
+    print(user)
+    if user:
+        return Redirect("/profile")
     # if current_user.is_authenticated:  # pyright: ignore[reportGeneralTypeIssues]
     #    return redirect(url_for("profile.index"))
-    print(request.session)
-    print(request.user)
-    print(request.state)
     return Template("main/index.html.jinja", context={"current_user": current_user})
 
 
@@ -73,4 +74,8 @@ def api_invite_delete(id):
 """
 
 
-main_router = Router(path="/", route_handlers=[index, invite_delete])
+main_router = Router(
+    path="/",
+    route_handlers=[index, invite_delete],
+    dependencies={"user": Provide(provide_user)},
+)

@@ -101,7 +101,7 @@ def create_app(test_config: Settings | None = None):
 
     from . import auth, main
 
-    auth_mw = DefineMiddleware(LoginManager)
+    auth_mw = DefineMiddleware(LoginManager, exclude=["static", "auth"])
 
     app = Litestar(
         route_handlers=[

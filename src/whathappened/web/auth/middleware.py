@@ -18,5 +18,6 @@ class LoginManager(AbstractAuthenticationMiddleware):
                 username=connection.session.get("username", None)
             ).first()
             if not user:
-                raise NotAuthorizedException()
-        return AuthenticationResult(user, None)
+                return AuthenticationResult(None, None)
+            return AuthenticationResult(user, None)
+        return AuthenticationResult(None, None)

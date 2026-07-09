@@ -6,6 +6,7 @@ class CurrentUser:
 
     @property
     def is_anonymous(self):
+        print(f"*** {self.user}")
         return self.user is None
 
     @property

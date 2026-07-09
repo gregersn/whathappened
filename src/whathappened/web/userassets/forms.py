@@ -2,7 +2,6 @@ from wtforms import Form, StringField, SubmitField, FileField
 from wtforms.fields.simple import HiddenField
 from wtforms.validators import DataRequired
 
-from whathappened.web.auth.utils import current_user
 from whathappened.web.forms.fields import QuerySelectField
 
 from ...core.userassets.models import Asset

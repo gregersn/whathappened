@@ -5,7 +5,7 @@ from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 
 from whathappened.core.database import session
-from whathappened.web.auth.utils import current_user, login_required
+from whathappened.web.auth.utils import login_required
 
 from ...core.userassets.models import Asset, AssetFolder
 

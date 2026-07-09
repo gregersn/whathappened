@@ -1,7 +1,10 @@
 from functools import wraps
 from time import time
 
+from litestar import Request
+
 from whathappened.core.auth.models import User
+from whathappened.core.auth.utils import current_user
 from whathappened.core.database import session
 from whathappened.web.email import send_mail
 
@@ -47,3 +50,10 @@ def login_user(*args, **kwargs):
 
 def logout_user(*args, **kwargs):
     raise NotImplementedError(f"{args}, {kwargs}")
+
+
+def provide_user(request: Request):
+    # current_user.clear()
+    if "session" in request.scope:
+        print("User is in request scope")
+        return request.user

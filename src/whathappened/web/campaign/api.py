@@ -7,7 +7,7 @@ from sqlalchemy import or_
 from werkzeug.exceptions import abort
 
 from whathappened.core.database import session
-from whathappened.web.auth.utils import current_user, login_required
+from whathappened.web.auth.utils import login_required
 
 from ...core.campaign.models import NPC, Campaign, Handout, HandoutStatus, Message
 # from .blueprints import apibp

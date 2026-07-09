@@ -6,7 +6,7 @@ from werkzeug.exceptions import abort
 from werkzeug.wrappers import Response
 
 from whathappened.core.database import session
-from whathappened.web.auth.utils import current_user, login_required
+from whathappened.web.auth.utils import login_required
 from whathappened.web.userassets.forms import AssetSelectForm
 
 from ...core.campaign.models import Campaign, Handout, HandoutGroup
