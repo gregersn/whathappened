@@ -6,6 +6,8 @@ import logging
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import Enum, String
+from sqlalchemy import CheckConstraint, Column
+
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from whathappened.core.database import Base, session
@@ -110,6 +112,9 @@ class User(Base):
             return NotImplemented
         return not equal
 
+    __table_args__ = (
+        CheckConstraint(f"status IN ({', '.join([f'\'{member}\'' for member in UserStatus.__members__])})", name="userstatus"),
+    )
 
 class Role(Base):
     """Role a user can have."""
