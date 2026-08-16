@@ -6,6 +6,7 @@ import enum
 from sqlalchemy.orm import Mapped, backref, mapped_column, relationship
 from sqlalchemy.sql.schema import Column, ForeignKey, Table
 from sqlalchemy.sql.sqltypes import DateTime, Enum, Integer, String, Text
+from sqlalchemy import CheckConstraint
 
 from whathappened.core.character.models import Character
 from whathappened.core.content.mixins import BaseContent
@@ -176,6 +177,11 @@ class Handout(BaseModel):
         return f"<Handout {self.title}>"
 
     _default_fields = ["id", "title"]
+
+    __table_args__ = (
+        CheckConstraint(f"status IN ({', '.join([f'\'{member}\'' for member in HandoutStatus.__members__])})", name="handoutstatus"),
+    )
+
 
 
 class NPC(BaseModel):
