@@ -82,7 +82,7 @@ dev = [
     "pytest-dependency>=0.6.1",
     "ruff>=0.16.2",
     "setuptools>=83.0.0",
-    "wheel==0.47.0",
+    "wheel==0.48.0",
 ]
 
 
