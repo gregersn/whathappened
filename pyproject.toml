@@ -31,7 +31,7 @@ dependencies = [
     "pillow==12.3.0",
     "pyjwt==2.13.0",
     "pyscss",
-    "python-dotenv==1.2.2",
+    "python-dotenv==1.2.3",
     "pymysql==1.2.0",
     "pyyaml==6.0.3",
     "sqlalchemy==2.0.52",
