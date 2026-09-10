@@ -75,7 +75,7 @@ typeCheckingMode = "basic"
 
 [dependency-groups]
 dev = [
-    "basedpyright>=1.39.9",
+    "basedpyright>=1.40.0",
     "build>=1.6.0",
     "pytest==9.1.1",
     "pytest-cov==7.1.0",
