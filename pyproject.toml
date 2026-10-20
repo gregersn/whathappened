@@ -28,7 +28,7 @@ dependencies = [
     "jsonschema==4.26.0",
     "markdown2==2.5.5",
     "packaging==26.3",
-    "pillow==12.3.0",
+    "pillow==13.0.0",
     "pyjwt==2.15.1",
     "pyscss",
     "python-dotenv==1.2.4",
