@@ -33,7 +33,7 @@ dependencies = [
     "pyscss",
     "python-dotenv==1.2.4",
     "pymysql==1.2.4",
-    "pyyaml==6.0.3",
+    "pyyaml==6.0.4",
     "sqlalchemy==2.1.8",
     "werkzeug==3.1.9",
     "pelican-webassets==2.1.0",
